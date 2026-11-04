@@ -6,6 +6,9 @@ applyDom();
 
 const { LISTENER_ROUTES, showListenerView, hideListenerViews } = await import("./app.js");
 const { $, $$, api, esc } = await import("./lib/ui.js");
+const { fillIcons } = await import("./lib/icons.js");
+const { isOnboarded } = await import("./views/setup.js");
+fillIcons();
 
 const VIEWS = {
   home: () => import("./views/home.js"),
@@ -16,8 +19,9 @@ const VIEWS = {
   chart: () => import("./views/chart.js"),
   tools: () => import("./views/tools.js"),
   camera: () => import("./views/camera.js"),
+  setup: () => import("./views/setup.js"),
 };
-const NAV_OF = { lesson: "course", chart: "charts" };
+const NAV_OF = { lesson: "course", chart: "charts", camera: "chords", setup: "settings" };
 const view = $("#view");
 let current = null;   // mounted module (to unmount it when leaving)
 let seq = 0;
@@ -31,7 +35,8 @@ function parse() {
 async function route() {
   const { name, segs, params } = parse();
   const my = ++seq;
-  $$("#nav a").forEach(a => a.classList.toggle("active", a.dataset.route === (NAV_OF[name] || name)));
+  $$("[data-route]").forEach(a => a.classList.toggle("active", a.dataset.route === (NAV_OF[name] || name)));
+  document.body.classList.toggle("is-setup", name === "setup");
   if (current && current.unmount) { try { current.unmount(); } catch (e) { console.error(e); } }
   current = null;
   view.innerHTML = "";
@@ -69,4 +74,11 @@ sel.onchange = () => setLang(sel.value);
 window.addEventListener("hashchange", route);
 window.addEventListener("guitarr:progress", refreshProgress);
 refreshProgress();
+
+// First run: nothing configured yet → the setup wizard instead of an empty dashboard.
+try {
+  const cfg = await api("/api/config");
+  const { name } = parse();
+  if (!isOnboarded() && cfg.saved.device == null && name === "home") history.replaceState(null, "", "#/setup");
+} catch { /* no server */ }
 route();

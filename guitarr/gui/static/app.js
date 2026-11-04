@@ -3,6 +3,7 @@
    showListenerView / hideListenerViews. All user-facing text goes through i18n. */
 import { issueText, msgIsError, msgText, t, tc } from "./lib/i18n.js";
 import { $, $$, api, esc, noteName, NOTE_NAMES, progressChanged, toast } from "./lib/ui.js";
+import { levelVerdict, meterHtml, openInput, setGate, setMeter } from "./lib/input.js";
 
 // Reads a color token and normalizes it to #rrggbb (accepts hsl/rgb) so a hex alpha can be appended.
 const _cc = document.createElement("canvas").getContext("2d");
@@ -30,6 +31,7 @@ export const LISTENER_ROUTES = VIEWS;
 export function hideListenerViews() {
   $$(".gl-view").forEach(v => (v.hidden = true));
   stopTuner();
+  stopTest();
 }
 
 export function showListenerView(view, params = {}) {
@@ -38,7 +40,9 @@ export function showListenerView(view, params = {}) {
   if (view === "settings") loadSettings();
   if (view === "analyze") loadTakes();
   if (view !== "tuner") stopTuner();
+  if (view !== "settings") stopTest();
   if (view === "practice" && params.chart) useChart(params.chart);
+  if (view === "practice" && params.demo) loadDemo();
   requestAnimationFrame(() => drawTab());
 }
 
@@ -59,26 +63,36 @@ async function loadSongs(select) {
       : `<option value="">${esc(t("practice.no_songs_option"))}</option>`;
     if (cur && App.songs.some(s => s.name === cur)) sel.value = cur;
   }
-  if (!App.songs.length && !App.chart) showEmptyPractice();
+  showEmptyPractice();
 }
 
 function showEmptyPractice() {
-  if (App.chart) return;
-  $("#nowWhere").textContent = t("practice.upload_or_demo");
-  $("#log").innerHTML = `<li class="empty" style="display:block">${t("practice.no_songs_html")}
-      <br><br><button class="btn primary" id="demoBtn">${esc(t("practice.load_demo"))}</button></li>`;
-  $("#demoBtn").onclick = async () => {
-    try {
-      const r = await api("/api/demo", { method: "POST" });
-      await loadSongs(r.song);
-      await loadTakes();
-      $("#pSimulate").value = r.take;
-      await onSongChange("p");
-      $("#log").innerHTML = `<li class="info">${esc(t("practice.demo_ready"))}</li>`;
-      toast(t("practice.demo_loaded"), true);
-    } catch (e) { toast(e.message); }
-  };
+  const empty = !App.songs.length && !App.chart;
+  $("#pEmpty").hidden = !empty;
+  $("#pStage").classList.toggle("is-empty", empty);
+  if (empty) $("#nowWhere").textContent = t("practice.upload_or_demo");
 }
+
+let demoLoading = false;
+async function loadDemo() {
+  if (demoLoading || App.live) return;
+  demoLoading = true;
+  history.replaceState(null, "", "#/practice");
+  try {
+    const r = await api("/api/demo", { method: "POST" });
+    App.chart = null;
+    $("#pChartBanner").hidden = true;
+    $("#pSongField").hidden = false;
+    await loadSongs(r.song);
+    await loadTakes();
+    $("#pSimulate").value = r.take;
+    await onSongChange("p");
+    $("#log").innerHTML = `<li class="info">${esc(t("practice.demo_ready"))}</li>`;
+    toast(t("practice.demo_loaded"), true);
+  } catch (e) { toast(e.message); }
+  finally { demoLoading = false; }
+}
+$("#demoBtn").addEventListener("click", loadDemo);
 
 for (const up of $$(".songUpload")) {
   up.addEventListener("change", async () => {
@@ -139,6 +153,7 @@ async function useChart(id) {
     const { chart } = await api(`/api/charts/${encodeURIComponent(id)}`);
     const info = { ...chart, bars: chart.bars.length };
     App.chart = info;
+    showEmptyPractice();
     $("#pChartBanner").hidden = false;
     $("#pSongField").hidden = true;
     $("#pTrackWrap").hidden = true;
@@ -162,6 +177,7 @@ $("#pChartClear").addEventListener("click", () => {
   history.replaceState(null, "", "#/practice");
   if (App.songs.length) onSongChange("p");
   else { App.lane = null; drawTab(); }
+  showEmptyPractice();
 });
 
 function refBody(prefix) {
@@ -281,6 +297,15 @@ $("#pStartBtn").addEventListener("click", async () => {
     await api("/api/live/start", { json: body });
     setLive(true);
   } catch (e) { toast(e.message); setLive(false); }
+});
+
+// Space toggles practice, Esc stops it (ignored while typing in a field).
+document.addEventListener("keydown", e => {
+  if ($("#view-practice").hidden || e.metaKey || e.ctrlKey || e.altKey) return;
+  const tag = (e.target.tagName || "").toLowerCase();
+  if (["input", "select", "textarea", "button"].includes(tag) || e.target.isContentEditable) return;
+  if (e.code === "Space") { e.preventDefault(); $("#pStartBtn").click(); }
+  else if (e.key === "Escape" && App.live) { e.preventDefault(); $("#pStartBtn").click(); }
 });
 
 function msgClass(m) {
@@ -741,30 +766,87 @@ function drawHistChart(ss) {
 }
 
 // ------------------------------------------------------------------ settings
+const Settings = { devices: [], saved: {}, test: null, timer: null };
+
 async function loadSettings() {
   const [dv, cfg] = await Promise.all([api("/api/devices"), api("/api/config")]);
   if (dv.error) toast(dv.error);
+  Settings.devices = dv.inputs;
+  Settings.saved = cfg.saved;
   const a = cfg.audio;
-  $("#sDevice").innerHTML = dv.inputs.map(d => `<option value="${d.index}">${d.index}. ${esc(d.name)} (${esc(t("settings.n_channels", { count: d.channels }))})${d.index === dv.suggested ? " — " + esc(t("settings.looks_like_interface")) : ""}</option>`).join("");
+  $("#sDevice").innerHTML = dv.inputs.map(d => `<option value="${d.index}">${esc(d.name)}${d.index === dv.suggested ? " — " + esc(t("settings.looks_like_interface")) : ""}</option>`).join("");
   if (a.device != null) $("#sDevice").value = typeof a.device === "number" ? a.device : (dv.inputs.find(d => d.name === a.device) || {}).index;
-  $("#sOutput").innerHTML = `<option value="">${esc(t("settings.system_output"))}</option>` + dv.outputs.map(d => `<option value="${d.index}">${d.index}. ${esc(d.name)}</option>`).join("");
+  fillChannels(a.channel || 1);
+  $("#sOutput").innerHTML = `<option value="">${esc(t("settings.system_output"))}</option>` + dv.outputs.map(d => `<option value="${d.index}">${esc(d.name)}</option>`).join("");
   $("#sOutput").value = a.output_device ?? "";
-  $("#sChannel").value = a.channel || 1;
   $("#sGate").value = a.gate_db ?? -50; $("#sGateVal").textContent = $("#sGate").value + " dB";
-  $("#sSens").value = a.sensitivity ?? 1; $("#sSensVal").textContent = (+$("#sSens").value).toFixed(1);
+  $("#sSens").value = a.sensitivity ?? 1; $("#sSensVal").textContent = sensLabel(+$("#sSens").value);
   $("#sLatency").value = a.latency_ms ?? 0;
-  $("#sPath").textContent = t("settings.saved_in", { path: cfg.path });
+  $("#sMeterBox").innerHTML = meterHtml("sMeter", +$("#sGate").value);
+  $("#sState").textContent = t("settings.autosave", { path: cfg.path });
 }
-$("#sGate").addEventListener("input", () => ($("#sGateVal").textContent = $("#sGate").value + " dB"));
-$("#sSens").addEventListener("input", () => ($("#sSensVal").textContent = (+$("#sSens").value).toFixed(1)));
-$("#sSave").addEventListener("click", async () => {
-  try {
-    await api("/api/config", { json: { device: $("#sDevice").value, channel: $("#sChannel").value, output_device: $("#sOutput").value, gate_db: $("#sGate").value, sensitivity: $("#sSens").value, latency_ms: $("#sLatency").value } });
-    toast(t("settings.saved"), true);
-    refreshDevicePill();
-  } catch (e) { toast(e.message); }
-});
+
+function fillChannels(cur) {
+  const d = Settings.devices.find(x => String(x.index) === $("#sDevice").value);
+  const n = Math.max(1, Math.min(d ? d.channels : 1, 16));
+  $("#sChannel").innerHTML = Array.from({ length: n }, (_, k) => `<option value="${k + 1}">${esc(t("settings.channel_n", { n: k + 1 }))}</option>`).join("");
+  $("#sChannel").value = Math.min(cur, n);
+  $("#sChannelWrap").hidden = n < 2;
+}
+
+const sensLabel = v => `${v.toFixed(1)} · ${t(v < 0.8 ? "settings.sens_low" : v > 1.6 ? "settings.sens_high" : "settings.sens_mid")}`;
+
+function saveSettings() {
+  clearTimeout(Settings.timer);
+  $("#sState").textContent = t("settings.saving");
+  Settings.timer = setTimeout(async () => {
+    const body = { ...Settings.saved, device: $("#sDevice").value, channel: $("#sChannel").value, output_device: $("#sOutput").value,
+                   gate_db: $("#sGate").value, sensitivity: $("#sSens").value, latency_ms: $("#sLatency").value };
+    if (String(Settings.saved.device) !== body.device) delete body.samplerate;
+    try {
+      const r = await api("/api/config", { json: body });
+      Settings.saved = r.saved;
+      $("#sState").innerHTML = `<span class="ok">✓ ${esc(t("settings.saved"))}</span>`;
+      refreshDevicePill();
+    } catch (e) { $("#sState").textContent = e.message; toast(e.message); }
+  }, 350);
+}
+
+$("#sDevice").addEventListener("change", () => { fillChannels(1); saveSettings(); restartTest(); });
+$("#sChannel").addEventListener("change", () => { saveSettings(); restartTest(); });
+$("#sOutput").addEventListener("change", saveSettings);
+$("#sLatency").addEventListener("change", saveSettings);
+$("#sGate").addEventListener("input", () => { $("#sGateVal").textContent = $("#sGate").value + " dB"; setGate($("#sMeter"), +$("#sGate").value); });
+$("#sGate").addEventListener("change", saveSettings);
+$("#sSens").addEventListener("input", () => ($("#sSensVal").textContent = sensLabel(+$("#sSens").value)));
+$("#sSens").addEventListener("change", saveSettings);
+
+function startTest() {
+  if (App.live) return toast(t("tuner.stop_practice"));
+  stopTuner();
+  const vs = {};
+  $("#sTest").textContent = t("settings.test_stop");
+  Settings.test = openInput({
+    device: $("#sDevice").value, channel: $("#sChannel").value,
+    onReading: r => {
+      setMeter($("#sMeter"), r.level_db);
+      const v = levelVerdict(vs, r);
+      const below = vs.heardAt && performance.now() - vs.heardAt < 2000 && vs.heardDb < +$("#sGate").value;
+      $("#sVerdict").textContent = below ? t("settings.below_gate") : `${v.text} · ${Math.round(r.level_db)} dB`;
+      $("#sVerdict").className = "small " + (below ? "warn" : v.cls);
+    },
+    onError: msg => { $("#sVerdict").textContent = msg; $("#sVerdict").className = "small err"; stopTest(); },
+  });
+}
+function stopTest() {
+  if (Settings.test) { Settings.test.close(); Settings.test = null; }
+  $("#sTest").textContent = t("settings.test_start");
+  setMeter($("#sMeter"), -120);
+}
+function restartTest() { if (Settings.test) { stopTest(); setTimeout(startTest, 300); } }
+$("#sTest").addEventListener("click", () => (Settings.test ? stopTest() : startTest()));
 $("#cStart").addEventListener("click", async () => {
+  stopTest();
   try {
     await api("/api/calibrate", { json: {} });
     $("#cStart").disabled = true;
@@ -781,7 +863,7 @@ $("#cStart").addEventListener("click", async () => {
         $("#cStatus").innerHTML = r.ok
           ? `<b style="color:var(--gl-ok)">✓ ${esc(t("settings.cal_ok", { ms: Math.round(r.latency_ms), spread: Math.round(r.spread_ms), hits: r.hits }))}</b>`
           : `<span style="color:var(--gl-err)">${esc(r.code === "too_few_hits" ? t("settings.cal_few_hits") : (r.message || t("settings.cal_failed")))}</span>`;
-        if (r.ok) $("#sLatency").value = r.latency_ms;
+        if (r.ok) { $("#sLatency").value = r.latency_ms; Settings.saved.latency_ms = r.latency_ms; }
       }
     }, 150);
   } catch (e) { toast(e.message); }
@@ -797,6 +879,8 @@ async function refreshDevicePill() {
 }
 
 // ------------------------------------------------------------------ startup
+window.addEventListener("guitarr:device", refreshDevicePill);
+
 (async function init() {
   initTuner();
   animate();

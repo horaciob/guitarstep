@@ -16,23 +16,24 @@
     </a>
     <nav id="nav" data-i18n-title="nav.label">
       <div class="rail-group" data-i18n="nav.learn">Learn</div>
-      <a href="#/home" data-route="home"><span class="ico">⌂</span><span data-i18n="nav.home">Home</span></a>
-      <a href="#/course" data-route="course"><span class="ico">◆</span><span data-i18n="nav.course">Course</span></a>
-      <a href="#/chords" data-route="chords"><span class="ico">▦</span><span data-i18n="nav.chords">Chords</span></a>
-      <a href="#/camera" data-route="camera"><span class="ico">◉</span><span data-i18n="nav.camera">Camera</span></a>
+      <a href="#/home" data-route="home"><span class="ico" data-icon="home"></span><span data-i18n="nav.home">Home</span></a>
+      <a href="#/course" data-route="course"><span class="ico" data-icon="course"></span><span data-i18n="nav.course">Course</span></a>
+      <a href="#/chords" data-route="chords"><span class="ico" data-icon="chords"></span><span data-i18n="nav.chords">Chords</span></a>
       <div class="rail-group" data-i18n="nav.play">Play</div>
-      <a href="#/practice" data-route="practice"><span class="ico">▶</span><span data-i18n="nav.practice">Practice</span></a>
-      <a href="#/charts" data-route="charts"><span class="ico">♫</span><span data-i18n="nav.charts">Charts</span></a>
-      <a href="#/tools" data-route="tools"><span class="ico">⚒</span><span data-i18n="nav.tools">Tools</span></a>
-      <a href="#/tuner" data-route="tuner"><span class="ico">◎</span><span data-i18n="nav.tuner">Tuner</span></a>
+      <a href="#/practice" data-route="practice"><span class="ico" data-icon="practice"></span><span data-i18n="nav.practice">Practice</span></a>
+      <a href="#/charts" data-route="charts"><span class="ico" data-icon="charts"></span><span data-i18n="nav.charts">Charts</span></a>
+      <a href="#/tuner" data-route="tuner"><span class="ico" data-icon="tuner"></span><span data-i18n="nav.tuner">Tuner</span></a>
+      <a href="#/tools" data-route="tools"><span class="ico" data-icon="tools"></span><span data-i18n="nav.tools">Tools</span></a>
       <div class="rail-group" data-i18n="nav.review">Review</div>
-      <a href="#/analyze" data-route="analyze"><span class="ico">≋</span><span data-i18n="nav.analyze">Analyze a take</span></a>
-      <a href="#/history" data-route="history"><span class="ico">↗</span><span data-i18n="nav.history">History</span></a>
-      <a href="#/settings" data-route="settings"><span class="ico">⚙</span><span data-i18n="nav.settings">Settings</span></a>
+      <a href="#/analyze" data-route="analyze"><span class="ico" data-icon="analyze"></span><span data-i18n="nav.analyze">Analyze a take</span></a>
+      <a href="#/history" data-route="history"><span class="ico" data-icon="history"></span><span data-i18n="nav.history">History</span></a>
     </nav>
     <div class="rail-foot">
       <a class="rail-progress" id="railProgress" href="#/home" data-i18n-title="nav.progress"></a>
-      <a class="gl-device" id="devicePill" href="#/settings" data-i18n-title="nav.device"><span class="dot"></span><span id="deviceName">—</span></a>
+      <div class="rail-row">
+        <a class="gl-device" id="devicePill" href="#/settings" data-route="settings" data-i18n-title="nav.device"><span class="dot"></span><span id="deviceName">—</span></a>
+        <a class="icon-btn" href="#/settings" data-route="settings" data-i18n-title="nav.settings" data-icon="settings"></a>
+      </div>
       <select id="langSelect" class="lang" aria-label="Language"></select>
     </div>
   </aside>
@@ -86,10 +87,21 @@
         <label class="field"><span data-i18n="practice.simulate">Simulate with a recorded take (no guitar)</span><select id="pSimulate"></select></label>
         <button class="btn small" id="pSavePreset" type="button" data-i18n="practice.save_preset">Remember these options for this song</button>
       </details>
-      <div style="margin-top:16px"><button class="btn primary big" id="pStartBtn" data-i18n="practice.start">▶  Start</button></div>
+      <div class="start-dock"><button class="btn primary big" id="pStartBtn" data-i18n="practice.start">▶  Start</button>
+        <small class="muted kbd-hint" data-i18n-html="practice.kbd_hint"><kbd>Space</kbd> start / stop · <kbd>Esc</kbd> stop</small></div>
     </aside>
 
-    <div class="stage">
+    <div class="stage" id="pStage">
+      <div class="panel empty-hero" id="pEmpty" hidden>
+        <span class="hero-ico" data-icon="practice" data-size="30"></span>
+        <h2 data-i18n="practice.empty_title">What do you want to play?</h2>
+        <p class="muted" data-i18n-html="practice.empty_text">Bring a <b>MIDI</b> or <b>Guitar Pro</b> file (best), an audio file, or start with something ready-made.</p>
+        <div class="choice-grid">
+          <button class="choice primary" id="demoBtn"><span data-icon="sparkle" data-size="22"></span><b data-i18n="practice.load_demo">Load the demo</b><small data-i18n="practice.demo_hint">a short riff with planted mistakes, no guitar needed</small></button>
+          <a class="choice" href="#/charts"><span data-icon="charts" data-size="22"></span><b data-i18n="practice.browse_charts">Play a chord chart</b><small data-i18n="practice.browse_charts_hint">12 progressions with a metronome</small></a>
+          <label class="choice file-btn"><span data-icon="upload" data-size="22"></span><b data-i18n="practice.upload_own">Upload your own</b><small>MIDI · Guitar Pro · WAV · MP3</small><input type="file" class="songUpload" accept=".mid,.midi,.gp3,.gp4,.gp5,.gtp,.wav,.mp3,.flac,.ogg,.m4a"></label>
+        </div>
+      </div>
       <div class="panel hud">
         <div class="now-note" id="nowNote">—<small id="nowWhere" data-i18n="practice.pick_song">pick a song</small></div>
         <div class="hud-mid">
@@ -190,30 +202,43 @@
 
 <!-- ======================= SETTINGS ======================= -->
 <section class="gl gl-view" id="view-settings" hidden>
-  <div class="gl-head"><h1 data-i18n="settings.title">Audio settings</h1><p class="muted" data-i18n="settings.subtitle">Pick the input, the channel and the metronome output, and calibrate the latency.</p></div>
+  <div class="gl-head head-row"><div><h1 data-i18n="settings.title">Audio settings</h1><p class="muted" data-i18n="settings.subtitle">Pick the input, the channel and the metronome output, and calibrate the latency.</p></div>
+    <a class="btn" href="#/setup?step=input" data-i18n="settings.rerun_setup">Run the setup again</a></div>
   <div class="split">
     <div class="panel">
       <h2 data-i18n="settings.audio">Audio</h2>
       <label class="field"><span data-i18n="settings.input">Input (your interface / USB cable)</span><select id="sDevice"></select></label>
-      <label class="field"><span data-i18n="settings.channel">Input channel</span><input type="number" id="sChannel" min="1" value="1"></label>
+      <label class="field" id="sChannelWrap"><span data-i18n="settings.channel">Input channel</span><select id="sChannel"></select></label>
       <label class="field"><span data-i18n="settings.output">Metronome output</span><select id="sOutput"></select></label>
-      <label class="field"><span><span data-i18n="settings.gate">Noise gate</span>: <b id="sGateVal"></b></span><input type="range" id="sGate" min="-80" max="-20" step="1"></label>
-      <label class="field"><span><span data-i18n="settings.sensitivity">Onset sensitivity</span>: <b id="sSensVal"></b></span><input type="range" id="sSens" min="0.3" max="3" step="0.1"></label>
-      <label class="field"><span data-i18n="settings.latency">Latency (ms)</span><input type="number" id="sLatency" step="0.5"></label>
-      <div class="row"><button class="btn primary" id="sSave" data-i18n="common.save">Save</button></div>
-      <p class="muted" style="font-size:12px" id="sPath"></p>
+      <details class="adv">
+        <summary data-i18n="settings.fine_tune">Fine-tune detection</summary>
+        <label class="field"><span><span data-i18n="settings.gate">Noise gate</span>: <b id="sGateVal"></b></span><input type="range" id="sGate" min="-80" max="-20" step="1">
+          <small class="muted" data-i18n="settings.gate_hint">Sounds below this line are ignored. Keep it just above the hiss you see when you don't play.</small></label>
+        <label class="field"><span><span data-i18n="settings.sensitivity">Onset sensitivity</span>: <b id="sSensVal"></b></span><input type="range" id="sSens" min="0.3" max="3" step="0.1">
+          <small class="muted" data-i18n="settings.sens_hint">Higher catches softer attacks; too high and it hears notes that aren't there.</small></label>
+        <label class="field"><span data-i18n="settings.latency">Latency (ms)</span><input type="number" id="sLatency" step="0.5"></label>
+      </details>
+      <p class="muted save-state" id="sState" aria-live="polite"></p>
     </div>
-    <div class="panel">
-      <h2 data-i18n="settings.calibrate_title">Calibrate latency</h2>
-      <p class="muted" data-i18n-html="settings.calibrate_hint">You'll hear 4 clicks to catch the pulse and then 12 more. Hit the <b>muted</b> strings (a short pick stroke) right on every click. Use headphones.</p>
-      <button class="btn primary" id="cStart" data-i18n="settings.calibrate_start">Start calibration</button>
-      <div id="cStatus" style="margin-top:14px;font-size:16px"></div>
-      <h3 data-i18n="settings.tips">Tips</h3>
-      <ul class="muted">
-        <li data-i18n="settings.tip_level">Your level should be between −30 and −10 dB while playing. If it turns red, lower the gain.</li>
-        <li data-i18n="settings.tip_clean">A clean signal (no distortion) works best; monitor your effects separately.</li>
-        <li data-i18n="settings.tip_soft">If soft attacks aren't detected, raise the sensitivity or lower the noise gate.</li>
-      </ul>
+    <div class="stack">
+      <div class="panel">
+        <div class="listen-head"><h2 style="margin:0" data-i18n="settings.test_title">Test your input</h2>
+          <button class="btn small" id="sTest" data-i18n="settings.test_start">Listen</button></div>
+        <p class="muted small" id="sVerdict" data-i18n="settings.test_hint">Press Listen and play: the bar should reach the shaded zone and pass the gate line.</p>
+        <div id="sMeterBox"></div>
+      </div>
+      <div class="panel">
+        <h2 data-i18n="settings.calibrate_title">Calibrate latency</h2>
+        <p class="muted" data-i18n-html="settings.calibrate_hint">You'll hear 4 clicks to catch the pulse and then 12 more. Hit the <b>muted</b> strings (a short pick stroke) right on every click. Use headphones.</p>
+        <button class="btn primary" id="cStart" data-i18n="settings.calibrate_start">Start calibration</button>
+        <div id="cStatus" style="margin-top:14px;font-size:16px"></div>
+        <h3 data-i18n="settings.tips">Tips</h3>
+        <ul class="muted">
+          <li data-i18n="settings.tip_level">Your level should be between −30 and −10 dB while playing. If it turns red, lower the gain.</li>
+          <li data-i18n="settings.tip_clean">A clean signal (no distortion) works best; monitor your effects separately.</li>
+          <li data-i18n="settings.tip_soft">If soft attacks aren't detected, raise the sensitivity or lower the noise gate.</li>
+        </ul>
+      </div>
     </div>
   </div>
 </section>

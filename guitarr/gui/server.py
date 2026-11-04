@@ -509,13 +509,17 @@ async def ws_tuner(ws: WebSocket):
     try:
         sim = ws.query_params.get("simulate")
         a = audio_settings()
-        src = FileSource(take_path(sim)) if sim else MicSource(a.get("device"), a.get("channel") or 1,
-                                                                a.get("samplerate"))
+        # `device` / `channel` let the setup wizard and settings test an input before saving it.
+        dev = ws.query_params.get("device")
+        device = (int(dev) if dev.lstrip("-").isdigit() else dev) if dev else a.get("device")
+        channel = _int(ws.query_params.get("channel")) or a.get("channel") or 1
+        samplerate = a.get("samplerate") if dev is None else None
+        src = FileSource(take_path(sim)) if sim else MicSource(device, channel, samplerate)
     except HTTPException as e:
         await ws.send_json(dict(error=e.detail))
         await ws.close()
         return
-    except AudioError as e:
+    except (AudioError, ValueError) as e:
         await ws.send_json(dict(error=dict(code="audio", message=str(e))))
         await ws.close()
         return

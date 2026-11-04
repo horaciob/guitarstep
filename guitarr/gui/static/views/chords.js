@@ -2,6 +2,7 @@
 import { msgText, t, tc } from "../lib/i18n.js";
 import { $, $$, api, bindChordSvg, chordSvg, esc, strum, toast } from "../lib/ui.js";
 import { listen } from "../lib/listen.js";
+import { icon } from "../lib/icons.js";
 
 let task = null;
 
@@ -14,6 +15,7 @@ export async function mount(el, { params }) {
     <div class="toolbar">
       <div class="seg" id="groups"></div>
       <input type="search" id="q" placeholder="${esc(t("chords.search"))}" aria-label="${esc(t("chords.search"))}">
+      <a class="btn" href="#/camera">${icon("camera", 16)} ${esc(t("chords.camera_link"))}</a>
     </div>
     <div class="chord-grid" id="grid"></div>`;
   const groups = [{ id: "all", name: t("chords.all") }, ...data.groups.map(g => ({ id: g.id, name: tc(`groups.${g.id}`, g.name) }))];
