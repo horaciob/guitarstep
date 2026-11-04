@@ -1,0 +1,11 @@
+title: Anchor fingers: Em7, G, Dsus4, Cadd9
+level: 2
+bpm: 88
+time: 4/4
+capo: 2
+strum: D.DU.UDU
+note: Ring and pinky never move during the whole exercise: they are the anchor. Capo on fret 2.
+
+[Loop]
+Em7 | G | Dsus4 | Cadd9
+Em7 | G | Dsus4 | Cadd9

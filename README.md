@@ -1,158 +1,297 @@
 # guitarr
 
-Aprendé y practicá guitarra con la guitarra enchufada: te escucha y te dice qué
-notas o acordes erraste, cuáles salteaste, cuáles sobraron y dónde te fuiste de
-tiempo. La idea central: **todo se aprueba tocando**, y el que decide si salió es
-el oído (y, si querés, la cámara).
+**A guitar practice companion that listens to you.** Plug your guitar into your computer and
+guitarr tells you which note or chord you missed, which one you skipped, what you played
+extra and where you drifted out of time — live, while you play, or afterwards from a
+recording.
 
-- **Interfaz gráfica** (`guitarr gui`): ruta de aprendizaje, acordes, cifrados, herramientas, cámara, práctica en vivo, análisis de tomas, historial y progreso.
-- **En vivo** (`guitarr live`): guitarra enchufada a la compu, feedback instantáneo. Modo *espera* (aprender) o *tempo* (metrónomo, con loop y entrenador de velocidad).
-- **Toma grabada** (`guitarr file`): análisis más preciso de algo que ya grabaste.
-
-## Instalación
+Everything you learn is *passed by playing*: lessons, chord checks and drills are graded by
+what the listener actually heard (and, optionally, by a camera that checks your fingering).
 
 ```bash
-python3.11 -m venv .venv                 # basic-pitch soporta hasta 3.11
-.venv/bin/pip install -e ".[dev]"        # crea el comando `guitarr`
+pip install -e ".[dev]"
+guitarr gui          # opens http://127.0.0.1:8765
+```
+
+---
+
+## Contents
+
+- [Features](#features)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Quick start](#quick-start)
+- [The web UI](#the-web-ui)
+- [Command line](#command-line)
+- [Practicing with your guitar](#practicing-with-your-guitar)
+- [References: what you play against](#references-what-you-play-against)
+- [Chord charts](#chord-charts)
+- [Course, chords and progress](#course-chords-and-progress)
+- [Languages](#languages)
+- [How it works](#how-it-works)
+- [Accuracy and limitations](#accuracy-and-limitations)
+- [Data and files](#data-and-files)
+- [Development](#development)
+- [Third-party software](#third-party-software)
+
+## Features
+
+**Play**
+- **Live practice** with a scrolling tablature, input meter and tuning readout.
+  - *Wait mode*: waits until you play each note or chord right.
+  - *Tempo mode*: metronome with count-in; judges both note and timing.
+- **Speed trainer**: loop a section; the tempo goes up after every clean pass and down after a bad one.
+- **Chord charts**: chords per bar, played with a metronome. Filler strums don't count as mistakes, and a capo is handled for you (tab and chord names stay relative to the capo). Write your own in a simple text format.
+- **Legato detection**: hammer-ons, pull-offs and slides are caught even without a pick attack.
+
+**Learn**
+- **Course**: 5 levels, 11 lessons and 20 exercises, from open strings to barre chords and the minor pentatonic. Every exercise is passed by playing it.
+- **Tutorials**: each lesson suggests video searches, and you can pin your favorite video (YouTube links play inline).
+- **Chord dictionary**: 39 chords with clickable diagrams. **Check** listens to you strum and tells you what was missing ("missing C# (major 3rd), extra C").
+- **Camera**: hand tracking (MediaPipe, fully local) checks that each finger is on the right string and fret.
+- **Tools**: metronome with tap tempo; a **chord-change minute** that counts only the clean changes it heard and keeps your record per chord pair; a fretboard explorer with scales and arpeggios.
+
+**Review**
+- **Take analysis**: transcribes a recording and aligns it with the reference, even at another tempo, then draws a piano roll of reference vs. what you played.
+- **History**: score over time per song, plus your weakest bars, with a one-click "practice these bars with the trainer".
+- **Progress**: XP, levels, a day streak and a feed of what you earned.
+
+## Requirements
+
+- **Python 3.10 or 3.11** (basic-pitch doesn't support 3.12 yet).
+- **macOS** is the tested platform. Metronome/input sync relies on CoreAudio timestamps; on other systems, run `guitarr calibrate`.
+- An **audio interface or a USB guitar cable**. A plain microphone works for testing, but expect worse detection.
+- A modern browser (Chrome, Safari, Firefox) for the web UI. The camera is optional.
+- No Node.js: the web UI is served as plain ES modules by the Python server.
+
+## Installation
+
+```bash
+python3.11 -m venv .venv
 source .venv/bin/activate
+pip install -e ".[dev]"          # installs the `guitarr` command and the test tools
+pip install -e ".[separate]"     # optional: Demucs, to isolate the guitar from full mixes
 ```
 
-Las versiones están fijas en `pyproject.toml` y `requirements.txt` (basic-pitch, librosa y numpy se rompen seguido entre versiones).
+Dependency versions are pinned in `pyproject.toml` and `requirements.txt`: basic-pitch, librosa and NumPy often break between releases.
 
-## Interfaz gráfica
+## Quick start
+
+**Without a guitar** (to see how it works):
 
 ```bash
-guitarr gui          # abre http://127.0.0.1:8765 en el navegador
+guitarr demo                                       # creates demo/ with planted mistakes
+guitarr file demo/reference.mid demo/take.wav      # analyze the recorded take
+guitarr live demo/reference.mid --simulate demo/take.wav --mode tempo --speed 0.9
 ```
 
-- **Practicar**: elegís canción, pista, compases y modo. Ves la tablatura (cuerda y traste) desplazándose, la nota actual, el nivel de entrada, la afinación y cada acierto o error. Al terminar te muestra el resultado por compás y un botón para practicar los compases más flojos con el entrenador.
-- **Analizar toma**: transcribe una toma, la alinea con la referencia y dibuja un piano-roll de la referencia contra lo que tocaste.
-- **Afinador**, **Historial** (progreso y compases flojos) y **Ajustes** (entrada, canal, salida del metrónomo, puerta de ruido, sensibilidad y calibración de latencia).
-- Sin guitarra: "Cargar la demo" deja preparada una toma simulada con errores plantados.
+In the web UI, **Practice → Load the demo** sets up the same thing.
 
-**Aprender**
-- **Inicio**: nivel y XP, racha de días (la semana a la vista), la siguiente lección, tus compases flojos y lo último que ganaste.
-- **Ruta**: 5 niveles y 11 lecciones (de las cuerdas al aire a la cejilla y la pentatónica). Cada lección tiene la idea, consejos, diagramas y **ejercicios que se aprueban tocando**: notas sueltas, un acorde N veces, cambios entre acordes o un cifrado con metrónomo, cada uno con un puntaje mínimo.
-- **Tutorías**: cada lección trae búsquedas de videos sugeridas y podés fijar tu video favorito (si es de YouTube, se ve ahí mismo).
-- **Acordes**: diccionario de 39 acordes por familia (abiertos, séptimas, color, cejilla, quintas). Tocás cada cuerda del diagrama para escucharla y **Comprobar** te escucha rasguearlo y te dice qué nota faltó o sobró.
-- **Cámara**: detecta tu mano (MediaPipe, todo local) y, con una calibración de 4 clics sobre el mástil, te dice qué dedos están en la cuerda y el traste correctos. Si mantenés la postura un segundo, después lo podés confirmar por oído.
-
-**Tocar**
-- **Cifrados**: acordes por compás para tocar con metrónomo. Te marca cada acorde que no entró o se fue de tiempo, y los rasguidos de relleno no cuentan como error. Trae 12 ejercicios y podés **escribir los tuyos** en un formato de texto simple (con vista previa en vivo).
-- **Herramientas**: metrónomo con tap tempo; **minuto de cambio**, que cuenta solo los cambios que sonaron limpios y guarda tu récord por par de acordes; y diapasón con escalas y acordes resaltados.
-
-**Progreso**: suman XP los ejercicios aprobados, las lecciones completas, los acordes dominados (por oído o cámara), los minutos de cambio y la práctica. Vive en `~/.guitarr/progreso.json` y lo comparten la web y la terminal.
-
-El audio se procesa en Python (baja latencia); el navegador solo muestra el estado.
-
-## En vivo (terminal)
+**With your guitar:**
 
 ```bash
-guitarr devices                          # ver entradas; marca la que parece tu interfaz
-guitarr config --device 3 --channel 1    # dejarla guardada
-guitarr calibrate                        # medir la latencia una vez (se guarda)
-guitarr tune                             # afinador
-
-guitarr live cancion.gp5                                    # modo espera
-guitarr live cancion.gp5 --mode tempo --speed 0.7           # metrónomo al 70%
-guitarr live cancion.gp5 --start-bar 9 --end-bar 12 --trainer   # loop: sube 5% cada vuelta limpia
-guitarr live cancion.gp5 --track lead --start-bar 9 --save-preset   # recordar opciones de esta canción
+guitarr devices                          # list inputs; the likely interface is marked
+guitarr config --device 3 --channel 1    # remember it
+guitarr calibrate                        # measure the latency once (saved)
+guitarr gui                              # and start practicing
 ```
 
-- Cada sesión se graba en `~/.guitarr/tomas/` y se registra en el historial.
-- **Entrenador de velocidad** (`--trainer`): arranca al 60% (o `--speed`). Si la vuelta sale con al menos `--target` (90 por defecto), sube `--speed-step` (5%); si sale bastante peor, baja. Tope: `--max-speed`.
-- **Legato**: también detecta hammer-ons, pull-offs y slides (notas sin ataque de púa). Se desactiva con `--no-legato`.
-- **Acordes**: si te equivocás, te dice qué nota faltó o sobró ("faltó C# (3ra), sobró C").
+## The web UI
 
-Consejos:
-- Con el nivel entre −30 y −10 dB está bien. Si dice "CLIPEA", bajá la ganancia.
-- Conviene una señal limpia (sin distorsión) para la detección; los efectos los podés monitorear aparte.
-- Usá auriculares para el metrónomo, así el click no se mete en la entrada.
-- Si no detecta ataques suaves: `--sensitivity 1.5` o `--gate-db -60` (o desde Ajustes en la interfaz).
+`guitarr gui` opens a local web app (default http://127.0.0.1:8765; `--port`, `--host` and `--no-browser` are available).
 
-## Toma grabada
+| Section | What it does |
+|---|---|
+| **Home** | Level, XP, streak (this week at a glance), next lesson, weakest bars and recent activity |
+| **Course** | Levels → lessons → exercises passed by playing; theory, tips, chord diagrams and tutorials |
+| **Chords** | Dictionary by family; hear each string, **Check** by ear, or check your **Posture** with the camera |
+| **Camera** | Calibrate the neck with 4 clicks, form the chord, get per-finger feedback |
+| **Practice** | Live practice against an uploaded song (MIDI, Guitar Pro, audio) or a chart |
+| **Charts** | Built-in exercises and your own charts, with a live-preview editor |
+| **Tools** | Metronome, chord-change minute, fretboard explorer |
+| **Tuner** | Uses the same input and pitch detection as practice |
+| **Analyze a take** | Transcription + alignment + piano roll; plays back your recording |
+| **History** | Progress chart, weakest bars, session list |
+| **Settings** | Input, channel, metronome output, noise gate, sensitivity, latency calibration |
+
+Audio runs in Python (low latency); the browser only displays state received over a WebSocket ~20 times per second.
+
+## Command line
+
+| Command | Purpose |
+|---|---|
+| `guitarr gui` | Open the web UI |
+| `guitarr live REF` | Practice live (`--mode wait\|tempo`, `--speed`, `--trainer`, `--loop`, `--start-bar/--end-bar`, …) |
+| `guitarr live --chart ID` | Practice a chord chart |
+| `guitarr file REF TAKE` | Analyze a recorded take |
+| `guitarr tune` | Tuner |
+| `guitarr calibrate` | Measure and save the input/output latency |
+| `guitarr charts [ID]` | List charts or show one bar by bar (`--format` explains the text format) |
+| `guitarr progress` | Level, XP, streak, lessons, mastered chords, latest events |
+| `guitarr history [SONG]` | Score over time, weakest bars and a suggested command to practice them |
+| `guitarr tracks FILE` | List the tracks of a MIDI / Guitar Pro file |
+| `guitarr devices` / `guitarr config` | List audio devices / show or save audio settings |
+| `guitarr demo` | Generate test files with planted mistakes |
+
+Run `guitarr <command> --help` for every option. `python listener.py …` still works as an alias.
+
+## Practicing with your guitar
 
 ```bash
-guitarr file cancion.mid mi_toma.wav
-guitarr file guitarra.wav mi_toma.wav --bpm 120   # referencia en audio
-guitarr file cancion.mp3 mi_toma.wav --separate   # aísla la guitarra (pip install -e ".[separate]")
+guitarr live song.gp5                                          # wait mode: learn it slowly
+guitarr live song.gp5 --mode tempo --speed 0.7                 # metronome at 70%
+guitarr live song.gp5 --start-bar 9 --end-bar 12 --trainer     # loop; +5% after every clean pass
+guitarr live song.gp5 --track lead --start-bar 9 --save-preset # remember these options for this song
 ```
 
-Las transcripciones y separaciones quedan en caché (`~/.guitarr/cache`), así que la segunda vez es casi instantánea.
+- **Speed trainer** (`--trainer`): starts at 60% (or `--speed`). A pass scoring at least `--target` (default 90) speeds up by `--speed-step` (5%); a much worse pass slows down. `--max-speed` caps it.
+- **Legato**: on by default; `--no-legato` turns it off.
+- Every session is recorded to `~/.guitarr/takes/` and logged in the history. The report suggests the command to analyze the take in detail.
 
-## Referencia
+**Tips**
+- Aim for an input level between −30 and −10 dB. If it says *CLIPPING*, lower the gain.
+- A clean signal (no distortion) gives the best detection; monitor your effects separately.
+- Use headphones so the metronome click doesn't leak into the input.
+- If soft attacks are missed, raise `--sensitivity` (e.g. 1.5) or lower `--gate-db` (e.g. −60). Both are also in Settings.
 
-Lo mejor es **Guitar Pro** (`.gp3/.gp4/.gp5`) o un **MIDI exportado de una tab** (Guitar Pro, Songsterr, MuseScore).
-Guitar Pro trae la cuerda y el traste reales; para MIDI y audio, la tablatura se estima intentando no mover mucho la mano.
-Las repeticiones de Guitar Pro se leen como están escritas, sin desplegarlas.
+## References: what you play against
 
-```bash
-guitarr tracks cancion.mid      # listar pistas
-... --track 2                   # o --track "lead"
-```
+The best reference is a **Guitar Pro file** (`.gp3/.gp4/.gp5`) or a **MIDI file exported from a tab** (Guitar Pro, Songsterr, MuseScore).
 
-Otras opciones: `--transpose N` (afinación distinta), `--start-bar/--end-bar`,
-`--bpm/--first-beat/--beats-per-bar` (si la grilla de compases sale corrida). Los cambios de compás del MIDI o del GP se respetan.
+- Guitar Pro files carry the real string and fret. For MIDI and audio, the tablature is estimated so the hand moves as little as possible.
+- Time-signature changes are respected. Guitar Pro repeats are read as written (not unfolded).
+- Several tracks? `guitarr tracks song.mid`, then `--track 2` or `--track "lead"`.
+- Audio references are transcribed with basic-pitch. Use `--separate` (Demucs) for a full mix, and `--bpm/--first-beat/--beats-per-bar` if the bar grid comes out shifted.
+- Different tuning? `--transpose N`. When analyzing a take, guitarr suggests a value if the tuning seems off.
 
-## Cifrados y progreso (terminal)
+Transcriptions, separations and beat grids are cached in `~/.guitarr/cache`, so the second run is almost instant.
 
-```bash
-guitarr cancionero                                   # cifrados disponibles (incluidos y tuyos)
-guitarr cancionero 03-pop-sol                        # ver uno, compás por compás
-guitarr cancionero --formato                         # cómo escribir los tuyos (van en ~/.guitarr/cifrados/)
-guitarr live --cifrado 03-pop-sol --mode tempo       # tocarlo con escucha
-guitarr progreso                                     # nivel, XP, racha, lecciones y acordes dominados
-```
+## Chord charts
 
-Un cifrado es texto plano:
+A chart is a plain-text file:
 
-```
-titulo: Pop en Sol
+```text
+title: Pop in G
 bpm: 90
-rasgueo: D.DU.UDU
-[Verso]
-G | D | Em | C
-G | D | C G | %
+time: 4/4            # optional (default 4/4)
+capo: 2              # optional
+strum: D.DU.UDU      # optional: D down, U up, . rest (one slot per eighth note)
+level: 2             # optional
+note: a tip          # optional
+
+[Verse]
+G | D | Em | C       # one bar per cell
+G | D | C G | %      # "C G" = two chords in one bar; % repeats; - is a silent bar
 ```
 
-## Historial
+12 exercises are built in (`guitarr/data/charts/`). Your own charts live in `~/.guitarr/charts/`; write them in the web editor or by hand. Built-in exercises are never overwritten: duplicating one creates `<id>-mine`.
+
+## Course, chords and progress
+
+- **Course** (`guitarr/data/course.json`): each exercise is one of these kinds:
+  - `notes`: single notes in order, e.g. open strings or a scale.
+  - `chord`: strum a chord N times.
+  - `change`: alternate between chords.
+  - `chart`: play a chart with the metronome at a given speed.
+
+  Each has a minimum score. A lesson is complete when all its exercises pass.
+- **Chord dictionary** (`guitarr/data/chords.json`): fingerings from the 6th to the 1st string, finger numbers, barres, notes and a tip.
+- **Progress** (`~/.guitarr/progress.json`): XP is earned by passing exercises (15) and completing lessons (40). Mastering a chord, by ear or with the camera, gives 20. Practice sessions give up to 20, based on the score. The chord-change minute gives 1 XP per 2 clean changes. Levels: *First strings → Accompanist → Strummer → Blues player → Guitarist*. The streak counts consecutive days with practice.
+
+## Languages
+
+The UI defaults to **English**; **Spanish** is available from the language selector in the sidebar. Translations use [i18next](https://www.i18next.com/), vendored in `gui/static/vendor/i18next/`.
+
+- UI strings live in `gui/static/locales/<lang>.json` under `ui`.
+- Learning content (chords, course, charts) is written in English in `guitarr/data/`. Its translations live under `content` in each locale and fall back to the English data.
+- The backend never sends translated text. Judgments, live messages, report issues, progress events and API errors are structured (`code` + `params`), and the UI renders them in the selected language. The CLI uses the English `text` field.
+
+To add a language, copy `en.json` to `<lang>.json`, translate it, and add the language to `LANGS` in `gui/static/lib/i18n.js`.
+
+## How it works
+
+- **File mode**:
+  1. basic-pitch transcribes the take (audio → notes), then harmonics and ringing notes are cleaned up.
+  2. DTW and local linear regression over the onsets align the tempos. If you practiced a section but recorded the whole song, it aligns against the whole song and reports only the section.
+  3. Notes are matched with a tolerance adapted to how dense the passage is.
+- **Live mode**:
+  1. Onsets come from spectral flux (picked notes) and from pitch changes (legato).
+  2. Pitch comes from YIN for single notes, and a chromagram is used for chords, about 110 ms after each onset.
+  3. A score follower (wait or tempo) judges each onset.
+  4. The metronome is scheduled on the input clock using CoreAudio's ADC/DAC timestamps.
+- **Chord judging**: each strum is compared with the expected chord through its chromagram.
+  - A missing note plus a foreign note in its place (e.g. major instead of minor) is a mistake.
+  - The low strings' 5th, 7th, 9th and 11th harmonics are treated as possible "ghost" notes, and power chords have no third to police.
+- **Camera**: 4 clicks on the neck define a bilinear mapping. Each fingertip is converted to (string, fret) using real 12-TET fret spacing and compared with the chord's fingering. Holding the shape for one second masters the chord; you can then confirm it by ear.
+
+## Accuracy and limitations
+
+- **Chord judging** was tuned and measured with synthesized strums (Karplus-Strong), 6 random seeds per case:
+  - false mistakes: 1 in 630 correctly played chords;
+  - wrong chords detected: 30 of 30;
+  - major/minor swaps detected: 20 of 30.
+
+  A real guitar sounds different, so the thresholds may need adjusting once tested with real recordings. The design deliberately prefers missing a subtle error over flagging a correct chord.
+- **Live timing** depends on the measured latency: run `guitarr calibrate` once per setup.
+- **Guitar Pro repeats** are not unfolded. **Demucs** separation is slow and optional.
+- The **camera** needs a clear, front-facing view of the neck. Calibration is stored per browser.
+
+## Data and files
+
+Everything lives in `~/.guitarr/` (override with the `GUITARR_HOME` environment variable):
+
+| Path | Contents |
+|---|---|
+| `config.toml` | Audio settings and per-song presets |
+| `progress.json` | XP, days practiced, lessons, exercises, mastered chords, drill records, pinned tutorials, events |
+| `charts/` | Your chord charts (`.txt`) |
+| `songs/` | References uploaded from the web UI |
+| `takes/` | Recordings of your live sessions and uploaded takes |
+| `history/` | One JSON per session, per song |
+| `cache/` | Transcriptions, separations and beat grids |
+
+## Development
 
 ```bash
-guitarr history                 # canciones practicadas
-guitarr history cancion         # evolución + tus 3 compases más flojos + comando sugerido para practicarlos
+pytest           # 68 tests, ~15 s
 ```
 
-## Probar sin guitarra
+The tests cover:
+- the bar grid and MIDI/Guitar Pro loading;
+- alignment and the demo, in both file and simulated live mode;
+- legato and the speed trainer;
+- every built-in chart strummed, plus planted wrong chords;
+- course exercises, check-by-ear and the chord-change minute through the API;
+- progress, i18n coverage and the web API.
 
-```bash
-guitarr demo                                         # genera demo/ con errores plantados
-guitarr file demo/referencia.mid demo/toma.wav
-guitarr live demo/referencia.mid --simulate demo/toma.wav --mode tempo --speed 0.9
+**Layout**
+
+```
+guitarr/
+  core.py        notes, bar grid, Reference
+  reference.py   MIDI / Guitar Pro / audio / chart loading, transcription cache, tab assignment
+  analysis.py    file mode: alignment and matching
+  dsp.py         YIN, chromagram, onset detector (pick + legato)
+  follow.py      judge and score followers; structured details and messages
+  session.py     live session (shared by the CLI and the web UI)
+  audio_io.py    audio input, simulated input, metronome
+  tuner.py       tuner and latency calibration
+  catalog.py     chords, charts (text format), course
+  progress.py    XP, streak, awards
+  history.py     session history and weakest bars
+  config.py      paths and settings
+  cli.py, tui.py command line and terminal screens
+  data/          chords.json, course.json, charts/*.txt
+  gui/server.py  FastAPI server
+  gui/static/    index.html, main.js (router), app.js (practice/analyze/tuner/history/settings),
+                 views/ (home, course, lesson, chords, charts, chart, tools, camera),
+                 lib/ (i18n, ui, listen), locales/, vendor/
 ```
 
-## Tests
+**Conventions**
+- Code, comments, data, CLI output and docs are in English. Other languages are only provided through the UI's i18n files.
+- Anything the backend wants the user to read is sent as `code` + `params`, so it can be translated.
 
-```bash
-pytest           # ~15 s: grilla, MIDI/GP, alineación, demo, entrenador, cifrados (todos rasgueados), ejercicios, acordes por oído, minuto de cambio, progreso, API
-```
+## Third-party software
 
-## Datos
-
-Todo vive en `~/.guitarr/` (se cambia con la variable `GUITARR_HOME`): `config.toml`, `progreso.json`, `cifrados/` (los tuyos), `canciones/`, `tomas/`, `historial/` y `cache/`.
-
-El contenido para aprender está en `guitarr/data/`: `acordes.json`, `ruta.json` y `cifrados/*.txt`.
-
-## Cómo funciona
-
-- **file**: basic-pitch (audio a notas) + limpieza de armónicos y resonancias. Después, DTW + regresión local sobre los ataques para alinear tempos, y emparejado de notas con tolerancia adaptada a la densidad del pasaje.
-- **live**: los ataques se detectan por spectral flux (púa) y por cambio de altura (legato). La altura sale de YIN, y los acordes de un cromagrama, con unos 110 ms de latencia; después pasa por el seguidor de partitura (espera o tempo). El metrónomo se sincroniza con la entrada usando los timestamps del ADC/DAC de CoreAudio.
-
-- **Acordes con escucha**: un cifrado se convierte en rasguidos (las notas de cada cuerda, con capo). Cada rasguido se compara contra el acorde esperado por cromagrama:
-  - Si falta una nota y suena otra en su lugar (por ejemplo mayor en vez de menor), es error.
-  - Los armónicos de las cuerdas graves (5º, 7º, 9º, 11º) no se confunden con notas tocadas.
-  - Medido con rasguidos sintetizados: 1 falso error cada 630 acordes bien tocados; detecta el 100% de los acordes equivocados y 2 de cada 3 cambios mayor/menor.
-- **Cámara**: MediaPipe (copiado en `gui/static/vendor`, funciona sin internet). Con 4 puntos del mástil se arma una transformación bilineal, y la posición de cada yema se pasa a traste con el espaciado real de los trastes (regla del 12-TET).
-- **Web**: módulos ES servidos tal cual por FastAPI (sin Node ni build).
-
-Código: `guitarr/` (`core`, `reference`, `analysis`, `dsp`, `follow`, `session`, `audio_io`, `tuner`, `history`, `catalog`, `progress`, `config`, `cli`, `gui/`). La web: `gui/static/main.js` (router), `views/` (aprender y herramientas), `app.js` (práctica, análisis, afinador, historial, ajustes) y `lib/` (diagramas, sonido y escucha).
-`listener.py` se mantiene como atajo: `python listener.py ...` equivale a `guitarr ...`.
+guitarr builds on [basic-pitch](https://github.com/spotify/basic-pitch), [librosa](https://librosa.org), [pretty_midi](https://github.com/craffel/pretty-midi), [PyGuitarPro](https://github.com/Perlence/PyGuitarPro), [sounddevice](https://python-sounddevice.readthedocs.io), [FastAPI](https://fastapi.tiangolo.com) and [rich](https://github.com/Textualize/rich). The web UI vendors [i18next](https://www.i18next.com/) and [MediaPipe Tasks Vision](https://ai.google.dev/edge/mediapipe) with its hand-landmark model; see `guitarr/gui/static/vendor/README.md` for versions and licenses.

@@ -1,14 +1,10 @@
-/* guitarr — vistas de escucha: practicar, analizar, afinador, historial y ajustes.
-   Módulo ES sin dependencias: vanilla JS + canvas + SVG. El router (main.js)
-   llama a showListenerView / hideListenerViews. */
-const progressChanged = () => window.dispatchEvent(new CustomEvent("guitarr:progreso"));
+/* guitarr — listening views: practice, analyze, tuner, history and settings.
+   Dependency-free ES module: vanilla JS + canvas + SVG. The router (main.js) calls
+   showListenerView / hideListenerViews. All user-facing text goes through i18n. */
+import { issueText, msgIsError, msgText, t, tc } from "./lib/i18n.js";
+import { $, $$, api, esc, noteName, NOTE_NAMES, progressChanged, toast } from "./lib/ui.js";
 
-const $ = (s, el = document) => el.querySelector(s);
-const $$ = (s, el = document) => [...el.querySelectorAll(s)];
-const NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
-const noteName = p => NOTE_NAMES[((p % 12) + 12) % 12] + (Math.floor(p / 12) - 1);
-const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-// Lee un token de color y lo normaliza a #rrggbb (acepta hsl/rgb), así se le puede sumar alfa en hex.
+// Reads a color token and normalizes it to #rrggbb (accepts hsl/rgb) so a hex alpha can be appended.
 const _cc = document.createElement("canvas").getContext("2d");
 const css = v => {
   const raw = getComputedStyle(document.documentElement).getPropertyValue(v).trim();
@@ -18,6 +14,7 @@ const css = v => {
 };
 const alpha = (c, a) => /^#[0-9a-f]{6}$/i.test(c) ? c + a : c;
 const fmtPct = v => v == null ? "—" : `${Math.round(v)}%`;
+const signed = v => `${v > 0 ? "+" : ""}${Math.round(v)}`;
 
 const STATUS_COLOR = () => ({
   pending: css("--muted"), ok: css("--gl-ok"), octave: css("--gl-octave"), fixed: css("--gl-ok"),
@@ -26,59 +23,31 @@ const STATUS_COLOR = () => ({
 });
 const ICON = { wrong: "✗", missed: "∅", missing: "∅", fixed: "↻", timing: "⏱", extra: "+", octave: "↕", ok: "✓" };
 
-// ------------------------------------------------------------------ API
-async function api(path, opts = {}) {
-  const o = { ...opts };
-  if (o.json !== undefined) {
-    o.method = o.method || "POST";
-    o.headers = { "Content-Type": "application/json" };
-    o.body = JSON.stringify(o.json);
-    delete o.json;
-  }
-  const r = await fetch(path, o);
-  let data = null;
-  try { data = await r.json(); } catch { /* sin cuerpo */ }
-  if (!r.ok) throw new Error((data && (data.detail || data.error)) || `Error ${r.status}`);
-  return data;
-}
-
-let toastTimer;
-function toast(msg, ok = false) {
-  const t = $("#toast");
-  t.textContent = msg;
-  t.className = "gl-toast" + (ok ? " ok" : "");
-  t.hidden = false;
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => (t.hidden = true), 4500);
-}
-
-// ------------------------------------------------------------------ navegación (la maneja el router de main.js)
-const VIEW_OF = { practicar: "practice", analizar: "analyze", afinador: "tuner", historial: "history", ajustes: "settings" };
-const ROUTE_OF = Object.fromEntries(Object.entries(VIEW_OF).map(([r, v]) => [v, r]));
-export const LISTENER_ROUTES = Object.keys(VIEW_OF);
+// ------------------------------------------------------------------ navigation (driven by main.js)
+const VIEWS = ["practice", "analyze", "tuner", "history", "settings"];
+export const LISTENER_ROUTES = VIEWS;
 
 export function hideListenerViews() {
   $$(".gl-view").forEach(v => (v.hidden = true));
   stopTuner();
 }
 
-export function showListenerView(route, params = {}) {
-  const view = VIEW_OF[route];
+export function showListenerView(view, params = {}) {
   $$(".gl-view").forEach(v => (v.hidden = v.id !== "view-" + view));
   if (view === "history") loadHistory();
   if (view === "settings") loadSettings();
   if (view === "analyze") loadTakes();
   if (view !== "tuner") stopTuner();
-  if (view === "practice" && params.cifrado) useSongChart(params.cifrado);
+  if (view === "practice" && params.chart) useChart(params.chart);
   requestAnimationFrame(() => drawTab());
 }
 
 function show(view) {
-  const h = "#/" + ROUTE_OF[view];
+  const h = "#/" + view;
   if (location.hash !== h) location.hash = h;
 }
 
-// ------------------------------------------------------------------ canciones (compartido)
+// ------------------------------------------------------------------ songs (shared)
 const App = { songs: [], takes: [], preview: null, lane: null, snap: null, k: 0, kSmooth: 0, live: false, mode: "wait" };
 
 async function loadSongs(select) {
@@ -87,7 +56,7 @@ async function loadSongs(select) {
     const cur = select || sel.value;
     sel.innerHTML = App.songs.length
       ? App.songs.map(s => `<option value="${esc(s.name)}">${esc(s.name)}</option>`).join("")
-      : `<option value="">(no hay canciones)</option>`;
+      : `<option value="">${esc(t("practice.no_songs_option"))}</option>`;
     if (cur && App.songs.some(s => s.name === cur)) sel.value = cur;
   }
   if (!App.songs.length && !App.chart) showEmptyPractice();
@@ -95,10 +64,9 @@ async function loadSongs(select) {
 
 function showEmptyPractice() {
   if (App.chart) return;
-  $("#nowWhere").textContent = "subí una canción o cargá la demo";
-  $("#log").innerHTML = `<li class="empty" style="display:block">
-      Todavía no hay canciones. Subí un <b>MIDI</b> o <b>Guitar Pro</b> exportado de una tab (lo mejor),
-      o un audio.<br><br><button class="btn primary" id="demoBtn">Cargar la demo</button></li>`;
+  $("#nowWhere").textContent = t("practice.upload_or_demo");
+  $("#log").innerHTML = `<li class="empty" style="display:block">${t("practice.no_songs_html")}
+      <br><br><button class="btn primary" id="demoBtn">${esc(t("practice.load_demo"))}</button></li>`;
   $("#demoBtn").onclick = async () => {
     try {
       const r = await api("/api/demo", { method: "POST" });
@@ -106,9 +74,8 @@ function showEmptyPractice() {
       await loadTakes();
       $("#pSimulate").value = r.take;
       await onSongChange("p");
-      $("#log").innerHTML = `<li class="info">Demo lista: tiene errores plantados. Como no tenés que enchufar nada,
-        quedó elegida "Simular con una toma" en Avanzado. Probá el modo Tempo al 90%.</li>`;
-      toast("Demo cargada", true);
+      $("#log").innerHTML = `<li class="info">${esc(t("practice.demo_ready"))}</li>`;
+      toast(t("practice.demo_loaded"), true);
     } catch (e) { toast(e.message); }
   };
 }
@@ -124,7 +91,7 @@ for (const up of $$(".songUpload")) {
       await loadSongs(r.name);
       await onSongChange("p");
       await onSongChange("a");
-      toast(`Subida: ${r.name}`, true);
+      toast(t("practice.uploaded", { name: r.name }), true);
     } catch (e) { toast(e.message); }
     up.value = "";
   });
@@ -139,8 +106,8 @@ async function loadTracks(prefix) {
   try {
     const tracks = await api(`/api/songs/${encodeURIComponent(song)}/tracks`);
     if (tracks.length > 1) {
-      sel.innerHTML = tracks.map(t => `<option value="${t.index}">${t.index}. ${esc(t.name)} — ${esc(t.kind)} (${t.notes})</option>`).join("");
-      const g = tracks.find(t => /guitar|cuerdas/i.test(t.kind));
+      sel.innerHTML = tracks.map(tr => `<option value="${tr.index}">${tr.index}. ${esc(tr.name)} — ${esc(tr.kind)} (${tr.notes})</option>`).join("");
+      const g = tracks.find(tr => /guitar|strings/i.test(tr.kind));
       if (g) sel.value = g.index;
       wrap.hidden = false;
     }
@@ -166,23 +133,25 @@ async function onSongChange(prefix) {
   if (prefix === "p") loadPreview();
 }
 
-// ------------------------------------------------------------------ cifrados
-async function useSongChart(id) {
+// ------------------------------------------------------------------ charts
+async function useChart(id) {
   try {
-    const { chart } = await api(`/api/cifrados/${encodeURIComponent(id)}`);
+    const { chart } = await api(`/api/charts/${encodeURIComponent(id)}`);
     const info = { ...chart, bars: chart.bars.length };
     App.chart = info;
     $("#pChartBanner").hidden = false;
     $("#pSongField").hidden = true;
     $("#pTrackWrap").hidden = true;
-    $("#pChartTitle").textContent = info.title;
-    $("#pChartInfo").textContent = `${info.artist || ""} · ♩=${info.bpm}${info.capo ? " · capo " + info.capo : ""} · ${info.bars} compases`
-      + (info.missing.length ? ` · sin digitación: ${info.missing.join(", ")}` : "");
+    $("#pChartTitle").textContent = tc(`charts.${info.id}.title`, info.title);
+    $("#pChartInfo").textContent = [info.artist, `♩=${info.bpm}`, info.capo ? t("charts.capo", { n: info.capo }) : "",
+      t("charts.n_chords", { count: info.bars }), info.missing.length ? t("charts.no_fingering", { chords: info.missing.join(", ") }) : ""]
+      .filter(Boolean).join(" · ");
     setMode("tempo");
     $("#pLoop").checked = false;
     $("#pStart").value = ""; $("#pEnd").value = "";
     $("#pTranspose").value = 0;
-    $("#log").innerHTML = `<li class="muted">${esc(info.note || "Tocá con el metrónomo: un rasguido por acorde alcanza; los de relleno no cuentan como error.")}</li>`;
+    const note = info.note ? tc(`charts.${info.id}.note`, info.note) : t("practice.chart_hint");
+    $("#log").innerHTML = `<li class="muted">${esc(note)}</li>`;
     loadPreview();
   } catch (e) { toast(e.message); }
 }
@@ -190,14 +159,14 @@ $("#pChartClear").addEventListener("click", () => {
   App.chart = null;
   $("#pChartBanner").hidden = true;
   $("#pSongField").hidden = false;
-  history.replaceState(null, "", "#/practicar");
+  history.replaceState(null, "", "#/practice");
   if (App.songs.length) onSongChange("p");
   else { App.lane = null; drawTab(); }
 });
 
 function refBody(prefix) {
   if (prefix === "p" && App.chart) {
-    return { cifrado: App.chart.id, start_bar: $("#pStart").value || null, end_bar: $("#pEnd").value || null,
+    return { chart: App.chart.id, start_bar: $("#pStart").value || null, end_bar: $("#pEnd").value || null,
              transpose: $("#pTranspose").value || 0 };
   }
   const tw = $(`#${prefix}TrackWrap`);
@@ -216,7 +185,7 @@ $("#pTrack").addEventListener("change", loadPreview);
 $("#pStart").addEventListener("change", loadPreview);
 $("#pEnd").addEventListener("change", loadPreview);
 
-// ------------------------------------------------------------------ vista previa (tab estática)
+// ------------------------------------------------------------------ preview (static tab)
 function groupEvents(notes) {
   const evs = [];
   for (const n of notes) {
@@ -231,7 +200,7 @@ function groupEvents(notes) {
 async function loadPreview() {
   if (App.live) return;
   const body = refBody("p");
-  if (!body.song && !body.cifrado) return;
+  if (!body.song && !body.chart) return;
   try {
     const pv = await api("/api/preview", { json: body });
     App.preview = pv;
@@ -239,12 +208,15 @@ async function loadPreview() {
     App.k = App.kSmooth = 0;
     App.snap = null;
     $("#nowNote").firstChild.textContent = App.lane.length ? App.lane[0].label : "—";
-    $("#nowWhere").textContent = `${pv.name}${pv.track ? " · " + pv.track : ""} · compases ${pv.first_bar}–${pv.last_bar} · ${App.lane.length} ${App.chart ? "acordes" : "notas"} · ♩=${pv.bpm}`;
+    const name = App.chart ? $("#pChartTitle").textContent : pv.name;
+    $("#nowWhere").textContent = [name + (pv.track ? " · " + pv.track : ""),
+      t("practice.bars_range", { from: pv.first_bar, to: pv.last_bar }),
+      t(App.chart ? "practice.n_chords" : "practice.n_notes", { count: App.lane.length }), `♩=${pv.bpm}`].join(" · ");
     drawTab();
   } catch (e) { toast(e.message); }
 }
 
-// ------------------------------------------------------------------ modo / opciones
+// ------------------------------------------------------------------ mode / options
 function setMode(m) {
   App.mode = m;
   $$("#pMode button").forEach(b => b.classList.toggle("active", b.dataset.mode === m));
@@ -258,15 +230,15 @@ $("#pTrainer").addEventListener("change", () => {
 });
 $("#pSavePreset").addEventListener("click", async () => {
   const b = refBody("p");
-  if (b.cifrado) return toast("Las opciones se recuerdan para archivos; los cifrados ya traen las suyas");
+  if (b.chart) return toast(t("practice.presets_files_only"));
   try {
     await api("/api/presets", { json: { ...b, mode: App.mode, speed: $("#pSpeed").value / 100 } });
     await loadSongs();
-    toast("Opciones guardadas para " + b.song, true);
+    toast(t("practice.preset_saved", { song: b.song }), true);
   } catch (e) { toast(e.message); }
 });
 
-// ------------------------------------------------------------------ práctica en vivo
+// ------------------------------------------------------------------ live practice
 let ws;
 function connectLive() {
   if (ws && ws.readyState <= 1) return;
@@ -283,7 +255,7 @@ function connectLive() {
 function setLive(on) {
   App.live = on;
   const b = $("#pStartBtn");
-  b.textContent = on ? "■  Parar" : "▶  Empezar";
+  b.textContent = on ? t("practice.stop") : t("practice.start");
   b.className = "btn big " + (on ? "danger" : "primary");
   $$("#practiceForm input, #practiceForm select, #practiceForm .seg button").forEach(el => (el.disabled = on));
   $("#devicePill").classList.toggle("live", on);
@@ -301,11 +273,10 @@ $("#pStartBtn").addEventListener("click", async () => {
     target: $("#pTarget").value, max_speed: $("#pMax").value, legato: $("#pLegato").checked,
     simulate: $("#pSimulate").value || null,
   };
-  if (!body.song && !body.cifrado) return toast("Elegí una canción primero");
+  if (!body.song && !body.chart) return toast(t("practice.pick_song_first"));
   try {
     $("#liveReport").hidden = true;
     $("#log").innerHTML = "";
-    App.logSeen = 0;
     connectLive();
     await api("/api/live/start", { json: body });
     setLive(true);
@@ -314,8 +285,8 @@ $("#pStartBtn").addEventListener("click", async () => {
 
 function msgClass(m) {
   if (!m) return "";
-  if (/^[✗∅+]/.test(m)) return "err";
-  if (/^↻/.test(m)) return "info";
+  if (msgIsError(m)) return "err";
+  if (m.code === "pass") return "info";
   return "ok";
 }
 
@@ -326,46 +297,41 @@ function onState(s) {
   App.k = s.k;
   const cur = s.lane.find(e => e.current) || s.lane[s.lane.length - 1];
   $("#nowNote").firstChild.textContent = cur ? cur.label : "✓";
-  $("#nowWhere").textContent = `compás ${s.bar} · tiempo ${s.beat.toFixed(2)} · nota ${Math.min(s.k + 1, s.total)}/${s.total}`;
+  $("#nowWhere").textContent = t("practice.position", { bar: s.bar, beat: s.beat.toFixed(2), k: Math.min(s.k + 1, s.total), total: s.total });
   const lm = $("#lastMsg");
-  lm.textContent = s.last || (s.mode === "tempo" ? "" : "Tocá la primera nota…");
+  lm.textContent = s.last ? msgText(s.last) : (s.mode === "tempo" ? "" : t("practice.play_first"));
   lm.className = "lastmsg " + msgClass(s.last);
-  // chips
   const st = s.stats;
   const chips = [];
-  if (st.pct != null) chips.push(`aciertos <b>${st.pct}%</b>`);
-  chips.push(`errores <b>${st.errors}</b>`);
-  if (st.extras) chips.push(`de más <b>${st.extras}</b>`);
-  chips.push(`<span class="mono">${esc(s.source)}</span>`);
-  $("#chips").innerHTML = chips.map(c => `<span class="chip">${c}</span>`).join("");
-  // velocidad / cuenta
+  if (st.pct != null) chips.push(t("practice.chip_hits", { pct: st.pct }));
+  chips.push(t("practice.chip_mistakes", { n: st.errors }));
+  if (st.extras) chips.push(t("practice.chip_extra", { n: st.extras }));
+  $("#chips").innerHTML = chips.map(c => `<span class="chip">${esc(c)}</span>`).join("") +
+    `<span class="chip"><span class="mono">${esc(s.source)}</span></span>`;
   $("#speedBadge").hidden = s.mode !== "tempo";
   $("#speedVal").textContent = Math.round(s.speed * 100) + "%";
   $("#countdown").hidden = !s.countdown;
   $("#countdown").textContent = s.countdown || "";
   $("#overlayMsg").hidden = !s.waiting_first;
-  $("#overlayMsg").textContent = "Arrancá cuando quieras: el tempo se sincroniza con tu primera nota";
-  // nivel
+  $("#overlayMsg").textContent = t("practice.waiting_first");
   const lv = Math.max(0, Math.min(1, (s.level_db + 60) / 60));
   $("#levelMeter > div").style.width = (lv * 100).toFixed(1) + "%";
   $("#levelMeter").classList.toggle("clip", s.peak >= 0.9);
   const lt = $("#levelTxt");
-  lt.textContent = s.clip ? "¡CLIPEA! bajá la ganancia" : `${Math.round(s.level_db)} dB`;
+  lt.textContent = s.clip ? t("practice.clipping") : `${Math.round(s.level_db)} dB`;
   lt.className = s.clip ? "err" : (s.level_db < s.gate_db && s.now > 1 ? "warn" : "");
   if (s.tuning != null) {
-    $("#tuneTxt").textContent = `${s.tuning > 0 ? "+" : ""}${Math.round(s.tuning)} cents` + (Math.abs(s.tuning) > 15 ? " — afiná" : "");
+    $("#tuneTxt").textContent = `${signed(s.tuning)} cents` + (Math.abs(s.tuning) > 15 ? ` — ${t("practice.tune_up")}` : "");
     $("#tuneTxt").className = Math.abs(s.tuning) > 15 ? "warn" : "";
     const tb = $("#tuneBar");
     const x = Math.max(-50, Math.min(50, s.tuning));
     tb.style.marginLeft = (50 + Math.min(0, x)) + "%";
     tb.style.width = Math.max(1, Math.abs(x)) + "%";
   }
-  // log
   if (s.log.length) {
-    $("#log").innerHTML = [...s.log].reverse().map(([t, m]) =>
-      `<li class="${msgClass(m)}"><span class="t">${t.toFixed(2)}s</span><span>${esc(m)}</span></li>`).join("");
+    $("#log").innerHTML = [...s.log].reverse().map(([tm, m]) =>
+      `<li class="${msgClass(m)}"><span class="t">${tm.toFixed(2)}s</span><span>${esc(msgText(m))}</span></li>`).join("");
   }
-  // vueltas
   renderPasses(s.passes);
 }
 
@@ -374,7 +340,7 @@ function renderPasses(passes) {
   $("#passes").innerHTML = passes.slice(-24).map((p, i) => {
     const cls = p.score >= 90 ? "" : p.score >= 65 ? "mid" : "low";
     const sp = p.speed ? `${Math.round(p.speed * 100)}%` : `#${i + 1}`;
-    return `<div class="bar ${cls}" style="height:${Math.max(4, p.score * 0.7)}px" title="${p.score}% ${p.speed ? "a " + sp : ""}"><span>${sp}</span></div>`;
+    return `<div class="bar ${cls}" style="height:${Math.max(4, p.score * 0.7)}px" title="${p.score}%${p.speed ? " @ " + sp : ""}"><span>${sp}</span></div>`;
   }).join("");
 }
 
@@ -382,7 +348,7 @@ function onReport(r) {
   setLive(false);
   if (r && r.award && App.rewarded !== r.date) {
     App.rewarded = r.date;
-    if (r.award.xp) toast(`+${r.award.xp} XP por practicar`, true);
+    if (r.award.xp) toast(t("practice.xp_practice", { xp: r.award.xp }), true);
     progressChanged();
   }
   const el = $("#liveReport");
@@ -392,7 +358,7 @@ function onReport(r) {
   el.scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
 
-// ------------------------------------------------------------------ dibujo de la tablatura
+// ------------------------------------------------------------------ tab drawing
 const cv = $("#tabCanvas");
 function drawTab() {
   const lane = App.lane;
@@ -405,7 +371,6 @@ function drawTab() {
   g.clearRect(0, 0, W, H);
   const top = 46, gap = 26, strings = 6;
   const colors = STATUS_COLOR();
-  // cuerdas
   g.strokeStyle = css("--gl-string");
   g.lineWidth = 1;
   g.font = "600 11px ui-monospace, Menlo, monospace";
@@ -420,13 +385,12 @@ function drawTab() {
     g.fillStyle = css("--muted");
     g.font = "14px system-ui";
     g.textAlign = "center";
-    g.fillText("La tablatura aparece acá", W / 2, top + 2.5 * gap + 5);
+    g.fillText(t("practice.tab_placeholder"), W / 2, top + 2.5 * gap + 5);
     g.textAlign = "left";
     return;
   }
   const spacing = Math.max(46, Math.min(80, W / 14));
   const cx = Math.min(W * 0.28, 260);
-  // cursor
   g.fillStyle = alpha(css("--gl-accent"), "22");
   g.fillRect(cx - spacing / 2 + 4, top - 30, spacing - 8, (strings - 1) * gap + 52);
   g.textAlign = "center";
@@ -434,7 +398,7 @@ function drawTab() {
     const x = cx + (e.i - App.kSmooth) * spacing;
     if (x < 20 || x > W + spacing) continue;
     const col = e.current ? css("--gl-accent") : colors[e.status] || colors.pending;
-    const tab = (e.tab || []).filter(t => t && t[0]);
+    const tab = (e.tab || []).filter(tb => tb && tb[0]);
     if (tab.length) {
       for (const [s, f] of tab) {
         const y = top + (s - 1) * gap;
@@ -444,7 +408,6 @@ function drawTab() {
         g.fillStyle = css("--gl-panel");
         g.fillRect(x - w / 2, y - 9, w, 18);
         g.fillStyle = col;
-        g.font = (e.current ? "800 " : "700 ") + "15px ui-monospace, Menlo, monospace";
         g.fillText(txt, x, y + 5);
       }
     } else {
@@ -452,15 +415,13 @@ function drawTab() {
       g.font = "700 13px system-ui";
       g.fillText(e.label, x, top + 2.5 * gap + 5);
     }
-    // nombre de la nota abajo
     g.font = "11px system-ui";
     g.fillStyle = e.current ? css("--text") : css("--muted");
     g.fillText(e.label.length > 9 ? e.label.slice(0, 8) + "…" : e.label, x, top + (strings - 1) * gap + 24);
-    // estado arriba
     if (e.status !== "pending") {
       g.fillStyle = col;
       g.font = "700 13px system-ui";
-      const extra = e.dt != null && Math.abs(e.dt) >= 15 ? ` ${e.dt > 0 ? "+" : ""}${e.dt}` : "";
+      const extra = e.dt != null && Math.abs(e.dt) >= 15 ? ` ${signed(e.dt)}` : "";
       g.fillText((ICON[e.status] || "") + extra, x, top - 16);
     }
   }
@@ -474,74 +435,75 @@ function animate() {
 }
 window.addEventListener("resize", () => { drawTab(); drawRoll(); });
 
-// ------------------------------------------------------------------ reportes (compartido)
-function stat(v, l, cls = "") { return `<div class="stat ${cls}"><div class="v">${v}</div><div class="l">${l}</div></div>`; }
+// ------------------------------------------------------------------ reports (shared)
+function stat(v, l, cls = "") { return `<div class="stat ${cls}"><div class="v">${esc(v)}</div><div class="l">${esc(l)}</div></div>`; }
 
 function renderReport(r) {
   const s = r.summary;
-  let html = "";
+  let html = `<h2>${esc(t("report.title"))}</h2><div class="summary">`;
   if (r.kind === "live") {
-    html += `<h2>Resultado</h2><div class="summary">`;
-    if (!s.judged) return html + `</div><p class="muted">No llegaste a tocar ninguna nota de la referencia.</p>`;
-    html += stat(s.score != null ? Math.round(s.score) : "—", "puntaje", s.score >= 85 ? "good" : s.score >= 60 ? "warn" : "bad");
-    html += stat(`${s.first_try}/${s.judged}`, `bien al primer intento (${fmtPct(s.first_try_pct)})`);
-    if (r.mode === "wait") html += stat(s.fixed, "corregidas tras error", s.fixed ? "warn" : "");
-    html += stat(s.wrong, "equivocadas", s.wrong ? "bad" : "good");
-    html += stat(s.missed, "salteadas / no sonaron", s.missed ? "bad" : "good");
+    if (!s.judged) return html + `</div><p class="muted">${esc(t("report.nothing_played"))}</p>`;
+    html += stat(s.score != null ? Math.round(s.score) : "—", t("report.score"), s.score >= 85 ? "good" : s.score >= 60 ? "warn" : "bad");
+    html += stat(`${s.first_try}/${s.judged}`, t("report.first_try", { pct: fmtPct(s.first_try_pct) }));
+    if (r.mode === "wait") html += stat(s.fixed, t("report.fixed"), s.fixed ? "warn" : "");
+    html += stat(s.wrong, t("report.wrong"), s.wrong ? "bad" : "good");
+    html += stat(s.missed, t("report.missed"), s.missed ? "bad" : "good");
     if (r.mode === "tempo") {
-      html += stat(s.extras, "notas de más", s.extras ? "warn" : "");
-      if (s.timing_mean_ms != null) html += stat(`${s.timing_mean_ms > 0 ? "+" : ""}${Math.round(s.timing_mean_ms)} ms`, `timing promedio (±${Math.round(s.timing_std_ms)})`, Math.abs(s.timing_mean_ms) > 30 ? "warn" : "good");
+      html += stat(s.extras, t("report.extra_notes"), s.extras ? "warn" : "");
+      if (s.timing_mean_ms != null) html += stat(`${signed(s.timing_mean_ms)} ms`, t("report.avg_timing", { std: Math.round(s.timing_std_ms) }), Math.abs(s.timing_mean_ms) > 30 ? "warn" : "good");
     }
-    if (s.tuning_cents != null && Math.abs(s.tuning_cents) > 15) html += stat(`${s.tuning_cents > 0 ? "+" : ""}${Math.round(s.tuning_cents)}¢`, "afinación: conviene afinar", "warn");
+    if (s.tuning_cents != null && Math.abs(s.tuning_cents) > 15) html += stat(`${signed(s.tuning_cents)}¢`, t("report.tune"), "warn");
     html += `</div>`;
-    if (r.passes && r.passes.length > 1) html += `<p class="muted">Vueltas: ${r.passes.map(p => `${Math.round(p.score)}%${p.speed ? " @" + Math.round(p.speed * 100) + "%" : ""}`).join(" · ")}</p>`;
+    if (r.passes && r.passes.length > 1) html += `<p class="muted">${esc(t("report.passes"))}: ${r.passes.map(p => `${Math.round(p.score)}%${p.speed ? " @" + Math.round(p.speed * 100) + "%" : ""}`).join(" · ")}</p>`;
   } else {
-    html += `<h2>Resultado</h2><div class="summary">`;
-    html += stat(Math.round(s.score), "puntaje", s.score >= 85 ? "good" : s.score >= 60 ? "warn" : "bad");
-    html += stat(`${s.correct}/${s.ref_notes}`, `correctas (${fmtPct(s.correct_pct)})`);
-    html += stat(s.wrong, "nota equivocada", s.wrong ? "bad" : "good");
-    html += stat(s.missing, "faltantes", s.missing ? "bad" : "good");
-    html += stat(s.extra, "de más", s.extra ? "warn" : "");
-    html += stat(s.timing_loose, "con timing flojo", s.timing_loose ? "warn" : "good");
-    html += stat(`${Math.round(100 * s.tempo_ratio)}%`, "tu tempo vs referencia");
-    if (s.timing_mean_ms != null) html += stat(`${s.timing_mean_ms > 0 ? "+" : ""}${Math.round(s.timing_mean_ms)} ms`, Math.abs(s.timing_mean_ms) < 15 ? "a tiempo" : s.timing_mean_ms > 0 ? "tendés a ir atrás" : "tendés a apurarte");
+    html += stat(Math.round(s.score), t("report.score"), s.score >= 85 ? "good" : s.score >= 60 ? "warn" : "bad");
+    html += stat(`${s.correct}/${s.ref_notes}`, t("report.correct", { pct: fmtPct(s.correct_pct) }));
+    html += stat(s.wrong, t("report.wrong_note"), s.wrong ? "bad" : "good");
+    html += stat(s.missing, t("report.missing"), s.missing ? "bad" : "good");
+    html += stat(s.extra, t("report.extra"), s.extra ? "warn" : "");
+    html += stat(s.timing_loose, t("report.loose_timing"), s.timing_loose ? "warn" : "good");
+    html += stat(`${Math.round(100 * s.tempo_ratio)}%`, t("report.tempo_ratio"));
+    if (s.timing_mean_ms != null) html += stat(`${signed(s.timing_mean_ms)} ms`,
+      Math.abs(s.timing_mean_ms) < 15 ? t("timing.on_time") : t(s.timing_mean_ms > 0 ? "report.drag" : "report.rush"));
     html += `</div>`;
-    if (s.masked) html += `<p class="muted">+${s.masked} octavas de acorde no detectables, ignoradas.</p>`;
+    if (s.masked) html += `<p class="muted">${esc(t("report.masked", { n: s.masked }))}</p>`;
   }
-  if (r.messages && r.messages.length) html += r.messages.map(m => `<p class="callout">${esc(m)}</p>`).join("");
-  // mapa de compases
+  if (r.transpose_suggestion) html += `<p class="callout">${esc(t("report.transpose_hint", { k: r.transpose_suggestion }))}</p>`;
   if (r.bars && r.bars.length) {
-    html += `<h3>Por compás</h3><div class="heat">` + r.bars.map(b => {
+    html += `<h3>${esc(t("report.per_bar"))}</h3><div class="heat">` + r.bars.map(b => {
       const rate = b.notes ? (b.errors + 0.5 * b.timing) / b.notes : 0;
       const col = rate === 0 ? css("--gl-ok") : rate < 0.25 ? css("--gl-warn") : css("--gl-err");
-      return `<div data-bar="${b.bar}" title="compás ${b.bar}: ${b.errors} errores, ${b.timing} de timing" style="background:${alpha(col, rate === 0 ? "33" : "88")};color:var(--text)">${b.bar}</div>`;
+      return `<div data-bar="${b.bar}" title="${esc(t("report.bar_tooltip", { bar: b.bar, errors: b.errors, timing: b.timing }))}" style="background:${alpha(col, rate === 0 ? "33" : "88")};color:var(--text)">${b.bar}</div>`;
     }).join("") + `</div>`;
     const worst = [...r.bars].map(b => ({ ...b, rate: b.notes ? (b.errors + 0.5 * b.timing) / b.notes : 0 }))
       .filter(b => b.rate > 0).sort((a, b) => b.rate - a.rate).slice(0, 2);
     if (worst.length) {
       const a = Math.min(...worst.map(w => w.bar)), z = Math.max(...worst.map(w => w.bar));
-      html += `<div class="callout" style="margin-top:12px"><span>Lo más flojo: <b>compás ${worst.map(w => w.bar).join(" y ")}</b>.</span>
-        <button class="btn primary small" data-practice="${a}-${z}">Practicar compases ${a}–${z} con el entrenador</button></div>`;
+      html += `<div class="callout" style="margin-top:12px"><span>${t("report.weakest_html", { bars: worst.map(w => w.bar).join(" & ") })}</span>
+        <button class="btn primary small" data-practice="${a}-${z}">${esc(t("report.practice_bars", { from: a, to: z }))}</button></div>`;
     }
   }
   if (r.issues && r.issues.length) {
-    html += `<h3>Detalle (${r.issues.length})</h3><table class="issues">` + r.issues.map(it =>
-      `<tr class="t-${it.type}" data-t="${it.t}"><td class="ico">${ICON[it.type] || "·"}</td><td class="muted mono" style="white-space:nowrap">c.${it.bar} t.${it.beat.toFixed(2)}</td><td>${esc(it.msg.replace(/^[✗∅+⏱↕]\s+/, ""))}</td></tr>`).join("") + `</table>`;
-  } else html += `<p style="color:var(--gl-ok);font-weight:600;margin-top:14px">¡Sin errores! 🎉</p>`;
+    html += `<h3>${esc(t("report.details", { n: r.issues.length }))}</h3><table class="issues">` + r.issues.map(it =>
+      `<tr class="t-${it.type}" data-t="${it.t}"><td class="ico">${ICON[it.type] || "·"}</td><td class="muted mono" style="white-space:nowrap">${esc(t("report.where", { bar: it.bar, beat: it.beat.toFixed(2) }))}</td><td>${esc(issueText(it))}</td></tr>`).join("") + `</table>`;
+  } else html += `<p style="color:var(--gl-ok);font-weight:600;margin-top:14px">${esc(t("report.no_mistakes"))}</p>`;
   if (r.take && r.kind === "live") {
     const name = r.take.split("/").pop();
-    html += `<div class="callout" style="margin-top:14px"><span>Tu toma quedó grabada.</span><button class="btn small" data-analyze="${esc(name)}">Analizarla en detalle</button></div>
+    html += `<div class="callout" style="margin-top:14px"><span>${esc(t("report.take_saved"))}</span><button class="btn small" data-analyze="${esc(name)}">${esc(t("report.analyze_take"))}</button></div>
       <audio controls src="/takes/${encodeURIComponent(name)}"></audio>`;
   }
   return html;
+}
+
+function refOf(r) {
+  return r.reference && r.reference.path ? r.reference.path.split("/").pop() : $("#pSong").value;
 }
 
 function bindReport(el, r) {
   const p = $("[data-practice]", el);
   if (p) p.onclick = () => {
     const [a, z] = p.dataset.practice.split("-");
-    const song = r.reference && r.reference.path ? r.reference.path.split("/").pop() : $("#pSong").value;
-    practiceBars(song, +a, +z);
+    practiceBars(refOf(r), +a, +z);
   };
   const an = $("[data-analyze]", el);
   if (an) an.onclick = async () => {
@@ -553,16 +515,13 @@ function bindReport(el, r) {
     $("#aEnd").value = $("#pEnd").value;
     runAnalysis();
   };
-  $$(".heat div", el).forEach(d => d.onclick = () => {
-    const song = r.reference && r.reference.path ? r.reference.path.split("/").pop() : $("#pSong").value;
-    practiceBars(song, +d.dataset.bar, +d.dataset.bar);
-  });
+  $$(".heat div", el).forEach(d => d.onclick = () => practiceBars(refOf(r), +d.dataset.bar, +d.dataset.bar));
   $$(".issues tr", el).forEach(tr => tr.onclick = () => { if (App.roll) scrollRollTo(+tr.dataset.t); });
 }
 
 async function practiceBars(song, a, z) {
   show("practice");
-  if (song && song.startsWith("cifrado:")) await useSongChart(song.slice("cifrado:".length));
+  if (song && song.startsWith("chart:")) await useChart(song.slice("chart:".length));
   else if (song && App.songs.some(s => s.name === song)) { $("#pSong").value = song; await loadTracks("p"); }
   $("#pStart").value = Math.max(1, a);
   $("#pEnd").value = z;
@@ -570,18 +529,18 @@ async function practiceBars(song, a, z) {
   $("#pSpeed").value = 70; $("#pSpeedVal").textContent = "70%";
   $("#pTrainer").checked = true; $("#trainerOpts").hidden = false; $("#pLoop").checked = true;
   await loadPreview();
-  toast(`Listo: compases ${a}–${z} al 70% con el entrenador. Apretá Empezar.`, true);
+  toast(t("practice.bars_ready", { from: a, to: z }), true);
 }
 
-// ------------------------------------------------------------------ analizar toma
+// ------------------------------------------------------------------ analyze a take
 async function loadTakes(select) {
   try { App.takes = await api("/api/takes"); } catch { App.takes = []; }
-  const opts = App.takes.map(t => `<option value="${esc(t.name)}">${esc(t.name)}</option>`).join("");
+  const opts = App.takes.map(tk => `<option value="${esc(tk.name)}">${esc(tk.name)}</option>`).join("");
   const cur = select || $("#aTake").value;
-  $("#aTake").innerHTML = opts || `<option value="">(no hay tomas grabadas)</option>`;
-  if (cur && App.takes.some(t => t.name === cur)) $("#aTake").value = cur;
+  $("#aTake").innerHTML = opts || `<option value="">${esc(t("analyze.no_takes"))}</option>`;
+  if (cur && App.takes.some(tk => tk.name === cur)) $("#aTake").value = cur;
   const simCur = $("#pSimulate").value;
-  $("#pSimulate").innerHTML = `<option value="">— no, usar la guitarra —</option>` + opts;
+  $("#pSimulate").innerHTML = `<option value="">${esc(t("practice.use_guitar"))}</option>` + opts;
   if (simCur) $("#pSimulate").value = simCur;
 }
 
@@ -589,27 +548,27 @@ $("#aRun").addEventListener("click", runAnalysis);
 async function runAnalysis() {
   const body = { ...refBody("a"), take: $("#aTake").value, timing_tol_ms: $("#aTol").value };
   const up = $("#aTakeUpload").files[0];
-  if (!body.song) return toast("Elegí la referencia");
-  if (!body.take && !up) return toast("Elegí o subí tu toma");
+  if (!body.song) return toast(t("analyze.pick_reference"));
+  if (!body.take && !up) return toast(t("analyze.pick_take"));
   const fd = new FormData();
   fd.append("options", JSON.stringify(body));
   if (up) fd.append("take", up);
   const btn = $("#aRun");
   btn.disabled = true;
-  btn.innerHTML = `<span class="spinner"></span> Transcribiendo…`;
-  $("#aResult").innerHTML = `<div class="panel empty"><span class="spinner"></span> Escuchando tu toma (basic-pitch). La primera vez tarda unos segundos; después queda en caché.</div>`;
+  btn.innerHTML = `<span class="spinner"></span> ${esc(t("analyze.transcribing"))}`;
+  $("#aResult").innerHTML = `<div class="panel empty"><span class="spinner"></span> ${esc(t("analyze.listening"))}</div>`;
   try {
     const r = await api("/api/analyze", { method: "POST", body: fd });
     $("#aTakeUpload").value = "";
     await loadTakes(r.take_name);
     renderAnalysis(r);
-    if (r.award && r.award.xp) toast(`+${r.award.xp} XP por analizar tu toma`, true);
+    if (r.award && r.award.xp) toast(t("analyze.xp", { xp: r.award.xp }), true);
     progressChanged();
   } catch (e) {
     $("#aResult").innerHTML = `<div class="panel empty">${esc(e.message)}</div>`;
   } finally {
     btn.disabled = false;
-    btn.textContent = "Analizar";
+    btn.textContent = t("analyze.run");
   }
 }
 
@@ -618,15 +577,15 @@ function renderAnalysis(r) {
   $("#aResult").innerHTML = `
     <div class="panel" id="aReport"></div>
     <div class="panel">
-      <div class="row" style="align-items:center"><h2 style="margin:0">Referencia vs. lo que tocaste</h2>
-        <label style="flex:none;display:flex;gap:8px;align-items:center" class="muted">zoom <input type="range" id="rollZoom" min="40" max="400" value="120" style="width:120px"></label></div>
+      <div class="row" style="align-items:center"><h2 style="margin:0">${esc(t("analyze.roll_title"))}</h2>
+        <label style="flex:none;display:flex;gap:8px;align-items:center" class="muted">${esc(t("analyze.zoom"))} <input type="range" id="rollZoom" min="40" max="400" value="120" style="width:120px"></label></div>
       <div class="legend">
-        <span><i style="border:1.5px solid var(--muted)"></i>referencia</span>
-        <span><i style="background:var(--gl-ok)"></i>bien</span>
-        <span><i style="background:var(--gl-warn)"></i>timing</span>
-        <span><i style="background:var(--gl-err)"></i>nota equivocada / faltante</span>
-        <span><i style="background:var(--gl-octave)"></i>otra octava</span>
-        <span><i style="background:var(--gl-info)"></i>de más</span>
+        <span><i style="border:1.5px solid var(--muted)"></i>${esc(t("analyze.legend_reference"))}</span>
+        <span><i style="background:var(--gl-ok)"></i>${esc(t("analyze.legend_ok"))}</span>
+        <span><i style="background:var(--gl-warn)"></i>${esc(t("analyze.legend_timing"))}</span>
+        <span><i style="background:var(--gl-err)"></i>${esc(t("analyze.legend_wrong"))}</span>
+        <span><i style="background:var(--gl-octave)"></i>${esc(t("analyze.legend_octave"))}</span>
+        <span><i style="background:var(--gl-info)"></i>${esc(t("analyze.legend_extra"))}</span>
       </div>
       <div class="rollwrap" id="rollWrap"><canvas id="rollCanvas"></canvas></div>
       ${r.take_name ? `<audio controls src="/takes/${encodeURIComponent(r.take_name)}"></audio>` : ""}
@@ -642,7 +601,7 @@ function drawRoll() {
   const r = App.roll;
   const c = $("#rollCanvas");
   if (!r || !c) return;
-  const pps = +$("#rollZoom").value;   // píxeles por segundo
+  const pps = +$("#rollZoom").value;   // pixels per second
   const all = [...r.roll.ref, ...r.roll.user];
   const tEnd = Math.max(...all.map(n => n[1])) + 0.5;
   const pMin = Math.min(...all.map(n => n[2])) - 2, pMax = Math.max(...all.map(n => n[2])) + 2;
@@ -652,69 +611,66 @@ function drawRoll() {
   c.width = W * dpr; c.height = H * dpr; c.style.width = W + "px"; c.style.height = H + "px";
   const g = c.getContext("2d");
   g.setTransform(dpr, 0, 0, dpr, 0, 0);
-  const X = t => left + t * pps, Y = p => 22 + (pMax - p) * rowH;
+  const X = tm => left + tm * pps, Y = p => 22 + (pMax - p) * rowH;
   const col = STATUS_COLOR();
-  // filas de notas
   g.font = "10px ui-monospace, Menlo, monospace";
   for (let p = pMin; p <= pMax; p++) {
     if ([1, 3, 6, 8, 10].includes(((p % 12) + 12) % 12)) { g.fillStyle = css("--gl-panel"); g.fillRect(left, Y(p), W - left, rowH); }
     if (p % 12 === 0 || p % 12 === 4 || p % 12 === 9) { g.fillStyle = css("--muted"); g.fillText(noteName(p), 4, Y(p) + rowH - 2); }
   }
-  // compases
   g.strokeStyle = css("--border");
   g.fillStyle = css("--muted");
-  (r.downbeats || []).forEach((t, i) => {
-    g.beginPath(); g.moveTo(X(t), 14); g.lineTo(X(t), H); g.stroke();
-    if (pps * ((r.downbeats[1] || t + 1) - (r.downbeats[0] || 0)) > 24 || i % 4 === 0) g.fillText(String(i + 1), X(t) + 3, 11);
+  (r.downbeats || []).forEach((tm, i) => {
+    g.beginPath(); g.moveTo(X(tm), 14); g.lineTo(X(tm), H); g.stroke();
+    if (pps * ((r.downbeats[1] || tm + 1) - (r.downbeats[0] || 0)) > 24 || i % 4 === 0) g.fillText(String(i + 1), X(tm) + 3, 11);
   });
-  // referencia (contorno)
-  for (const [s, e, p, st] of r.roll.ref) {
+  for (const [s, e, p, st] of r.roll.ref) {        // reference (outline)
     g.strokeStyle = st === "missing" ? col.missing : css("--muted");
     g.lineWidth = st === "missing" ? 2 : 1.2;
     g.setLineDash(st === "missing" ? [3, 2] : []);
     g.strokeRect(X(s), Y(p) + 0.5, Math.max(3, (e - s) * pps), rowH - 1);
   }
   g.setLineDash([]);
-  // lo tuyo (relleno)
-  for (const [s, e, p, st] of r.roll.user) {
+  for (const [s, e, p, st] of r.roll.user) {       // what you played (filled)
     g.fillStyle = alpha(col[st] || col.ok, "cc");
     g.fillRect(X(s), Y(p) + 2, Math.max(3, (e - s) * pps), rowH - 4);
   }
 }
 
-function scrollRollTo(t) {
+function scrollRollTo(tm) {
   const w = $("#rollWrap");
   if (!w) return;
   const pps = +$("#rollZoom").value;
-  w.scrollTo({ left: Math.max(0, 44 + t * pps - w.clientWidth / 3), behavior: "smooth" });
+  w.scrollTo({ left: Math.max(0, 44 + tm * pps - w.clientWidth / 3), behavior: "smooth" });
 }
 
-// ------------------------------------------------------------------ afinador
+// ------------------------------------------------------------------ tuner
 let tws = null;
-const STD = [[64, "1ra", "E4"], [59, "2da", "B3"], [55, "3ra", "G3"], [50, "4ta", "D3"], [45, "5ta", "A2"], [40, "6ta", "E2"]];
+const STD = [[64, 1, "E4"], [59, 2, "B3"], [55, 3, "G3"], [50, 4, "D3"], [45, 5, "A2"], [40, 6, "E2"]];
 function initTuner() {
-  $("#tStrings").innerHTML = STD.slice().reverse().map(([m, n, l]) => `<div data-m="${m}"><b>${l}</b><small>${n}</small></div>`).join("");
+  $("#tStrings").innerHTML = STD.slice().reverse().map(([m, n, l]) =>
+    `<div data-m="${m}"><b>${l}</b><small>${esc(t("tuner.string_n", { n }))}</small></div>`).join("");
   let ticks = "";
   for (let c = -50; c <= 50; c += 10) {
     const a = (c / 50) * (Math.PI / 2) * 0.98;
-    const x1 = 200 + Math.sin(a) * 150, y1 = 200 - Math.cos(a) * 150, x2 = 200 + Math.sin(a) * (c % 50 === 0 || c === 0 ? 132 : 140), y2 = 200 - Math.cos(a) * (c % 50 === 0 || c === 0 ? 132 : 140);
-    ticks += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="var(--muted)" stroke-width="2"/>`;
+    const len = c % 50 === 0 || c === 0 ? 132 : 140;
+    ticks += `<line x1="${200 + Math.sin(a) * 150}" y1="${200 - Math.cos(a) * 150}" x2="${200 + Math.sin(a) * len}" y2="${200 - Math.cos(a) * len}" stroke="var(--muted)" stroke-width="2"/>`;
   }
   $("#ticks").innerHTML = ticks;
 }
 $("#tStart").addEventListener("click", () => (tws ? stopTuner() : startTuner()));
 function startTuner() {
-  if (App.live) return toast("Pará la práctica para usar el afinador");
+  if (App.live) return toast(t("tuner.stop_practice"));
   tws = new WebSocket(`ws://${location.host}/ws/tuner`);
-  $("#tStart").textContent = "Apagar afinador";
+  $("#tStart").textContent = t("tuner.stop");
   tws.onmessage = ev => {
     const r = JSON.parse(ev.data);
-    if (r.error) { toast(r.error); stopTuner(); return; }
-    if (r.source) { $("#tSource").textContent = "entrada: " + r.source; return; }
+    if (r.error) { toast(t(`errors.${r.error.code}`, { defaultValue: r.error.message })); stopTuner(); return; }
+    if (r.source) { $("#tSource").textContent = t("tuner.input", { name: r.source }); return; }
     const note = $("#tNote");
     if (!r.note) {
       note.textContent = "—"; note.className = "note";
-      $("#tCents").textContent = r.level_db < -55 ? "Tocá una cuerda al aire" : "…";
+      $("#tCents").textContent = r.level_db < -55 ? t("tuner.play_open") : "…";
       $("#needle").style.transform = "rotate(0deg)";
       $$("#tStrings div").forEach(d => d.className = "");
       return;
@@ -722,23 +678,24 @@ function startTuner() {
     const cents = r.string_cents != null ? r.string_cents : r.cents;
     const ok = Math.abs(cents) <= 5;
     note.textContent = r.note; note.className = "note" + (ok ? " ok" : "");
-    $("#tCents").textContent = `${cents > 0 ? "+" : ""}${cents.toFixed(1)} cents · ${r.freq.toFixed(1)} Hz` + (r.string ? ` · cuerda ${r.string}: ${ok ? "✓ afinada" : cents < 0 ? "subí" : "bajá"}` : "");
-    const deg = Math.max(-50, Math.min(50, cents)) / 50 * 88;
-    $("#needle").style.transform = `rotate(${deg}deg)`;
+    let line = `${cents > 0 ? "+" : ""}${cents.toFixed(1)} cents · ${r.freq.toFixed(1)} Hz`;
+    if (r.string) line += ` · ${t("tuner.string_status", { n: r.string, status: t(ok ? "tuner.in_tune" : cents < 0 ? "tuner.tune_up" : "tuner.tune_down") })}`;
+    $("#tCents").textContent = line;
+    $("#needle").style.transform = `rotate(${Math.max(-50, Math.min(50, cents)) / 50 * 88}deg)`;
     const near = STD.reduce((a, b) => Math.abs(b[0] - r.midi) < Math.abs(a[0] - r.midi) ? b : a);
     $$("#tStrings div").forEach(d => d.className = +d.dataset.m === near[0] && Math.abs(near[0] - r.midi) < 0.75 ? (ok ? "ok" : "on") : "");
   };
-  tws.onclose = () => { tws = null; $("#tStart").textContent = "Encender afinador"; };
+  tws.onclose = () => { tws = null; $("#tStart").textContent = t("tuner.start"); };
 }
-function stopTuner() { if (tws) { tws.close(); tws = null; } $("#tStart").textContent = "Encender afinador"; }
+function stopTuner() { if (tws) { tws.close(); tws = null; } $("#tStart").textContent = t("tuner.start"); }
 
-// ------------------------------------------------------------------ historial
+// ------------------------------------------------------------------ history
 async function loadHistory() {
   const songs = await api("/api/history");
   const el = $("#hSongs");
-  if (!songs.length) { el.innerHTML = `<p class="muted">Todavía no hay sesiones guardadas. Se guardan solas cuando practicás o analizás una toma.</p>`; return; }
+  if (!songs.length) { el.innerHTML = `<p class="muted">${esc(t("history.empty"))}</p>`; return; }
   el.innerHTML = songs.map(s => `<button data-id="${esc(s.id)}"><b>${esc(s.name)}</b>${s.track ? ` <span class="muted">· ${esc(s.track)}</span>` : ""}
-     <small>${s.sessions} sesiones · última ${esc((s.last_date || "").slice(0, 10))} · ${fmtPct(s.last_score)}</small></button>`).join("");
+     <small>${esc(t("history.song_meta", { count: s.sessions, date: (s.last_date || "").slice(0, 10), score: fmtPct(s.last_score) }))}</small></button>`).join("");
   $$("button", el).forEach(b => b.onclick = () => {
     $$("button", el).forEach(x => x.classList.toggle("active", x === b));
     loadSongHistory(b.dataset.id);
@@ -749,18 +706,18 @@ async function loadSongHistory(id) {
   const h = await api(`/api/history/${encodeURIComponent(id)}`);
   const ss = h.sessions;
   const pb = h.problem_bars;
-  let html = `<div class="panel"><h2>${esc(h.reference.name || id)} — progreso</h2><svg id="histChart" viewBox="0 0 800 220" preserveAspectRatio="none"></svg>
-    <div class="legend"><span><i style="background:var(--gl-accent)"></i>puntaje</span><span><i style="background:var(--gl-info)"></i>velocidad (modo tempo)</span></div></div>`;
+  let html = `<div class="panel"><h2>${esc(t("history.progress_of", { name: h.reference.name || id }))}</h2><svg id="histChart" viewBox="0 0 800 220" preserveAspectRatio="none"></svg>
+    <div class="legend"><span><i style="background:var(--gl-accent)"></i>${esc(t("report.score"))}</span><span><i style="background:var(--gl-info)"></i>${esc(t("history.speed_legend"))}</span></div></div>`;
   if (pb.length) {
     const a = Math.min(...pb.slice(0, 2).map(b => b.bar)), z = Math.max(...pb.slice(0, 2).map(b => b.bar));
-    html += `<div class="panel"><h2>Compases más flojos</h2><div class="summary">` +
-      pb.map(b => stat(`c. ${b.bar}`, `${Math.round(100 * b.rate)}% de error`, b.rate > 0.3 ? "bad" : "warn")).join("") +
-      `</div>${h.song ? `<div class="callout" style="margin-top:12px"><span>Practicalos lento y que el entrenador vaya subiendo la velocidad.</span><button class="btn primary small" id="hPractice">Practicar compases ${a}–${z}</button></div>` : ""}</div>`;
+    html += `<div class="panel"><h2>${esc(t("history.weakest"))}</h2><div class="summary">` +
+      pb.map(b => stat(t("history.bar_n", { n: b.bar }), t("history.error_rate", { pct: Math.round(100 * b.rate) }), b.rate > 0.3 ? "bad" : "warn")).join("") +
+      `</div>${h.song ? `<div class="callout" style="margin-top:12px"><span>${esc(t("history.practice_hint"))}</span><button class="btn primary small" id="hPractice">${esc(t("history.practice_bars", { from: a, to: z }))}</button></div>` : ""}</div>`;
     App.histPractice = [h.song, a, z];
   }
-  html += `<div class="panel"><h2>Sesiones</h2><table class="sessions"><tr><th>Fecha</th><th>Tipo</th><th>Compases</th><th>Velocidad</th><th>Puntaje</th></tr>` +
-    ss.slice().reverse().map(s => `<tr><td>${esc((s.date || "").replace("T", " ").slice(0, 16))}</td><td>${s.kind === "file" ? "toma" : (s.mode === "tempo" ? "tempo" : "espera")}</td>
-      <td>${s.section ? `${s.section.start_bar || 1}–${s.section.end_bar || "fin"}` : "todo"}</td>
+  html += `<div class="panel"><h2>${esc(t("history.sessions"))}</h2><table class="sessions"><tr><th>${esc(t("history.col_date"))}</th><th>${esc(t("history.col_kind"))}</th><th>${esc(t("history.col_bars"))}</th><th>${esc(t("history.col_speed"))}</th><th>${esc(t("history.col_score"))}</th></tr>` +
+    ss.slice().reverse().map(s => `<tr><td>${esc((s.date || "").replace("T", " ").slice(0, 16))}</td><td>${esc(t(s.kind === "file" ? "history.kind_take" : s.mode === "tempo" ? "history.kind_tempo" : "history.kind_wait"))}</td>
+      <td>${esc(s.section ? `${s.section.start_bar || 1}–${s.section.end_bar || t("practice.end")}` : t("history.all"))}</td>
       <td>${typeof s.speed === "number" && s.kind !== "file" ? Math.round(s.speed * 100) + "%" : "—"}</td><td><b>${fmtPct(s.score)}</b></td></tr>`).join("") + `</table></div>`;
   $("#hDetail").innerHTML = html;
   const btn = $("#hPractice");
@@ -783,27 +740,27 @@ function drawHistChart(ss) {
   svg.innerHTML = out;
 }
 
-// ------------------------------------------------------------------ ajustes
+// ------------------------------------------------------------------ settings
 async function loadSettings() {
   const [dv, cfg] = await Promise.all([api("/api/devices"), api("/api/config")]);
   if (dv.error) toast(dv.error);
   const a = cfg.audio;
-  $("#sDevice").innerHTML = dv.inputs.map(d => `<option value="${d.index}">${d.index}. ${esc(d.name)} (${d.channels} canales)${d.index === dv.suggested ? " — parece tu interfaz" : ""}</option>`).join("");
+  $("#sDevice").innerHTML = dv.inputs.map(d => `<option value="${d.index}">${d.index}. ${esc(d.name)} (${esc(t("settings.n_channels", { count: d.channels }))})${d.index === dv.suggested ? " — " + esc(t("settings.looks_like_interface")) : ""}</option>`).join("");
   if (a.device != null) $("#sDevice").value = typeof a.device === "number" ? a.device : (dv.inputs.find(d => d.name === a.device) || {}).index;
-  $("#sOutput").innerHTML = `<option value="">(la del sistema)</option>` + dv.outputs.map(d => `<option value="${d.index}">${d.index}. ${esc(d.name)}</option>`).join("");
+  $("#sOutput").innerHTML = `<option value="">${esc(t("settings.system_output"))}</option>` + dv.outputs.map(d => `<option value="${d.index}">${d.index}. ${esc(d.name)}</option>`).join("");
   $("#sOutput").value = a.output_device ?? "";
   $("#sChannel").value = a.channel || 1;
   $("#sGate").value = a.gate_db ?? -50; $("#sGateVal").textContent = $("#sGate").value + " dB";
   $("#sSens").value = a.sensitivity ?? 1; $("#sSensVal").textContent = (+$("#sSens").value).toFixed(1);
   $("#sLatency").value = a.latency_ms ?? 0;
-  $("#sPath").textContent = "Se guarda en " + cfg.path;
+  $("#sPath").textContent = t("settings.saved_in", { path: cfg.path });
 }
 $("#sGate").addEventListener("input", () => ($("#sGateVal").textContent = $("#sGate").value + " dB"));
 $("#sSens").addEventListener("input", () => ($("#sSensVal").textContent = (+$("#sSens").value).toFixed(1)));
 $("#sSave").addEventListener("click", async () => {
   try {
     await api("/api/config", { json: { device: $("#sDevice").value, channel: $("#sChannel").value, output_device: $("#sOutput").value, gate_db: $("#sGate").value, sensitivity: $("#sSens").value, latency_ms: $("#sLatency").value } });
-    toast("Ajustes guardados", true);
+    toast(t("settings.saved"), true);
     refreshDevicePill();
   } catch (e) { toast(e.message); }
 });
@@ -814,12 +771,16 @@ $("#cStart").addEventListener("click", async () => {
     const poll = setInterval(async () => {
       const s = await api("/api/calibrate");
       if (s.running) {
-        $("#cStatus").innerHTML = s.warmup ? `<span class="muted">Agarrá el pulso… ${s.beat}/${s.total}</span>` : `<b style="color:var(--gl-accent)">¡Tocá con cada click! ${s.beat}/${s.total}</b>`;
+        $("#cStatus").innerHTML = s.warmup
+          ? `<span class="muted">${esc(t("settings.cal_pulse", { beat: s.beat, total: s.total }))}</span>`
+          : `<b style="color:var(--gl-accent)">${esc(t("settings.cal_play", { beat: s.beat, total: s.total }))}</b>`;
       } else {
         clearInterval(poll);
         $("#cStart").disabled = false;
         const r = s.result || {};
-        $("#cStatus").innerHTML = r.ok ? `<b style="color:var(--gl-ok)">✓ ${esc(r.message)}</b> — guardada.` : `<span style="color:var(--gl-err)">${esc(r.message || "Falló la calibración")}</span>`;
+        $("#cStatus").innerHTML = r.ok
+          ? `<b style="color:var(--gl-ok)">✓ ${esc(t("settings.cal_ok", { ms: Math.round(r.latency_ms), spread: Math.round(r.spread_ms), hits: r.hits }))}</b>`
+          : `<span style="color:var(--gl-err)">${esc(r.code === "too_few_hits" ? t("settings.cal_few_hits") : (r.message || t("settings.cal_failed")))}</span>`;
         if (r.ok) $("#sLatency").value = r.latency_ms;
       }
     }, 150);
@@ -831,11 +792,11 @@ async function refreshDevicePill() {
     const [dv, cfg] = await Promise.all([api("/api/devices"), api("/api/config")]);
     const a = cfg.audio;
     const d = dv.inputs.find(x => x.index === a.device || x.name === a.device);
-    $("#deviceName").textContent = d ? `${d.name} · canal ${a.channel || 1}` : "entrada por defecto del sistema";
-  } catch { $("#deviceName").textContent = "audio no disponible"; }
+    $("#deviceName").textContent = d ? t("settings.device_pill", { name: d.name, ch: a.channel || 1 }) : t("settings.default_input");
+  } catch { $("#deviceName").textContent = t("settings.no_audio"); }
 }
 
-// ------------------------------------------------------------------ inicio
+// ------------------------------------------------------------------ startup
 (async function init() {
   initTuner();
   animate();
@@ -843,10 +804,10 @@ async function refreshDevicePill() {
   await loadTakes();
   await loadSongs();
   if (App.songs.length) { await onSongChange("p"); await onSongChange("a"); }
-  // si había una sesión corriendo (recargaste la página), reengancharse
-  try {
+  try {   // a session was running (you reloaded the page): reattach
     const st = await api("/api/live/state");
     if (st.active && st.state.running) { setLive(true); connectLive(); }
-  } catch { }
+  } catch { /* no server */ }
   drawTab();
 })();
+

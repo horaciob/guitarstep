@@ -1,17 +1,17 @@
-"""guitarr: te escucha tocar la guitarra y te dice qué erraste.
+"""guitarr: listens to you play guitar and tells you what you got wrong.
 
-    guitarr gui                          # interfaz gráfica (en el navegador)
-    guitarr live REFERENCIA [opciones]   # en vivo, guitarra enchufada
-    guitarr file REFERENCIA TU_TOMA      # toma pre-grabada
-    guitarr tune                         # afinador
-    guitarr calibrate                    # medir la latencia (se guarda)
-    guitarr history [CANCION]            # progreso y compases flojos
-    guitarr cancionero [ID]              # cifrados para tocar con escucha (--cifrado ID)
-    guitarr progreso                     # nivel, XP, racha, lecciones y acordes dominados
-    guitarr devices | tracks ARCHIVO | config | demo
+    guitarr gui                          # web UI (in your browser)
+    guitarr live REFERENCE [options]     # live, guitar plugged in
+    guitarr file REFERENCE YOUR_TAKE     # pre-recorded take
+    guitarr tune                         # tuner
+    guitarr calibrate                    # measure the latency (saved)
+    guitarr history [SONG]               # progress and weakest bars
+    guitarr charts [ID]                  # chord charts to play with listening (--chart ID)
+    guitarr progress                     # level, XP, streak, lessons and mastered chords
+    guitarr devices | tracks FILE | config | demo
 
-REFERENCIA: MIDI (.mid), Guitar Pro (.gp3/.gp4/.gp5) o audio (.wav/.mp3).
-Con audio de una canción completa, usá --separate para aislar la guitarra.
+REFERENCE: MIDI (.mid), Guitar Pro (.gp3/.gp4/.gp5) or audio (.wav/.mp3).
+For a full-mix audio reference, use --separate to isolate the guitar.
 """
 from __future__ import annotations
 
@@ -29,31 +29,31 @@ def _quiet() -> None:
     logging.getLogger().setLevel(logging.ERROR)
 
 
-# ---------------------------------------------------------------- argumentos
+# ---------------------------------------------------------------- arguments
 def add_reference_args(ap: argparse.ArgumentParser) -> None:
-    ap.add_argument("reference", type=Path, nargs="?", help="MIDI, Guitar Pro o audio de referencia")
-    ap.add_argument("--cifrado", help="en vez de un archivo, un cifrado (ver `guitarr cancionero`)")
-    ap.add_argument("--track", help="pista (número o parte del nombre; ver `guitarr tracks`)")
-    ap.add_argument("--separate", action="store_true", help="aislar guitarra de la referencia con Demucs")
-    ap.add_argument("--start-bar", type=int, help="practicar desde este compás")
-    ap.add_argument("--end-bar", type=int, help="practicar hasta este compás (inclusive)")
-    ap.add_argument("--transpose", type=int, help="semitonos a sumar a lo que tocás (afinación distinta)")
-    ap.add_argument("--bpm", type=float, help="tempo de la referencia (si el detector de pulso falla)")
-    ap.add_argument("--first-beat", type=float, help="segundo del primer tiempo del compás 1 (con --bpm)")
+    ap.add_argument("reference", type=Path, nargs="?", help="MIDI, Guitar Pro or audio reference")
+    ap.add_argument("--chart", help="use a chord chart instead of a file (see `guitarr charts`)")
+    ap.add_argument("--track", help="track (number or part of its name; see `guitarr tracks`)")
+    ap.add_argument("--separate", action="store_true", help="isolate the guitar in the reference with Demucs")
+    ap.add_argument("--start-bar", type=int, help="practice from this bar")
+    ap.add_argument("--end-bar", type=int, help="practice up to this bar (inclusive)")
+    ap.add_argument("--transpose", type=int, help="semitones added to what you play (different tuning)")
+    ap.add_argument("--bpm", type=float, help="reference tempo (if beat tracking fails)")
+    ap.add_argument("--first-beat", type=float, help="second of the first beat of bar 1 (with --bpm)")
     ap.add_argument("--beats-per-bar", type=int)
     ap.add_argument("--onset-threshold", type=float, default=0.5)
     ap.add_argument("--frame-threshold", type=float, default=0.3)
-    ap.add_argument("--min-amp", type=float, default=0.2, help="descartar notas detectadas más débiles")
+    ap.add_argument("--min-amp", type=float, default=0.2, help="drop weaker detected notes")
     ap.add_argument("--save-preset", action="store_true",
-                    help="recordar pista/compases/transposición/modo/velocidad para esta canción")
+                    help="remember track/bars/transpose/mode/speed for this song")
 
 
 def add_audio_args(ap: argparse.ArgumentParser, output: bool = True) -> None:
-    ap.add_argument("--device", help="entrada de audio (número o nombre; ver `guitarr devices`)")
-    ap.add_argument("--channel", type=int, help="canal de entrada de la interfaz (1 = input 1)")
+    ap.add_argument("--device", help="audio input (number or name; see `guitarr devices`)")
+    ap.add_argument("--channel", type=int, help="interface input channel (1 = input 1)")
     if output:
-        ap.add_argument("--output-device", help="salida para el metrónomo (default: la del sistema)")
-    ap.add_argument("--samplerate", type=int, help="default: el del dispositivo")
+        ap.add_argument("--output-device", help="output for the metronome (default: system output)")
+    ap.add_argument("--samplerate", type=int, help="default: the device's")
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -61,81 +61,81 @@ def build_parser() -> argparse.ArgumentParser:
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
 
-    f = sub.add_parser("file", help="analizar una toma pre-grabada")
+    f = sub.add_parser("file", help="analyze a pre-recorded take")
     add_reference_args(f)
-    f.add_argument("take", type=Path, help="tu toma (wav/mp3/...)")
-    f.add_argument("--onset-tol", type=float, default=0.15, help="tolerancia para emparejar notas (s)")
-    f.add_argument("--timing-tol", type=float, default=0.06, help="desvío a partir del cual se marca timing (s)")
-    f.add_argument("--smooth", type=float, default=2.0, help="ventana de suavizado del tempo (s)")
-    f.add_argument("--dump-midi", type=Path, help="carpeta donde guardar las transcripciones en MIDI")
+    f.add_argument("take", type=Path, help="your take (wav/mp3/...)")
+    f.add_argument("--onset-tol", type=float, default=0.15, help="tolerance to match notes (s)")
+    f.add_argument("--timing-tol", type=float, default=0.06, help="deviation flagged as a timing issue (s)")
+    f.add_argument("--smooth", type=float, default=2.0, help="tempo smoothing window (s)")
+    f.add_argument("--dump-midi", type=Path, help="folder to save the transcriptions as MIDI")
     f.add_argument("--max-issues", type=int, default=60)
-    f.add_argument("--no-history", action="store_true", help="no guardar en el historial")
+    f.add_argument("--no-history", action="store_true", help="don't save to the history")
 
-    lv = sub.add_parser("live", help="tocar en vivo con la guitarra enchufada")
+    lv = sub.add_parser("live", help="play live with your guitar plugged in")
     add_reference_args(lv)
     add_audio_args(lv)
     lv.add_argument("--mode", choices=["wait", "tempo"],
-                    help="wait: espera a que toques bien cada nota | tempo: metrónomo y timing")
-    lv.add_argument("--speed", type=float, help="velocidad en modo tempo (0.7 = 70%%)")
-    lv.add_argument("--no-click", action="store_true", help="modo tempo sin metrónomo (arranca con tu 1ra nota)")
-    lv.add_argument("--count-in", type=int, help="tiempos de cuenta de entrada (default: un compás)")
-    lv.add_argument("--latency-ms", type=float, help="corrección de latencia (mejor: guitarr calibrate)")
-    lv.add_argument("--gate-db", type=float, help="nivel mínimo para considerar una nota (default -50)")
-    lv.add_argument("--sensitivity", type=float, help="sensibilidad del detector de ataques (default 1)")
-    lv.add_argument("--timing-tol", type=float, default=0.06, help="desvío a partir del cual se marca timing (s)")
-    lv.add_argument("--window", type=float, default=0.2, help="ventana máx. para asociar una nota en modo tempo (s)")
-    lv.add_argument("--loop", action="store_true", help="repetir la sección al terminar")
+                    help="wait: waits until each note is right | tempo: metronome and timing")
+    lv.add_argument("--speed", type=float, help="tempo-mode speed (0.7 = 70%%)")
+    lv.add_argument("--no-click", action="store_true", help="tempo mode without a metronome (starts on your 1st note)")
+    lv.add_argument("--count-in", type=int, help="count-in beats (default: one bar)")
+    lv.add_argument("--latency-ms", type=float, help="latency correction (better: guitarr calibrate)")
+    lv.add_argument("--gate-db", type=float, help="minimum level to consider a note (default -50)")
+    lv.add_argument("--sensitivity", type=float, help="onset detector sensitivity (default 1)")
+    lv.add_argument("--timing-tol", type=float, default=0.06, help="deviation flagged as a timing issue (s)")
+    lv.add_argument("--window", type=float, default=0.2, help="max window to match a note in tempo mode (s)")
+    lv.add_argument("--loop", action="store_true", help="repeat the section when it ends")
     lv.add_argument("--trainer", action="store_true",
-                    help="modo tempo en loop: sube la velocidad cuando la vuelta sale limpia")
-    lv.add_argument("--speed-step", type=float, default=0.05, help="cuánto sube/baja el entrenador (0.05 = 5%%)")
-    lv.add_argument("--target", type=float, default=90, help="puntaje para subir la velocidad (entrenador)")
-    lv.add_argument("--max-speed", type=float, default=1.0, help="tope del entrenador")
-    lv.add_argument("--no-legato", action="store_true", help="no detectar hammer-ons/pull-offs/slides")
-    lv.add_argument("--simulate", type=Path, help="usar un WAV como si fuera la guitarra en vivo (pruebas)")
-    lv.add_argument("--fast", action="store_true", help="con --simulate: no esperar tiempo real")
-    lv.add_argument("--plain", action="store_true", help="salida de texto simple en vez de pantalla en vivo")
-    lv.add_argument("--save-dir", type=Path, help=f"dónde guardar lo que tocaste (default {config.TAKES_DIR})")
-    lv.add_argument("--no-history", action="store_true", help="no guardar en el historial")
+                    help="looped tempo mode: speeds up after a clean pass")
+    lv.add_argument("--speed-step", type=float, default=0.05, help="trainer speed step (0.05 = 5%%)")
+    lv.add_argument("--target", type=float, default=90, help="score needed to speed up (trainer)")
+    lv.add_argument("--max-speed", type=float, default=1.0, help="trainer speed cap")
+    lv.add_argument("--no-legato", action="store_true", help="don't detect hammer-ons/pull-offs/slides")
+    lv.add_argument("--simulate", type=Path, help="use a WAV as if it were the live guitar (testing)")
+    lv.add_argument("--fast", action="store_true", help="with --simulate: don't wait in real time")
+    lv.add_argument("--plain", action="store_true", help="plain text output instead of the live screen")
+    lv.add_argument("--save-dir", type=Path, help=f"where to save what you played (default {config.TAKES_DIR})")
+    lv.add_argument("--no-history", action="store_true", help="don't save to the history")
 
-    t = sub.add_parser("tune", help="afinador")
+    t = sub.add_parser("tune", help="tuner")
     add_audio_args(t, output=False)
-    t.add_argument("--simulate", type=Path, help="usar un WAV como entrada")
+    t.add_argument("--simulate", type=Path, help="use a WAV as the input")
 
-    c = sub.add_parser("calibrate", help="medir la latencia tocando junto al click (se guarda)")
+    c = sub.add_parser("calibrate", help="measure the latency by playing along with the click (saved)")
     add_audio_args(c)
     c.add_argument("--bpm", type=float, default=90)
 
-    h = sub.add_parser("history", help="ver progreso y compases flojos")
-    h.add_argument("song", nargs="?", help="id de la canción (ver `guitarr history`)")
+    h = sub.add_parser("history", help="progress and weakest bars")
+    h.add_argument("song", nargs="?", help="song id (see `guitarr history`)")
 
-    cf = sub.add_parser("config", help="ver o guardar la configuración de audio")
+    cf = sub.add_parser("config", help="show or save the audio settings")
     add_audio_args(cf)
     cf.add_argument("--latency-ms", type=float)
     cf.add_argument("--gate-db", type=float)
     cf.add_argument("--sensitivity", type=float)
 
-    g = sub.add_parser("gui", help="abrir la interfaz gráfica en el navegador")
+    g = sub.add_parser("gui", help="open the web UI in your browser")
     g.add_argument("--port", type=int, default=8765)
     g.add_argument("--host", default="127.0.0.1")
     g.add_argument("--no-browser", action="store_true")
 
-    cn = sub.add_parser("cancionero", help="cifrados para tocar con escucha (para --cifrado)")
-    cn.add_argument("id", nargs="?")
-    cn.add_argument("--formato", action="store_true", help="cómo escribir tus propios cifrados")
-    sub.add_parser("progreso", help="nivel, XP, racha, lecciones y acordes dominados")
+    ch = sub.add_parser("charts", help="chord charts to play with listening (for --chart)")
+    ch.add_argument("id", nargs="?")
+    ch.add_argument("--format", action="store_true", help="how to write your own charts")
+    sub.add_parser("progress", help="level, XP, streak, lessons and mastered chords")
 
-    d = sub.add_parser("demo", help="generar archivos de prueba con errores plantados")
+    d = sub.add_parser("demo", help="generate test files with planted mistakes")
     d.add_argument("--out", type=Path, default=Path("demo"))
 
-    sub.add_parser("devices", help="listar dispositivos de audio")
-    tr = sub.add_parser("tracks", help="listar las pistas de un MIDI / Guitar Pro")
+    sub.add_parser("devices", help="list audio devices")
+    tr = sub.add_parser("tracks", help="list the tracks of a MIDI / Guitar Pro file")
     tr.add_argument("file", type=Path)
     return ap
 
 
-# ---------------------------------------------------------------- resolución de opciones
+# ---------------------------------------------------------------- option resolution
 def resolve_audio(args, log=print) -> dict:
-    """Argumentos > config guardada > autodetección."""
+    """Arguments > saved settings > auto-detection."""
     saved = config.load()["audio"]
     out = {}
     for k in config.AUDIO_KEYS:
@@ -149,7 +149,7 @@ def resolve_audio(args, log=print) -> dict:
             if info["suggested"] is not None:
                 out["device"] = info["suggested"]
                 name = next(d["name"] for d in info["inputs"] if d["index"] == info["suggested"])
-                log(f"Uso la entrada '{name}' (autodetectada; cambiala con --device o `guitarr config`)")
+                log(f"Using input '{name}' (auto-detected; change it with --device or `guitarr config`)")
         except Exception:
             pass
     out["channel"] = out["channel"] or 1
@@ -166,7 +166,7 @@ def apply_preset(args, log=print) -> None:
             setattr(args, k, preset[k])
             used.append(f"{k}={preset[k]}")
     if used:
-        log(f"Preset de {args.reference.name}: {', '.join(used)}")
+        log(f"Preset for {args.reference.name}: {', '.join(used)}")
 
 
 def ref_options(args):
@@ -174,13 +174,13 @@ def ref_options(args):
     from .reference import RefOptions, ReferenceError
 
     chart = None
-    if args.cifrado:
+    if args.chart:
         try:
-            chart = catalog.get_cifrado(args.cifrado)
+            chart = catalog.get_chart(args.chart)
         except catalog.CatalogError as e:
             raise ReferenceError(str(e)) from e
     elif args.reference is None:
-        raise ReferenceError("Falta la referencia: un archivo (MIDI/GP/audio) o --cifrado ID")
+        raise ReferenceError("Missing reference: a file (MIDI/GP/audio) or --chart ID")
     return RefOptions(path=args.reference, chart=chart, track=args.track, separate=args.separate,
                       start_bar=args.start_bar, end_bar=args.end_bar, bpm=args.bpm,
                       first_beat=args.first_beat or 0.0, beats_per_bar=args.beats_per_bar or 4,
@@ -194,7 +194,7 @@ def section_of(args) -> dict | None:
     return None
 
 
-# ---------------------------------------------------------------- comandos
+# ---------------------------------------------------------------- commands
 def cmd_file(args) -> None:
     from . import history
     from .analysis import FileOptions, analyze_take
@@ -209,32 +209,32 @@ def cmd_file(args) -> None:
     result, usr = analyze_take(ref, args.take, opts)
     if args.dump_midi:
         args.dump_midi.mkdir(parents=True, exist_ok=True)
-        save_midi(ref.notes, args.dump_midi / "referencia.mid")
-        save_midi(usr, args.dump_midi / "toma.mid")
+        save_midi(ref.notes, args.dump_midi / "reference.mid")
+        save_midi(usr, args.dump_midi / "take.mid")
     print_file_report(result, args.max_issues)
     if not args.no_history:
         history.save(result, section_of(args))
-        _reward(result["summary"].get("score"))
+        _reward(result["summary"].get("score"), "take_analysis")
     if args.save_preset:
         _save_preset(args)
 
 
-def _reward(score, what: str = "Práctica") -> None:
+def _reward(score, code: str = "practice", **params) -> None:
     from . import progress
 
-    xp = progress.add_practice(score, what)
+    xp = progress.add_practice(score, code, **params)
     if xp:
         d = progress.get()
         lv = d["level"]
-        print(f"\n+{xp} XP · nivel {lv['level']} ({lv['title']}) · {d['xp']} XP · 🔥 {d['streak']}")
+        print(f"\n+{xp} XP · level {lv['level']} ({lv['title']}) · {d['xp']} XP · 🔥 {d['streak']}")
 
 
 def _save_preset(args) -> None:
     if args.reference is None:
-        print("Los presets son para archivos; los cifrados ya traen sus opciones.")
+        print("Presets are for files; charts already carry their own settings.")
         return
     p = config.save_song_preset(args.reference, **{k: getattr(args, k, None) for k in config.SONG_KEYS})
-    print(f"Preset guardado para {args.reference.name}: {p}")
+    print(f"Preset saved for {args.reference.name}: {p}")
 
 
 def cmd_live(args) -> None:
@@ -248,7 +248,7 @@ def cmd_live(args) -> None:
     ref = load_reference(ref_options(args))
     mode = args.mode or ("tempo" if args.trainer else "wait")
     if args.trainer and mode != "tempo":
-        sys.exit("--trainer funciona en modo tempo.")
+        sys.exit("--trainer works in tempo mode.")
     opts = LiveOptions(
         mode=mode, speed=args.speed or (0.6 if args.trainer else 1.0),
         device=audio["device"], channel=audio["channel"], output_device=audio["output_device"],
@@ -256,19 +256,19 @@ def cmd_live(args) -> None:
         latency_ms=audio["latency_ms"] or 0.0,
         gate_db=audio["gate_db"] if audio["gate_db"] is not None else -50.0,
         sensitivity=audio["sensitivity"] or 1.0, timing_tol=args.timing_tol, window=args.window,
-        count_extras=not args.cifrado,
-        legato=not args.no_legato and not args.cifrado,
+        count_extras=not args.chart,
+        legato=not args.no_legato and not args.chart,
         loop=args.loop, trainer=args.trainer, speed_step=args.speed_step, target=args.target,
         max_speed=args.max_speed, transpose=args.transpose or 0,
         simulate=args.simulate, fast=args.fast, save_dir=args.save_dir or config.TAKES_DIR,
     )
     if not audio["latency_ms"] and not args.simulate and mode == "tempo":
-        print("Tip: medí la latencia una vez con `guitarr calibrate` para que el timing sea exacto.")
+        print("Tip: measure the latency once with `guitarr calibrate` for accurate timing.")
     sess = LiveSession(ref, opts)
     plain = args.plain or not sys.stdout.isatty()
     live = None
     if plain:
-        on_update, on_message = None, lambda t, m: print(f"[{t:6.2f}s]  {m}")
+        on_update, on_message = None, lambda t, m: print(f"[{t:6.2f}s]  {m['text']}")
     else:
         from rich.live import Live
 
@@ -277,15 +277,15 @@ def cmd_live(args) -> None:
         on_update, on_message = (lambda: live.update(render(sess.snapshot()))), None
     try:
         report = sess.run(on_update=on_update, on_message=on_message)
-    except KeyboardInterrupt:  # la sesión ya se cerró en el finally de run
+    except KeyboardInterrupt:  # the session already closed in run()'s finally
         report = sess.report or sess.build_report(None)
     finally:
         if live:
             live.__exit__(None, None, None)
-    print_live_report(report, ref.grid, str(args.reference) if args.reference else f"--cifrado {args.cifrado}")
+    print_live_report(report, ref.grid, str(args.reference) if args.reference else f"--chart {args.chart}")
     if not args.no_history and not args.simulate and report["summary"]["judged"]:
         history.save(report, section_of(args))
-        _reward(report["summary"].get("score"))
+        _reward(report["summary"].get("score"), name=ref.name)
     if args.save_preset:
         args.mode = mode
         _save_preset(args)
@@ -307,34 +307,34 @@ def cmd_calibrate(args) -> None:
     from .tuner import calibrate
 
     a = resolve_audio(args)
-    print("Calibración: vas a escuchar 4 clicks para agarrar el pulso y después 12 más.\n"
-          "Tocá las cuerdas muteadas (un golpe seco con la púa) JUSTO con cada click.\n"
-          "Usá auriculares para que el click no entre por el micrófono.\n")
+    print("Calibration: you'll hear 4 clicks to catch the pulse, then 12 more.\n"
+          "Hit the muted strings (a short pick stroke) EXACTLY on every click.\n"
+          "Use headphones so the click doesn't leak into the input.\n")
     last = [-1]
 
     def prog(p):
         if p["beat"] != last[0] and 0 < p["beat"] <= p["total"]:
             last[0] = p["beat"]
-            print(f"  {'(pulso)' if p['warmup'] else 'tocá!  '} {p['beat']}/{p['total']}", end="\r", flush=True)
+            print(f"  {'(pulse)' if p['warmup'] else 'play!  '} {p['beat']}/{p['total']}", end="\r", flush=True)
 
     r = calibrate(a["device"], a["channel"], a["output_device"], bpm=args.bpm, on_progress=prog)
     print("\n\n" + r["message"])
     if r["ok"]:
         config.update_audio(latency_ms=r["latency_ms"])
-        print(f"Guardado en {config.CONFIG_PATH}. Ya no hace falta --latency-ms.")
+        print(f"Saved to {config.CONFIG_PATH}. --latency-ms is no longer needed.")
 
 
 def cmd_config(args) -> None:
     kw = {k: getattr(args, k, None) for k in config.AUDIO_KEYS}
     if any(v is not None for v in kw.values()):
         config.update_audio(**kw)
-        print(f"Guardado en {config.CONFIG_PATH}")
+        print(f"Saved to {config.CONFIG_PATH}")
     data = config.load()
     print("[audio]")
     for k, v in data["audio"].items():
         print(f"  {k} = {v}")
     if data["songs"]:
-        print("\n[presets por canción]")
+        print("\n[song presets]")
         for s, p in data["songs"].items():
             print(f"  {s}: {p}")
 
@@ -344,9 +344,9 @@ def cmd_tracks(args) -> None:
 
     rows = list_tracks(args.file)
     if not rows:
-        print("No hay pistas (o el formato no tiene pistas: audio).")
+        print("No tracks (or the format has no tracks: audio).")
     for r in rows:
-        print(f"{r['index']:2d}  {r['name']:30s} {r['kind']:28s} {r['notes']} notas")
+        print(f"{r['index']:2d}  {r['name']:30s} {r['kind']:28s} {r['notes']} notes")
 
 
 def main(argv=None) -> None:
@@ -375,21 +375,21 @@ def main(argv=None) -> None:
             print_history(args.song)
         elif args.cmd == "config":
             cmd_config(args)
-        elif args.cmd == "cancionero":
+        elif args.cmd == "charts":
             from . import catalog
-            if args.formato:
-                print(catalog.__doc__.split("Formato de cifrado (texto plano):", 1)[1].rstrip())
-                print(f"\nGuardalos como .txt en {catalog.user_dir()}")
+            if args.format:
+                print(catalog.__doc__.split("Chart format (plain text):", 1)[1].rstrip())
+                print(f"\nSave them as .txt files in {catalog.user_dir()}")
             else:
-                catalog.print_songs(args.id)
-        elif args.cmd == "progreso":
+                catalog.print_charts(args.id)
+        elif args.cmd == "progress":
             from .progress import print_progress
             print_progress()
         elif args.cmd == "demo":
             from .demo import main as make_demo
             out = make_demo(args.out)
-            print("Listo:", *sorted(p.name for p in out.iterdir()))
-            print(f"Probá: guitarr file {out}/referencia.mid {out}/toma.wav")
+            print("Done:", *sorted(p.name for p in out.iterdir()))
+            print(f"Try: guitarr file {out}/reference.mid {out}/take.wav")
         elif args.cmd == "gui":
             from .gui.server import serve
             serve(args.host, args.port, open_browser=not args.no_browser)

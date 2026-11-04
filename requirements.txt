@@ -1,5 +1,5 @@
-# Versiones fijas (basic-pitch / librosa / numpy se rompen seguido entre versiones).
-# Instalación recomendada: pip install -e ".[dev]"  (crea el comando `guitarr`)
+# Pinned versions (basic-pitch / librosa / numpy often break between releases).
+# Recommended install: pip install -e ".[dev]"  (creates the `guitarr` command)
 basic-pitch==0.4.0
 librosa==0.11.0
 pretty_midi==0.2.11.post0

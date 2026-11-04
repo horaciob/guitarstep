@@ -1,0 +1,10 @@
+title: Folk in D with suspended chords
+level: 2
+bpm: 96
+time: 4/4
+strum: D.DU.UDU
+note: Dsus4 and Dsus2 are ornaments: one finger comes and goes without moving the rest of the hand.
+
+[Loop]
+D Dsus4 | D Dsus2 | G | A
+D Dsus4 | D Dsus2 | G A | D

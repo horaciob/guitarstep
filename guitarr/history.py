@@ -1,4 +1,4 @@
-"""Historial de sesiones (JSON por sesión) y compases problemáticos."""
+"""Session history (one JSON per session) and problem bars."""
 from __future__ import annotations
 
 import json
@@ -11,16 +11,16 @@ from . import config
 
 def song_id(ref_path: str, track: str | None = None) -> str:
     base = Path(ref_path).stem + (f"--{track}" if track else "")
-    return re.sub(r"[^\w\-]+", "_", base).strip("_").lower() or "cancion"
+    return re.sub(r"[^\w\-]+", "_", base).strip("_").lower() or "song"
 
 
 def save(result: dict, section: dict | None = None) -> Path:
     ref = result.get("reference", {})
-    sid = song_id(ref.get("path", "cancion"), ref.get("track"))
+    sid = song_id(ref.get("path", "song"), ref.get("track"))
     folder = config.HISTORY_DIR / sid
     folder.mkdir(parents=True, exist_ok=True)
     data = dict(result)
-    data.pop("roll", None)  # el piano-roll es pesado y se puede regenerar
+    data.pop("roll", None)  # the piano roll is heavy and can be regenerated
     data.setdefault("date", datetime.now().isoformat(timespec="seconds"))
     data["song_id"] = sid
     if section:
@@ -69,8 +69,8 @@ def session_score(s: dict) -> float | None:
 
 
 def problem_bars(sessions: list[dict], last_n: int = 10, top: int = 3) -> list[dict]:
-    """Compases con más errores (proporcionales a sus notas) en las últimas sesiones;
-    las sesiones recientes pesan más."""
+    """Bars with the most mistakes (relative to their notes) in the latest sessions;
+    recent sessions weigh more."""
     agg: dict[int, dict] = {}
     recent = sessions[-last_n:]
     for k, s in enumerate(recent):
@@ -98,8 +98,10 @@ def suggest_command(sid: str, sessions: list[dict]) -> str | None:
         return None
     ref = sessions[-1].get("reference", {})
     b = min(r["bar"] for r in bars[:2]), max(r["bar"] for r in bars[:2])
+    path = ref.get("path") or ""
+    source = f"--chart {path.split(':', 1)[1]}" if path.startswith("chart:") else path
     track = f" --track {ref['track']!r}" if ref.get("track") else ""
-    return (f"guitarr live {ref.get('path')}{track} --start-bar {b[0]} --end-bar {b[1]} "
+    return (f"guitarr live {source}{track} --start-bar {b[0]} --end-bar {b[1]} "
             f"--mode tempo --speed 0.7 --trainer")
 
 
@@ -107,33 +109,33 @@ def print_history(sid: str | None = None) -> None:
     if sid is None:
         rows = songs()
         if not rows:
-            print("Todavía no hay sesiones guardadas.")
+            print("No saved sessions yet.")
             return
-        print("Canciones practicadas:\n")
+        print("Practiced songs:\n")
         for r in rows:
             sc = "—" if r["last_score"] is None else f"{r['last_score']:.0f}%"
-            print(f"  {r['id']:30s} {r['sessions']:3d} sesiones   última {r['last_date']}  ({sc})")
-        print("\nDetalle: guitarr history <id>")
+            print(f"  {r['id']:30s} {r['sessions']:3d} sessions   last {r['last_date']}  ({sc})")
+        print("\nDetails: guitarr history <id>")
         return
     sessions = load_sessions(sid)
     if not sessions:
-        print(f"No hay sesiones para '{sid}'. Mirá la lista con: guitarr history")
+        print(f"No sessions for '{sid}'. See the list with: guitarr history")
         return
-    print(f"Historial de {sid} ({len(sessions)} sesiones):\n")
+    print(f"History of {sid} ({len(sessions)} sessions):\n")
     for s in sessions[-15:]:
         sc = session_score(s)
         sp = s.get("final_speed") or s.get("speed")
-        extra = f"  vel {sp:.0%}" if isinstance(sp, (int, float)) else ""
+        extra = f"  speed {sp:.0%}" if isinstance(sp, (int, float)) else ""
         sec = s.get("section") or {}
-        rng = f"  c.{sec.get('start_bar') or 1}-{sec.get('end_bar') or 'fin'}" if sec else ""
+        rng = f"  bars {sec.get('start_bar') or 1}-{sec.get('end_bar') or 'end'}" if sec else ""
         bar = "█" * int((sc or 0) / 5)
         print(f"  {s.get('date', '')[:16]}  {s.get('kind', ''):4s} {bar:20s} "
               f"{'—' if sc is None else f'{sc:.0f}%':>5s}{extra}{rng}")
     pb = problem_bars(sessions)
     if pb:
-        print("\nCompases más flojos:")
+        print("\nWeakest bars:")
         for r in pb:
-            print(f"  compás {r['bar']:3d}  {100 * r['rate']:.0f}% de error")
+            print(f"  bar {r['bar']:3d}  {100 * r['rate']:.0f}% mistakes")
         cmd = suggest_command(sid, sessions)
         if cmd:
-            print(f"\nPara practicarlos:\n  {cmd}")
+            print(f"\nTo practice them:\n  {cmd}")

@@ -1,4 +1,4 @@
-"""Tipos básicos: notas, nombres y la grilla de compases."""
+"""Basic types: notes, note names and the bar grid."""
 from __future__ import annotations
 
 import math
@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 import numpy as np
 
 NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
-STANDARD_TUNING = [64, 59, 55, 50, 45, 40]  # cuerda 1 (E4) ... cuerda 6 (E2)
+STANDARD_TUNING = [64, 59, 55, 50, 45, 40]  # string 1 (E4) ... string 6 (E2)
 
 
 @dataclass
@@ -16,9 +16,9 @@ class Note:
     end: float
     pitch: int
     amp: float = 1.0
-    string: int | None = None   # 1 = la más aguda
+    string: int | None = None   # 1 = highest string
     fret: int | None = None
-    label: str | None = None    # nombre del acorde al que pertenece (cifrados)
+    label: str | None = None    # chord name it belongs to (charts)
 
 
 def note_name(p: int) -> str:
@@ -29,20 +29,20 @@ def shifted(n: Note, dt: float = 0.0, dp: int = 0) -> Note:
     return Note(n.start + dt, n.end + dt, n.pitch + dp, n.amp, n.string, n.fret, n.label)
 
 
-# ---------------------------------------------------------------- grilla de compases
+# ---------------------------------------------------------------- bar grid
 class Grid:
-    """Convierte segundos (en tiempo de la referencia) a compás/tiempo.
+    """Converts seconds (in reference time) to bar/beat.
 
-    `beats` son los tiempos de cada pulso; `bar_starts` los índices de pulso donde
-    empieza cada compás (soporta cambios de compás). Fuera del rango conocido se
-    extrapola con el último/primer pulso y compás, así que nunca falla.
+    `beats` are the beat times; `bar_starts` are the beat indices where each bar
+    starts (time-signature changes are supported). Outside the known range it
+    extrapolates from the first/last beat and bar, so it never fails.
     """
 
     def __init__(self, beats, beats_per_bar: int = 4, bar_starts=None):
         b = np.asarray(beats, dtype=float)
         if len(b) == 0:
             b = np.array([0.0])
-        if len(b) < 2:  # sin información de tempo: asumimos 120 bpm
+        if len(b) < 2:  # no tempo information: assume 120 bpm
             b = b[0] + np.arange(2) * 0.5
         self.beats = b
         if bar_starts is None or len(bar_starts) == 0:
@@ -53,9 +53,9 @@ class Grid:
         self.bar_nums = [int(x) for x in nums] + [last]
         self.bpb = self.bar_nums[0]
 
-    # -- pulsos
+    # -- beats
     def beat_pos(self, t: float) -> float:
-        """Índice de pulso fraccional (extrapolado fuera de rango)."""
+        """Fractional beat index (extrapolated out of range)."""
         b = self.beats
         if t < b[0]:
             return (t - b[0]) / (b[1] - b[0])
@@ -77,10 +77,10 @@ class Grid:
         k = self.beat_pos(t)
         return self.beat_time(k + 0.5) - self.beat_time(k - 0.5)
 
-    # -- compases
+    # -- bars
     def bar_of(self, t: float) -> tuple[int, float]:
-        """(compás 1-based, tiempo 1-based fraccional)."""
-        k = round(self.beat_pos(t), 3)  # evita "tiempo 5.00" por redondeo
+        """(1-based bar, 1-based fractional beat)."""
+        k = round(self.beat_pos(t), 3)  # avoids "beat 5.00" from rounding
         bs = self.bar_starts
         if k < bs[0]:
             n0 = self.bar_nums[0]
@@ -88,7 +88,7 @@ class Grid:
             bar = math.floor(rel / n0) + 1
             return bar, rel - (bar - 1) * n0 + 1
         i = int(np.searchsorted(bs, k, side="right") - 1)
-        if i == len(bs) - 1:  # último compás conocido y más allá
+        if i == len(bs) - 1:  # last known bar and beyond
             n = self.bar_nums[-1]
             rel = k - bs[-1]
             extra = int(rel // n)
@@ -99,7 +99,7 @@ class Grid:
         return self.bar_of(t)[0]
 
     def bar_time(self, bar: int) -> float:
-        """Segundo en que empieza el compás `bar` (1 = primero)."""
+        """Second at which bar `bar` starts (1 = first)."""
         bs = self.bar_starts
         if bar <= 1:
             k = bs[0] + (bar - 1) * self.bar_nums[0]
@@ -126,11 +126,11 @@ class Grid:
 
     def locate(self, t: float) -> str:
         bar, beat = self.bar_of(t)
-        return f"compás {bar:3d} tiempo {beat:4.2f} ({t:6.2f}s)"
+        return f"bar {bar:3d} beat {beat:4.2f} ({t:6.2f}s)"
 
     def short(self, t: float) -> str:
         bar, beat = self.bar_of(t)
-        return f"compás {bar} tiempo {beat:.2f}"
+        return f"bar {bar} beat {beat:.2f}"
 
     @classmethod
     def from_bpm(cls, bpm: float, first_beat: float, beats_per_bar: int, until: float) -> "Grid":
@@ -146,8 +146,8 @@ class Reference:
     path: str = ""
     track: str | None = None
     tuning: list[int] = field(default_factory=lambda: list(STANDARD_TUNING))
-    all_notes: list[Note] | None = None   # la canción completa, si `notes` es una sección
-    capo: int = 0                          # cifrados con capo: la tab y los nombres van relativos
+    all_notes: list[Note] | None = None   # the whole song, when `notes` is a section
+    capo: int = 0                          # charts with a capo: tab and names are relative to it
 
     @property
     def end(self) -> float:

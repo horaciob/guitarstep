@@ -1,26 +1,31 @@
-// Router por hash y barra lateral (progreso + entrada de audio).
-import { LISTENER_ROUTES, showListenerView, hideListenerViews } from "./app.js";
-import { $, $$, api, esc } from "./lib/ui.js";
+// Hash router, sidebar (progress + audio input) and language switcher.
+import { applyDom, initI18n, lang, LANGS, setLang, t } from "./lib/i18n.js";
+
+await initI18n();
+applyDom();
+
+const { LISTENER_ROUTES, showListenerView, hideListenerViews } = await import("./app.js");
+const { $, $$, api, esc } = await import("./lib/ui.js");
 
 const VIEWS = {
-  inicio: () => import("./views/inicio.js"),
-  ruta: () => import("./views/ruta.js"),
-  leccion: () => import("./views/leccion.js"),
-  acordes: () => import("./views/acordes.js"),
-  cancionero: () => import("./views/cancionero.js"),
-  cifrado: () => import("./views/cifrado.js"),
-  herramientas: () => import("./views/herramientas.js"),
-  camara: () => import("./views/camara.js"),
+  home: () => import("./views/home.js"),
+  course: () => import("./views/course.js"),
+  lesson: () => import("./views/lesson.js"),
+  chords: () => import("./views/chords.js"),
+  charts: () => import("./views/charts.js"),
+  chart: () => import("./views/chart.js"),
+  tools: () => import("./views/tools.js"),
+  camera: () => import("./views/camera.js"),
 };
-const NAV_OF = { leccion: "ruta", cifrado: "cancionero" };
+const NAV_OF = { lesson: "course", chart: "charts" };
 const view = $("#view");
-let current = null;   // módulo montado (para desmontarlo al salir)
+let current = null;   // mounted module (to unmount it when leaving)
 let seq = 0;
 
 function parse() {
-  const [path, qs] = (location.hash || "#/inicio").slice(1).split("?");
+  const [path, qs] = (location.hash || "#/home").slice(1).split("?");
   const segs = path.split("/").filter(Boolean);
-  return { name: segs[0] || "inicio", segs: segs.slice(1), params: Object.fromEntries(new URLSearchParams(qs || "")) };
+  return { name: segs[0] || "home", segs: segs.slice(1), params: Object.fromEntries(new URLSearchParams(qs || "")) };
 }
 
 async function route() {
@@ -39,24 +44,29 @@ async function route() {
   hideListenerViews();
   view.hidden = false;
   const load = VIEWS[name];
-  if (!load) { location.hash = "#/inicio"; return; }
+  if (!load) { location.hash = "#/home"; return; }
   const mod = await load();
-  if (my !== seq) return;           // navegaste a otra parte mientras cargaba
+  if (my !== seq) return;           // you navigated elsewhere while it was loading
   current = mod;
   await mod.mount(view, { segs, params });
 }
 
 async function refreshProgress() {
   try {
-    const p = await api("/api/progreso");
+    const p = await api("/api/progress");
     const lv = p.level;
-    $("#railProgress").innerHTML = `<b>Nivel ${lv.level}</b> · ${esc(lv.title)}
+    $("#railProgress").innerHTML = `<b>${esc(t("level.label", { n: lv.level }))}</b> · ${esc(t(`level.title_${lv.level}`))}
       <div class="bar"><i style="width:${Math.round(lv.progress * 100)}%"></i></div>
-      <span class="muted">${p.xp} XP · 🔥 ${p.streak} ${p.streak === 1 ? "día" : "días"}${p.practiced_today ? " ✓" : ""}</span>`;
-  } catch { /* sin servidor */ }
+      <span class="muted">${p.xp} XP · 🔥 ${esc(t("common.days", { count: p.streak }))}${p.practiced_today ? " ✓" : ""}</span>`;
+  } catch { /* no server */ }
 }
 
+const sel = $("#langSelect");
+sel.innerHTML = Object.entries(LANGS).map(([k, v]) => `<option value="${k}">${v}</option>`).join("");
+sel.value = lang();
+sel.onchange = () => setLang(sel.value);
+
 window.addEventListener("hashchange", route);
-window.addEventListener("guitarr:progreso", refreshProgress);
+window.addEventListener("guitarr:progress", refreshProgress);
 refreshProgress();
 route();

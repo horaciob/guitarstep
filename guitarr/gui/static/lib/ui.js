@@ -1,10 +1,11 @@
-// Utilidades compartidas por las vistas: DOM, API, avisos, diagrama de acordes y sonido.
+// Shared view helpers: DOM, API, toasts, chord diagrams and sound.
+import { errorText, t } from "./i18n.js";
 
 export const $ = (s, el = document) => el.querySelector(s);
 export const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 export const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 export const NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
-export const OPEN = [40, 45, 50, 55, 59, 64];            // 6ta … 1ra
+export const OPEN = [40, 45, 50, 55, 59, 64];            // 6th … 1st
 export const noteName = p => NOTE_NAMES[((p % 12) + 12) % 12] + (Math.floor(p / 12) - 1);
 
 export async function api(path, opts = {}) {
@@ -17,8 +18,8 @@ export async function api(path, opts = {}) {
   }
   const r = await fetch(path, o);
   let data = null;
-  try { data = await r.json(); } catch { /* sin cuerpo */ }
-  if (!r.ok) throw new Error((data && (data.detail || data.error)) || `Error ${r.status}`);
+  try { data = await r.json(); } catch { /* no body */ }
+  if (!r.ok) throw new Error(errorText(data && (data.detail || data.error)) || `Error ${r.status}`);
   return data;
 }
 
@@ -32,7 +33,7 @@ export function toast(msg, ok = false) {
   toastTimer = setTimeout(() => (t.hidden = true), 4500);
 }
 
-export const progressChanged = () => window.dispatchEvent(new CustomEvent("guitarr:progreso"));
+export const progressChanged = () => window.dispatchEvent(new CustomEvent("guitarr:progress"));
 
 export function youtubeSearch(q) {
   return "https://www.youtube.com/results?search_query=" + encodeURIComponent(q);
@@ -43,17 +44,17 @@ export function youtubeId(url) {
   return m ? m[1] : null;
 }
 
-// ------------------------------------------------------------------ diagrama de acordes (SVG)
-/** Diagrama vertical: cuerdas de 6ta (izq.) a 1ra (der.), cejuela arriba. */
+// ------------------------------------------------------------------ chord diagram (SVG)
+/** Vertical diagram: strings from the 6th (left) to the 1st (right), nut on top. */
 export function chordSvg(ch, { size = 120, label = true } = {}) {
   const frets = ch.frets, fingers = ch.fingers || [];
   const pressed = frets.filter(f => f > 0);
   const lo = pressed.length ? Math.min(...pressed) : 1;
   const hi = pressed.length ? Math.max(...pressed) : 1;
-  const base = hi <= 4 ? 1 : lo;                  // traste desde el que se dibuja
+  const base = hi <= 4 ? 1 : lo;                  // fret the drawing starts at
   const W = size, H = size * 1.15, padX = W * 0.16, top = H * 0.2, gridW = W - 2 * padX;
   const nF = 4, fH = (H - top - H * 0.1) / nF, sx = i => padX + i * gridW / 5, fy = n => top + n * fH;
-  let s = `<svg class="chord-svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Acorde ${esc(ch.id)}">`;
+  let s = `<svg class="chord-svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${esc(t("chords.diagram_label", { chord: ch.id }))}">`;
   for (let n = 0; n <= nF; n++)
     s += `<line x1="${sx(0)}" x2="${sx(5)}" y1="${fy(n)}" y2="${fy(n)}" stroke="currentColor" stroke-opacity="${n === 0 && base === 1 ? 1 : .35}" stroke-width="${n === 0 && base === 1 ? 3 : 1}"/>`;
   for (let i = 0; i < 6; i++)
@@ -78,7 +79,7 @@ export function chordSvg(ch, { size = 120, label = true } = {}) {
   return s + "</svg>";
 }
 
-/** Hace clickeables las cuerdas de un diagrama (suena esa cuerda). */
+/** Makes the strings of a diagram clickable (plays that string). */
 export function bindChordSvg(el, ch) {
   $$(".chord-string", el).forEach(line => {
     line.style.cursor = "pointer";
@@ -89,7 +90,7 @@ export function bindChordSvg(el, ch) {
   });
 }
 
-// ------------------------------------------------------------------ sonido (Karplus-Strong en Web Audio)
+// ------------------------------------------------------------------ sound (Karplus-Strong in Web Audio)
 let ctx = null;
 export function audioCtx() {
   if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();

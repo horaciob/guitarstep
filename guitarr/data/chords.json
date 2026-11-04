@@ -1,35 +1,35 @@
 {
  "groups": [
   {
-   "id": "abiertos-menores",
-   "name": "Abiertos menores"
+   "id": "open-minor",
+   "name": "Open minor"
   },
   {
-   "id": "abiertos-mayores",
-   "name": "Abiertos mayores"
+   "id": "open-major",
+   "name": "Open major"
   },
   {
-   "id": "septimas",
-   "name": "Séptimas"
+   "id": "sevenths",
+   "name": "Sevenths"
   },
   {
    "id": "color",
    "name": "Color (maj7, add9, sus)"
   },
   {
-   "id": "cejilla",
-   "name": "Con cejilla"
+   "id": "barre",
+   "name": "Barre chords"
   },
   {
-   "id": "quintas",
-   "name": "Quintas (power chords)"
+   "id": "power",
+   "name": "Power chords"
   }
  ],
  "chords": [
   {
    "id": "Em",
-   "name": "Mi menor",
-   "group": "abiertos-menores",
+   "name": "E minor",
+   "group": "open-minor",
    "level": 1,
    "frets": [
     0,
@@ -52,12 +52,12 @@
     "G",
     "B"
    ],
-   "note": "Dos dedos y las seis cuerdas sueltas: el acorde ideal para empezar."
+   "tip": "Two fingers and all six strings ringing: the ideal first chord."
   },
   {
    "id": "Am",
-   "name": "La menor",
-   "group": "abiertos-menores",
+   "name": "A minor",
+   "group": "open-minor",
    "level": 1,
    "frets": [
     -1,
@@ -80,12 +80,12 @@
     "E",
     "A"
    ],
-   "note": "La 6ta no suena. Arqueá los dedos para que la 1ra quede limpia."
+   "tip": "Skip the 6th string. Arch your fingers so the 1st string rings clean."
   },
   {
    "id": "Dm",
-   "name": "Re menor",
-   "group": "abiertos-menores",
+   "name": "D minor",
+   "group": "open-minor",
    "level": 1,
    "frets": [
     -1,
@@ -108,12 +108,12 @@
     "F",
     "A"
    ],
-   "note": "Rasgueá desde la 4ta. Suena triste por el Fa de la 1ra cuerda."
+   "tip": "Strum from the 4th string. The F on the 1st string gives it its sad color."
   },
   {
    "id": "E",
-   "name": "Mi mayor",
-   "group": "abiertos-mayores",
+   "name": "E major",
+   "group": "open-major",
    "level": 1,
    "frets": [
     0,
@@ -136,12 +136,12 @@
     "G#",
     "B"
    ],
-   "note": "Es Em con el índice en el traste 1 de la 3ra: escuchá cómo se ilumina."
+   "tip": "Em plus your index on fret 1 of the 3rd string: hear how it brightens."
   },
   {
    "id": "A",
-   "name": "La mayor",
-   "group": "abiertos-mayores",
+   "name": "A major",
+   "group": "open-major",
    "level": 1,
    "frets": [
     -1,
@@ -164,12 +164,12 @@
     "E",
     "A"
    ],
-   "note": "Tres dedos apretados en el traste 2; cuidá que suene la 1ra."
+   "tip": "Three fingers packed on fret 2; make sure the 1st string still rings."
   },
   {
    "id": "D",
-   "name": "Re mayor",
-   "group": "abiertos-mayores",
+   "name": "D major",
+   "group": "open-major",
    "level": 1,
    "frets": [
     -1,
@@ -192,12 +192,12 @@
     "F#",
     "A"
    ],
-   "note": "Forma de triángulo; desde la 4ta cuerda."
+   "tip": "A triangle shape; strum from the 4th string."
   },
   {
    "id": "G",
-   "name": "Sol mayor",
-   "group": "abiertos-mayores",
+   "name": "G major",
+   "group": "open-major",
    "level": 2,
    "frets": [
     3,
@@ -220,12 +220,12 @@
     "G",
     "B"
    ],
-   "note": "Suena grande: usa las seis cuerdas."
+   "tip": "Sounds big because it uses all six strings."
   },
   {
    "id": "C",
-   "name": "Do mayor",
-   "group": "abiertos-mayores",
+   "name": "C major",
+   "group": "open-major",
    "level": 2,
    "frets": [
     -1,
@@ -248,12 +248,12 @@
     "E",
     "G"
    ],
-   "note": "Dedos en escalera 3-2-1; la 3ra y la 1ra al aire."
+   "tip": "Fingers in a staircase 3-2-1; the 3rd and 1st strings ring open."
   },
   {
    "id": "Em7",
-   "name": "Mi menor 7",
-   "group": "septimas",
+   "name": "E minor 7",
+   "group": "sevenths",
    "level": 2,
    "frets": [
     0,
@@ -277,12 +277,12 @@
     "G",
     "B"
    ],
-   "note": "Em con el meñique en la 2da: un color más abierto."
+   "tip": "Em with the pinky on the 2nd string: a more open color."
   },
   {
    "id": "Am7",
-   "name": "La menor 7",
-   "group": "septimas",
+   "name": "A minor 7",
+   "group": "sevenths",
    "level": 2,
    "frets": [
     -1,
@@ -306,12 +306,12 @@
     "G",
     "A"
    ],
-   "note": "Am levantando el anular."
+   "tip": "Am lifting the ring finger."
   },
   {
    "id": "Dm7",
-   "name": "Re menor 7",
-   "group": "septimas",
+   "name": "D minor 7",
+   "group": "sevenths",
    "level": 3,
    "frets": [
     -1,
@@ -335,12 +335,12 @@
     "F",
     "A"
    ],
-   "note": "Cejilla chica del índice en las dos primeras cuerdas."
+   "tip": "A small index barre on the top two strings."
   },
   {
    "id": "E7",
-   "name": "Mi 7",
-   "group": "septimas",
+   "name": "E 7",
+   "group": "sevenths",
    "level": 2,
    "frets": [
     0,
@@ -364,12 +364,12 @@
     "G#",
     "B"
    ],
-   "note": "E sin el anular: tensión de blues."
+   "tip": "E without the ring finger: instant blues tension."
   },
   {
    "id": "A7",
-   "name": "La 7",
-   "group": "septimas",
+   "name": "A 7",
+   "group": "sevenths",
    "level": 2,
    "frets": [
     -1,
@@ -393,12 +393,12 @@
     "G",
     "A"
    ],
-   "note": "A dejando la 3ra cuerda al aire."
+   "tip": "A with the 3rd string left open."
   },
   {
    "id": "D7",
-   "name": "Re 7",
-   "group": "septimas",
+   "name": "D 7",
+   "group": "sevenths",
    "level": 2,
    "frets": [
     -1,
@@ -422,12 +422,12 @@
     "F#",
     "A"
    ],
-   "note": "Triángulo invertido; pide resolver a G."
+   "tip": "An upside-down triangle that wants to resolve to G."
   },
   {
    "id": "G7",
-   "name": "Sol 7",
-   "group": "septimas",
+   "name": "G 7",
+   "group": "sevenths",
    "level": 3,
    "frets": [
     3,
@@ -451,12 +451,12 @@
     "G",
     "B"
    ],
-   "note": "G con el índice en el traste 1 de la 1ra."
+   "tip": "G with the index on fret 1 of the 1st string."
   },
   {
    "id": "B7",
-   "name": "Si 7",
-   "group": "septimas",
+   "name": "B 7",
+   "group": "sevenths",
    "level": 3,
    "frets": [
     -1,
@@ -480,12 +480,12 @@
     "A",
     "B"
    ],
-   "note": "Cuatro dedos: el puente clásico hacia Em."
+   "tip": "Four fingers: the classic bridge back to Em."
   },
   {
    "id": "C7",
-   "name": "Do 7",
-   "group": "septimas",
+   "name": "C 7",
+   "group": "sevenths",
    "level": 3,
    "frets": [
     -1,
@@ -508,11 +508,11 @@
     "E",
     "A#"
    ],
-   "note": "C con el meñique en la 3ra cuerda."
+   "tip": "C with the pinky on the 3rd string."
   },
   {
    "id": "Cmaj7",
-   "name": "Do maj7",
+   "name": "C major 7",
    "group": "color",
    "level": 2,
    "frets": [
@@ -537,11 +537,11 @@
     "G",
     "B"
    ],
-   "note": "C sin el índice: suena suspendido y suave."
+   "tip": "C without the index: soft and floating."
   },
   {
    "id": "Fmaj7",
-   "name": "Fa maj7",
+   "name": "F major 7",
    "group": "color",
    "level": 2,
    "frets": [
@@ -566,11 +566,11 @@
     "F",
     "A"
    ],
-   "note": "La versión amable de F, sin cejilla."
+   "tip": "The friendly version of F, no barre needed."
   },
   {
    "id": "Cadd9",
-   "name": "Do add9",
+   "name": "C add9",
    "group": "color",
    "level": 2,
    "frets": [
@@ -595,11 +595,11 @@
     "E",
     "G"
    ],
-   "note": "Anular y meñique fijos en la 2da y 1ra: cambia fácil con G."
+   "tip": "Ring and pinky stay on the 2nd and 1st strings: an easy switch from G."
   },
   {
    "id": "Dsus4",
-   "name": "Re sus4",
+   "name": "D sus4",
    "group": "color",
    "level": 2,
    "frets": [
@@ -623,11 +623,11 @@
     "G",
     "A"
    ],
-   "note": "D con el meñique en la 1ra: tensión que pide volver a D."
+   "tip": "D with the pinky on the 1st string: tension that wants to return to D."
   },
   {
    "id": "Dsus2",
-   "name": "Re sus2",
+   "name": "D sus2",
    "group": "color",
    "level": 2,
    "frets": [
@@ -651,11 +651,11 @@
     "E",
     "A"
    ],
-   "note": "D sin la 1ra pisada: sonido abierto."
+   "tip": "D with the 1st string open: an airy sound."
   },
   {
    "id": "Asus2",
-   "name": "La sus2",
+   "name": "A sus2",
    "group": "color",
    "level": 2,
    "frets": [
@@ -679,11 +679,11 @@
     "A",
     "B"
    ],
-   "note": "A sin la 2da cuerda pisada."
+   "tip": "A with the 2nd string open."
   },
   {
    "id": "Asus4",
-   "name": "La sus4",
+   "name": "A sus4",
    "group": "color",
    "level": 2,
    "frets": [
@@ -707,12 +707,12 @@
     "E",
     "A"
    ],
-   "note": "A con el meñique en el traste 3 de la 2da."
+   "tip": "A with the pinky on fret 3 of the 2nd string."
   },
   {
    "id": "F",
-   "name": "Fa mayor",
-   "group": "cejilla",
+   "name": "F major",
+   "group": "barre",
    "level": 4,
    "frets": [
     1,
@@ -735,7 +735,7 @@
     "F",
     "A"
    ],
-   "note": "Forma de E con cejilla en el traste 1: apoyá el índice de costado.",
+   "tip": "An E shape barred at fret 1: lay the index on its side.",
    "barre": {
     "fret": 1,
     "from_string": 6,
@@ -744,8 +744,8 @@
   },
   {
    "id": "Fm",
-   "name": "Fa menor",
-   "group": "cejilla",
+   "name": "F minor",
+   "group": "barre",
    "level": 4,
    "frets": [
     1,
@@ -768,7 +768,7 @@
     "F",
     "G#"
    ],
-   "note": "Forma de Em con cejilla en el traste 1.",
+   "tip": "An Em shape barred at fret 1.",
    "barre": {
     "fret": 1,
     "from_string": 6,
@@ -777,8 +777,8 @@
   },
   {
    "id": "Bm",
-   "name": "Si menor",
-   "group": "cejilla",
+   "name": "B minor",
+   "group": "barre",
    "level": 4,
    "frets": [
     -1,
@@ -801,7 +801,7 @@
     "F#",
     "B"
    ],
-   "note": "Forma de Am con cejilla en el traste 2, desde la 5ta.",
+   "tip": "An Am shape barred at fret 2, from the 5th string.",
    "barre": {
     "fret": 2,
     "from_string": 5,
@@ -810,8 +810,8 @@
   },
   {
    "id": "B",
-   "name": "Si mayor",
-   "group": "cejilla",
+   "name": "B major",
+   "group": "barre",
    "level": 4,
    "frets": [
     -1,
@@ -834,7 +834,7 @@
     "F#",
     "B"
    ],
-   "note": "Forma de A con cejilla en el traste 2.",
+   "tip": "An A shape barred at fret 2.",
    "barre": {
     "fret": 2,
     "from_string": 5,
@@ -843,8 +843,8 @@
   },
   {
    "id": "Bb",
-   "name": "Si bemol",
-   "group": "cejilla",
+   "name": "B flat major",
+   "group": "barre",
    "level": 4,
    "frets": [
     -1,
@@ -867,7 +867,7 @@
     "F",
     "A#"
    ],
-   "note": "Forma de A con cejilla en el traste 1.",
+   "tip": "An A shape barred at fret 1.",
    "barre": {
     "fret": 1,
     "from_string": 5,
@@ -876,8 +876,8 @@
   },
   {
    "id": "F#m",
-   "name": "Fa# menor",
-   "group": "cejilla",
+   "name": "F sharp minor",
+   "group": "barre",
    "level": 4,
    "frets": [
     2,
@@ -900,7 +900,7 @@
     "F#",
     "A"
    ],
-   "note": "Forma de Em con cejilla en el traste 2.",
+   "tip": "An Em shape barred at fret 2.",
    "barre": {
     "fret": 2,
     "from_string": 6,
@@ -909,8 +909,8 @@
   },
   {
    "id": "C#m",
-   "name": "Do# menor",
-   "group": "cejilla",
+   "name": "C sharp minor",
+   "group": "barre",
    "level": 4,
    "frets": [
     -1,
@@ -933,7 +933,7 @@
     "E",
     "G#"
    ],
-   "note": "Forma de Am con cejilla en el traste 4.",
+   "tip": "An Am shape barred at fret 4.",
    "barre": {
     "fret": 4,
     "from_string": 5,
@@ -942,8 +942,8 @@
   },
   {
    "id": "Gm",
-   "name": "Sol menor",
-   "group": "cejilla",
+   "name": "G minor",
+   "group": "barre",
    "level": 4,
    "frets": [
     3,
@@ -966,7 +966,7 @@
     "G",
     "A#"
    ],
-   "note": "Forma de Em con cejilla en el traste 3.",
+   "tip": "An Em shape barred at fret 3.",
    "barre": {
     "fret": 3,
     "from_string": 6,
@@ -975,8 +975,8 @@
   },
   {
    "id": "E5",
-   "name": "Mi quinta",
-   "group": "quintas",
+   "name": "E power chord",
+   "group": "power",
    "level": 3,
    "frets": [
     0,
@@ -998,12 +998,12 @@
     "E",
     "B"
    ],
-   "note": "Solo dos o tres cuerdas graves: el sonido del rock."
+   "tip": "Just the two or three low strings: the sound of rock."
   },
   {
    "id": "A5",
-   "name": "La quinta",
-   "group": "quintas",
+   "name": "A power chord",
+   "group": "power",
    "level": 3,
    "frets": [
     -1,
@@ -1025,12 +1025,12 @@
     "E",
     "A"
    ],
-   "note": "Tónica en la 5ta cuerda al aire."
+   "tip": "Root on the open 5th string."
   },
   {
    "id": "D5",
-   "name": "Re quinta",
-   "group": "quintas",
+   "name": "D power chord",
+   "group": "power",
    "level": 3,
    "frets": [
     -1,
@@ -1052,12 +1052,12 @@
     "D",
     "A"
    ],
-   "note": "Tónica en la 4ta cuerda al aire."
+   "tip": "Root on the open 4th string."
   },
   {
    "id": "G5",
-   "name": "Sol quinta",
-   "group": "quintas",
+   "name": "G power chord",
+   "group": "power",
    "level": 3,
    "frets": [
     3,
@@ -1079,12 +1079,12 @@
     "D",
     "G"
    ],
-   "note": "Tónica en el traste 3 de la 6ta."
+   "tip": "Root on fret 3 of the 6th string."
   },
   {
    "id": "C5",
-   "name": "Do quinta",
-   "group": "quintas",
+   "name": "C power chord",
+   "group": "power",
    "level": 3,
    "frets": [
     -1,
@@ -1106,12 +1106,12 @@
     "C",
     "G"
    ],
-   "note": "Tónica en el traste 3 de la 5ta."
+   "tip": "Root on fret 3 of the 5th string."
   },
   {
    "id": "F5",
-   "name": "Fa quinta",
-   "group": "quintas",
+   "name": "F power chord",
+   "group": "power",
    "level": 3,
    "frets": [
     1,
@@ -1133,12 +1133,12 @@
     "C",
     "F"
    ],
-   "note": "Tónica en el traste 1 de la 6ta."
+   "tip": "Root on fret 1 of the 6th string."
   },
   {
    "id": "B5",
-   "name": "Si quinta",
-   "group": "quintas",
+   "name": "B power chord",
+   "group": "power",
    "level": 3,
    "frets": [
     -1,
@@ -1160,7 +1160,7 @@
     "F#",
     "B"
    ],
-   "note": "Tónica en el traste 2 de la 5ta."
+   "tip": "Root on fret 2 of the 5th string."
   }
  ]
 }

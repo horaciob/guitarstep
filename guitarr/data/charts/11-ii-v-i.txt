@@ -1,0 +1,10 @@
+title: Jazz basics: ii–V–I in C
+level: 4
+bpm: 80
+time: 4/4
+strum: D.D.D.D.
+note: Dm7 → G7 → Cmaj7: tension and release. Listen to how each chord "falls" into the next.
+
+[Loop]
+Dm7 | G7 | Cmaj7 | Cmaj7
+Dm7 | G7 | Cmaj7 | A7

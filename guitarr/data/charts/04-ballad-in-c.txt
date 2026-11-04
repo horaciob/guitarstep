@@ -1,0 +1,10 @@
+title: Ballad in C with Fmaj7
+level: 2
+bpm: 72
+time: 4/4
+strum: D..UD.DU
+note: Fmaj7 is the doorway to F: the same 3-2-1 fingers, no barre.
+
+[Loop]
+C | Am | Fmaj7 | G
+C | Am | Fmaj7 | G

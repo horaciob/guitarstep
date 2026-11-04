@@ -1,4 +1,4 @@
-"""Carga de referencias (MIDI, Guitar Pro, audio) y transcripción audio→notas con caché."""
+"""Reference loading (MIDI, Guitar Pro, audio, chord charts) and cached audio→notes transcription."""
 from __future__ import annotations
 
 import contextlib
@@ -27,7 +27,7 @@ Log = Callable[[str], None]
 
 
 class ReferenceError(Exception):
-    """Error de usuario al cargar la referencia (mensaje listo para mostrar)."""
+    """User-facing error while loading a reference (message ready to show)."""
 
 
 @dataclass
@@ -43,8 +43,8 @@ class RefOptions:
     onset_threshold: float = 0.5
     frame_threshold: float = 0.3
     min_amp: float = 0.2
-    chart: dict | None = None       # cifrado de acordes, en vez de un archivo
-    notes: list[int] | None = None  # secuencia de notas MIDI (ejercicios de la ruta)
+    chart: dict | None = None       # chord chart instead of a file
+    notes: list[int] | None = None  # MIDI note sequence (course exercises)
 
     @property
     def tx(self) -> dict:
@@ -61,19 +61,19 @@ def file_hash(path: Path, *extra) -> str:
     return h.hexdigest()[:16]
 
 
-# ---------------------------------------------------------------- transcripción (basic-pitch)
-HARMONIC_INTERVALS = {12, 19, 24, 28, 31, 36}  # 2do..8vo armónico en semitonos
+# ---------------------------------------------------------------- transcription (basic-pitch)
+HARMONIC_INTERVALS = {12, 19, 24, 28, 31, 36}  # 2nd..8th harmonic, in semitones
 
 
 def clean_notes(notes: list[Note], win: float = 0.05) -> list[Note]:
-    """Quita los dos artefactos típicos de la transcripción de guitarra:
+    """Removes the two typical guitar-transcription artifacts:
 
-    - armónicos: nota débil que arranca junto con una más grave y fuerte, a un
-      intervalo armónico (octava, 12va, 2 octavas...).
-    - resonancia: la nota anterior que sigue sonando y se re-detecta como nota
-      corta y débil justo en el ataque de la siguiente.
+    - harmonics: a weak note starting together with a lower, stronger one at a
+      harmonic interval (octave, 12th, two octaves...).
+    - ringing: the previous note still sounding, re-detected as a short weak
+      note right at the next attack.
 
-    O(n·k) con k = notas en la ventana: usa búsqueda binaria sobre los ataques.
+    O(n·k) with k = notes in the window: binary search over the onsets.
     """
     notes = sorted(notes, key=lambda n: (n.start, n.pitch))
     starts = np.array([n.start for n in notes])
@@ -111,7 +111,7 @@ def transcribe(path: Path, onset_threshold: float = 0.5, frame_threshold: float 
                min_amp: float = 0.2, use_cache: bool = True) -> list[Note]:
     path = Path(path)
     key = file_hash(path, "tx-v1", onset_threshold, frame_threshold)
-    cache = config.CACHE_DIR / "transcripciones" / f"{key}.json"
+    cache = config.CACHE_DIR / "transcriptions" / f"{key}.json"
     raw = None
     if use_cache and cache.exists():
         try:
@@ -120,14 +120,14 @@ def transcribe(path: Path, onset_threshold: float = 0.5, frame_threshold: float 
             raw = None
     if raw is None:
         predict, model = _quiet_import_basic_pitch()
-        with contextlib.redirect_stdout(io.StringIO()), warnings.catch_warnings():  # CoreML imprime debug
+        with contextlib.redirect_stdout(io.StringIO()), warnings.catch_warnings():  # CoreML prints debug output
             warnings.simplefilter("ignore")
             _, _, events = predict(
                 str(path), model,
                 onset_threshold=onset_threshold, frame_threshold=frame_threshold,
                 minimum_note_length=60,       # ms
-                minimum_frequency=75,         # ~D2, por debajo de la 6ta en Drop D
-                maximum_frequency=1400,       # ~F6, traste 24 de la 1ra
+                minimum_frequency=75,         # ~D2, below the 6th string in drop D
+                maximum_frequency=1400,       # ~F6, fret 24 of the 1st string
                 melodia_trick=True,
             )
         raw = [[float(s), float(e), int(p), float(a)] for s, e, p, a, *_ in events]
@@ -139,25 +139,25 @@ def transcribe(path: Path, onset_threshold: float = 0.5, frame_threshold: float 
 
 
 def separate_guitar(path: Path, log: Log = print) -> Path:
-    """Aísla la guitarra con Demucs (modelo de 6 stems), con caché por contenido."""
-    outdir = config.CACHE_DIR / "separado" / file_hash(path)
+    """Isolates the guitar with Demucs (6-stem model), cached by file content."""
+    outdir = config.CACHE_DIR / "separated" / file_hash(path)
     out = outdir / "htdemucs_6s" / path.stem / "guitar.wav"
     if out.exists():
-        log(f"[demucs] uso la separación guardada: {out}")
+        log(f"[demucs] using cached separation: {out}")
         return out
-    log(f"[demucs] separando guitarra de {path.name} (puede tardar)...")
+    log(f"[demucs] separating the guitar from {path.name} (this can take a while)...")
     try:
         subprocess.run([sys.executable, "-m", "demucs", "-n", "htdemucs_6s", "--two-stems", "guitar",
                         "-o", str(outdir), str(path)], check=True)
     except (subprocess.CalledProcessError, FileNotFoundError) as e:
-        raise ReferenceError("Falló Demucs. ¿Está instalado? pip install demucs") from e
-    log(f"[demucs] guitarra aislada: {out}")
+        raise ReferenceError("Demucs failed. Is it installed? pip install demucs") from e
+    log(f"[demucs] isolated guitar: {out}")
     return out
 
 
 def audio_grid(path: Path) -> Grid:
     key = file_hash(path, "beats-v1")
-    cache = config.CACHE_DIR / "pulsos" / f"{key}.json"
+    cache = config.CACHE_DIR / "beats" / f"{key}.json"
     if cache.exists():
         beats = json.loads(cache.read_text())
     else:
@@ -182,11 +182,11 @@ def save_midi(notes: list[Note], path: Path) -> None:
     pm.write(str(path))
 
 
-# ---------------------------------------------------------------- tablatura
+# ---------------------------------------------------------------- tablature
 def assign_tab(notes: list[Note], tuning: list[int] = STANDARD_TUNING, max_fret: int = 22,
                win: float = 0.035) -> None:
-    """Elige cuerda/traste para las notas que no lo traen, intentando no mover
-    mucho la mano (heurística greedy: la nota más aguda del acorde va primero)."""
+    """Picks string/fret for notes that don't have one, trying not to move the
+    hand much (greedy heuristic: the highest note of each chord goes first)."""
     hand = 5.0
     i = 0
     notes_sorted = sorted(notes, key=lambda n: (n.start, -n.pitch))
@@ -229,12 +229,12 @@ def _pick(items, track: str | None, name_of, is_guitar, path: Path, log: Log):
     if track is not None:
         sel = [x for k, x in enumerate(items) if track == str(k) or track.lower() in (name_of(x) or "").lower()]
         if not sel:
-            raise ReferenceError(f"No encontré la pista '{track}'. Mirá las pistas con: guitarr tracks {path}")
+            raise ReferenceError(f"Track '{track}' not found. List the tracks with: guitarr tracks {path}")
         return sel[0]
     if len(items) > 1:
         guitars = [x for x in items if is_guitar(x)] or items
-        log(f"⚠️  El archivo tiene {len(items)} pistas; uso '{name_of(guitars[0]) or 'sin nombre'}'. "
-            f"Elegí otra con --track (ver: guitarr tracks {path})")
+        log(f"⚠️  The file has {len(items)} tracks; using '{name_of(guitars[0]) or 'unnamed'}'. "
+            f"Pick another with --track (see: guitarr tracks {path})")
         return guitars[0]
     return items[0]
 
@@ -245,7 +245,7 @@ def load_midi(path: Path, track: str | None = None, log: Log = print) -> Referen
     pm = pretty_midi.PrettyMIDI(str(path))
     insts = _midi_instruments(pm)
     if not insts:
-        raise ReferenceError("El MIDI no tiene pistas con notas.")
+        raise ReferenceError("The MIDI file has no tracks with notes.")
     inst = _pick(insts, track, lambda i: i.name, lambda i: 24 <= i.program <= 31, path, log)
     notes = sorted((Note(n.start, n.end, n.pitch, n.velocity / 127) for n in inst.notes),
                    key=lambda n: (n.start, n.pitch))
@@ -265,20 +265,20 @@ def _gp_tracks(song):
 
 
 def load_gp(path: Path, track: str | None = None, log: Log = print) -> Reference:
-    """Guitar Pro 3-5: trae cuerda y traste reales. Las repeticiones se leen tal cual
-    están escritas (sin desplegarlas)."""
+    """Guitar Pro 3-5: comes with real string and fret. Repeats are read as written
+    (not unfolded)."""
     import guitarpro
 
     try:
         song = guitarpro.parse(str(path))
-    except Exception as e:  # formato inválido / versión no soportada
-        raise ReferenceError(f"No pude leer el archivo Guitar Pro: {e}") from e
+    except Exception as e:  # invalid format / unsupported version
+        raise ReferenceError(f"Could not read the Guitar Pro file: {e}") from e
     tracks = _gp_tracks(song)
     if not tracks:
-        raise ReferenceError("El archivo no tiene pistas de guitarra.")
+        raise ReferenceError("The file has no guitar tracks.")
     tr = _pick(tracks, track, lambda t: t.name, lambda t: len(t.strings) in (6, 7, 8), path, log)
 
-    # mapa de tempo (ticks -> segundos) con los cambios de tempo de todas las pistas
+    # tempo map (ticks -> seconds) built from the tempo changes of every track
     changes = {0: float(song.tempo)}
     t0 = song.measureHeaders[0].start if song.measureHeaders else 0
     for t in song.tracks:
@@ -330,7 +330,7 @@ def load_gp(path: Path, track: str | None = None, log: Log = print) -> Reference
                     notes.append(note)
                     open_by_string[n.string] = note
     if not notes:
-        raise ReferenceError(f"La pista '{tr.name}' no tiene notas.")
+        raise ReferenceError(f"Track '{tr.name}' has no notes.")
     notes.sort(key=lambda n: (n.start, n.pitch))
     bpb = last.timeSignature.numerator if last is not None else 4
     grid = Grid(beats, bpb, bar_starts)
@@ -338,17 +338,17 @@ def load_gp(path: Path, track: str | None = None, log: Log = print) -> Reference
                      tuning=[t + capo for t in tuning])
 
 
-# ---------------------------------------------------------------- cifrados (cancionero)
-OPEN_STRINGS = [40, 45, 50, 55, 59, 64]  # cuerda 6 ... cuerda 1
+# ---------------------------------------------------------------- chord charts
+OPEN_STRINGS = [40, 45, 50, 55, 59, 64]  # string 6 ... string 1
 
 
 def load_chart(chart: dict) -> Reference:
-    """Referencia a partir de un cifrado: un rasguido al principio de cada acorde.
+    """Reference from a chord chart: one strum at the start of each chord.
 
         {"title": "...", "bpm": 118, "beats_per_bar": 4, "capo": 2,
          "bars": [{"chord": "G", "beats": 4, "frets": [3, 2, 0, 0, 0, 3]}, ...]}
 
-    `frets` va de la 6ta a la 1ra cuerda (-1 o null = no suena), relativo al capo.
+    `frets` go from the 6th to the 1st string (-1 or null = not played), relative to the capo.
     """
     try:
         bpm = float(chart.get("bpm") or 90)
@@ -356,7 +356,7 @@ def load_chart(chart: dict) -> Reference:
         capo = int(chart.get("capo") or 0)
         bars = chart["bars"]
     except (KeyError, TypeError, ValueError) as e:
-        raise ReferenceError(f"Cifrado inválido: {e}") from e
+        raise ReferenceError(f"Invalid chart: {e}") from e
     beat = 60 / bpm
     t = 0.0
     notes: list[Note] = []
@@ -369,24 +369,24 @@ def load_chart(chart: dict) -> Reference:
             notes.append(Note(t, t + dur * 0.95, OPEN_STRINGS[i] + capo + int(f), 0.8, 6 - i, int(f), b.get("chord")))
         t += dur
     if not notes:
-        raise ReferenceError("El cifrado no tiene acordes con digitación conocida.")
+        raise ReferenceError("The chart has no chords with a known fingering.")
     grid = Grid.from_bpm(bpm, 0.0, bpb, t + 10)
-    return Reference(sorted(notes, key=lambda n: (n.start, n.pitch)), grid, name=chart.get("title") or "cifrado",
-                     path=f"cifrado:{chart.get('id') or chart.get('title') or 'cifrado'}", capo=capo)
-    # la tab va relativa al capo, así que las cuerdas se rotulan con la afinación estándar
+    return Reference(sorted(notes, key=lambda n: (n.start, n.pitch)), grid, name=chart.get("title") or "chart",
+                     path=f"chart:{chart.get('id') or chart.get('title') or 'chart'}", capo=capo)
+    # the tab is relative to the capo, so strings keep their standard-tuning labels
 
 
 def load_note_sequence(pitches: list[int], bpm: float = 60) -> Reference:
-    """Notas sueltas, una por tiempo (para tocar en modo espera)."""
+    """Single notes, one per beat (to be played in wait mode)."""
     beat = 60 / bpm
     notes = [Note(k * beat, (k + 0.9) * beat, int(p), 0.8) for k, p in enumerate(pitches)]
     if not notes:
-        raise ReferenceError("El ejercicio no tiene notas.")
+        raise ReferenceError("The exercise has no notes.")
     assign_tab(notes)
-    return Reference(notes, Grid.from_bpm(bpm, 0.0, 4, len(notes) * beat + 10), name="ejercicio", path="ejercicio")
+    return Reference(notes, Grid.from_bpm(bpm, 0.0, 4, len(notes) * beat + 10), name="exercise", path="exercise")
 
 
-# ---------------------------------------------------------------- listados / entrada principal
+# ---------------------------------------------------------------- listings / main entry point
 def list_tracks(path: Path) -> list[dict]:
     path = Path(path)
     ext = path.suffix.lower()
@@ -396,15 +396,15 @@ def list_tracks(path: Path) -> list[dict]:
 
         pm = pretty_midi.PrettyMIDI(str(path))
         for k, i in enumerate(_midi_instruments(pm)):
-            kind = "guitarra" if 24 <= i.program <= 31 else pretty_midi.program_to_instrument_name(i.program)
-            out.append(dict(index=k, name=i.name or "(sin nombre)", kind=kind, notes=len(i.notes)))
+            kind = "guitar" if 24 <= i.program <= 31 else pretty_midi.program_to_instrument_name(i.program)
+            out.append(dict(index=k, name=i.name or "(unnamed)", kind=kind, notes=len(i.notes)))
     elif ext in GP_EXT:
         import guitarpro
 
         song = guitarpro.parse(str(path))
         for k, t in enumerate(_gp_tracks(song)):
             n = sum(len(b.notes) for m in t.measures for v in m.voices for b in v.beats)
-            out.append(dict(index=k, name=t.name, kind=f"{len(t.strings)} cuerdas", notes=n))
+            out.append(dict(index=k, name=t.name, kind=f"{len(t.strings)} strings", notes=n))
     return out
 
 
@@ -414,10 +414,10 @@ def load_reference(opts: RefOptions, log: Log = print) -> Reference:
     if opts.notes is not None:
         return load_note_sequence(opts.notes)
     if opts.path is None:
-        raise ReferenceError("Falta la referencia.")
+        raise ReferenceError("Missing reference.")
     path = Path(opts.path)
     if not path.exists():
-        raise ReferenceError(f"No existe el archivo {path}")
+        raise ReferenceError(f"File not found: {path}")
     ext = path.suffix.lower()
     if ext in MIDI_EXT:
         ref = load_midi(path, opts.track, log)
@@ -425,12 +425,12 @@ def load_reference(opts: RefOptions, log: Log = print) -> Reference:
         ref = load_gp(path, opts.track, log)
     elif ext in AUDIO_EXT:
         src = separate_guitar(path, log) if opts.separate else path
-        log(f"[transcribiendo] referencia: {src.name}")
+        log(f"[transcribing] reference: {src.name}")
         notes = transcribe(src, **opts.tx)
         assign_tab(notes)
         ref = Reference(notes, audio_grid(src), name=path.stem, path=str(path))
     else:
-        raise ReferenceError(f"Formato no soportado: {ext} (usá MIDI, Guitar Pro o audio)")
+        raise ReferenceError(f"Unsupported format: {ext} (use MIDI, Guitar Pro or audio)")
     if opts.bpm:
         ref.grid = Grid.from_bpm(opts.bpm, opts.first_beat, opts.beats_per_bar, ref.end + 10)
     return _slice(ref, opts, log)
@@ -442,7 +442,7 @@ def _slice(ref: Reference, opts: RefOptions, log: Log) -> Reference:
         t1 = ref.grid.bar_time(opts.end_bar + 1) if opts.end_bar else np.inf
         ref.all_notes = ref.notes
         ref.notes = [n for n in ref.notes if t0 - 0.02 <= n.start < t1 - 0.02]
-        log(f"Practicando compases {opts.start_bar or 1}–{opts.end_bar or 'fin'} ({len(ref.notes)} notas)")
+        log(f"Practicing bars {opts.start_bar or 1}–{opts.end_bar or 'end'} ({len(ref.notes)} notes)")
     if not ref.notes:
-        raise ReferenceError("La referencia no tiene notas (¿rango de compases vacío?).")
+        raise ReferenceError("The reference has no notes (empty bar range?).")
     return ref

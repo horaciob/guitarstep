@@ -3,10 +3,10 @@ from guitarr import config, history
 
 def test_config_roundtrip():
     config.update_audio(device="Scarlett 2i2 \"USB\"", channel=2, latency_ms=12.5)
-    config.save_song_preset("mi canción.gp5", track="lead", start_bar=9, end_bar=12, speed=0.7)
+    config.save_song_preset("my song.gp5", track="lead", start_bar=9, end_bar=12, speed=0.7)
     data = config.load()
     assert data["audio"] == {"device": 'Scarlett 2i2 "USB"', "channel": 2, "latency_ms": 12.5}
-    assert config.song_preset("/otra/ruta/mi canción.gp5") == {"track": "lead", "start_bar": 9,
+    assert config.song_preset("/another/path/my song.gp5") == {"track": "lead", "start_bar": 9,
                                                                "end_bar": 12, "speed": 0.7}
 
 

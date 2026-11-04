@@ -10,14 +10,14 @@ def cache_dir(tmp_path_factory):
 
 @pytest.fixture(autouse=True)
 def home(tmp_path, monkeypatch, cache_dir):
-    """Cada test usa su propio ~/.guitarr (config, historial, tomas). La caché de
-    transcripciones se comparte en la sesión para no correr basic-pitch de más."""
+    """Every test gets its own ~/.guitarr (config, history, takes). The transcription
+    cache is shared across the session so basic-pitch doesn't run more than needed."""
     h = tmp_path / "home"
     monkeypatch.setattr(config, "HOME", h)
     monkeypatch.setattr(config, "CONFIG_PATH", h / "config.toml")
-    monkeypatch.setattr(config, "SONGS_DIR", h / "canciones")
-    monkeypatch.setattr(config, "TAKES_DIR", h / "tomas")
-    monkeypatch.setattr(config, "HISTORY_DIR", h / "historial")
+    monkeypatch.setattr(config, "SONGS_DIR", h / "songs")
+    monkeypatch.setattr(config, "TAKES_DIR", h / "takes")
+    monkeypatch.setattr(config, "HISTORY_DIR", h / "history")
     monkeypatch.setattr(config, "CACHE_DIR", cache_dir)
     return h
 

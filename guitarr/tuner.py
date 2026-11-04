@@ -1,4 +1,4 @@
-"""Afinador (reusa el YIN del modo en vivo) y calibración de latencia."""
+"""Tuner (reuses the live-mode YIN) and latency calibration."""
 from __future__ import annotations
 
 import queue
@@ -10,7 +10,7 @@ import numpy as np
 from .core import STANDARD_TUNING, note_name
 from .dsp import db, yin
 
-STRING_NAMES = {64: "1ra (E4)", 59: "2da (B3)", 55: "3ra (G3)", 50: "4ta (D3)", 45: "5ta (A2)", 40: "6ta (E2)"}
+STRING_OF = {64: 1, 59: 2, 55: 3, 50: 4, 45: 5, 40: 6}   # open-string MIDI → string number
 
 
 class Tuner:
@@ -36,15 +36,17 @@ class Tuner:
             return dict(note=None, level_db=round(lvl, 1))
         m += 12 * np.log2(440.0 / self.a4)
         if self.hist and abs(m - np.median(self.hist)) > 0.6:
-            self.hist.clear()  # cambió de cuerda
+            self.hist.clear()  # switched strings
         self.hist.append(m)
         mm = float(np.median(self.hist))
         p = int(round(mm))
         nearest = min(STANDARD_TUNING, key=lambda s: abs(s - mm))
+        near = abs(nearest - mm) < 0.75
         return dict(note=note_name(p), midi=round(mm, 2), cents=round((mm - p) * 100, 1),
                     freq=round(self.a4 * 2 ** ((mm - 69) / 12), 2), level_db=round(lvl, 1),
-                    string=STRING_NAMES[nearest] if abs(nearest - mm) < 0.75 else None,
-                    string_cents=round((mm - nearest) * 100, 1) if abs(nearest - mm) < 0.75 else None)
+                    string=STRING_OF[nearest] if near else None,
+                    string_note=note_name(nearest) if near else None,
+                    string_cents=round((mm - nearest) * 100, 1) if near else None)
 
     def run(self, on_reading=None, every: float = 0.04) -> None:
         self.src.start()
@@ -83,22 +85,22 @@ def run_tuner_cli(src) -> None:
 
     def view(r: dict):
         t = Text()
-        t.append("🎸 afinador  ", style="bold")
+        t.append("🎸 tuner  ", style="bold")
         t.append(f"{src.name}\n\n", style="dim")
         if r.get("note") is None:
-            t.append("Tocá una cuerda al aire...\n", style="cyan")
+            t.append("Play an open string...\n", style="cyan")
         else:
             c = r["cents"]
             ok = abs(c) <= 5
             t.append(f"{r['note']:>4s}  ", style="bold green" if ok else "bold yellow")
             t.append(f"{c:+5.1f} cents   {r['freq']:.1f} Hz\n")
             t.append(tuner_bar(c) + "\n", style="green" if ok else "yellow")
-            t.append("bemol" + " " * 31 + "sostenido\n", style="dim")
+            t.append("flat" + " " * 33 + "sharp\n", style="dim")
             if r.get("string"):
                 sc = r["string_cents"]
-                hint = "✓ afinada" if abs(sc) <= 5 else ("subí" if sc < 0 else "bajá")
-                t.append(f"\ncuerda {r['string']}: {sc:+.0f} cents → {hint}", style="bold")
-        t.append(f"\n\nnivel {r.get('level_db', -120):.0f} dB   Ctrl+C para salir", style="dim")
+                hint = "✓ in tune" if abs(sc) <= 5 else ("tune up" if sc < 0 else "tune down")
+                t.append(f"\nstring {r['string']} ({r['string_note']}): {sc:+.0f} cents → {hint}", style="bold")
+        t.append(f"\n\nlevel {r.get('level_db', -120):.0f} dB   Ctrl+C to quit", style="dim")
         return Panel(t, border_style="cyan")
 
     with Live(view(tuner.reading), refresh_per_second=20) as live:
@@ -113,12 +115,12 @@ def run_tuner_cli(src) -> None:
             th.join(1)
 
 
-# ---------------------------------------------------------------- calibración de latencia
+# ---------------------------------------------------------------- latency calibration
 def calibrate(device, channel: int, output_device=None, bpm: float = 90, beats: int = 12,
               warmup: int = 4, on_progress=None, stop_event: threading.Event | None = None) -> dict:
-    """Suena un click; tocás cuerdas muteadas junto con cada click. La mediana del
-    desvío (ataque detectado − click) es la latencia total de ida y vuelta + el
-    sesgo del detector. Las primeras `warmup` son para agarrar el pulso."""
+    """A click plays; you hit muted strings together with every click. The median of the
+    offset (detected onset − click) is the total round-trip latency plus the detector's
+    bias. The first `warmup` clicks are for catching the pulse."""
     from .audio_io import Metronome, MicSource
     from .dsp import Detector, Recorder
 
@@ -155,10 +157,10 @@ def calibrate(device, channel: int, output_device=None, bpm: float = 90, beats: 
         if near:
             offs.append(min(near, key=abs))
     if len(offs) < beats // 2:
-        return dict(ok=False, hits=len(offs), message="No detecté suficientes golpes. Subí la ganancia "
-                                                      "o tocá más fuerte, sin distorsión.")
+        return dict(ok=False, code="too_few_hits", hits=len(offs),
+                    message="Not enough hits detected. Raise the gain or play harder, without distortion.")
     offs = np.array(offs)
     med = float(np.median(offs))
     spread = float(np.median(np.abs(offs - med)))
-    return dict(ok=True, latency_ms=round(1000 * med, 1), spread_ms=round(1000 * spread, 1), hits=len(offs),
-                message=f"Latencia {1000 * med:.0f} ms (±{1000 * spread:.0f} ms, {len(offs)} golpes)")
+    return dict(ok=True, code="ok", latency_ms=round(1000 * med, 1), spread_ms=round(1000 * spread, 1), hits=len(offs),
+                message=f"Latency {1000 * med:.0f} ms (±{1000 * spread:.0f} ms, {len(offs)} hits)")

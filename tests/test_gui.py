@@ -1,4 +1,4 @@
-"""API de la interfaz gráfica (sin navegador ni placa de audio)."""
+"""Web UI API (no browser, no audio interface)."""
 import json
 import time
 

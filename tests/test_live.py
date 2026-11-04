@@ -1,10 +1,10 @@
-"""Modo en vivo con --simulate (sin guitarra) + piezas sueltas del seguidor."""
+"""Live mode with --simulate (no guitar) + individual follower pieces."""
 import numpy as np
 import pytest
 
 from guitarr.core import Grid, Note
 from guitarr.dsp import Detection, Detector, Recorder, chroma
-from guitarr.follow import Event, Judge, TempoFollower, Trainer, group_events
+from guitarr.follow import Event, Judge, TempoFollower, Trainer, describe, group_events
 from guitarr.reference import RefOptions, load_reference
 from guitarr.session import LiveOptions, LiveSession
 
@@ -12,8 +12,8 @@ SR = 44100
 
 
 def run_sim(demo_dir, **kw):
-    ref = load_reference(RefOptions(demo_dir / "referencia.mid"), log=lambda m: None)
-    opts = LiveOptions(simulate=demo_dir / "toma.wav", fast=True, **kw)
+    ref = load_reference(RefOptions(demo_dir / "reference.mid"), log=lambda m: None)
+    opts = LiveOptions(simulate=demo_dir / "take.wav", fast=True, **kw)
     return LiveSession(ref, opts).run()
 
 
@@ -29,7 +29,7 @@ def test_tempo_mode_simulated(demo_dir):
     assert ("wrong", 1, 3.5) in i
     assert ("missed", 2, 3.0) in i
     assert ("timing", 4, 2.0) in i
-    assert s["extras"] <= 1                    # la nota de más plantada (y ninguna falsa)
+    assert s["extras"] <= 1                    # the planted extra note (and no false ones)
     assert len(r["passes"]) == 1
     assert {"bar", "notes", "errors", "timing"} <= set(r["bars"][0])
 
@@ -37,8 +37,8 @@ def test_tempo_mode_simulated(demo_dir):
 def test_wait_mode_simulated(demo_dir):
     r = run_sim(demo_dir, mode="wait")
     i = issues(r)
-    assert ("missed", 1, 3.5) in i             # E4 salteada (tocó F4)
-    assert ("missed", 2, 3.0) in i             # G4 nunca sonó
+    assert ("missed", 1, 3.5) in i             # E4 skipped (F4 was played)
+    assert ("missed", 2, 3.0) in i             # G4 never sounded
     assert r["summary"]["first_try"] >= 29
 
 
@@ -78,17 +78,18 @@ def test_legato_onsets_are_recovered():
 def test_chord_feedback_names_missing_note():
     t = np.arange(4096) / SR
     tone = lambda m: sum(np.sin(2 * np.pi * h * 440 * 2 ** ((m - 69) / 12) * t) / h for h in range(1, 4))
-    ev = Event(0.0, [45, 52, 57, 61])            # La mayor: A E A C#
+    ev = Event(0.0, [45, 52, 57, 61])            # A major: A E A C#
     judge = Judge()
     hear = lambda ps: Detection(0.0, None, 0.0, chroma(sum(tone(p) for p in ps), SR), -20.0)
     res, detail = judge(ev, hear([45, 52, 57, 61]))
     assert res == "ok"
-    res, detail = judge(ev, hear([45, 52, 57, 60]))   # La menor en vez de La mayor
-    assert res == "wrong"
-    assert "faltó C# (3ra)" in detail and "sobró C" in detail
-    res, detail = judge(ev, hear([45, 52, 57]))       # sin la 3ra: pasa, pero avisa
-    assert res == "ok" and "no se escuchó C#" in detail
-    res, detail = Judge(transpose=2)(ev, hear([43, 50, 55, 59]))  # afinado un tono abajo
+    res, detail = judge(ev, hear([45, 52, 57, 60]))   # A minor instead of A major
+    assert res == "wrong" and detail["kind"] == "chord_wrong"
+    assert dict(note="C#", interval="maj3") in detail["missing"] and "C" in detail["extra"]
+    assert describe(detail).startswith("chord: missing C# (major 3rd), extra C")
+    res, detail = judge(ev, hear([45, 52, 57]))       # no third: passes, but says so
+    assert res == "ok" and detail["unheard"] == ["C#"]
+    res, detail = Judge(transpose=2)(ev, hear([43, 50, 55, 59]))  # tuned a whole step down
     assert res == "ok"
 
 
@@ -103,29 +104,29 @@ def test_trainer_speeds_up_after_clean_pass_and_loops():
                       trainer=Trainer(step=0.1, target=90, max_speed=1.0), click=True)
     f.schedule(1.0)
     n_clicks = len(f.clicks)
-    assert n_clicks == 4 + 4                      # cuenta de entrada + un compás
+    assert n_clicks == 4 + 4                      # count-in + one bar
     for e in f.events:
         f.on_detection(fake_det(e.due + 0.01, e.pitches[0]))
     msg = f.tick(f.pass_end + 0.01)
     assert f.passes[0]["score"] == 100
     assert f.speed == pytest.approx(0.6)
-    assert "50% → 60%" in msg
-    assert len(f.clicks) > n_clicks               # programó la vuelta siguiente
+    assert msg["code"] == "pass" and msg["params"]["new_speed"] == 0.6 and "50% → 60%" in msg["text"]
+    assert len(f.clicks) > n_clicks               # scheduled the next pass
     assert all(e.status == "pending" for e in f.events)
-    # vuelta mala: baja
+    # bad pass: slows down
     f.tick(f.pass_end + 0.01)
     assert f.passes[-1]["score"] == 0 and f.speed == pytest.approx(0.5)
 
 
 def test_note_late_inside_window_is_not_marked_missed_before_analysis(demo_dir):
-    """El seguidor no debe cerrar la ventana de una nota mientras su ataque todavía
-    se está analizando (~110 ms de retardo)."""
+    """The follower must not close a note's window while its onset is still being
+    analyzed (~110 ms of lag)."""
     notes = [Note(0.0, 0.4, 60), Note(1.0, 1.4, 62)]
     grid = Grid(np.arange(8) * 0.5, 4)
     f = TempoFollower(group_events(notes), Judge(), speed=1.0, window=0.2, grid=grid, click=False)
     f.start(1.0)
     ev = f.events[1]
-    f.tick(ev.due + ev.win - 0.01)  # el horizonte de análisis todavía no pasó la ventana
+    f.tick(ev.due + ev.win - 0.01)  # the analysis horizon hasn't passed the window yet
     assert ev.status == "pending"
     f.on_detection(fake_det(ev.due + 0.15, 62))
     assert ev.status == "ok"

@@ -1,0 +1,10 @@
+title: Three major chords: D, A and E
+level: 1
+bpm: 76
+time: 4/4
+strum: D.D.DUDU
+note: The A and E shapes are the same, moved one string. D wants you to strum from the 4th string.
+
+[Loop]
+D | D | A | A
+E | E | A | A

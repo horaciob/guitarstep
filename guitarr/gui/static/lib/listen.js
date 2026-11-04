@@ -1,5 +1,5 @@
-// "Escuchame": le pide al backend que oiga la guitarra para una tarea (acorde, ejercicio,
-// minuto de cambio…) y va avisando el estado hasta que llega el reporte con lo ganado.
+// "Listen to me": asks the backend to listen to the guitar for a task (chord, exercise,
+// chord-change minute…) and reports the state until the report with the earned XP arrives.
 import { api, progressChanged } from "./ui.js";
 
 export function listen(payload, { onState, onMessage, timeoutS = 0 } = {}) {
@@ -7,7 +7,7 @@ export function listen(payload, { onState, onMessage, timeoutS = 0 } = {}) {
   const stop = async () => {
     if (stopped) return;
     stopped = true;
-    try { await api("/api/live/stop", { method: "POST" }); } catch { /* ya terminó */ }
+    try { await api("/api/live/stop", { method: "POST" }); } catch { /* already finished */ }
   };
   const done = (async () => {
     await api("/api/live/start", { json: payload });
@@ -18,9 +18,10 @@ export function listen(payload, { onState, onMessage, timeoutS = 0 } = {}) {
       try { st = await api("/api/live/state"); } catch { continue; }
       if (st.state) {
         onState && onState(st.state);
-        if (st.state.last && st.state.last !== lastMsg) {
-          lastMsg = st.state.last;
-          onMessage && onMessage(lastMsg);
+        const key = st.state.last && JSON.stringify(st.state.last);
+        if (key && key !== lastMsg) {
+          lastMsg = key;
+          onMessage && onMessage(st.state.last);
         }
         if (st.state.error) throw new Error(st.state.error);
       }

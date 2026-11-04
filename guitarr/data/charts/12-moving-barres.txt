@@ -1,0 +1,10 @@
+title: Moving barre chords
+level: 4
+bpm: 72
+time: 4/4
+strum: D.D.DUDU
+note: The same shape moved along the neck. Release the pressure between chords and squeeze again when you land.
+
+[Loop]
+F | Gm | Bb | C
+F | Bm | F#m | C#m

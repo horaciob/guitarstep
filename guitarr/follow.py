@@ -1,8 +1,12 @@
-"""Seguidores de partitura: juzgan cada ataque detectado contra la referencia.
+"""Score followers: judge every detected onset against the reference.
 
-  WaitFollower  : espera a que toques bien la nota/acorde siguiente.
-  TempoFollower : cada evento tiene su momento según el metrónomo; juzga nota y
-                  timing. Soporta loop y entrenador de velocidad.
+  WaitFollower  : waits until you play the next note/chord correctly.
+  TempoFollower : every event has its moment on the metronome; judges note and
+                  timing. Supports looping and the speed trainer.
+
+Everything that reaches the user is structured: a judgment `detail` is a dict with a
+`kind`, and messages are dicts with a stable `code`, `params` and an English `text`.
+The web UI translates `code` + `params`; the CLI prints `text`.
 """
 from __future__ import annotations
 
@@ -13,23 +17,101 @@ import numpy as np
 from .core import NOTE_NAMES, Grid, Note, note_name
 from .dsp import Detection, chord_template
 
-INTERVAL_NAMES = {0: "tónica", 1: "9na menor", 2: "9na", 3: "3ra menor", 4: "3ra", 5: "4ta",
-                  6: "5ta disminuida", 7: "5ta", 8: "6ta menor", 9: "6ta", 10: "7ma", 11: "7ma mayor"}
+INTERVALS = {0: "root", 1: "min9", 2: "9th", 3: "min3", 4: "maj3", 5: "4th", 6: "dim5", 7: "5th",
+             8: "min6", 9: "6th", 10: "min7", 11: "maj7"}
+INTERVAL_TEXT = {"root": "root", "min9": "minor 9th", "9th": "9th", "min3": "minor 3rd", "maj3": "major 3rd",
+                 "4th": "4th", "dim5": "diminished 5th", "5th": "5th", "min6": "minor 6th", "6th": "6th",
+                 "min7": "minor 7th", "maj7": "major 7th"}
 
 
+# ---------------------------------------------------------------- details and messages
+def describe(d: dict | None) -> str:
+    """English text for a judgment detail (used by the CLI and stored reports)."""
+    if not d:
+        return ""
+    k = d.get("kind")
+    if k == "legato":
+        return "legato"
+    if k == "by_chroma":
+        return "(by chroma)"
+    if k == "chord_ok":
+        unheard = f", {'/'.join(d['unheard'])} not heard" if d.get("unheard") else ""
+        return f"chord ok ({d['sim']:.2f}{unheard})"
+    if k == "chord_wrong":
+        parts = [f"missing {m['note']} ({INTERVAL_TEXT[m['interval']]})" for m in d.get("missing", [])]
+        parts += [f"extra {n}" for n in d.get("extra", [])]
+        if not parts:
+            parts.append(f"heard {'/'.join(d.get('heard', []))}")
+        return f"chord: {', '.join(parts)} ({d['sim']:.2f})"
+    if k == "octave":
+        return f"heard {d['played']} (another octave)"
+    if k == "wrong_note":
+        return f"played {d['played']}"
+    if k == "unclear":
+        return f"couldn't tell the note: {d['heard']}"
+    if k == "missed":
+        return "didn't sound"
+    if k == "skipped":
+        before = d.get("before")
+        return "skipped" + (f" (before: {describe(before)})" if before else "")
+    return ""
+
+
+def fmt_dt(dt: float | None) -> str:
+    if dt is None:
+        return ""
+    ms = dt * 1000
+    if abs(ms) < 15:
+        return "on time"
+    return f"{abs(ms):.0f} ms {'late' if ms > 0 else 'early'}"
+
+
+def _text(code: str, p: dict) -> str:
+    if code == "hit":
+        s = f"✓ {p['label']}"
+        if p.get("dt_ms") is not None:
+            s += f"  {fmt_dt(p['dt_ms'] / 1000)}"
+        elif p.get("detail"):
+            s += f"  {describe(p['detail'])}"
+        if p.get("previous_extra"):
+            s += f"  (the previous one, {p['previous_extra']}, was extra)"
+        return s
+    if code == "wrong":
+        return f"✗ {describe(p['detail'])} — expected {p['label']}"
+    if code == "skip":
+        return f"∅ skipped {p['skipped']} · ✓ {p['label']}"
+    if code == "extra":
+        return f"+ extra note: {p['played']}"
+    if code == "pass":
+        s = f"↻ pass {p['n']}: {p['score']:.0f}%"
+        if p.get("new_speed") is not None:
+            s += f" — speed {p['old_speed']:.0%} → {p['new_speed']:.0%}"
+        return s
+    return code
+
+
+def message(code: str, **params) -> dict:
+    return dict(code=code, params=params, text=_text(code, params))
+
+
+def is_error(msg: dict | None) -> bool:
+    return bool(msg) and msg["code"] in ("wrong", "skip", "extra")
+
+
+# ---------------------------------------------------------------- events
 @dataclass
 class Event:
-    time: float               # tiempo en la referencia
+    time: float               # time in the reference
     pitches: list
-    tab: list = field(default_factory=list)   # [(cuerda, traste)] alineado con pitches
+    tab: list = field(default_factory=list)   # [(string, fret)] aligned with pitches
     status: str = "pending"   # pending | ok | octave | fixed | wrong | missed
-    errors: int = 0           # intentos fallidos antes de acertar (modo espera)
-    detail: str = ""
-    dt: float | None = None   # desvío de timing (modo tempo)
-    due: float = 0.0          # cuándo debe sonar (reloj de entrada, modo tempo)
-    win: float = 0.2          # ventana para asociarle un ataque (modo tempo)
-    name: str | None = None   # nombre del acorde (cifrados); si no, se nombran las notas
-    tentative: tuple | None = None  # error provisorio: (t, nota) por si era una nota de más
+    errors: int = 0           # failed attempts before getting it right (wait mode)
+    detail: dict | None = None
+    dt: float | None = None   # timing deviation (tempo mode)
+    due: float = 0.0          # when it should sound (input clock, tempo mode)
+    win: float = 0.2          # window to accept an onset for it (tempo mode)
+    name: str | None = None   # chord name (charts); otherwise the notes are named
+    tentative: tuple | None = None  # provisional error: (t, note) in case it was an extra note
 
     @property
     def is_chord(self) -> bool:
@@ -39,7 +121,7 @@ class Event:
         return self.name or "+".join(note_name(p) for p in sorted(self.pitches))
 
     def reset(self) -> None:
-        self.status, self.errors, self.detail, self.dt, self.tentative = "pending", 0, "", None, None
+        self.status, self.errors, self.detail, self.dt, self.tentative = "pending", 0, None, None, None
 
 
 def group_events(notes: list[Note], win: float = 0.035) -> list[Event]:
@@ -55,38 +137,40 @@ def group_events(notes: list[Note], win: float = 0.035) -> list[Event]:
 
 
 def min_repeat_gap(events: list[Event], speed: float = 1.0) -> float:
-    """Distancia mínima (s, a la velocidad dada) entre eventos consecutivos."""
+    """Smallest gap (s, at the given speed) between consecutive events."""
     if len(events) < 2:
         return 1.0
     return float(np.min(np.diff([e.time for e in events]))) / speed
 
 
+# ---------------------------------------------------------------- judge
 class Judge:
     def __init__(self, transpose: int = 0, chord_thr: float = 0.78, name_shift: int = 0):
         self.transpose = transpose
         self.chord_thr = chord_thr
-        self.name_shift = name_shift  # p.ej. -capo: nombrar las notas según la forma, no la altura real
+        self.name_shift = name_shift  # e.g. -capo: name notes by the shape, not the sounding pitch
         self.cents: list[float] = []
 
     def chord_diff(self, ev: Event, c: np.ndarray) -> tuple[list[int], list[int], list[int]]:
-        """Clases de altura (en la afinación de la referencia) que faltan / sobran, y cuáles
-        de las que sobran podrían ser solo un 5to armónico (dudosas)."""
+        """Pitch classes (in the reference's tuning) that are missing / extra, and which of
+        the extra ones might just be a harmonic (doubtful)."""
         exp = sorted({p % 12 for p in ev.pitches})
         ref_level = max(c[pc] for pc in exp) + 1e-9
         missing = [pc for pc in exp if c[pc] < 0.3 * ref_level]
-        harm = set(exp) | {(pc + 7) % 12 for pc in exp}           # 2do/3er armónico: siempre fuertes
+        harm = set(exp) | {(pc + 7) % 12 for pc in exp}           # 2nd/3rd harmonic: always strong
         root = min(ev.pitches) % 12
-        # la "otra 3ra" del bajo (mayor ↔ menor): si suena, es probable que hayas cambiado la calidad.
-        # Umbral bajo: el 5to armónico se filtra ≤0.37 del nivel, una 3ra tocada da ≥0.44.
+        # The bass note's "other third" (major ↔ minor): if it sounds, you probably changed the
+        # chord quality. Low threshold: the 5th harmonic leaks ≤0.37 of the level, a played third ≥0.44.
         thirds = {(root + 3) % 12, (root + 4) % 12}
         own = thirds & set(exp)
-        # sin 3ra (quintas) no hay calidad que vigilar; con su 3ra sonando, la otra no es un cambio
+        # no third (power chords) → no quality to police; with its own third sounding, the other one
+        # isn't a swap
         alt = thirds - set(exp) if own and any(pc in missing for pc in own) else set()
-        # 5to, 7mo, 9no y 11vo armónico de las cuerdas graves: notas "fantasma", sobre todo en
-        # acordes de pocas cuerdas. Solo cuentan si suenan muy fuerte.
+        # 5th, 7th, 9th and 11th harmonics of the low strings: "ghost" notes, especially in chords
+        # with few strings. They only count when very loud.
         ghost = ({(pc + d) % 12 for pc in exp for d in (4, 10, 2, 6)} | (thirds - set(exp))) - harm - alt
         thr = lambda pc: 0.42 if pc in alt else 0.8 if pc in ghost else 0.5
-        outside = [int(pc) for pc in np.argsort(c)[::-1] if pc not in harm][:4]   # las 4 más fuertes de afuera
+        outside = [int(pc) for pc in np.argsort(c)[::-1] if pc not in harm][:4]   # 4 strongest outsiders
         extra = [pc for pc in outside if c[pc] > thr(pc) * ref_level]
         return missing, extra, [pc for pc in extra if pc in ghost]
 
@@ -96,51 +180,37 @@ class Judge:
     def _n(self, pc: int) -> str:
         return NOTE_NAMES[(pc + self.name_shift) % 12]
 
-    def chord_text(self, ev: Event, missing: list[int], extra: list[int], c: np.ndarray) -> str:
-        root = min(ev.pitches)
-        parts = [f"faltó {self._n(pc)} ({INTERVAL_NAMES[(pc - root) % 12]})" for pc in missing]
-        parts += [f"sobró {self._n(pc)}" for pc in extra]
-        if not parts:
-            parts.append(f"sonó {'/'.join(self._n(i) for i in np.argsort(c)[::-1][:3])}")
-        return "acorde: " + ", ".join(parts)
-
-    def __call__(self, ev: Event, det: Detection) -> tuple[str, str]:
+    def __call__(self, ev: Event, det: Detection) -> tuple[str, dict]:
         if ev.is_chord:
-            c = np.roll(det.chroma, self.transpose)  # lo que tocaste, llevado a la afinación de la referencia
-            sim = float(c @ chord_template(ev.pitches))
+            c = np.roll(det.chroma, self.transpose)  # what you played, in the reference's tuning
+            sim = round(float(c @ chord_template(ev.pitches)), 2)
             missing, extra, doubtful = self.chord_diff(ev, c)
-            # no falta nada y lo que "sobra" puede ser un armónico: ok, si el parecido no es malo
+            # nothing missing and the "extra" notes may be harmonics: ok, unless it sounds far off
             only_doubtful = not missing and set(extra) <= set(doubtful) and sim >= self.chord_thr - 0.1
             if (sim >= self.chord_thr and not (missing and extra)) or only_doubtful:
-                note = f", no se escuchó {'/'.join(self._n(pc) for pc in missing)}" if missing else ""
-                return "ok", f"acorde ok ({sim:.2f}{note})"
-            # falta una nota y suena otra en su lugar (p.ej. menor en vez de mayor): error
-            return "wrong", f"{self.chord_text(ev, missing, extra, c)} ({sim:.2f})"
+                return "ok", dict(kind="chord_ok", sim=sim, unheard=[self._n(pc) for pc in missing])
+            # a note is missing and another one sounds in its place (e.g. minor instead of major): wrong
+            root = min(ev.pitches)
+            return "wrong", dict(kind="chord_wrong", sim=sim,
+                                 missing=[dict(note=self._n(pc), interval=INTERVALS[(pc - root) % 12]) for pc in missing],
+                                 extra=[self._n(pc) for pc in extra],
+                                 heard=[self._n(int(i)) for i in np.argsort(c)[::-1][:3]])
         exp = ev.pitches[0]
         if det.midi is not None:
             m = det.midi + self.transpose
             r = int(round(m - exp))
             if r == 0:
                 self.cents.append((m - exp) * 100)
-                return "ok", "legato" if det.legato else ""
+                return "ok", dict(kind="legato") if det.legato else None
             if r % 12 == 0:
-                return "octave", f"sonó {note_name(int(round(m)))} (otra octava)"
-            return "wrong", f"tocaste {note_name(int(round(m)))}"
+                return "octave", dict(kind="octave", played=note_name(int(round(m))))
+            return "wrong", dict(kind="wrong_note", played=note_name(int(round(m))))
         if np.argmax(det.chroma) == (exp - self.transpose) % 12:
-            return "ok", "(por croma)"
-        return "wrong", f"no se entendió la nota: {det.label()}"
+            return "ok", dict(kind="by_chroma")
+        return "wrong", dict(kind="unclear", heard=det.label())
 
     def tuning(self) -> float | None:
         return float(np.median(self.cents[-30:])) if len(self.cents) >= 3 else None
-
-
-def fmt_dt(dt: float | None) -> str:
-    if dt is None:
-        return ""
-    ms = dt * 1000
-    if abs(ms) < 15:
-        return "a tiempo"
-    return f"{abs(ms):.0f} ms {'tarde' if ms > 0 else 'adelantado'}"
 
 
 def pass_score(events: list[Event], extras: int, timing_tol: float) -> float:
@@ -153,8 +223,9 @@ def pass_score(events: list[Event], extras: int, timing_tol: float) -> float:
     return round(max(0.0, 100 * (pts - 0.5 * extras) / max(1, len(events))), 1)
 
 
+# ---------------------------------------------------------------- wait mode
 class WaitFollower:
-    """Espera a que toques bien el evento actual; tolera saltearse uno."""
+    """Waits until you play the current event correctly; tolerates skipping one."""
 
     mode = "wait"
 
@@ -164,13 +235,13 @@ class WaitFollower:
         self.ignore_until = -1.0
         self.passes: list[dict] = []
         self.extras: list[tuple[float, str]] = []
-        self.history: list[list[dict]] = []  # eventos de cada vuelta terminada
+        self.history: list[list[dict]] = []  # events of every finished pass
 
     @property
     def done(self) -> bool:
         return not self.loop and self.k >= len(self.events)
 
-    def on_detection(self, det: Detection) -> str | None:
+    def on_detection(self, det: Detection) -> dict | None:
         if self.k >= len(self.events) or det.t < self.ignore_until:
             return None
         ev = self.events[self.k]
@@ -179,33 +250,32 @@ class WaitFollower:
             ev.status = res if ev.errors == 0 else "fixed"
             if ev.errors == 0:
                 ev.detail = detail
-            msg = f"✓ {ev.label()}" + (f"  {detail}" if detail else "")
             self._advance(det, ev)
-            return msg
+            return message("hit", label=ev.label(), detail=detail, dt_ms=None)
         if self.k > 0:
             prev = self.events[self.k - 1]
             if (prev.is_chord or ev.is_chord) and set(prev.pitches) != set(ev.pitches) \
                     and self.judge(prev, det)[0] == "ok" \
                     and self.judge.similarity(prev, det) > self.judge.similarity(ev, det):
-                return None  # seguís rasgueando el acorde anterior
+                return None  # still strumming the previous chord
         if self.k + 1 < len(self.events):
             nxt = self.events[self.k + 1]
             r2, d2 = self.judge(nxt, det)
             if r2 == "ok":
                 ev.status = "missed"
-                ev.detail = "salteada" + (f" (antes: {ev.detail})" if ev.errors else "")
+                ev.detail = dict(kind="skipped", before=ev.detail if ev.errors else None)
                 nxt.status, nxt.detail = r2, d2
                 self.k += 1
                 self._advance(det, nxt)
-                return f"∅ salteaste {ev.label()} · ✓ {nxt.label()}"
+                return message("skip", skipped=ev.label(), label=nxt.label())
         ev.errors += 1
         ev.detail = detail
-        return f"✗ {detail} — esperaba {ev.label()}"
+        return message("wrong", label=ev.label(), detail=detail)
 
     def _advance(self, det: Detection, ev: Event) -> None:
         self.k += 1
         if ev.is_chord:
-            self.ignore_until = det.t + 0.15  # el rasgueo genera varios ataques
+            self.ignore_until = det.t + 0.15  # a strum produces several onsets
         if self.k >= len(self.events) and self.loop:
             ok = sum(e.status in ("ok", "octave") for e in self.events)
             self.passes.append(dict(speed=None, score=round(100 * ok / len(self.events), 1)))
@@ -218,9 +288,10 @@ class WaitFollower:
         pass
 
 
+# ---------------------------------------------------------------- tempo mode
 @dataclass
 class Trainer:
-    """Entrenador de velocidad: sube si la vuelta salió limpia, baja si salió mal."""
+    """Speed trainer: speeds up after a clean pass, slows down after a bad one."""
     step: float = 0.05
     target: float = 90.0
     max_speed: float = 1.0
@@ -235,7 +306,7 @@ class Trainer:
 
 
 class TempoFollower:
-    """Cada evento tiene su momento (según metrónomo); juzga nota y timing."""
+    """Every event has its moment (on the metronome); judges note and timing."""
 
     mode = "tempo"
 
@@ -247,20 +318,20 @@ class TempoFollower:
         self.loop, self.trainer, self.click = loop or trainer is not None, trainer, click
         self.count_in = grid.bpb if count_in is None else count_in
         self.timing_tol = timing_tol
-        self.count_extras = count_extras  # False al rasguear: los rasguidos de relleno no son errores
+        self.count_extras = count_extras  # False when strumming: filler strums aren't mistakes
         self.t0: float | None = None
         self.extras: list[tuple[float, str]] = []
         self.pass_extras = 0
         self.ignore_until = -1.0
         self.passes: list[dict] = []
         self.history: list[list[dict]] = []
-        self.clicks: list[tuple[float, bool]] = []  # solo se agregan (lo lee el metrónomo)
+        self.clicks: list[tuple[float, bool]] = []  # append-only (read by the metronome)
         self.pass_end = np.inf
         self.finished = False
-        self.bar0 = grid.bar_time(grid.bar_index(events[0].time))  # inicio del compás de la 1ra nota
+        self.bar0 = grid.bar_time(grid.bar_index(events[0].time))  # start of the first note's bar
         self.section_end = grid.bar_time(grid.bar_index(events[-1].time) + 1)
 
-    # -- programación de una vuelta
+    # -- scheduling a pass
     def beat_len(self) -> float:
         return self.grid.beat_len(self.events[0].time) / self.speed
 
@@ -275,7 +346,7 @@ class TempoFollower:
         self.pass_end = max(bar_start + (self.section_end - self.bar0) / self.speed, last.due + last.win)
 
     def schedule(self, count_start: float) -> None:
-        """Programa cuenta de entrada + la sección, empezando en `count_start` (reloj de entrada)."""
+        """Schedules count-in + the section, starting at `count_start` (input clock)."""
         bl = self.beat_len()
         bar_start = count_start + self.count_in * bl
         self._set_dues(bar_start)
@@ -288,7 +359,7 @@ class TempoFollower:
         self.clicks.extend(sorted(clicks))
 
     def start(self, t_first: float) -> None:
-        """Sin metrónomo: tu primera nota marca el arranque."""
+        """Without a metronome: your first note sets the start."""
         self._set_dues(t_first - (self.events[0].time - self.bar0) / self.speed)
         self.t0 = t_first
 
@@ -308,57 +379,57 @@ class TempoFollower:
             return None
         return int(np.ceil((bar_start - now) / self.beat_len()))
 
-    # -- juicio
-    def on_detection(self, det: Detection) -> str | None:
+    # -- judging
+    def _extra(self, det: Detection) -> dict | None:
+        if not self.count_extras:
+            return None
+        self.extras.append((det.t, det.label()))
+        self.pass_extras += 1
+        return message("extra", played=det.label())
+
+    def on_detection(self, det: Detection) -> dict | None:
         if self.t0 is None or det.t < self.ignore_until:
             return None
         cands = [e for e in self.events
                  if (e.status == "pending" or e.tentative) and abs(det.t - e.due) <= e.win]
         if not cands:
-            if not self.count_extras:
-                return None
             if self.events[0].due - self.window < det.t < self.pass_end:
-                self.extras.append((det.t, det.label()))
-                self.pass_extras += 1
-                return f"+ nota de más: {det.label()}"
+                return self._extra(det)
             return None
         cands.sort(key=lambda e: abs(det.t - e.due))
         for e in cands:
             res, detail = self.judge(e, det)
             if res in ("ok", "octave"):
-                fix = ""
-                if e.tentative:  # lo anterior era una nota de más, no un error en ésta
+                previous_extra = None
+                if e.tentative:  # the previous onset was an extra note, not a mistake on this one
                     if self.count_extras:
                         self.extras.append(e.tentative)
                         self.pass_extras += 1
-                        fix = f"  (la anterior, {e.tentative[1]}, fue de más)"
+                        previous_extra = e.tentative[1]
                     e.tentative = None
                 e.status, e.detail, e.dt = res, detail, det.t - e.due
                 if e.is_chord:
                     self.ignore_until = det.t + 0.15
-                return f"✓ {e.label()}  {fmt_dt(e.dt)}{fix}"
+                return message("hit", label=e.label(), detail=detail, dt_ms=round(e.dt * 1000),
+                               previous_extra=previous_extra)
         pend = [e for e in cands if e.status == "pending"]
         if not pend:
-            if not self.count_extras:
-                return None
-            self.extras.append((det.t, det.label()))
-            self.pass_extras += 1
-            return f"+ nota de más: {det.label()}"
+            return self._extra(det)
         e = pend[0]
         res, detail = self.judge(e, det)
         e.status, e.detail, e.dt = "wrong", detail, det.t - e.due
         e.tentative = (det.t, det.label())
-        return f"✗ {detail} — esperaba {e.label()}"
+        return message("wrong", label=e.label(), detail=detail)
 
-    def tick(self, now: float) -> str | None:
-        """`now` = hasta dónde ya se analizó el audio. Devuelve un mensaje al cerrar una vuelta."""
+    def tick(self, now: float) -> dict | None:
+        """`now` = how far the audio has been analyzed. Returns a message when a pass ends."""
         if self.t0 is None or self.finished:
             return None
         for e in self.events:
             if e.tentative and now > e.due + e.win:
-                e.tentative = None  # se cerró la ventana: el error queda firme
+                e.tentative = None  # the window closed: the mistake stands
             if e.status == "pending" and now > e.due + e.win:
-                e.status, e.detail = "missed", "no sonó"
+                e.status, e.detail = "missed", dict(kind="missed")
         if now <= self.pass_end or any(e.status == "pending" for e in self.events):
             return None
         score = pass_score(self.events, self.pass_extras, self.timing_tol)
@@ -373,13 +444,12 @@ class TempoFollower:
         for e in self.events:
             e.reset()
         self.pass_extras = 0
-        msg = f"↻ vuelta {len(self.passes)}: {score:.0f}%"
-        if self.speed != old:
-            msg += f" — velocidad {old:.0%} → {self.speed:.0%}"
+        msg = message("pass", n=len(self.passes), score=score, old_speed=old,
+                      new_speed=self.speed if self.speed != old else None)
         if self.click:
             self.schedule(max(now, self.pass_end) + 0.3)
         else:
-            self.t0 = None  # se re-sincroniza con tu próxima primera nota
+            self.t0 = None  # re-syncs with your next first note
             self.pass_end = np.inf
         return msg
 

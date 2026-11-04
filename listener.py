@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Compatibilidad: `python listener.py ...` equivale a `guitarr ...`."""
+"""Compatibility shim: `python listener.py ...` is the same as `guitarr ...`."""
 from guitarr.cli import main
 
 if __name__ == "__main__":

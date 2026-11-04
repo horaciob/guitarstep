@@ -9,7 +9,7 @@ from guitarr.reference import (HARMONIC_INTERVALS, RefOptions, ReferenceError, a
 
 
 def clean_notes_slow(notes, win=0.05):
-    """Implementación original O(n³), para comparar."""
+    """Original O(n³) implementation, for comparison."""
     drop = set()
     for i, n in enumerate(notes):
         for j, m in enumerate(notes):
@@ -35,7 +35,7 @@ def test_clean_notes_matches_original():
             t += rng.choice([0.0, 0.01, 0.12, 0.25])
             p = int(rng.integers(40, 76))
             notes.append(Note(t, t + rng.uniform(0.05, 0.6), p, float(rng.uniform(0.2, 1))))
-            if rng.random() < 0.3:  # armónico débil
+            if rng.random() < 0.3:  # weak harmonic
                 notes.append(Note(t + 0.01, t + 0.3, p + 12, float(rng.uniform(0.1, 0.4))))
         notes.sort(key=lambda n: (n.start, n.pitch))
         fast = [(n.start, n.pitch) for n in clean_notes(notes)]
@@ -57,7 +57,7 @@ def test_assign_tab():
     assign_tab(notes)
     assert (notes[0].string, notes[0].fret) == (6, 0)
     chord = notes[3:]
-    assert len({n.string for n in chord}) == 3          # cuerdas distintas
+    assert len({n.string for n in chord}) == 3          # distinct strings
     for n in notes:
         assert n.string is not None and 0 <= n.fret <= 22
 
@@ -77,11 +77,11 @@ def _midi_with_meter_change(path):
 def test_load_midi_time_signatures_and_tracks(tmp_path):
     p = tmp_path / "x.mid"
     _midi_with_meter_change(p)
-    ref = load_reference(RefOptions(p), log=lambda m: None)  # elige la guitarra
+    ref = load_reference(RefOptions(p), log=lambda m: None)  # picks the guitar track
     assert ref.track == "lead"
     g = ref.grid
     assert g.bar_of(2.0) == (2, 1.0)
-    assert g.bar_of(3.5) == (3, 1.0)       # 3/4 desde el compás 2
+    assert g.bar_of(3.5) == (3, 1.0)       # 3/4 from bar 2
     assert all(n.string for n in ref.notes)
     sec = load_reference(RefOptions(p, start_bar=3, end_bar=3), log=lambda m: None)
     assert [round(n.start, 2) for n in sec.notes] == [3.5, 4.0, 4.5]
@@ -113,11 +113,11 @@ def test_load_guitar_pro(tmp_path):
 
 
 def test_transcription_cache(demo_dir, monkeypatch):
-    first = reference.transcribe(demo_dir / "toma.wav")
+    first = reference.transcribe(demo_dir / "take.wav")
 
     def boom():
-        raise AssertionError("no debería volver a correr basic-pitch")
+        raise AssertionError("basic-pitch should not run again")
 
     monkeypatch.setattr(reference, "_quiet_import_basic_pitch", boom)
-    again = reference.transcribe(demo_dir / "toma.wav")
+    again = reference.transcribe(demo_dir / "take.wav")
     assert [(n.start, n.pitch) for n in again] == [(n.start, n.pitch) for n in first]

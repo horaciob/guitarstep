@@ -1,0 +1,10 @@
+title: Power-chord rock
+level: 3
+bpm: 116
+time: 4/4
+strum: DDDDDDDD
+note: Even down-picked eighths with the strumming hand lightly muting the strings (palm mute).
+
+[Riff]
+E5 | G5 | A5 | A5
+E5 | G5 | C5 B5 | E5

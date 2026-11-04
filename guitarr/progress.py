@@ -1,8 +1,9 @@
-"""Progreso: XP, niveles, racha de días, ejercicios y lecciones aprobados, acordes
-dominados (por oído o cámara), récords del minuto de cambio y tutorías fijadas.
+"""Progress: XP, levels, day streak, passed exercises and lessons, mastered chords
+(by ear or camera), chord-change records and pinned tutorials.
 
-Todo se decide en el servidor a partir de lo que el oyente escuchó, y se guarda en
-~/.guitarr/progreso.json (lo comparten la interfaz web y la terminal).
+Everything is decided on the server from what the listener heard, and stored in
+~/.guitarr/progress.json (shared by the web UI and the terminal). Events are stored
+as `code` + `params` so the UI can show them in any language.
 """
 from __future__ import annotations
 
@@ -14,17 +15,25 @@ from . import config
 
 _lock = threading.Lock()
 
-LEVELS = [(0, "Primeras cuerdas"), (150, "Acompañante"), (400, "Rasgueador"), (800, "Bluesero"),
-          (1500, "Guitarrista")]
+LEVELS = [(0, "First strings"), (150, "Accompanist"), (400, "Strummer"), (800, "Blues player"),
+          (1500, "Guitarist")]
 XP = dict(exercise=15, lesson=40, chord=20)
+EVENT_TEXT = {
+    "practice": "Practice: {name} {score:.0f}%",
+    "take_analysis": "Take analysis: {score:.0f}%",
+    "exercise_passed": "Exercise passed: {lesson}/{exercise}",
+    "lesson_completed": "Lesson completed: {lesson}",
+    "chord_mastered": "Chord {chord} mastered ({via})",
+    "drill": "Chord-change minute {chords}: {changes} changes",
+}
 
 
 def _empty() -> dict:
-    return dict(xp=0, days=[], lessons=[], exercises={}, chords={}, drills={}, tutorias={}, events=[])
+    return dict(xp=0, days=[], lessons=[], exercises={}, chords={}, drills={}, tutorials={}, events=[])
 
 
 def path():
-    return config.HOME / "progreso.json"
+    return config.HOME / "progress.json"
 
 
 def _read() -> dict:
@@ -43,7 +52,7 @@ def _write(d: dict) -> None:
 
 
 def streak(days: list[str], today: date | None = None) -> int:
-    """Días seguidos practicando, contando hasta hoy (o hasta ayer si hoy todavía no)."""
+    """Consecutive practice days up to today (or up to yesterday if not yet today)."""
     today = today or date.today()
     have = {date.fromisoformat(d) for d in days}
     day = today if today in have else today - timedelta(days=1)
@@ -65,7 +74,7 @@ def level(xp: int) -> dict:
 def view(d: dict | None = None) -> dict:
     d = d or _read()
     today = date.today().isoformat()
-    return {**d, "streak": streak(d["days"]), "practiced_today": today in d["days"], **{"level": level(d["xp"])}}
+    return {**d, "streak": streak(d["days"]), "practiced_today": today in d["days"], "level": level(d["xp"])}
 
 
 def get() -> dict:
@@ -73,57 +82,65 @@ def get() -> dict:
         return view()
 
 
-def _award(d: dict, xp: int, text: str) -> None:
+def event_text(e: dict) -> str:
+    try:
+        return EVENT_TEXT[e["code"]].format(**e["params"])
+    except (KeyError, ValueError):
+        return e.get("code", "")
+
+
+def _award(d: dict, xp: int, code: str, **params) -> None:
     d["xp"] += xp
     today = date.today().isoformat()
     if today not in d["days"]:
         d["days"].append(today)
-    d["events"] = ([dict(at=datetime.now().isoformat(timespec="seconds"), xp=xp, text=text)] + d["events"])[:30]
+    ev = dict(at=datetime.now().isoformat(timespec="seconds"), xp=xp, code=code, params=params)
+    d["events"] = ([ev] + d["events"])[:30]
 
 
 def practice_xp(score: float | None) -> int:
-    """XP por una práctica con escucha: hasta 20 según el puntaje."""
+    """XP for a listening practice: up to 20, based on the score."""
     if score is None:
         return 0
     return max(2, round(score / 5))
 
 
-def add_practice(score: float | None, what: str = "Práctica") -> int:
+def add_practice(score: float | None, code: str = "practice", **params) -> int:
     xp = practice_xp(score)
     if xp:
         with _lock:
             d = _read()
-            _award(d, xp, f"{what}: {score:.0f}%")
+            _award(d, xp, code, score=score, **params)
             _write(d)
     return xp
 
 
 def chord_mastered(cid: str, via: str) -> dict:
-    """via = 'oido' | 'camara'. La primera vez que se domina un acorde suma XP."""
+    """via = 'ear' | 'camera'. The first time a chord is mastered it earns XP."""
     with _lock:
         d = _read()
         rec = d["chords"].setdefault(cid, {})
         first = not rec
         rec[via] = date.today().isoformat()
         xp = XP["chord"] if first else 0
-        _award(d, xp, f"Acorde {cid} ({'por oído' if via == 'oido' else 'con la cámara'})")
+        _award(d, xp, "chord_mastered", chord=cid, via=via)
         _write(d)
         return dict(xp=xp, first=first, chord=cid)
 
 
-def pin_tutoria(lid: str, url: str | None) -> dict:
+def pin_tutorial(lid: str, url: str | None) -> dict:
     with _lock:
         d = _read()
         if url:
-            d["tutorias"][lid] = url
+            d["tutorials"][lid] = url
         else:
-            d["tutorias"].pop(lid, None)
+            d["tutorials"].pop(lid, None)
         _write(d)
-        return d["tutorias"]
+        return d["tutorials"]
 
 
 def on_session(ctx: dict | None, report: dict) -> dict:
-    """Registra una sesión de escucha según su contexto y devuelve lo ganado."""
+    """Records a listening session according to its context and returns what was earned."""
     from . import catalog
 
     s = report.get("summary", {})
@@ -143,13 +160,13 @@ def on_session(ctx: dict | None, report: dict) -> dict:
             if score is not None and (prev is None or score > prev):
                 d["exercises"][key] = score
             if passed and (prev is None or prev < need):
-                _award(d, XP["exercise"], f"Ejercicio aprobado: {ctx.get('title', eid)}")
+                _award(d, XP["exercise"], "exercise_passed", lesson=lid, exercise=eid)
                 out["xp"] += XP["exercise"]
             lesson = catalog.get_lesson(lid)
             done = all(d["exercises"].get(f"{lid}/{e['id']}", -1) >= e.get("min", 80) for e in lesson["exercises"])
             if done and lid not in d["lessons"]:
                 d["lessons"].append(lid)
-                _award(d, XP["lesson"], f"Lección completa: {lesson['title']}")
+                _award(d, XP["lesson"], "lesson_completed", lesson=lid)
                 out.update(xp=out["xp"] + XP["lesson"], lesson_done=True)
         elif kind == "chord":
             ok = s.get("judged", 0) > 0 and (s.get("first_try", 0) > 0 or s.get("fixed", 0) > 0)
@@ -157,9 +174,9 @@ def on_session(ctx: dict | None, report: dict) -> dict:
             if ok:
                 rec = d["chords"].setdefault(ctx["chord"], {})
                 first = not rec
-                rec["oido"] = date.today().isoformat()
+                rec["ear"] = date.today().isoformat()
                 if first:
-                    _award(d, XP["chord"], f"Acorde {ctx['chord']} (por oído)")
+                    _award(d, XP["chord"], "chord_mastered", chord=ctx["chord"], via="ear")
                     out.update(xp=XP["chord"], first=True)
         elif kind == "drill":
             pair = "-".join(ctx["chords"])
@@ -169,12 +186,12 @@ def on_session(ctx: dict | None, report: dict) -> dict:
             d["drills"][pair] = max(best, changes)
             xp = changes // 2
             if xp:
-                _award(d, xp, f"Minuto de cambio {pair.replace('-', '↔')}: {changes} cambios")
+                _award(d, xp, "drill", chords=pair, changes=changes)
                 out["xp"] = xp
         else:
             xp = practice_xp(score) if s.get("judged") else 0
             if xp:
-                _award(d, xp, f"Práctica: {report.get('reference', {}).get('name', '')} {score:.0f}%")
+                _award(d, xp, "practice", name=report.get("reference", {}).get("name", ""), score=score)
                 out["xp"] = xp
         _write(d)
         out["progress"] = view(d)
@@ -187,15 +204,19 @@ def print_progress() -> None:
     d = get()
     lv = d["level"]
     bar = "█" * int(lv["progress"] * 20)
-    print(f"Nivel {lv['level']} · {lv['title']}")
-    print(f"  {d['xp']} XP  {bar:20s} " + (f"(próximo nivel: {lv['next_xp']})" if lv["next_xp"] else ""))
-    print(f"  🔥 racha: {d['streak']} {'día' if d['streak'] == 1 else 'días'}"
-          + ("" if d["practiced_today"] else "  (hoy todavía no practicaste)"))
+    print(f"Level {lv['level']} · {lv['title']}")
+    print(f"  {d['xp']} XP  {bar:20s} " + (f"(next level: {lv['next_xp']})" if lv["next_xp"] else ""))
+    print(f"  🔥 streak: {d['streak']} {'day' if d['streak'] == 1 else 'days'}"
+          + ("" if d["practiced_today"] else "  (no practice yet today)"))
     all_l = catalog.lessons()
-    print(f"  lecciones: {len([x for x in all_l if x['id'] in d['lessons']])}/{len(all_l)}")
+    print(f"  lessons: {len([x for x in all_l if x['id'] in d['lessons']])}/{len(all_l)}")
     nxt = next((x for x in all_l if x["id"] not in d["lessons"]), None)
     if nxt:
-        print(f"    siguiente: {nxt['title']}  (guitarr gui → Ruta)")
-    print(f"  acordes dominados: {', '.join(sorted(d['chords'])) or '—'}")
+        print(f"    next: {nxt['title']}  (guitarr gui → Course)")
+    print(f"  mastered chords: {', '.join(sorted(d['chords'])) or '—'}")
     if d["drills"]:
-        print("  minuto de cambio: " + ", ".join(f"{k.replace('-', '↔')} {v}" for k, v in d["drills"].items()))
+        print("  chord-change minute: " + ", ".join(f"{k.replace('-', '↔')} {v}" for k, v in d["drills"].items()))
+    if d["events"]:
+        print("  latest:")
+        for e in d["events"][:5]:
+            print(f"    {event_text(e)}" + (f"  +{e['xp']} XP" if e.get("xp") else ""))

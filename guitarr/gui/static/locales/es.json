@@ -1,0 +1,910 @@
+{
+ "ui": {
+  "nav": {
+   "label": "Secciones",
+   "learn": "Aprender",
+   "play": "Tocar",
+   "review": "Revisar",
+   "home": "Inicio",
+   "course": "Ruta",
+   "chords": "Acordes",
+   "camera": "Cámara",
+   "practice": "Practicar",
+   "charts": "Cifrados",
+   "tools": "Herramientas",
+   "tuner": "Afinador",
+   "analyze": "Analizar toma",
+   "history": "Historial",
+   "settings": "Ajustes",
+   "progress": "Tu progreso",
+   "device": "Entrada de audio de la guitarra"
+  },
+  "common": {
+   "upload": "Subir",
+   "advanced": "Avanzado",
+   "save": "Guardar",
+   "back": "Volver",
+   "days_one": "{{count}} día",
+   "days_other": "{{count}} días"
+  },
+  "level": {
+   "label": "Nivel {{n}}",
+   "title_1": "Primeras cuerdas",
+   "title_2": "Acompañante",
+   "title_3": "Rasgueador",
+   "title_4": "Bluesero",
+   "title_5": "Guitarrista"
+  },
+  "timing": {
+   "on_time": "a tiempo",
+   "late": "{{ms}} ms tarde",
+   "early": "{{ms}} ms adelantado"
+  },
+  "interval": {
+   "root": "tónica",
+   "min9": "9na menor",
+   "9th": "9na",
+   "min3": "3ra menor",
+   "maj3": "3ra",
+   "4th": "4ta",
+   "dim5": "5ta disminuida",
+   "5th": "5ta",
+   "min6": "6ta menor",
+   "6th": "6ta",
+   "min7": "7ma",
+   "maj7": "7ma mayor"
+  },
+  "detail": {
+   "legato": "legato",
+   "by_chroma": "(por croma)",
+   "chord_ok": "acorde ok ({{sim}})",
+   "chord_ok_unheard": "acorde ok ({{sim}}, no se escuchó {{notes}})",
+   "chord_wrong": "acorde: {{parts}} ({{sim}})",
+   "missing_note": "faltó {{note}} ({{interval}})",
+   "extra_note": "sobró {{note}}",
+   "heard": "sonó {{notes}}",
+   "octave": "sonó {{note}} (otra octava)",
+   "wrong_note": "tocaste {{note}}",
+   "unclear": "no se entendió la nota: {{heard}}",
+   "missed": "no sonó",
+   "skipped": "salteada",
+   "skipped_before": "salteada (antes: {{before}})"
+  },
+  "msg": {
+   "wrong": "{{detail}} — esperaba {{label}}",
+   "skip": "salteaste {{skipped}} · ✓ {{label}}",
+   "extra": "nota de más: {{note}}",
+   "previous_extra": "(la anterior, {{note}}, fue de más)",
+   "pass": "vuelta {{n}}: {{score}}%",
+   "pass_speed": "vuelta {{n}}: {{score}}% — velocidad {{from}}% → {{to}}%"
+  },
+  "issue": {
+   "played_instead": "tocaste {{played}} en vez de {{expected}}",
+   "missing": "faltó {{note}}",
+   "extra": "nota de más: {{note}}",
+   "octave": "{{note}} detectada en otra octava ({{heard}}) — puede ser error de detección",
+   "fixed": "{{label}}: {{n}} intento(s) mal antes de acertar (último: {{last}})"
+  },
+  "event": {
+   "exercise_passed": "Ejercicio aprobado: {{title}}",
+   "lesson_completed": "Lección completa: {{title}}",
+   "chord_ear": "Acorde {{chord}} (por oído)",
+   "chord_camera": "Acorde {{chord}} (con la cámara)",
+   "drill": "Minuto de cambio {{chords}}: {{n}} cambios",
+   "take_analysis": "Análisis de toma: {{score}}%",
+   "practice": "Práctica: {{name}} {{score}}%"
+  },
+  "errors": {
+   "generic": "Algo salió mal",
+   "bad_filename": "Nombre de archivo inválido",
+   "song_not_found": "No encontré la canción",
+   "take_not_found": "No encontré la toma",
+   "no_song": "Elegí una canción",
+   "busy": "Ya hay algo en curso; frenalo primero",
+   "no_session": "No hay sesión",
+   "no_sessions": "Sin sesiones",
+   "bad_chord": "Acorde inválido",
+   "bad_url": "Pegá un link que empiece con https://",
+   "bad_format": "Formato no soportado: subí MIDI, Guitar Pro o audio"
+  },
+  "practice": {
+   "title": "🎧 Practicar con escucha",
+   "subtitle": "Enchufá la guitarra: te escucha y te dice qué nota o acorde erraste, cuál salteaste y dónde te fuiste de tiempo.",
+   "what": "Qué vas a tocar",
+   "chart": "Cifrado",
+   "use_file": "Usar archivo",
+   "use_file_hint": "Usar un archivo (MIDI, Guitar Pro, audio)",
+   "song": "Canción",
+   "upload_hint": "Subir MIDI / Guitar Pro / audio",
+   "track": "Pista",
+   "from_bar": "Desde compás",
+   "to_bar": "Hasta compás",
+   "end": "fin",
+   "mode": "Modo",
+   "wait": "Espera",
+   "wait_hint": "Espera a que toques bien cada nota",
+   "tempo": "Tempo",
+   "tempo_hint": "Metrónomo: juzga nota y timing",
+   "speed": "Velocidad",
+   "click": "Metrónomo con cuenta de entrada",
+   "trainer": "Entrenador de velocidad",
+   "step": "Sube de a (%)",
+   "target": "Si sacás ≥",
+   "max": "Hasta (%)",
+   "loop": "Repetir la sección (loop)",
+   "transpose": "Transposición (semitonos que se suman a lo que tocás)",
+   "legato": "Detectar legato (hammer-on, pull-off, slide)",
+   "simulate": "Simular con una toma grabada (sin guitarra)",
+   "save_preset": "Recordar estas opciones para esta canción",
+   "start": "▶  Empezar",
+   "stop": "■  Parar",
+   "pick_song": "elegí una canción",
+   "speed_label": "velocidad",
+   "input_level": "Nivel de entrada",
+   "your_tuning": "Afinación (de lo que tocaste)",
+   "passes": "Vueltas",
+   "log": "Lo que fue pasando",
+   "nothing_yet": "Todavía nada.",
+   "no_songs_option": "(no hay canciones)",
+   "upload_or_demo": "subí una canción o cargá la demo",
+   "no_songs_html": "Todavía no hay canciones. Subí un <b>MIDI</b> o <b>Guitar Pro</b> exportado de una tab (lo mejor), o un audio. O tocá uno de los <a href=\"#/charts\">cifrados</a>.",
+   "load_demo": "Cargar la demo",
+   "demo_ready": "Demo lista: tiene errores plantados. Como no tenés que enchufar nada, quedó elegida \"Simular con una toma grabada\" en Avanzado. Probá el modo Tempo al 90%.",
+   "demo_loaded": "Demo cargada",
+   "uploaded": "Subida: {{name}}",
+   "chart_hint": "Tocá con el metrónomo: un rasguido por acorde alcanza; los de relleno no cuentan como error.",
+   "bars_range": "compases {{from}}–{{to}}",
+   "n_notes_one": "{{count}} nota",
+   "n_notes_other": "{{count}} notas",
+   "n_chords_one": "{{count}} acorde",
+   "n_chords_other": "{{count}} acordes",
+   "presets_files_only": "Las opciones se recuerdan para archivos; los cifrados ya traen las suyas",
+   "preset_saved": "Opciones guardadas para {{song}}",
+   "pick_song_first": "Elegí una canción primero",
+   "position": "compás {{bar}} · tiempo {{beat}} · nota {{k}}/{{total}}",
+   "play_first": "Tocá la primera nota…",
+   "chip_hits": "aciertos {{pct}}%",
+   "chip_mistakes": "errores {{n}}",
+   "chip_extra": "de más {{n}}",
+   "waiting_first": "Arrancá cuando quieras: el tempo se sincroniza con tu primera nota",
+   "clipping": "¡CLIPEA! bajá la ganancia",
+   "tune_up": "afiná",
+   "xp_practice": "+{{xp}} XP por practicar",
+   "tab_placeholder": "La tablatura aparece acá",
+   "bars_ready": "Listo: compases {{from}}–{{to}} al 70% con el entrenador. Apretá Empezar.",
+   "use_guitar": "— no, usar la guitarra —"
+  },
+  "report": {
+   "title": "Resultado",
+   "nothing_played": "No llegaste a tocar ninguna nota de la referencia.",
+   "score": "puntaje",
+   "first_try": "bien al primer intento ({{pct}})",
+   "fixed": "corregidas tras error",
+   "wrong": "equivocadas",
+   "missed": "salteadas / no sonaron",
+   "extra_notes": "notas de más",
+   "avg_timing": "timing promedio (±{{std}})",
+   "tune": "afinación: conviene afinar",
+   "passes": "Vueltas",
+   "correct": "correctas ({{pct}})",
+   "wrong_note": "nota equivocada",
+   "missing": "faltantes",
+   "extra": "de más",
+   "loose_timing": "con timing flojo",
+   "tempo_ratio": "tu tempo vs referencia",
+   "drag": "tendés a ir atrás",
+   "rush": "tendés a apurarte",
+   "masked": "+{{n}} octavas de acorde no detectables, ignoradas.",
+   "transpose_hint": "Tu toma parece estar en otra afinación. Probá transponer {{k}} semitonos.",
+   "per_bar": "Por compás",
+   "bar_tooltip": "compás {{bar}}: {{errors}} errores, {{timing}} de timing",
+   "weakest_html": "Lo más flojo: <b>compás {{bars}}</b>.",
+   "practice_bars": "Practicar compases {{from}}–{{to}} con el entrenador",
+   "details": "Detalle ({{n}})",
+   "where": "c.{{bar}} t.{{beat}}",
+   "no_mistakes": "¡Sin errores! 🎉",
+   "take_saved": "Tu toma quedó grabada.",
+   "analyze_take": "Analizarla en detalle"
+  },
+  "analyze": {
+   "title": "Analizar una toma",
+   "subtitle": "Subí o elegí algo que grabaste y te lo compara nota por nota con la referencia.",
+   "form_title": "Analizar una toma grabada",
+   "form_hint": "Más preciso que en vivo: transcribe tu toma con basic-pitch y la alinea con la referencia aunque hayas tocado a otro tempo.",
+   "reference": "Canción (referencia)",
+   "your_take": "Tu toma",
+   "upload_take": "o subí un archivo de audio…",
+   "transpose": "Transposición",
+   "timing_tol": "Tolerancia timing (ms)",
+   "run": "Analizar",
+   "empty": "Elegí la referencia y tu toma, y apretá <b>Analizar</b>.",
+   "no_takes": "(no hay tomas grabadas)",
+   "pick_reference": "Elegí la referencia",
+   "pick_take": "Elegí o subí tu toma",
+   "transcribing": "Transcribiendo…",
+   "listening": "Escuchando tu toma (basic-pitch). La primera vez tarda unos segundos; después queda en caché.",
+   "xp": "+{{xp}} XP por analizar tu toma",
+   "roll_title": "Referencia vs. lo que tocaste",
+   "zoom": "zoom",
+   "legend_reference": "referencia",
+   "legend_ok": "bien",
+   "legend_timing": "timing",
+   "legend_wrong": "nota equivocada / faltante",
+   "legend_octave": "otra octava",
+   "legend_extra": "de más"
+  },
+  "tuner": {
+   "title": "Afinador",
+   "subtitle": "Usa la entrada de tu interfaz o cable USB, con la misma detección que la práctica.",
+   "play_open": "Tocá una cuerda al aire",
+   "gauge": "Indicador de afinación",
+   "start": "Encender afinador",
+   "stop": "Apagar afinador",
+   "string_n": "{{n}}ª cuerda",
+   "stop_practice": "Pará la práctica para usar el afinador",
+   "input": "entrada: {{name}}",
+   "string_status": "cuerda {{n}}: {{status}}",
+   "in_tune": "✓ afinada",
+   "tune_up": "subí",
+   "tune_down": "bajá"
+  },
+  "history": {
+   "title": "Historial",
+   "subtitle": "Tu progreso por canción y los compases que más te cuestan.",
+   "songs": "Canciones",
+   "pick": "Elegí una canción para ver tu progreso.",
+   "empty": "Todavía no hay sesiones guardadas. Se guardan solas cuando practicás o analizás una toma.",
+   "song_meta_one": "{{count}} sesión · última {{date}} · {{score}}",
+   "song_meta_other": "{{count}} sesiones · última {{date}} · {{score}}",
+   "progress_of": "{{name}} — progreso",
+   "speed_legend": "velocidad (modo tempo)",
+   "weakest": "Compases más flojos",
+   "bar_n": "c. {{n}}",
+   "error_rate": "{{pct}}% de error",
+   "practice_hint": "Practicalos lento y que el entrenador vaya subiendo la velocidad.",
+   "practice_bars": "Practicar compases {{from}}–{{to}}",
+   "sessions": "Sesiones",
+   "col_date": "Fecha",
+   "col_kind": "Tipo",
+   "col_bars": "Compases",
+   "col_speed": "Velocidad",
+   "col_score": "Puntaje",
+   "kind_take": "toma",
+   "kind_tempo": "tempo",
+   "kind_wait": "espera",
+   "all": "todo"
+  },
+  "settings": {
+   "title": "Ajustes de audio",
+   "subtitle": "Elegí la entrada, el canal y la salida del metrónomo, y calibrá la latencia.",
+   "audio": "Audio",
+   "input": "Entrada (tu interfaz / cable USB)",
+   "channel": "Canal de entrada",
+   "output": "Salida para el metrónomo",
+   "gate": "Puerta de ruido",
+   "sensitivity": "Sensibilidad de ataques",
+   "latency": "Latencia (ms)",
+   "calibrate_title": "Calibrar latencia",
+   "calibrate_hint": "Vas a escuchar 4 clicks para agarrar el pulso y después 12 más. Tocá las cuerdas <b>muteadas</b> (un golpe seco con la púa) justo con cada click. Usá auriculares.",
+   "calibrate_start": "Empezar calibración",
+   "tips": "Consejos",
+   "tip_level": "El nivel tiene que andar entre −30 y −10 dB al tocar. Si se pone rojo, bajá la ganancia.",
+   "tip_clean": "Mejor señal limpia (sin distorsión); los efectos los podés monitorear aparte.",
+   "tip_soft": "Si no detecta ataques suaves, subí la sensibilidad o bajá la puerta de ruido.",
+   "n_channels_one": "{{count}} canal",
+   "n_channels_other": "{{count}} canales",
+   "looks_like_interface": "parece tu interfaz",
+   "system_output": "(la del sistema)",
+   "saved_in": "Se guarda en {{path}}",
+   "saved": "Ajustes guardados",
+   "cal_pulse": "Agarrá el pulso… {{beat}}/{{total}}",
+   "cal_play": "¡Tocá con cada click! {{beat}}/{{total}}",
+   "cal_ok": "Latencia {{ms}} ms (±{{spread}} ms, {{hits}} golpes) — guardada.",
+   "cal_few_hits": "No detecté suficientes golpes. Subí la ganancia o tocá más fuerte, sin distorsión.",
+   "cal_failed": "Falló la calibración",
+   "device_pill": "{{name}} · canal {{ch}}",
+   "default_input": "entrada por defecto del sistema",
+   "no_audio": "audio no disponible"
+  },
+  "home": {
+   "title": "¿Tocamos un rato?",
+   "title_done": "¡Bien, hoy ya practicaste!",
+   "streak_line_one": "Llevás {{count}} día seguido.",
+   "streak_line_other": "Llevás {{count}} días seguidos.",
+   "no_streak": "Arrancá una racha: un ejercicio por día alcanza.",
+   "xp_to_next": "{{xp}} XP · faltan {{left}} para el nivel {{n}}",
+   "xp_max": "{{xp}} XP · nivel máximo",
+   "streak": "Racha",
+   "lessons": "{{done}}/{{total}} lecciones",
+   "mastered": "{{chords}} acordes dominados · {{records}} récords de cambio",
+   "next_lesson_html": "Siguiente lección: <b>{{title}}</b>",
+   "go": "Seguir →",
+   "weak_html": "En <b>{{song}}</b> te cuestan los compases <b>{{bars}}</b>.",
+   "see": "Ver",
+   "q_chart": "Tocar un cifrado",
+   "q_chart_hint": "con metrónomo y escucha",
+   "q_drill": "Minuto de cambio",
+   "q_drill_hint": "destrabá un cambio de acordes",
+   "q_chords": "Comprobar acordes",
+   "q_chords_hint": "rasgueá y te digo si salió",
+   "q_tune": "Afinar",
+   "q_tune_hint": "antes de empezar",
+   "latest": "Lo último",
+   "just_now": "recién",
+   "nothing_yet_html": "Todavía nada. Empezá por la <a href=\"#/course\">ruta</a>."
+  },
+  "course": {
+   "title": "Ruta",
+   "subtitle": "{{done}}/{{total}} lecciones. Cada ejercicio se aprueba tocándolo: te escucha y te dice si salió.",
+   "continue_html": "Seguís con <b>{{title}}</b>",
+   "continue": "Continuar →",
+   "finished": "¡Terminaste la ruta! 🎉 Seguí con los cifrados.",
+   "minutes": "{{n}} min",
+   "n_exercises_one": "{{count}} ejercicio",
+   "n_exercises_other": "{{count}} ejercicios"
+  },
+  "lesson": {
+   "not_found": "No existe esa lección.",
+   "back": "Volver a la ruta",
+   "meta": "Nivel {{n}} · {{level}} · {{min}} min",
+   "complete": "✓ completa",
+   "idea": "La idea",
+   "tips": "Consejos",
+   "exercises": "Ejercicios",
+   "exercises_hint_html": "Apretá <b>Escuchame</b> y tocá. Se aprueba con el puntaje indicado.",
+   "pass_with": "aprobás con {{min}}%",
+   "your_best": "tu mejor: {{best}}%",
+   "hear_hint": "Escuchar cómo suena",
+   "listen": "🎧 Escuchame",
+   "stop": "■ Parar",
+   "tutorials": "Tutorías",
+   "video_title": "Video de la lección",
+   "pinned_link": "Tu video fijado",
+   "find_video": "Buscá un video que te guste para esta lección:",
+   "pin_label": "Fijar un video para esta lección (link de YouTube u otro)",
+   "pin": "Fijar",
+   "pinned": "Video fijado",
+   "unpinned": "Video quitado",
+   "next_html": "Siguiente: <b>{{title}}</b>",
+   "chart_at": "cifrado al {{pct}}%",
+   "open_chart": "Para escuchar el cifrado, abrilo en Cifrados.",
+   "busy": "Ya estoy escuchando otro ejercicio",
+   "wait_count_in": "Esperá la cuenta de entrada…",
+   "play_when_ready": "Tocá cuando quieras.",
+   "count_in": "Cuenta: {{n}}…",
+   "passed": "✓ Aprobado con {{score}}%",
+   "lesson_done": "¡lección completa!",
+   "not_played": "No llegaste a tocar. Probá de nuevo.",
+   "failed": "{{score}}% — necesitás {{need}}%. ¡Otra vez!"
+  },
+  "chords": {
+   "title": "Acordes",
+   "subtitle_html": "Tocá cada cuerda del diagrama para escucharla. Con <b>Comprobar</b> te escucha rasguearlo y te dice qué nota faltó.",
+   "search": "Buscar (Am, cejilla, 7…)",
+   "all": "Todos",
+   "mastered_ear": "Dominado por oído",
+   "mastered_camera": "Dominado con la cámara",
+   "listen_hint": "Escuchar cómo suena",
+   "check": "🎧 Comprobar",
+   "posture": "◉ Postura",
+   "posture_hint": "Revisar la postura con la cámara",
+   "none": "No hay acordes que coincidan.",
+   "busy": "Ya estoy escuchando otro acorde",
+   "strum_now": "Rasgueá {{chord}}…",
+   "try_again": "probá de nuevo",
+   "heard_ok": "✓ ¡Sonó {{chord}}!",
+   "not_heard": "No escuché {{chord}}. Revisá la entrada en Ajustes y probá de nuevo.",
+   "diagram_label": "Acorde {{chord}}"
+  },
+  "charts": {
+   "title": "Cifrados",
+   "subtitle": "Acordes por compás para tocar con metrónomo: te escucha y te marca cada acorde que no entró o se fue de tiempo. Los rasguidos de relleno no cuentan como error.",
+   "new": "＋ Escribir un cifrado",
+   "mine": "Tuyos",
+   "builtin": "Ejercicios incluidos",
+   "fix": "Corregir",
+   "level": "Nivel {{n}}",
+   "capo": "capo {{n}}",
+   "n_chords_one": "{{count}} acorde",
+   "n_chords_other": "{{count}} acordes",
+   "yours": "tuyo",
+   "see_dictionary": "Ver en el diccionario",
+   "play": "▶ Tocar con escucha",
+   "view": "Ver cifrado",
+   "edit": "Editar",
+   "duplicate": "Duplicar y editar",
+   "strum_hint": "Rasgueo: D abajo, U arriba",
+   "no_fingering": "sin digitación: {{chords}}"
+  },
+  "chart": {
+   "new_title": "Nuevo cifrado",
+   "edit_title": "Editar cifrado",
+   "duplicate_title": "Duplicar cifrado",
+   "help_html": "Una línea por grupo de compases, separados con <code>|</code>. Dos acordes en un compás: <code>C G</code>. <code>%</code> repite el anterior, <code>-</code> es un compás sin tocar.",
+   "text_label": "Cifrado",
+   "delete": "Borrar",
+   "confirm_delete": "¿Seguro? Tocá de nuevo para borrar",
+   "deleted": "Cifrado borrado",
+   "saved": "Guardado: {{title}}",
+   "headers": "Encabezados posibles",
+   "headers_html": "<code>title</code>, <code>bpm</code>, <code>time</code> (4/4, 3/4, 6/8), <code>capo</code>, <code>strum</code> (D abajo, U arriba, . nada; una casilla por corchea), <code>level</code>, <code>note</code>. Las secciones van entre corchetes: <code>[Estribillo]</code>. (Los encabezados del formato van en inglés.)",
+   "unknown_html": "No conozco: {{chords}} — mirá los nombres en <a href=\"#/chords\">Acordes</a>."
+  },
+  "tools": {
+   "title": "Herramientas",
+   "metronome": "Metrónomo",
+   "drill": "Minuto de cambio",
+   "fretboard": "Diapasón",
+   "tempo": "Tempo",
+   "tap": "Tap tempo",
+   "start": "▶ Empezar",
+   "stop": "■ Parar",
+   "tap_hint": "Tap tempo: tocá el botón (o la barra espaciadora) al ritmo, al menos 3 veces.",
+   "drill_intro_html": "Un minuto cambiando entre dos acordes, lo más rápido que puedas <b>sin ensuciarlos</b>: solo cuentan los cambios que te escuché sonar bien. La mejor forma de destrabar un cambio que cuesta.",
+   "drill_start": "🎧 Empezar",
+   "records": "Tus récords",
+   "record": "récord: {{n}}",
+   "two_chords": "Elegí dos acordes distintos",
+   "drill_go": "Arrancá con el de la izquierda.",
+   "drill_result_one": "{{count}} cambio limpio",
+   "drill_result_other": "{{count}} cambios limpios",
+   "new_record": "¡récord!",
+   "root": "Tónica",
+   "show": "Mostrar",
+   "names": "nombres",
+   "fretboard_hint": "Tocá cualquier posición para escucharla. La tónica va resaltada.",
+   "scale_all": "todas las notas",
+   "scale_major": "mayor",
+   "scale_natural_minor": "menor natural",
+   "scale_minor_pentatonic": "pentatónica menor",
+   "scale_major_pentatonic": "pentatónica mayor",
+   "scale_blues": "blues",
+   "scale_major_triad": "acorde mayor",
+   "scale_minor_triad": "acorde menor"
+  },
+  "camera": {
+   "title": "Cámara",
+   "subtitle": "Ubicá la cámara de frente al mástil, marcá dónde está con 4 clics y armá el acorde: te dice qué dedo está bien y cuál no. Todo se procesa en tu compu; el video no sale de acá.",
+   "off": "La cámara está apagada.",
+   "turn_on": "Encender cámara",
+   "turn_off": "Apagar cámara",
+   "calibrate": "Calibrar mástil",
+   "recalibrate": "Recalibrar mástil",
+   "mirror": "espejo",
+   "chord": "Acorde",
+   "hold": "Mantené la postura un segundo.",
+   "now_strum": "🎧 Ahora rasgueá: comprobarlo por oído",
+   "cal_nut_1": "la cejuela sobre la 1ra cuerda (la más fina)",
+   "cal_nut_6": "la cejuela sobre la 6ta cuerda (la más gruesa)",
+   "cal_f5_1": "el traste 5 sobre la 1ra cuerda",
+   "cal_f5_6": "el traste 5 sobre la 6ta cuerda",
+   "click_on": "Clic en {{where}}",
+   "calibrated": "Mástil calibrado",
+   "both_ok": "✓ Postura y sonido: {{chord}} dominado.",
+   "not_clean": "La postura estaba, pero no sonó limpio. Revisá que ningún dedo apague una cuerda.",
+   "asking": "Pidiendo permiso para la cámara…",
+   "loading": "Cargando el detector de manos…",
+   "calibrate_now": "Ahora calibrá el mástil: tocá «Calibrar mástil».",
+   "no_permission": "No hay permiso para la cámara. Habilitalo en el navegador y probá de nuevo.",
+   "open_failed": "No pude abrir la cámara: {{error}}",
+   "barre_at": "cejilla en el traste {{fret}}",
+   "string_fret": "cuerda {{string}}, traste {{fret}}",
+   "posture_ok": "✓ ¡Postura de {{chord}} correcta!",
+   "xp": "+{{xp}} XP: {{chord}} dominado",
+   "finger_1": "índice",
+   "finger_2": "medio",
+   "finger_3": "anular",
+   "finger_4": "meñique"
+  }
+ },
+ "content": {
+  "chords": {
+   "Em": {
+    "name": "Mi menor",
+    "tip": "Dos dedos y las seis cuerdas sueltas: el acorde ideal para empezar."
+   },
+   "Am": {
+    "name": "La menor",
+    "tip": "La 6ta no suena. Arqueá los dedos para que la 1ra quede limpia."
+   },
+   "Dm": {
+    "name": "Re menor",
+    "tip": "Rasgueá desde la 4ta. Suena triste por el Fa de la 1ra cuerda."
+   },
+   "E": {
+    "name": "Mi mayor",
+    "tip": "Es Em con el índice en el traste 1 de la 3ra: escuchá cómo se ilumina."
+   },
+   "A": {
+    "name": "La mayor",
+    "tip": "Tres dedos apretados en el traste 2; cuidá que suene la 1ra."
+   },
+   "D": {
+    "name": "Re mayor",
+    "tip": "Forma de triángulo; desde la 4ta cuerda."
+   },
+   "G": {
+    "name": "Sol mayor",
+    "tip": "Suena grande: usa las seis cuerdas."
+   },
+   "C": {
+    "name": "Do mayor",
+    "tip": "Dedos en escalera 3-2-1; la 3ra y la 1ra al aire."
+   },
+   "Em7": {
+    "name": "Mi menor 7",
+    "tip": "Em con el meñique en la 2da: un color más abierto."
+   },
+   "Am7": {
+    "name": "La menor 7",
+    "tip": "Am levantando el anular."
+   },
+   "Dm7": {
+    "name": "Re menor 7",
+    "tip": "Cejilla chica del índice en las dos primeras cuerdas."
+   },
+   "E7": {
+    "name": "Mi 7",
+    "tip": "E sin el anular: tensión de blues."
+   },
+   "A7": {
+    "name": "La 7",
+    "tip": "A dejando la 3ra cuerda al aire."
+   },
+   "D7": {
+    "name": "Re 7",
+    "tip": "Triángulo invertido; pide resolver a G."
+   },
+   "G7": {
+    "name": "Sol 7",
+    "tip": "G con el índice en el traste 1 de la 1ra."
+   },
+   "B7": {
+    "name": "Si 7",
+    "tip": "Cuatro dedos: el puente clásico hacia Em."
+   },
+   "C7": {
+    "name": "Do 7",
+    "tip": "C con el meñique en la 3ra cuerda."
+   },
+   "Cmaj7": {
+    "name": "Do maj7",
+    "tip": "C sin el índice: suena suspendido y suave."
+   },
+   "Fmaj7": {
+    "name": "Fa maj7",
+    "tip": "La versión amable de F, sin cejilla."
+   },
+   "Cadd9": {
+    "name": "Do add9",
+    "tip": "Anular y meñique fijos en la 2da y 1ra: cambia fácil con G."
+   },
+   "Dsus4": {
+    "name": "Re sus4",
+    "tip": "D con el meñique en la 1ra: tensión que pide volver a D."
+   },
+   "Dsus2": {
+    "name": "Re sus2",
+    "tip": "D sin la 1ra pisada: sonido abierto."
+   },
+   "Asus2": {
+    "name": "La sus2",
+    "tip": "A sin la 2da cuerda pisada."
+   },
+   "Asus4": {
+    "name": "La sus4",
+    "tip": "A con el meñique en el traste 3 de la 2da."
+   },
+   "F": {
+    "name": "Fa mayor",
+    "tip": "Forma de E con cejilla en el traste 1: apoyá el índice de costado."
+   },
+   "Fm": {
+    "name": "Fa menor",
+    "tip": "Forma de Em con cejilla en el traste 1."
+   },
+   "Bm": {
+    "name": "Si menor",
+    "tip": "Forma de Am con cejilla en el traste 2, desde la 5ta."
+   },
+   "B": {
+    "name": "Si mayor",
+    "tip": "Forma de A con cejilla en el traste 2."
+   },
+   "Bb": {
+    "name": "Si bemol",
+    "tip": "Forma de A con cejilla en el traste 1."
+   },
+   "F#m": {
+    "name": "Fa# menor",
+    "tip": "Forma de Em con cejilla en el traste 2."
+   },
+   "C#m": {
+    "name": "Do# menor",
+    "tip": "Forma de Am con cejilla en el traste 4."
+   },
+   "Gm": {
+    "name": "Sol menor",
+    "tip": "Forma de Em con cejilla en el traste 3."
+   },
+   "E5": {
+    "name": "Mi quinta",
+    "tip": "Solo dos o tres cuerdas graves: el sonido del rock."
+   },
+   "A5": {
+    "name": "La quinta",
+    "tip": "Tónica en la 5ta cuerda al aire."
+   },
+   "D5": {
+    "name": "Re quinta",
+    "tip": "Tónica en la 4ta cuerda al aire."
+   },
+   "G5": {
+    "name": "Sol quinta",
+    "tip": "Tónica en el traste 3 de la 6ta."
+   },
+   "C5": {
+    "name": "Do quinta",
+    "tip": "Tónica en el traste 3 de la 5ta."
+   },
+   "F5": {
+    "name": "Fa quinta",
+    "tip": "Tónica en el traste 1 de la 6ta."
+   },
+   "B5": {
+    "name": "Si quinta",
+    "tip": "Tónica en el traste 2 de la 5ta."
+   }
+  },
+  "groups": {
+   "open-minor": "Abiertos menores",
+   "open-major": "Abiertos mayores",
+   "sevenths": "Séptimas",
+   "color": "Color (maj7, add9, sus)",
+   "barre": "Con cejilla",
+   "power": "Quintas (power chords)"
+  },
+  "levels": {
+   "n1": {
+    "title": "Primeros sonidos",
+    "subtitle": "Cuerdas al aire, tu primer acorde y tu primer cambio."
+   },
+   "n2": {
+    "title": "Acordes abiertos",
+    "subtitle": "Los acordes con los que se tocan miles de canciones."
+   },
+   "n3": {
+    "title": "Ritmo",
+    "subtitle": "Rasgueos, compases y la mano derecha."
+   },
+   "n4": {
+    "title": "Color",
+    "subtitle": "Séptimas, blues y quintas."
+   },
+   "n5": {
+    "title": "Cejilla y melodía",
+    "subtitle": "F con cejilla y tu primera escala."
+   }
+  },
+  "lessons": {
+   "strings": {
+    "title": "Conocé las seis cuerdas",
+    "theory": [
+     "Las cuerdas se numeran de la más aguda (1ra, Mi) a la más grave (6ta, Mi).",
+     "Al aire, de grave a aguda: Mi – La – Re – Sol – Si – Mi (E A D G B E).",
+     "Antes de cada práctica, afiná: un instrumento desafinado hace que hasta lo bien tocado suene mal."
+    ],
+    "tips": [
+     "Apoyá la púa en la cuerda y soltala: un ataque firme y sin rasgar las vecinas.",
+     "Si una cuerda zumba al aire, revisá la afinación o que no la estés tocando con la otra mano."
+    ],
+    "tutorials": [
+     "cómo afinar la guitarra principiantes",
+     "nombres de las cuerdas de la guitarra"
+    ]
+   },
+   "e-minor": {
+    "title": "Tu primer acorde: Mi menor",
+    "theory": [
+     "Un acorde son varias notas a la vez. Em usa solo dos dedos y suenan las seis cuerdas.",
+     "Medio en el traste 2 de la 5ta cuerda, anular en el traste 2 de la 4ta.",
+     "Pisá con la yema, justo detrás del traste de metal, con el pulgar detrás del mástil."
+    ],
+    "tips": [
+     "Si una cuerda suena apagada, algún dedo la está rozando: arqueá más los nudillos."
+    ],
+    "tutorials": [
+     "acorde mi menor guitarra principiantes",
+     "postura mano izquierda guitarra"
+    ]
+   },
+   "first-change": {
+    "title": "Am y tu primer cambio",
+    "theory": [
+     "Am tiene la misma forma que E, una cuerda más abajo. La 6ta no se toca.",
+     "En el cambio Em→Am, el medio y el anular viajan juntos una cuerda hacia el piso."
+    ],
+    "tips": [
+     "Practicá el cambio lento y sin rasguear: mirá la forma, después cerrá los ojos."
+    ],
+    "tutorials": [
+     "cambio de acordes mi menor la menor guitarra"
+    ]
+   },
+   "d-a-e": {
+    "title": "D, A y E",
+    "theory": [
+     "A y E son la misma forma corrida una cuerda: tres dedos (A) contra dos más uno (E).",
+     "D se rasguea desde la 4ta cuerda: las dos graves no suenan."
+    ],
+    "tips": [],
+    "tutorials": [
+     "acordes re la mi guitarra principiantes"
+    ]
+   },
+   "g-c": {
+    "title": "G y C",
+    "theory": [
+     "G usa las seis cuerdas; C deja la 6ta afuera.",
+     "Con G, C, D y Em ya podés acompañar la progresión más usada del pop: I–V–vi–IV."
+    ],
+    "tips": [],
+    "tutorials": [
+     "acorde sol mayor do mayor guitarra",
+     "progresion I V vi IV guitarra"
+    ]
+   },
+   "strumming": {
+    "title": "Abajo y arriba",
+    "theory": [
+     "La mano derecha va y viene como un péndulo, siempre a tempo, aunque no toque las cuerdas.",
+     "Los rasguidos hacia abajo caen en los números (1, 2, 3, 4) y los de arriba en los \"y\".",
+     "El patrón D.DU.UDU se cuenta: 1, 2 y, y 4 y."
+    ],
+    "tips": [],
+    "tutorials": [
+     "rasgueo basico guitarra abajo arriba",
+     "patron de rasgueo pop guitarra"
+    ]
+   },
+   "three-four": {
+    "title": "El compás de 3/4",
+    "theory": [
+     "En 3/4 se cuenta UN-dos-tres: el primer tiempo pesa más.",
+     "E7 es E sin el anular: la tensión que vuelve a Am."
+    ],
+    "tips": [],
+    "tutorials": [
+     "ritmo de vals guitarra 3/4"
+    ]
+   },
+   "blues": {
+    "title": "Séptimas y blues",
+    "theory": [
+     "El acorde de 7ma suma una nota que pide resolver: por eso el blues suena \"en movimiento\".",
+     "Los 12 compases del blues: I I I I · IV IV I I · V IV I V."
+    ],
+    "tips": [],
+    "tutorials": [
+     "blues de 12 compases guitarra principiantes",
+     "shuffle blues guitarra"
+    ]
+   },
+   "power-chords": {
+    "title": "Quintas (power chords)",
+    "theory": [
+     "Una quinta es tónica + quinta: ni mayor ni menor, por eso suena tan bien con distorsión.",
+     "Es una forma móvil: la misma figura en cualquier traste."
+    ],
+    "tips": [],
+    "tutorials": [
+     "power chords guitarra principiantes",
+     "palm mute guitarra"
+    ]
+   },
+   "barre": {
+    "title": "F con cejilla",
+    "theory": [
+     "La cejilla es el índice apretando todas las cuerdas de un traste: apoyalo de costado, no de plano.",
+     "F es la forma de E con cejilla en el traste 1. Movela y obtenés cualquier acorde mayor."
+    ],
+    "tips": [
+     "No apretés más fuerte: tirá el brazo hacia atrás y dejá que el peso haga la presión."
+    ],
+    "tutorials": [
+     "como hacer cejilla guitarra fa mayor",
+     "ejercicios cejilla guitarra"
+    ]
+   },
+   "pentatonic": {
+    "title": "Pentatónica menor de La",
+    "theory": [
+     "La escala pentatónica tiene 5 notas: con ella se improvisan la mayoría de los solos de rock y blues.",
+     "Posición 1 en el traste 5: índice en el 5, anular o meñique en el 7/8."
+    ],
+    "tips": [],
+    "tutorials": [
+     "escala pentatonica menor la guitarra posicion 1"
+    ]
+   }
+  },
+  "exercises": {
+   "strings/open-strings": "Tocá las 6 cuerdas al aire, de la 6ta a la 1ra",
+   "strings/open-strings-back": "Y de vuelta, de la 1ra a la 6ta",
+   "e-minor/em-x4": "Rasgueá Em cuatro veces, limpio",
+   "first-change/am-x4": "Rasgueá Am cuatro veces",
+   "first-change/em-am-change": "Em → Am → Em → Am…",
+   "first-change/em-am-chart": "Con metrónomo al 70%",
+   "d-a-e/d-x4": "Rasgueá D cuatro veces",
+   "d-a-e/d-a-change": "D ↔ A",
+   "d-a-e/dae-chart": "Tres mayores al 80%",
+   "g-c/g-c-change": "G ↔ C",
+   "g-c/pop-chart": "Pop en Sol al 75%",
+   "strumming/ballad-chart": "Balada en Do con metrónomo",
+   "three-four/waltz-chart": "Vals en La menor",
+   "blues/a7-d7-change": "A7 ↔ D7",
+   "blues/blues-chart": "Blues en La",
+   "power-chords/rock-chart": "Rock con quintas",
+   "barre/f-x4": "F cuatro veces, que suenen las 6",
+   "barre/andalusian-chart": "Cadencia andaluza",
+   "pentatonic/pentatonic-up": "Subí la escala, nota por nota",
+   "pentatonic/pentatonic-down": "Y bajala"
+  },
+  "charts": {
+   "01-em-am": {
+    "title": "Primer cambio: Em y Am",
+    "note": "Un rasguido por tiempo. Dejá los dedos medio y anular \"viajando juntos\" de una forma a la otra."
+   },
+   "02-d-a-e": {
+    "title": "Tres mayores: D, A y E",
+    "note": "La forma de A y la de E son la misma, una cuerda corrida. D pide rasguear desde la 4ta."
+   },
+   "03-pop-in-g": {
+    "title": "Pop en Sol: I–V–vi–IV",
+    "note": "La progresión más usada del pop. Pensá el cambio en el último \"y\" del compás, no en el 1."
+   },
+   "04-ballad-in-c": {
+    "title": "Balada en Do con Fmaj7",
+    "note": "Fmaj7 es la puerta de entrada a F: mismos dedos 3-2-1, sin cejilla."
+   },
+   "05-waltz": {
+    "title": "Vals en La menor (3/4)",
+    "note": "Acentuá el 1 de cada compás: UN-dos-tres."
+   },
+   "06-blues-in-a": {
+    "title": "Blues de 12 compases en La",
+    "note": "La forma más tocada del blues: 4 de I, 2 de IV, 2 de I, V-IV-I-V."
+   },
+   "07-power-chord-rock": {
+    "title": "Rock con quintas",
+    "note": "Corcheas parejas con púa hacia abajo y la mano derecha apagando apenas las cuerdas (palm mute)."
+   },
+   "08-folk-in-d": {
+    "title": "Folk en Re con suspendidos",
+    "note": "Dsus4 y Dsus2 son adornos: el dedo entra y sale sin mover el resto de la mano."
+   },
+   "09-anchor-fingers": {
+    "title": "Acústico con anclas: Em7, G, Dsus4, Cadd9",
+    "note": "Anular y meñique no se mueven en todo el ejercicio: son el ancla. Con capo en el 2."
+   },
+   "10-andalusian-cadence": {
+    "title": "Cadencia andaluza (rumba)",
+    "note": "Am–G–F–E bajando: el sonido flamenco. F con cejilla, o Fmaj7 si todavía cuesta."
+   },
+   "11-ii-v-i": {
+    "title": "Jazz básico: ii–V–I en Do",
+    "note": "Dm7 → G7 → Cmaj7: tensión y resolución. Escuchá cómo cada acorde \"cae\" en el siguiente."
+   },
+   "12-moving-barres": {
+    "title": "Cejillas en movimiento",
+    "note": "La misma forma, corrida por el mástil. Soltá la presión entre acordes y volvé a apretar al llegar."
+   }
+  },
+  "sections": {
+   "Back and forth": "Ida y vuelta",
+   "Loop": "Vuelta",
+   "Twelve bars": "Doce compases",
+   "Verse": "Verso"
+  }
+ }
+}

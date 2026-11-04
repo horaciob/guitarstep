@@ -1,0 +1,10 @@
+title: First change: Em and Am
+level: 1
+bpm: 70
+time: 4/4
+strum: D.D.D.D.
+note: One strum per beat. Let your middle and ring fingers travel together from one shape to the other.
+
+[Back and forth]
+Em | Em | Am | Am
+Em | Em | Am | Am

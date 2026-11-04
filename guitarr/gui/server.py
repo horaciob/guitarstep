@@ -1,7 +1,10 @@
-"""Interfaz gráfica: servidor local (FastAPI) + página web en el navegador.
+"""Web UI: local server (FastAPI) + a web page in your browser.
 
-El audio se sigue procesando en Python (sounddevice, baja latencia); el
-navegador solo muestra el estado que llega por WebSocket ~20 veces por segundo.
+Audio is still processed in Python (sounddevice, low latency); the browser only shows
+the state it receives over a WebSocket ~20 times per second.
+
+API errors are `{"detail": {"code": ..., "message": ...}}`: the UI translates `code`
+and falls back to the English `message`.
 """
 from __future__ import annotations
 
@@ -24,9 +27,13 @@ STATIC = Path(__file__).parent / "static"
 app = FastAPI(title="guitarr", docs_url=None, redoc_url=None)
 
 
+def fail(status: int, code: str, message: str):
+    raise HTTPException(status, detail=dict(code=code, message=message))
+
+
 @app.middleware("http")
 async def revalidate_static(request, call_next):
-    """Que el navegador revalide JS/CSS (con ETag) para no quedar con versiones viejas."""
+    """Make the browser revalidate JS/CSS (via ETag) so it never runs stale versions."""
     resp = await call_next(request)
     if request.url.path == "/" or request.url.path.startswith("/static/"):
         resp.headers["Cache-Control"] = "no-cache"
@@ -39,8 +46,8 @@ class State:
         self.session = None          # LiveSession
         self.thread: threading.Thread | None = None
         self.section: dict | None = None
-        self.ctx: dict | None = None     # para qué es la sesión: práctica, ejercicio, acorde, minuto de cambio
-        self.final: dict | None = None   # reporte + lo ganado (cuando ya se registró el progreso)
+        self.ctx: dict | None = None     # what the session is for: practice, exercise, chord, drill
+        self.final: dict | None = None   # report + what was earned (once progress was recorded)
         self.tuner = None
         self.calib: dict = dict(running=False)
 
@@ -48,25 +55,25 @@ class State:
 S = State()
 
 
-# ---------------------------------------------------------------- utilidades
+# ---------------------------------------------------------------- helpers
 def _safe_name(name: str) -> str:
     n = Path(name or "").name
     if not n or n.startswith("."):
-        raise HTTPException(400, "Nombre de archivo inválido")
+        fail(400, "bad_filename", "Invalid file name")
     return n
 
 
 def song_path(name: str) -> Path:
     p = config.SONGS_DIR / _safe_name(name)
     if not p.exists():
-        raise HTTPException(404, f"No encontré la canción '{name}'")
+        fail(404, "song_not_found", f"Song '{name}' not found")
     return p
 
 
 def take_path(name: str) -> Path:
     p = config.TAKES_DIR / _safe_name(name)
     if not p.exists():
-        raise HTTPException(404, f"No encontré la toma '{name}'")
+        fail(404, "take_not_found", f"Take '{name}' not found")
     return p
 
 
@@ -82,29 +89,27 @@ def audio_settings() -> dict:
 
 
 def ref_options(body: dict) -> tuple[RefOptions, dict]:
-    """Arma la referencia pedida y su contexto. Fuentes posibles: archivo subido (song),
-    cifrado, acorde suelto, ejercicio de la ruta o minuto de cambio (drill)."""
+    """Builds the requested reference and its context. Sources: an uploaded file (song),
+    a chart, a single chord, a course exercise or the chord-change minute (drill)."""
     common = dict(start_bar=_int(body.get("start_bar")), end_bar=_int(body.get("end_bar")))
     try:
-        if body.get("ejercicio"):
-            lid, eid = body["ejercicio"]["lesson"], body["ejercicio"]["exercise"]
+        if body.get("exercise"):
+            lid, eid = body["exercise"]["lesson"], body["exercise"]["exercise"]
             opts, mode, speed, need = catalog.exercise_setup(lid, eid)
-            ex = catalog.get_exercise(lid, eid)
-            return opts, dict(type="exercise", lesson=lid, exercise=eid, min=need, mode=mode, speed=speed,
-                              title=ex["title"])
+            return opts, dict(type="exercise", lesson=lid, exercise=eid, min=need, mode=mode, speed=speed)
         if body.get("drill"):
             chords = list(body["drill"]["chords"])[:2]
             return RefOptions(chart=catalog.chart_alternating(chords, 60)), dict(
                 type="drill", chords=chords, mode="wait", seconds=int(body["drill"].get("seconds", 60)))
-        if body.get("acorde"):
-            return RefOptions(chart=catalog.chart_from_chord(body["acorde"])), dict(
-                type="chord", chord=body["acorde"], mode="wait")
-        if body.get("cifrado"):
-            return RefOptions(chart=catalog.get_cifrado(body["cifrado"]), **common), dict(type="practice", chart=True)
+        if body.get("chord"):
+            return RefOptions(chart=catalog.chart_from_chord(body["chord"])), dict(
+                type="chord", chord=body["chord"], mode="wait")
+        if body.get("chart"):
+            return RefOptions(chart=catalog.get_chart(body["chart"]), **common), dict(type="practice", chart=True)
     except catalog.CatalogError as e:
-        raise HTTPException(404, str(e))
+        fail(404, "catalog", str(e))
     if not body.get("song"):
-        raise HTTPException(400, "Elegí una canción")
+        fail(400, "no_song", "Pick a song")
     return RefOptions(
         path=song_path(body["song"]), track=body.get("track") or None,
         bpm=_float(body.get("bpm")), first_beat=_float(body.get("first_beat")) or 0.0,
@@ -114,7 +119,10 @@ def ref_options(body: dict) -> tuple[RefOptions, dict]:
 
 def ref_from(body: dict):
     opts, _ = ref_options(body)
-    return load_reference(opts, log=lambda m: None)
+    try:
+        return load_reference(opts, log=lambda m: None)
+    except ReferenceError as e:
+        fail(400, "reference", str(e))
 
 
 def _int(v):
@@ -130,7 +138,14 @@ def _section(body: dict) -> dict | None:
     return dict(start_bar=sb, end_bar=eb) if sb or eb else None
 
 
-# ---------------------------------------------------------------- páginas
+def _catalog(fn, *a):
+    try:
+        return fn(*a)
+    except catalog.CatalogError as e:
+        fail(400, "catalog", str(e))
+
+
+# ---------------------------------------------------------------- pages
 @app.get("/")
 def index():
     return FileResponse(STATIC / "index.html")
@@ -144,96 +159,89 @@ def get_take(name: str):
     return FileResponse(take_path(name), media_type="audio/wav")
 
 
-# ---------------------------------------------------------------- aprender: acordes, cifrados, ruta, progreso
-def _catalog_errors(fn, *a):
+# ---------------------------------------------------------------- learn: chords, charts, course, progress
+@app.get("/api/chords")
+def api_chords():
+    return dict(groups=catalog.chord_groups(), chords=catalog.chords(), mastered=progress.get()["chords"])
+
+
+@app.get("/api/charts")
+def api_charts():
+    return catalog.charts()
+
+
+@app.get("/api/charts/{cid}")
+def api_chart(cid: str):
     try:
-        return fn(*a)
+        text, mine = catalog.chart_text(cid)
+        return dict(id=cid, text=text, mine=mine, chart=catalog.parse_chart(text, cid))
     except catalog.CatalogError as e:
-        raise HTTPException(400, str(e))
+        fail(404, "catalog", str(e))
 
 
-@app.get("/api/acordes")
-def api_acordes():
-    mastered = progress.get()["chords"]
-    return dict(groups=catalog.chord_groups(), chords=catalog.chords(), mastered=mastered)
-
-
-@app.get("/api/cifrados")
-def api_cifrados():
-    return catalog.cifrados()
-
-
-@app.get("/api/cifrados/{cid}")
-def api_cifrado(cid: str):
+@app.post("/api/charts/validate")
+def api_chart_validate(body: dict):
     try:
-        text, mine = catalog.cifrado_text(cid)
-        return dict(id=cid, text=text, mine=mine, chart=catalog.parse_cifrado(text, cid))
-    except catalog.CatalogError as e:
-        raise HTTPException(404, str(e))
-
-
-@app.post("/api/cifrados/validar")
-def api_cifrado_validar(body: dict):
-    try:
-        c = catalog.parse_cifrado(body.get("text", ""), "vista-previa")
-        return dict(ok=not c["missing"], chart=c, error=(f"No conozco: {', '.join(c['missing'])}" if c["missing"] else None))
+        c = catalog.parse_chart(body.get("text", ""), "preview")
+        return dict(ok=not c["missing"], chart=c, unknown=c["missing"],
+                    error=(f"Unknown chords: {', '.join(c['missing'])}" if c["missing"] else None))
     except catalog.CatalogError as e:
         return dict(ok=False, error=str(e))
 
 
-@app.post("/api/cifrados")
-def api_cifrado_guardar(body: dict):
+@app.post("/api/charts")
+def api_chart_save(body: dict):
     cid = body.get("id")
     if cid:
         cid = catalog.slug(cid)
-    return _catalog_errors(catalog.save_cifrado, body.get("text", ""), cid)
+    return _catalog(catalog.save_chart, body.get("text", ""), cid)
 
 
-@app.delete("/api/cifrados/{cid}")
-def api_cifrado_borrar(cid: str):
-    _catalog_errors(catalog.delete_cifrado, cid)
+@app.delete("/api/charts/{cid}")
+def api_chart_delete(cid: str):
+    _catalog(catalog.delete_chart, cid)
     return dict(ok=True)
 
 
-@app.get("/api/ruta")
-def api_ruta():
+@app.get("/api/course")
+def api_course():
     p = progress.get()
     levels = []
-    for lvl in catalog.ruta()["levels"]:
+    for lvl in catalog.course()["levels"]:
         ls = []
         for x in lvl["lessons"]:
             exs = [dict(e, best=p["exercises"].get(f"{x['id']}/{e['id']}"),
                         passed=p["exercises"].get(f"{x['id']}/{e['id']}", -1) >= e.get("min", 80))
                    for e in x["exercises"]]
-            ls.append(dict(x, exercises=exs, done=x["id"] in p["lessons"], pinned=p["tutorias"].get(x["id"])))
+            ls.append(dict(x, exercises=exs, done=x["id"] in p["lessons"], pinned=p["tutorials"].get(x["id"])))
         levels.append(dict(lvl, lessons=ls))
     nxt = next((x for lv in levels for x in lv["lessons"] if not x["done"]), None)
     return dict(levels=levels, next=nxt and dict(id=nxt["id"], title=nxt["title"]))
 
 
-@app.get("/api/progreso")
-def api_progreso():
+@app.get("/api/progress")
+def api_progress():
     return progress.get()
 
 
-@app.post("/api/progreso/acorde")
-def api_progreso_acorde(body: dict):
+@app.post("/api/progress/chord")
+def api_progress_chord(body: dict):
     via = body.get("via")
-    if via not in ("oido", "camara") or catalog.get_chord(body.get("chord", "")) is None:
-        raise HTTPException(400, "Acorde o vía inválidos")
+    if via not in ("ear", "camera") or catalog.get_chord(body.get("chord", "")) is None:
+        fail(400, "bad_chord", "Invalid chord or method")
     return progress.chord_mastered(body["chord"], via)
 
 
-@app.post("/api/progreso/tutoria")
-def api_progreso_tutoria(body: dict):
+@app.post("/api/progress/tutorial")
+def api_progress_tutorial(body: dict):
     url = (body.get("url") or "").strip() or None
     if url and not url.startswith(("https://", "http://")):
-        raise HTTPException(400, "Pegá un link que empiece con https://")
-    _catalog_errors(catalog.get_lesson, body.get("lesson", ""))
-    return progress.pin_tutoria(body["lesson"], url)
+        fail(400, "bad_url", "Paste a link starting with https://")
+    _catalog(catalog.get_lesson, body.get("lesson", ""))
+    return progress.pin_tutorial(body["lesson"], url)
 
 
-# ---------------------------------------------------------------- estado / config
+# ---------------------------------------------------------------- status / settings
 @app.get("/api/status")
 def status():
     return dict(version=__version__, home=str(config.HOME),
@@ -275,7 +283,7 @@ def set_config(body: dict):
     return get_config()
 
 
-# ---------------------------------------------------------------- canciones
+# ---------------------------------------------------------------- songs
 @app.get("/api/songs")
 def songs():
     config.SONGS_DIR.mkdir(parents=True, exist_ok=True)
@@ -291,10 +299,9 @@ def songs():
 async def upload_song(file: UploadFile = File(...)):
     name = _safe_name(file.filename)
     if Path(name).suffix.lower() not in REFERENCE_EXT:
-        raise HTTPException(400, "Formato no soportado: subí MIDI, Guitar Pro o audio")
+        fail(400, "bad_format", "Unsupported format: upload MIDI, Guitar Pro or audio")
     config.SONGS_DIR.mkdir(parents=True, exist_ok=True)
-    dest = config.SONGS_DIR / name
-    with open(dest, "wb") as f:
+    with open(config.SONGS_DIR / name, "wb") as f:
         shutil.copyfileobj(file.file, f)
     return dict(name=name)
 
@@ -306,25 +313,24 @@ def make_demo():
     out = demo_main(config.HOME / "demo")
     config.SONGS_DIR.mkdir(parents=True, exist_ok=True)
     config.TAKES_DIR.mkdir(parents=True, exist_ok=True)
-    shutil.copy(out / "referencia.mid", config.SONGS_DIR / "demo-referencia.mid")
-    shutil.copy(out / "toma.wav", config.TAKES_DIR / "demo-toma.wav")
-    return dict(song="demo-referencia.mid", take="demo-toma.wav")
+    shutil.copy(out / "reference.mid", config.SONGS_DIR / "demo-reference.mid")
+    shutil.copy(out / "take.wav", config.TAKES_DIR / "demo-take.wav")
+    return dict(song="demo-reference.mid", take="demo-take.wav")
 
 
 @app.get("/api/songs/{name}/tracks")
 def tracks(name: str):
     try:
         return list_tracks(song_path(name))
+    except HTTPException:
+        raise
     except Exception as e:
-        raise HTTPException(400, str(e))
+        fail(400, "reference", str(e))
 
 
 @app.post("/api/preview")
 def preview(body: dict):
-    try:
-        ref = ref_from(body)
-    except ReferenceError as e:
-        raise HTTPException(400, str(e))
+    ref = ref_from(body)
     g = ref.grid
     last_bar = g.bar_index(max(n.start for n in ref.notes))
     first_bar = g.bar_index(ref.notes[0].start)
@@ -352,7 +358,7 @@ def save_preset(body: dict):
     return data["songs"][song]
 
 
-# ---------------------------------------------------------------- tomas / análisis
+# ---------------------------------------------------------------- takes / analysis
 @app.get("/api/takes")
 def takes():
     config.TAKES_DIR.mkdir(parents=True, exist_ok=True)
@@ -360,42 +366,7 @@ def takes():
             for p in sorted(config.TAKES_DIR.glob("*.wav"), key=lambda p: -p.stat().st_mtime)]
 
 
-@app.post("/api/takes")
-async def upload_take(file: UploadFile = File(...)):
-    name = _safe_name(file.filename)
-    config.TAKES_DIR.mkdir(parents=True, exist_ok=True)
-    dest = config.TAKES_DIR / name
-    with open(dest, "wb") as f:
-        shutil.copyfileobj(file.file, f)
-    return dict(name=name)
-
-
-@app.post("/api/analyze")
-def analyze(options: str = Form(...), take: UploadFile | None = File(None)):
-    from ..analysis import FileOptions, analyze_take
-
-    body = json.loads(options)
-    if take is not None and take.filename:
-        up = upload_take_sync(take)
-        tpath = take_path(up)
-    else:
-        tpath = take_path(body["take"])
-    try:
-        ref = ref_from(body)
-        msgs = []
-        res, _ = analyze_take(ref, tpath, FileOptions(
-            transpose=_int(body.get("transpose")) or 0,
-            timing_tol=(_float(body.get("timing_tol_ms")) or 60) / 1000), log=msgs.append)
-    except (ReferenceError, ValueError) as e:
-        raise HTTPException(400, str(e))
-    res["messages"] = [m.strip() for m in msgs if m.strip().startswith("⚠")]
-    res["take_name"] = tpath.name
-    history.save(res, _section(body))
-    res["award"] = dict(xp=progress.add_practice(res["summary"].get("score"), "Análisis de toma"))
-    return res
-
-
-def upload_take_sync(file: UploadFile) -> str:
+def _store_take(file: UploadFile) -> str:
     name = _safe_name(file.filename)
     config.TAKES_DIR.mkdir(parents=True, exist_ok=True)
     with open(config.TAKES_DIR / name, "wb") as f:
@@ -403,21 +374,47 @@ def upload_take_sync(file: UploadFile) -> str:
     return name
 
 
-# ---------------------------------------------------------------- en vivo
+@app.post("/api/takes")
+async def upload_take(file: UploadFile = File(...)):
+    return dict(name=_store_take(file))
+
+
+@app.post("/api/analyze")
+def analyze(options: str = Form(...), take: UploadFile | None = File(None)):
+    from ..analysis import FileOptions, analyze_take
+
+    body = json.loads(options)
+    tpath = take_path(_store_take(take)) if take is not None and take.filename else take_path(body["take"])
+    ref = ref_from(body)
+    msgs: list[str] = []
+    try:
+        res, _ = analyze_take(ref, tpath, FileOptions(
+            transpose=_int(body.get("transpose")) or 0,
+            timing_tol=(_float(body.get("timing_tol_ms")) or 60) / 1000), log=msgs.append)
+    except (ReferenceError, ValueError) as e:
+        fail(400, "analysis", str(e))
+    res["messages"] = [m.strip() for m in msgs if m.strip().startswith("⚠")]
+    res["take_name"] = tpath.name
+    history.save(res, _section(body))
+    res["award"] = dict(xp=progress.add_practice(res["summary"].get("score"), "take_analysis"))
+    return res
+
+
+# ---------------------------------------------------------------- live
 @app.post("/api/live/start")
 def live_start(body: dict):
     from ..session import LiveOptions, LiveSession
 
     with S.lock:
         if S.session and S.session.running:
-            raise HTTPException(409, "Ya hay una sesión en curso")
+            fail(409, "busy", "A session is already running")
         if S.tuner:
             S.tuner.stop()
         ropts, ctx = ref_options(body)
         try:
             ref = load_reference(ropts, log=lambda m: None)
         except ReferenceError as e:
-            raise HTTPException(400, str(e))
+            fail(400, "reference", str(e))
         a = audio_settings()
         sim = take_path(body["simulate"]) if body.get("simulate") else None
         mode = ctx.get("mode") or body.get("mode", "wait")
@@ -440,7 +437,7 @@ def live_start(body: dict):
         try:
             sess = LiveSession(ref, opts)
         except AudioError as e:
-            raise HTTPException(400, str(e))
+            fail(400, "audio", str(e))
         S.session, S.section, S.ctx, S.final = sess, _section(body), ctx, None
 
         def run():
@@ -451,12 +448,12 @@ def live_start(body: dict):
                 rep["award"] = progress.on_session(ctx, rep)
                 rep["context"] = ctx
                 S.final = rep
-            except Exception as e:  # queda en sess.error para la UI
+            except Exception as e:  # kept in sess.error for the UI
                 sess.error = sess.error or str(e)
 
         S.thread = threading.Thread(target=run, daemon=True)
         S.thread.start()
-        if ctx["type"] == "drill":  # el minuto de cambio se corta solo
+        if ctx["type"] == "drill":  # the chord-change minute stops by itself
             threading.Timer(ctx["seconds"] + 1.5, sess.stop).start()
     return dict(ok=True, events=len(sess.events), context=ctx,
                 grid_bpm=round(60 / ref.grid.beat_len(ref.notes[0].start), 1))
@@ -466,7 +463,7 @@ def live_start(body: dict):
 def live_stop():
     sess, th = S.session, S.thread
     if not sess:
-        raise HTTPException(404, "No hay sesión")
+        fail(404, "no_session", "No session")
     sess.stop()
     if th:
         th.join(5)
@@ -499,14 +496,14 @@ async def ws_live(ws: WebSocket):
         pass
 
 
-# ---------------------------------------------------------------- afinador
+# ---------------------------------------------------------------- tuner
 @app.websocket("/ws/tuner")
 async def ws_tuner(ws: WebSocket):
     from ..tuner import Tuner
 
     await ws.accept()
     if S.session and S.session.running:
-        await ws.send_json(dict(error="Pará la práctica para usar el afinador."))
+        await ws.send_json(dict(error=dict(code="busy", message="Stop practicing to use the tuner.")))
         await ws.close()
         return
     try:
@@ -514,8 +511,12 @@ async def ws_tuner(ws: WebSocket):
         a = audio_settings()
         src = FileSource(take_path(sim)) if sim else MicSource(a.get("device"), a.get("channel") or 1,
                                                                 a.get("samplerate"))
-    except (AudioError, HTTPException) as e:
-        await ws.send_json(dict(error=getattr(e, "detail", None) or str(e)))
+    except HTTPException as e:
+        await ws.send_json(dict(error=e.detail))
+        await ws.close()
+        return
+    except AudioError as e:
+        await ws.send_json(dict(error=dict(code="audio", message=str(e))))
         await ws.close()
         return
     tuner = Tuner(src)
@@ -535,15 +536,15 @@ async def ws_tuner(ws: WebSocket):
             S.tuner = None
 
 
-# ---------------------------------------------------------------- calibración
+# ---------------------------------------------------------------- calibration
 @app.post("/api/calibrate")
 def calibrate_start(body: dict | None = None):
     from ..tuner import calibrate
 
     if S.calib.get("running"):
-        raise HTTPException(409, "Ya se está calibrando")
+        fail(409, "busy", "Calibration already running")
     if S.session and S.session.running:
-        raise HTTPException(409, "Pará la práctica primero")
+        fail(409, "busy", "Stop practicing first")
     a = audio_settings()
     bpm = _float((body or {}).get("bpm")) or 90
     S.calib = dict(running=True, beat=0, total=16, warmup=True, result=None)
@@ -558,7 +559,7 @@ def calibrate_start(body: dict | None = None):
             if r["ok"]:
                 config.update_audio(latency_ms=r["latency_ms"])
         except Exception as e:
-            r = dict(ok=False, message=str(e))
+            r = dict(ok=False, code="error", message=str(e))
         S.calib.update(running=False, result=r)
 
     threading.Thread(target=run, daemon=True).start()
@@ -570,7 +571,7 @@ def calibrate_state():
     return S.calib
 
 
-# ---------------------------------------------------------------- historial
+# ---------------------------------------------------------------- history
 @app.get("/api/history")
 def api_history():
     return history.songs()
@@ -581,27 +582,26 @@ def api_history_song(sid: str):
     sid = _safe_name(sid)
     sessions = history.load_sessions(sid)
     if not sessions:
-        raise HTTPException(404, "Sin sesiones")
+        fail(404, "no_sessions", "No sessions")
     light = [dict(file=s["file"], date=s.get("date"), kind=s.get("kind"), score=history.session_score(s),
                   speed=s.get("final_speed") or s.get("speed"), section=s.get("section"),
                   mode=s.get("mode"), summary=s.get("summary"), passes=s.get("passes", []))
              for s in sessions]
     ref = sessions[-1].get("reference", {})
     rpath = ref.get("path", "") or ""
-    if rpath.startswith("cifrado:"):
+    if rpath.startswith("chart:"):
         song = rpath
     else:
         song = Path(rpath).name if rpath and (config.SONGS_DIR / Path(rpath).name).exists() else None
-    return dict(id=sid, reference=ref, song=song,
-                sessions=light, problem_bars=history.problem_bars(sessions))
+    return dict(id=sid, reference=ref, song=song, sessions=light, problem_bars=history.problem_bars(sessions))
 
 
-# ---------------------------------------------------------------- arranque
+# ---------------------------------------------------------------- startup
 def serve(host: str = "127.0.0.1", port: int = 8765, open_browser: bool = True) -> None:
     import uvicorn
 
     url = f"http://{host}:{port}/"
-    print(f"guitarr {__version__} — abrí {url}  (Ctrl+C para salir)")
+    print(f"guitarr {__version__} — open {url}  (Ctrl+C to quit)")
     if open_browser:
         threading.Timer(1.0, lambda: webbrowser.open(url)).start()
     uvicorn.run(app, host=host, port=port, log_level="warning")

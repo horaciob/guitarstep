@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,90 +10,93 @@
 <body>
 <div class="shell">
   <aside class="rail">
-    <a class="logo" href="#/inicio">
+    <a class="logo" href="#/home">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
       guitarr
     </a>
-    <nav id="nav" aria-label="Secciones">
-      <div class="rail-group">Aprender</div>
-      <a href="#/inicio" data-route="inicio"><span class="ico">⌂</span><span>Inicio</span></a>
-      <a href="#/ruta" data-route="ruta"><span class="ico">◆</span><span>Ruta</span></a>
-      <a href="#/acordes" data-route="acordes"><span class="ico">▦</span><span>Acordes</span></a>
-      <a href="#/camara" data-route="camara"><span class="ico">◉</span><span>Cámara</span></a>
-      <div class="rail-group">Tocar</div>
-      <a href="#/practicar" data-route="practicar"><span class="ico">▶</span><span>Practicar</span></a>
-      <a href="#/cancionero" data-route="cancionero"><span class="ico">♫</span><span>Cifrados</span></a>
-      <a href="#/herramientas" data-route="herramientas"><span class="ico">⚒</span><span>Herramientas</span></a>
-      <a href="#/afinador" data-route="afinador"><span class="ico">◎</span><span>Afinador</span></a>
-      <div class="rail-group">Revisar</div>
-      <a href="#/analizar" data-route="analizar"><span class="ico">≋</span><span>Analizar toma</span></a>
-      <a href="#/historial" data-route="historial"><span class="ico">↗</span><span>Historial</span></a>
-      <a href="#/ajustes" data-route="ajustes"><span class="ico">⚙</span><span>Ajustes</span></a>
+    <nav id="nav" data-i18n-title="nav.label">
+      <div class="rail-group" data-i18n="nav.learn">Learn</div>
+      <a href="#/home" data-route="home"><span class="ico">⌂</span><span data-i18n="nav.home">Home</span></a>
+      <a href="#/course" data-route="course"><span class="ico">◆</span><span data-i18n="nav.course">Course</span></a>
+      <a href="#/chords" data-route="chords"><span class="ico">▦</span><span data-i18n="nav.chords">Chords</span></a>
+      <a href="#/camera" data-route="camera"><span class="ico">◉</span><span data-i18n="nav.camera">Camera</span></a>
+      <div class="rail-group" data-i18n="nav.play">Play</div>
+      <a href="#/practice" data-route="practice"><span class="ico">▶</span><span data-i18n="nav.practice">Practice</span></a>
+      <a href="#/charts" data-route="charts"><span class="ico">♫</span><span data-i18n="nav.charts">Charts</span></a>
+      <a href="#/tools" data-route="tools"><span class="ico">⚒</span><span data-i18n="nav.tools">Tools</span></a>
+      <a href="#/tuner" data-route="tuner"><span class="ico">◎</span><span data-i18n="nav.tuner">Tuner</span></a>
+      <div class="rail-group" data-i18n="nav.review">Review</div>
+      <a href="#/analyze" data-route="analyze"><span class="ico">≋</span><span data-i18n="nav.analyze">Analyze a take</span></a>
+      <a href="#/history" data-route="history"><span class="ico">↗</span><span data-i18n="nav.history">History</span></a>
+      <a href="#/settings" data-route="settings"><span class="ico">⚙</span><span data-i18n="nav.settings">Settings</span></a>
     </nav>
     <div class="rail-foot">
-      <a class="rail-progress" id="railProgress" href="#/inicio" title="Tu progreso"></a>
-      <a class="gl-device" id="devicePill" href="#/ajustes" title="Entrada de audio de la guitarra"><span class="dot"></span><span id="deviceName">—</span></a>
+      <a class="rail-progress" id="railProgress" href="#/home" data-i18n-title="nav.progress"></a>
+      <a class="gl-device" id="devicePill" href="#/settings" data-i18n-title="nav.device"><span class="dot"></span><span id="deviceName">—</span></a>
+      <select id="langSelect" class="lang" aria-label="Language"></select>
     </div>
   </aside>
   <main id="main">
     <div id="view" class="gl"></div>
+
+<!-- ======================= PRACTICE ======================= -->
 <section class="gl gl-view" id="view-practice" hidden>
-  <div class="gl-head"><h1>🎧 Practicar con escucha</h1><p class="muted">Enchufá la guitarra: te escucha y te dice qué nota o acorde erraste, cuál salteaste y dónde te fuiste de tiempo.</p></div>
+  <div class="gl-head"><h1 data-i18n="practice.title">🎧 Practice with listening</h1><p class="muted" data-i18n="practice.subtitle">Plug in your guitar: it listens and tells you which note or chord you missed, skipped or played out of time.</p></div>
   <div class="split">
     <aside class="panel" id="practiceForm">
-      <h2>Qué vas a tocar</h2>
+      <h2 data-i18n="practice.what">What you'll play</h2>
       <div class="gl-chart" id="pChartBanner" hidden>
-        <div><small class="muted">Cifrado</small><b id="pChartTitle"></b><small class="muted" id="pChartInfo"></small></div>
-        <button class="btn small" id="pChartClear" type="button" title="Usar un archivo (MIDI, Guitar Pro, audio)">Usar archivo</button>
+        <div><small class="muted" data-i18n="practice.chart">Chart</small><b id="pChartTitle"></b><small class="muted" id="pChartInfo"></small></div>
+        <button class="btn small" id="pChartClear" type="button" data-i18n="practice.use_file" data-i18n-title="practice.use_file_hint">Use a file</button>
       </div>
-      <label class="field" id="pSongField"><span>Canción</span>
+      <label class="field" id="pSongField"><span data-i18n="practice.song">Song</span>
         <div class="row" style="gap:6px">
           <select id="pSong" class="songSelect"></select>
-          <label class="btn file-btn small" title="Subir MIDI / Guitar Pro / audio" style="flex:none">Subir<input type="file" class="songUpload" accept=".mid,.midi,.gp3,.gp4,.gp5,.gtp,.wav,.mp3,.flac,.ogg,.m4a"></label>
+          <label class="btn file-btn small" style="flex:none" data-i18n-title="practice.upload_hint"><span data-i18n="common.upload">Upload</span><input type="file" class="songUpload" accept=".mid,.midi,.gp3,.gp4,.gp5,.gtp,.wav,.mp3,.flac,.ogg,.m4a"></label>
         </div>
       </label>
-      <label class="field" id="pTrackWrap" hidden><span>Pista</span><select id="pTrack"></select></label>
+      <label class="field" id="pTrackWrap" hidden><span data-i18n="practice.track">Track</span><select id="pTrack"></select></label>
       <div class="row">
-        <label class="field"><span>Desde compás</span><input type="number" id="pStart" min="1" placeholder="1"></label>
-        <label class="field"><span>Hasta compás</span><input type="number" id="pEnd" min="1" placeholder="fin"></label>
+        <label class="field"><span data-i18n="practice.from_bar">From bar</span><input type="number" id="pStart" min="1" placeholder="1"></label>
+        <label class="field"><span data-i18n="practice.to_bar">To bar</span><input type="number" id="pEnd" min="1" data-i18n-placeholder="practice.end"></label>
       </div>
 
-      <h3>Modo</h3>
+      <h3 data-i18n="practice.mode">Mode</h3>
       <div class="seg" id="pMode">
-        <button data-mode="wait" class="active" title="Espera a que toques bien cada nota">Espera</button>
-        <button data-mode="tempo" title="Metrónomo: juzga nota y timing">Tempo</button>
+        <button data-mode="wait" class="active" data-i18n="practice.wait" data-i18n-title="practice.wait_hint">Wait</button>
+        <button data-mode="tempo" data-i18n="practice.tempo" data-i18n-title="practice.tempo_hint">Tempo</button>
       </div>
       <div id="tempoOpts" hidden>
-        <label class="field"><span>Velocidad: <b id="pSpeedVal">100%</b></span><input type="range" id="pSpeed" min="30" max="130" step="5" value="100"></label>
-        <label class="check"><input type="checkbox" id="pClick" checked> Metrónomo con cuenta de entrada</label>
-        <label class="check"><input type="checkbox" id="pTrainer"> Entrenador de velocidad</label>
+        <label class="field"><span><span data-i18n="practice.speed">Speed</span>: <b id="pSpeedVal">100%</b></span><input type="range" id="pSpeed" min="30" max="130" step="5" value="100"></label>
+        <label class="check"><input type="checkbox" id="pClick" checked> <span data-i18n="practice.click">Metronome with count-in</span></label>
+        <label class="check"><input type="checkbox" id="pTrainer"> <span data-i18n="practice.trainer">Speed trainer</span></label>
         <div class="sub" id="trainerOpts" hidden>
           <div class="row">
-            <label class="field"><span>Sube de a (%)</span><input type="number" id="pStep" value="5" min="1" max="20"></label>
-            <label class="field"><span>Si sacás ≥</span><input type="number" id="pTarget" value="90" min="50" max="100"></label>
-            <label class="field"><span>Hasta (%)</span><input type="number" id="pMax" value="100" min="40" max="150"></label>
+            <label class="field"><span data-i18n="practice.step">Step (%)</span><input type="number" id="pStep" value="5" min="1" max="20"></label>
+            <label class="field"><span data-i18n="practice.target">If you score ≥</span><input type="number" id="pTarget" value="90" min="50" max="100"></label>
+            <label class="field"><span data-i18n="practice.max">Up to (%)</span><input type="number" id="pMax" value="100" min="40" max="150"></label>
           </div>
         </div>
       </div>
-      <label class="check"><input type="checkbox" id="pLoop"> Repetir la sección (loop)</label>
+      <label class="check"><input type="checkbox" id="pLoop"> <span data-i18n="practice.loop">Repeat the section (loop)</span></label>
       <details>
-        <summary>Avanzado</summary>
-        <label class="field"><span>Transposición (semitonos que se suman a lo que tocás)</span><input type="number" id="pTranspose" value="0" min="-12" max="12"></label>
-        <label class="check"><input type="checkbox" id="pLegato" checked> Detectar legato (hammer-on, pull-off, slide)</label>
-        <label class="field"><span>Simular con una toma grabada (sin guitarra)</span><select id="pSimulate"><option value="">— no, usar la guitarra —</option></select></label>
-        <button class="btn small" id="pSavePreset" type="button">Recordar estas opciones para esta canción</button>
+        <summary data-i18n="common.advanced">Advanced</summary>
+        <label class="field"><span data-i18n="practice.transpose">Transpose (semitones added to what you play)</span><input type="number" id="pTranspose" value="0" min="-12" max="12"></label>
+        <label class="check"><input type="checkbox" id="pLegato" checked> <span data-i18n="practice.legato">Detect legato (hammer-on, pull-off, slide)</span></label>
+        <label class="field"><span data-i18n="practice.simulate">Simulate with a recorded take (no guitar)</span><select id="pSimulate"></select></label>
+        <button class="btn small" id="pSavePreset" type="button" data-i18n="practice.save_preset">Remember these options for this song</button>
       </details>
-      <div style="margin-top:16px"><button class="btn primary big" id="pStartBtn">▶  Empezar</button></div>
+      <div style="margin-top:16px"><button class="btn primary big" id="pStartBtn" data-i18n="practice.start">▶  Start</button></div>
     </aside>
 
     <div class="stage">
       <div class="panel hud">
-        <div class="now-note" id="nowNote">—<small id="nowWhere">elegí una canción</small></div>
+        <div class="now-note" id="nowNote">—<small id="nowWhere" data-i18n="practice.pick_song">pick a song</small></div>
         <div class="hud-mid">
           <div class="lastmsg" id="lastMsg"></div>
           <div class="chips" id="chips"></div>
         </div>
-        <div class="speed-badge" id="speedBadge" hidden><div class="v" id="speedVal">100%</div><div class="l">velocidad</div></div>
+        <div class="speed-badge" id="speedBadge" hidden><div class="v" id="speedVal">100%</div><div class="l" data-i18n="practice.speed_label">speed</div></div>
       </div>
       <div class="panel tabwrap">
         <canvas id="tabCanvas"></canvas>
@@ -102,64 +105,64 @@
       </div>
       <div class="panel meters">
         <div>
-          <div class="meter-label"><span>Nivel de entrada</span><b id="levelTxt">— dB</b></div>
+          <div class="meter-label"><span data-i18n="practice.input_level">Input level</span><b id="levelTxt">— dB</b></div>
           <div class="meter" id="levelMeter"><div></div></div>
         </div>
         <div>
-          <div class="meter-label"><span>Afinación (de lo que tocaste)</span><b id="tuneTxt">—</b></div>
+          <div class="meter-label"><span data-i18n="practice.your_tuning">Tuning (of what you played)</span><b id="tuneTxt">—</b></div>
           <div class="meter"><div id="tuneBar" style="background:var(--gl-info)"></div></div>
         </div>
       </div>
       <div class="panel" id="passesPanel" hidden>
-        <h2>Vueltas</h2>
+        <h2 data-i18n="practice.passes">Passes</h2>
         <div class="passes" id="passes"></div>
         <div style="height:18px"></div>
       </div>
-      <div class="panel"><h2>Lo que fue pasando</h2><ul class="log" id="log"><li class="muted">Todavía nada.</li></ul></div>
+      <div class="panel"><h2 data-i18n="practice.log">What happened</h2><ul class="log" id="log"><li class="muted" data-i18n="practice.nothing_yet">Nothing yet.</li></ul></div>
       <div class="panel" id="liveReport" hidden></div>
     </div>
   </div>
 </section>
 
-<!-- ======================= ANALIZAR ======================= -->
+<!-- ======================= ANALYZE ======================= -->
 <section class="gl gl-view" id="view-analyze" hidden>
-  <div class="gl-head"><h1>Analizar una toma</h1><p class="muted">Subí o elegí algo que grabaste y te lo compara nota por nota con la referencia.</p></div>
+  <div class="gl-head"><h1 data-i18n="analyze.title">Analyze a take</h1><p class="muted" data-i18n="analyze.subtitle">Upload or pick something you recorded and compare it note by note with the reference.</p></div>
   <div class="split">
     <aside class="panel">
-      <h2>Analizar una toma grabada</h2>
-      <p class="muted" style="margin-top:-6px">Más preciso que en vivo: transcribe tu toma con basic-pitch y la alinea con la referencia aunque hayas tocado a otro tempo.</p>
-      <label class="field"><span>Canción (referencia)</span>
+      <h2 data-i18n="analyze.form_title">Analyze a recorded take</h2>
+      <p class="muted" style="margin-top:-6px" data-i18n="analyze.form_hint">More accurate than live: it transcribes your take with basic-pitch and aligns it with the reference even if you played at another tempo.</p>
+      <label class="field"><span data-i18n="analyze.reference">Song (reference)</span>
         <div class="row" style="gap:6px">
           <select id="aSong" class="songSelect"></select>
-          <label class="btn file-btn small" style="flex:none">Subir<input type="file" class="songUpload" accept=".mid,.midi,.gp3,.gp4,.gp5,.gtp,.wav,.mp3,.flac,.ogg,.m4a"></label>
+          <label class="btn file-btn small" style="flex:none"><span data-i18n="common.upload">Upload</span><input type="file" class="songUpload" accept=".mid,.midi,.gp3,.gp4,.gp5,.gtp,.wav,.mp3,.flac,.ogg,.m4a"></label>
         </div>
       </label>
-      <label class="field" id="aTrackWrap" hidden><span>Pista</span><select id="aTrack"></select></label>
+      <label class="field" id="aTrackWrap" hidden><span data-i18n="practice.track">Track</span><select id="aTrack"></select></label>
       <div class="row">
-        <label class="field"><span>Desde compás</span><input type="number" id="aStart" min="1" placeholder="1"></label>
-        <label class="field"><span>Hasta compás</span><input type="number" id="aEnd" min="1" placeholder="fin"></label>
+        <label class="field"><span data-i18n="practice.from_bar">From bar</span><input type="number" id="aStart" min="1" placeholder="1"></label>
+        <label class="field"><span data-i18n="practice.to_bar">To bar</span><input type="number" id="aEnd" min="1" data-i18n-placeholder="practice.end"></label>
       </div>
-      <label class="field"><span>Tu toma</span><select id="aTake"></select></label>
-      <label class="btn file-btn small" style="width:100%;margin-bottom:12px">o subí un archivo de audio…<input type="file" id="aTakeUpload" accept="audio/*,.wav,.mp3,.flac,.m4a"></label>
+      <label class="field"><span data-i18n="analyze.your_take">Your take</span><select id="aTake"></select></label>
+      <label class="btn file-btn small" style="width:100%;margin-bottom:12px"><span data-i18n="analyze.upload_take">or upload an audio file…</span><input type="file" id="aTakeUpload" accept="audio/*,.wav,.mp3,.flac,.m4a"></label>
       <div class="row">
-        <label class="field"><span>Transposición</span><input type="number" id="aTranspose" value="0" min="-12" max="12"></label>
-        <label class="field"><span>Tolerancia timing (ms)</span><input type="number" id="aTol" value="60" min="20" max="200"></label>
+        <label class="field"><span data-i18n="analyze.transpose">Transpose</span><input type="number" id="aTranspose" value="0" min="-12" max="12"></label>
+        <label class="field"><span data-i18n="analyze.timing_tol">Timing tolerance (ms)</span><input type="number" id="aTol" value="60" min="20" max="200"></label>
       </div>
-      <button class="btn primary big" id="aRun">Analizar</button>
+      <button class="btn primary big" id="aRun" data-i18n="analyze.run">Analyze</button>
     </aside>
     <div class="stage" id="aResult">
-      <div class="panel empty">Elegí la referencia y tu toma, y apretá <b>Analizar</b>.</div>
+      <div class="panel empty" data-i18n-html="analyze.empty">Pick the reference and your take, then press <b>Analyze</b>.</div>
     </div>
   </div>
 </section>
 
-<!-- ======================= AFINADOR ======================= -->
+<!-- ======================= TUNER ======================= -->
 <section class="gl gl-view" id="view-tuner" hidden>
-  <div class="gl-head"><h1>Afinador</h1><p class="muted">Usa la entrada de tu interfaz o cable USB, con la misma detección que la práctica.</p></div>
+  <div class="gl-head"><h1 data-i18n="tuner.title">Tuner</h1><p class="muted" data-i18n="tuner.subtitle">Uses your interface or USB cable input, with the same detection as practice.</p></div>
   <div class="panel tuner">
     <div class="note" id="tNote">—</div>
-    <div class="cents" id="tCents">Tocá una cuerda al aire</div>
-    <svg id="gauge" viewBox="0 0 400 220" aria-label="Indicador de afinación">
+    <div class="cents" id="tCents" data-i18n="tuner.play_open">Play an open string</div>
+    <svg id="gauge" viewBox="0 0 400 220" data-i18n-title="tuner.gauge">
       <path d="M40 200 A160 160 0 0 1 360 200" fill="none" stroke="var(--border)" stroke-width="14" stroke-linecap="round"/>
       <path d="M181 41 A160 160 0 0 1 219 41" fill="none" stroke="var(--gl-ok)" stroke-width="14"/>
       <g id="ticks"></g>
@@ -170,46 +173,46 @@
     </svg>
     <div class="strings" id="tStrings"></div>
     <div class="row" style="margin-top:16px;max-width:420px;width:100%">
-      <button class="btn primary" id="tStart">Encender afinador</button>
+      <button class="btn primary" id="tStart" data-i18n="tuner.start">Turn the tuner on</button>
     </div>
     <div class="muted" id="tSource" style="font-size:12px"></div>
   </div>
 </section>
 
-<!-- ======================= HISTORIAL ======================= -->
+<!-- ======================= HISTORY ======================= -->
 <section class="gl gl-view" id="view-history" hidden>
-  <div class="gl-head"><h1>Historial</h1><p class="muted">Tu progreso por canción y los compases que más te cuestan.</p></div>
+  <div class="gl-head"><h1 data-i18n="history.title">History</h1><p class="muted" data-i18n="history.subtitle">Your progress per song and the bars you struggle with the most.</p></div>
   <div class="split">
-    <aside class="panel"><h2>Canciones</h2><div class="songlist" id="hSongs"></div></aside>
-    <div class="stage" id="hDetail"><div class="panel empty">Elegí una canción para ver tu progreso.</div></div>
+    <aside class="panel"><h2 data-i18n="history.songs">Songs</h2><div class="songlist" id="hSongs"></div></aside>
+    <div class="stage" id="hDetail"><div class="panel empty" data-i18n="history.pick">Pick a song to see your progress.</div></div>
   </div>
 </section>
 
-<!-- ======================= AJUSTES ======================= -->
+<!-- ======================= SETTINGS ======================= -->
 <section class="gl gl-view" id="view-settings" hidden>
-  <div class="gl-head"><h1>Ajustes de audio</h1><p class="muted">Elegí la entrada, el canal y la salida del metrónomo, y calibrá la latencia.</p></div>
+  <div class="gl-head"><h1 data-i18n="settings.title">Audio settings</h1><p class="muted" data-i18n="settings.subtitle">Pick the input, the channel and the metronome output, and calibrate the latency.</p></div>
   <div class="split">
     <div class="panel">
-      <h2>Audio</h2>
-      <label class="field"><span>Entrada (tu interfaz / cable USB)</span><select id="sDevice"></select></label>
-      <label class="field"><span>Canal de entrada</span><input type="number" id="sChannel" min="1" value="1"></label>
-      <label class="field"><span>Salida para el metrónomo</span><select id="sOutput"></select></label>
-      <label class="field"><span>Puerta de ruido: <b id="sGateVal"></b></span><input type="range" id="sGate" min="-80" max="-20" step="1"></label>
-      <label class="field"><span>Sensibilidad de ataques: <b id="sSensVal"></b></span><input type="range" id="sSens" min="0.3" max="3" step="0.1"></label>
-      <label class="field"><span>Latencia (ms)</span><input type="number" id="sLatency" step="0.5"></label>
-      <div class="row"><button class="btn primary" id="sSave">Guardar</button></div>
+      <h2 data-i18n="settings.audio">Audio</h2>
+      <label class="field"><span data-i18n="settings.input">Input (your interface / USB cable)</span><select id="sDevice"></select></label>
+      <label class="field"><span data-i18n="settings.channel">Input channel</span><input type="number" id="sChannel" min="1" value="1"></label>
+      <label class="field"><span data-i18n="settings.output">Metronome output</span><select id="sOutput"></select></label>
+      <label class="field"><span><span data-i18n="settings.gate">Noise gate</span>: <b id="sGateVal"></b></span><input type="range" id="sGate" min="-80" max="-20" step="1"></label>
+      <label class="field"><span><span data-i18n="settings.sensitivity">Onset sensitivity</span>: <b id="sSensVal"></b></span><input type="range" id="sSens" min="0.3" max="3" step="0.1"></label>
+      <label class="field"><span data-i18n="settings.latency">Latency (ms)</span><input type="number" id="sLatency" step="0.5"></label>
+      <div class="row"><button class="btn primary" id="sSave" data-i18n="common.save">Save</button></div>
       <p class="muted" style="font-size:12px" id="sPath"></p>
     </div>
     <div class="panel">
-      <h2>Calibrar latencia</h2>
-      <p class="muted">Vas a escuchar 4 clicks para agarrar el pulso y después 12 más. Tocá las cuerdas <b>muteadas</b> (un golpe seco con la púa) justo con cada click. Usá auriculares.</p>
-      <button class="btn primary" id="cStart">Empezar calibración</button>
+      <h2 data-i18n="settings.calibrate_title">Calibrate latency</h2>
+      <p class="muted" data-i18n-html="settings.calibrate_hint">You'll hear 4 clicks to catch the pulse and then 12 more. Hit the <b>muted</b> strings (a short pick stroke) right on every click. Use headphones.</p>
+      <button class="btn primary" id="cStart" data-i18n="settings.calibrate_start">Start calibration</button>
       <div id="cStatus" style="margin-top:14px;font-size:16px"></div>
-      <h3>Consejos</h3>
+      <h3 data-i18n="settings.tips">Tips</h3>
       <ul class="muted">
-        <li>El nivel tiene que andar entre −30 y −10 dB al tocar. Si se pone rojo, bajá la ganancia.</li>
-        <li>Mejor señal limpia (sin distorsión); los efectos los podés monitorear aparte.</li>
-        <li>Si no detecta ataques suaves, subí la sensibilidad o bajá la puerta de ruido.</li>
+        <li data-i18n="settings.tip_level">Your level should be between −30 and −10 dB while playing. If it turns red, lower the gain.</li>
+        <li data-i18n="settings.tip_clean">A clean signal (no distortion) works best; monitor your effects separately.</li>
+        <li data-i18n="settings.tip_soft">If soft attacks aren't detected, raise the sensitivity or lower the noise gate.</li>
       </ul>
     </div>
   </div>

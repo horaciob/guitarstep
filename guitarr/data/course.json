@@ -1,0 +1,464 @@
+{
+ "levels": [
+  {
+   "id": "n1",
+   "number": 1,
+   "title": "First sounds",
+   "subtitle": "Open strings, your first chord and your first change.",
+   "lessons": [
+    {
+     "id": "strings",
+     "title": "Meet the six strings",
+     "minutes": 8,
+     "theory": [
+      "Strings are numbered from the thinnest (1st, high E) to the thickest (6th, low E).",
+      "Open, from low to high: E – A – D – G – B – E.",
+      "Tune before every session: an out-of-tune guitar makes even good playing sound wrong."
+     ],
+     "tips": [
+      "Rest the pick on the string and let it go: a firm attack without brushing the neighbors.",
+      "If an open string buzzes, check the tuning and make sure your other hand isn't touching it."
+     ],
+     "tutorials": [
+      "how to tune a guitar for beginners",
+      "guitar string names"
+     ],
+     "exercises": [
+      {
+       "id": "open-strings",
+       "kind": "notes",
+       "title": "Play the 6 open strings, from the 6th to the 1st",
+       "notes": [
+        40,
+        45,
+        50,
+        55,
+        59,
+        64
+       ],
+       "min": 80
+      },
+      {
+       "id": "open-strings-back",
+       "kind": "notes",
+       "title": "And back, from the 1st to the 6th",
+       "notes": [
+        64,
+        59,
+        55,
+        50,
+        45,
+        40
+       ],
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "e-minor",
+     "title": "Your first chord: E minor",
+     "minutes": 10,
+     "theory": [
+      "A chord is several notes at once. Em uses only two fingers and all six strings ring.",
+      "Middle finger on fret 2 of the 5th string, ring finger on fret 2 of the 4th string.",
+      "Press with the fingertip, right behind the metal fret, with the thumb behind the neck."
+     ],
+     "tips": [
+      "If a string sounds muted, a finger is touching it: arch your knuckles more."
+     ],
+     "chords": [
+      "Em"
+     ],
+     "tutorials": [
+      "e minor chord guitar beginner",
+      "left hand position guitar"
+     ],
+     "exercises": [
+      {
+       "id": "em-x4",
+       "kind": "chord",
+       "title": "Strum Em four times, clean",
+       "chord": "Em",
+       "times": 4,
+       "min": 75
+      }
+     ]
+    },
+    {
+     "id": "first-change",
+     "title": "Am and your first change",
+     "minutes": 12,
+     "theory": [
+      "Am has the same shape as E, one string lower. Don't play the 6th string.",
+      "In the Em→Am change, the middle and ring fingers travel together one string toward the floor."
+     ],
+     "tips": [
+      "Practice the change slowly without strumming: look at the shape, then close your eyes."
+     ],
+     "chords": [
+      "Am",
+      "Em"
+     ],
+     "tutorials": [
+      "e minor to a minor chord change guitar"
+     ],
+     "exercises": [
+      {
+       "id": "am-x4",
+       "kind": "chord",
+       "title": "Strum Am four times",
+       "chord": "Am",
+       "times": 4,
+       "min": 75
+      },
+      {
+       "id": "em-am-change",
+       "kind": "change",
+       "title": "Em → Am → Em → Am…",
+       "chords": [
+        "Em",
+        "Am"
+       ],
+       "times": 4,
+       "min": 75
+      },
+      {
+       "id": "em-am-chart",
+       "kind": "chart",
+       "title": "With the metronome at 70%",
+       "chart": "01-em-am",
+       "speed": 0.7,
+       "min": 80
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "n2",
+   "number": 2,
+   "title": "Open chords",
+   "subtitle": "The chords behind thousands of songs.",
+   "lessons": [
+    {
+     "id": "d-a-e",
+     "title": "D, A and E",
+     "minutes": 15,
+     "theory": [
+      "A and E are the same shape moved one string: three fingers (A) versus two plus one (E).",
+      "Strum D from the 4th string: the two low strings stay silent."
+     ],
+     "chords": [
+      "D",
+      "A",
+      "E"
+     ],
+     "tutorials": [
+      "d a e chords guitar beginner"
+     ],
+     "exercises": [
+      {
+       "id": "d-x4",
+       "kind": "chord",
+       "title": "Strum D four times",
+       "chord": "D",
+       "times": 4,
+       "min": 75
+      },
+      {
+       "id": "d-a-change",
+       "kind": "change",
+       "title": "D ↔ A",
+       "chords": [
+        "D",
+        "A"
+       ],
+       "times": 4,
+       "min": 75
+      },
+      {
+       "id": "dae-chart",
+       "kind": "chart",
+       "title": "Three major chords at 80%",
+       "chart": "02-d-a-e",
+       "speed": 0.8,
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "g-c",
+     "title": "G and C",
+     "minutes": 15,
+     "theory": [
+      "G uses all six strings; C leaves the 6th out.",
+      "With G, C, D and Em you can already play pop's favorite progression: I–V–vi–IV."
+     ],
+     "chords": [
+      "G",
+      "C"
+     ],
+     "tutorials": [
+      "g and c chords guitar",
+      "I V vi IV progression guitar"
+     ],
+     "exercises": [
+      {
+       "id": "g-c-change",
+       "kind": "change",
+       "title": "G ↔ C",
+       "chords": [
+        "G",
+        "C"
+       ],
+       "times": 4,
+       "min": 75
+      },
+      {
+       "id": "pop-chart",
+       "kind": "chart",
+       "title": "Pop in G at 75%",
+       "chart": "03-pop-in-g",
+       "speed": 0.75,
+       "min": 80
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "n3",
+   "number": 3,
+   "title": "Rhythm",
+   "subtitle": "Strumming, time signatures and the right hand.",
+   "lessons": [
+    {
+     "id": "strumming",
+     "title": "Down and up",
+     "minutes": 15,
+     "theory": [
+      "The strumming hand swings like a pendulum, always in time, even when it misses the strings.",
+      "Down strums land on the numbers (1, 2, 3, 4) and up strums on the \"ands\".",
+      "The pattern D.DU.UDU is counted: 1, 2 and, and 4 and."
+     ],
+     "tutorials": [
+      "basic strumming pattern guitar down up",
+      "pop strumming pattern guitar"
+     ],
+     "exercises": [
+      {
+       "id": "ballad-chart",
+       "kind": "chart",
+       "title": "Ballad in C with the metronome",
+       "chart": "04-ballad-in-c",
+       "speed": 0.85,
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "three-four",
+     "title": "Three-four time",
+     "minutes": 12,
+     "theory": [
+      "In 3/4 you count ONE-two-three: the first beat is heavier.",
+      "E7 is E without the ring finger: the tension that resolves back to Am."
+     ],
+     "chords": [
+      "E7",
+      "Dm"
+     ],
+     "tutorials": [
+      "waltz strumming guitar 3/4"
+     ],
+     "exercises": [
+      {
+       "id": "waltz-chart",
+       "kind": "chart",
+       "title": "Waltz in A minor",
+       "chart": "05-waltz",
+       "speed": 0.8,
+       "min": 80
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "n4",
+   "number": 4,
+   "title": "Color",
+   "subtitle": "Sevenths, blues and power chords.",
+   "lessons": [
+    {
+     "id": "blues",
+     "title": "Sevenths and the blues",
+     "minutes": 18,
+     "theory": [
+      "A seventh chord adds a note that wants to resolve: that's why the blues always feels in motion.",
+      "The 12-bar blues: I I I I · IV IV I I · V IV I V."
+     ],
+     "chords": [
+      "A7",
+      "D7",
+      "E7"
+     ],
+     "tutorials": [
+      "12 bar blues guitar beginner",
+      "blues shuffle guitar"
+     ],
+     "exercises": [
+      {
+       "id": "a7-d7-change",
+       "kind": "change",
+       "title": "A7 ↔ D7",
+       "chords": [
+        "A7",
+        "D7"
+       ],
+       "times": 4,
+       "min": 75
+      },
+      {
+       "id": "blues-chart",
+       "kind": "chart",
+       "title": "Blues in A",
+       "chart": "06-blues-in-a",
+       "speed": 0.8,
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "power-chords",
+     "title": "Power chords",
+     "minutes": 15,
+     "theory": [
+      "A power chord is root plus fifth: neither major nor minor, which is why it sounds great with distortion.",
+      "It's a movable shape: the same fingering on any fret."
+     ],
+     "chords": [
+      "E5",
+      "A5",
+      "G5",
+      "C5"
+     ],
+     "tutorials": [
+      "power chords guitar beginner",
+      "palm muting guitar"
+     ],
+     "exercises": [
+      {
+       "id": "rock-chart",
+       "kind": "chart",
+       "title": "Power-chord rock",
+       "chart": "07-power-chord-rock",
+       "speed": 0.75,
+       "min": 80
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "n5",
+   "number": 5,
+   "title": "Barre chords and melody",
+   "subtitle": "F with a barre and your first scale.",
+   "lessons": [
+    {
+     "id": "barre",
+     "title": "F with a barre",
+     "minutes": 20,
+     "theory": [
+      "A barre is the index pressing every string on one fret: lay it on its side, not flat.",
+      "F is the E shape barred at fret 1. Move it and you get any major chord."
+     ],
+     "tips": [
+      "Don't squeeze harder: pull your arm back and let its weight do the pressing."
+     ],
+     "chords": [
+      "F",
+      "Bm"
+     ],
+     "tutorials": [
+      "how to play f barre chord guitar",
+      "barre chord exercises guitar"
+     ],
+     "exercises": [
+      {
+       "id": "f-x4",
+       "kind": "chord",
+       "title": "F four times, all six strings ringing",
+       "chord": "F",
+       "times": 4,
+       "min": 75
+      },
+      {
+       "id": "andalusian-chart",
+       "kind": "chart",
+       "title": "Andalusian cadence",
+       "chart": "10-andalusian-cadence",
+       "speed": 0.75,
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "pentatonic",
+     "title": "A minor pentatonic",
+     "minutes": 20,
+     "theory": [
+      "The pentatonic scale has 5 notes: most rock and blues solos are improvised with it.",
+      "Position 1 at fret 5: index on 5, ring or pinky on 7/8."
+     ],
+     "tutorials": [
+      "a minor pentatonic scale guitar position 1"
+     ],
+     "exercises": [
+      {
+       "id": "pentatonic-up",
+       "kind": "notes",
+       "title": "Climb the scale, note by note",
+       "notes": [
+        45,
+        48,
+        50,
+        52,
+        55,
+        57,
+        60,
+        62,
+        64,
+        67,
+        69,
+        72
+       ],
+       "min": 80
+      },
+      {
+       "id": "pentatonic-down",
+       "kind": "notes",
+       "title": "And come back down",
+       "notes": [
+        72,
+        69,
+        67,
+        64,
+        62,
+        60,
+        57,
+        55,
+        52,
+        50,
+        48,
+        45
+       ],
+       "min": 80
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

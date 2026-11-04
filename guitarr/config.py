@@ -1,11 +1,11 @@
-"""Rutas de datos y configuración persistente (~/.guitarr/config.toml).
+"""Data paths and persistent settings (~/.guitarr/config.toml).
 
     [audio]
     device = "Scarlett 2i2"
     channel = 1
     latency_ms = 12.5
 
-    [songs."cancion.mid"]
+    [songs."song.mid"]
     track = "lead"
     transpose = 0
 """
@@ -18,9 +18,9 @@ from pathlib import Path
 HOME = Path(os.environ.get("GUITARR_HOME", "~/.guitarr")).expanduser()
 CONFIG_PATH = HOME / "config.toml"
 CACHE_DIR = HOME / "cache"
-SONGS_DIR = HOME / "canciones"
-TAKES_DIR = HOME / "tomas"
-HISTORY_DIR = HOME / "historial"
+SONGS_DIR = HOME / "songs"
+TAKES_DIR = HOME / "takes"
+HISTORY_DIR = HOME / "history"
 
 AUDIO_KEYS = ("device", "channel", "output_device", "samplerate", "latency_ms", "gate_db", "sensitivity")
 SONG_KEYS = ("track", "transpose", "start_bar", "end_bar", "mode", "speed", "bpm", "first_beat",

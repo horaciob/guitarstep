@@ -1,4 +1,4 @@
-"""Modo archivo contra la demo (errores plantados conocidos, ver guitarr/demo.py)."""
+"""File mode against the demo (known planted mistakes, see guitarr/demo.py)."""
 import numpy as np
 
 from guitarr import analysis
@@ -12,15 +12,15 @@ def _types(result):
 
 
 def test_demo_file_mode_finds_planted_errors(demo_dir):
-    ref = load_reference(RefOptions(demo_dir / "referencia.mid"), log=lambda m: None)
-    res, _ = analysis.analyze_take(ref, demo_dir / "toma.wav", FileOptions(), log=lambda m: None)
+    ref = load_reference(RefOptions(demo_dir / "reference.mid"), log=lambda m: None)
+    res, _ = analysis.analyze_take(ref, demo_dir / "take.wav", FileOptions(), log=lambda m: None)
     s = res["summary"]
-    assert round(100 * s["tempo_ratio"]) == 90          # tocada a 90 vs 100 bpm
+    assert round(100 * s["tempo_ratio"]) == 90          # played at 90 vs 100 bpm
     t = _types(res)
-    assert ("wrong", 1, 3.5) in t                         # nota 6: F4 en vez de E4
-    assert ("missing", 2, 3.0) in t                       # nota 13 faltante
-    assert ("extra", 3, 3.2) in t                         # nota de más (C5)
-    assert ("timing", 4, 2.0) in t                        # nota 27, tarde
+    assert ("wrong", 1, 3.5) in t                         # note 6: F4 instead of E4
+    assert ("missing", 2, 3.0) in t                       # note 13 missing
+    assert ("extra", 3, 3.2) in t                         # extra note (C5)
+    assert ("timing", 4, 2.0) in t                        # note 27, late
     late = next(it for it in res["issues"] if it["type"] == "timing")
     assert 80 <= late["dt_ms"] <= 140
     assert s["wrong"] == 1 and s["missing"] == 1
@@ -28,9 +28,9 @@ def test_demo_file_mode_finds_planted_errors(demo_dir):
 
 
 def test_noise_before_playing_doesnt_break_alignment(demo_dir):
-    ref = load_reference(RefOptions(demo_dir / "referencia.mid"), log=lambda m: None)
-    usr = transcribe(demo_dir / "toma.wav")
-    noisy = [Note(0.15, 0.4, 40, 0.9)] + usr                # golpe en la 6ta al aire antes de arrancar
+    ref = load_reference(RefOptions(demo_dir / "reference.mid"), log=lambda m: None)
+    usr = transcribe(demo_dir / "take.wav")
+    noisy = [Note(0.15, 0.4, 40, 0.9)] + usr                # a hit on the open 6th string before starting
     res = compare(ref, noisy, FileOptions(), log=lambda m: None)
     t = _types(res)
     assert ("wrong", 1, 3.5) in t and ("missing", 2, 3.0) in t and ("timing", 4, 2.0) in t
@@ -76,7 +76,7 @@ def test_onset_tolerance_shrinks_in_fast_passages():
 
 
 def test_section_analysis_ignores_notes_outside_the_section(demo_dir):
-    ref = load_reference(RefOptions(demo_dir / "referencia.mid", start_bar=1, end_bar=2), log=lambda m: None)
-    res, _ = analysis.analyze_take(ref, demo_dir / "toma.wav", FileOptions(), log=lambda m: None)
+    ref = load_reference(RefOptions(demo_dir / "reference.mid", start_bar=1, end_bar=2), log=lambda m: None)
+    res, _ = analysis.analyze_take(ref, demo_dir / "take.wav", FileOptions(), log=lambda m: None)
     assert {it["bar"] for it in res["issues"]} <= {1, 2}
     assert res["summary"]["extra"] == 0

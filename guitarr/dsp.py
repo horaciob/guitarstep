@@ -1,9 +1,9 @@
-"""Análisis de audio en tiempo real: YIN, cromagrama y detector de ataques.
+"""Real-time audio analysis: YIN, chromagram and onset detector.
 
-Pipeline por cada bloque (~6 ms):
-  ataques por spectral flux (púa) + ataques por cambio de altura (legato:
-  hammer-on, pull-off, slide) -> por cada ataque, ~110 ms después:
-  altura con YIN (notas sueltas) + cromagrama (acordes).
+Pipeline for every block (~6 ms):
+  onsets from spectral flux (picked notes) + onsets from pitch changes (legato:
+  hammer-on, pull-off, slide) -> for each onset, ~110 ms later:
+  pitch with YIN (single notes) + chromagram (chords).
 """
 from __future__ import annotations
 
@@ -15,13 +15,13 @@ from .core import NOTE_NAMES, note_name
 
 NFFT = 2048
 HOP = 256
-PITCH_OFF, PITCH_LEN = 0.012, 0.060    # ventana YIN tras el ataque (s)
-CHROMA_OFF, CHROMA_LEN = 0.020, 4096   # ventana de cromagrama (s, muestras)
-MIN_GAP = 0.07                         # mínimo entre dos ataques (s), por defecto
-TRACK_WIN = 2048                       # ventana del seguidor de altura (legato)
-TRACK_EVERY = 2                        # cada cuántos hops corre el seguidor
-HARMONIC_JUMPS = {12, 19, 24, 28, 31, 36}  # octava, 12va, 2 octavas...
-LEGATO_STABLE = 3                      # frames estables para aceptar una altura nueva
+PITCH_OFF, PITCH_LEN = 0.012, 0.060    # YIN window after the onset (s)
+CHROMA_OFF, CHROMA_LEN = 0.020, 4096   # chromagram window (s, samples)
+MIN_GAP = 0.07                         # default minimum gap between onsets (s)
+TRACK_WIN = 2048                       # pitch-tracker window (legato)
+TRACK_EVERY = 2                        # run the tracker every N hops
+HARMONIC_JUMPS = {12, 19, 24, 28, 31, 36}  # octave, 12th, two octaves...
+LEGATO_STABLE = 3                      # stable frames needed to accept a new pitch
 
 
 def db(x: np.ndarray) -> float:
@@ -29,7 +29,7 @@ def db(x: np.ndarray) -> float:
 
 
 def yin(x: np.ndarray, sr: int, fmin=70.0, fmax=1400.0, thresh=0.3):
-    """Altura fundamental (MIDI fraccional) y confianza [0..1], o (None, conf)."""
+    """Fundamental pitch (fractional MIDI) and confidence [0..1], or (None, conf)."""
     x = x.astype(np.float64) - x.mean()
     tau_min, tau_max = int(sr / fmax), int(sr / fmin)
     W = len(x) - tau_max
@@ -62,7 +62,7 @@ def yin(x: np.ndarray, sr: int, fmin=70.0, fmax=1400.0, thresh=0.3):
 
 
 def chroma(x: np.ndarray, sr: int) -> np.ndarray:
-    """Cromagrama (12) a partir de los picos espectrales, normalizado."""
+    """Normalized 12-bin chromagram from the spectral peaks."""
     mag = np.abs(np.fft.rfft(x * np.hanning(len(x))))
     if mag.max() <= 0:
         return np.zeros(12)
@@ -82,19 +82,19 @@ def chord_template(pitches) -> np.ndarray:
     t = np.zeros(12)
     for p in pitches:
         t[p % 12] += 1.0
-        t[(p + 7) % 12] += 0.5   # 3er armónico
-        t[(p + 4) % 12] += 0.2   # 5to armónico
+        t[(p + 7) % 12] += 0.5   # 3rd harmonic
+        t[(p + 4) % 12] += 0.2   # 5th harmonic
     return t / np.linalg.norm(t)
 
 
 @dataclass
 class Detection:
-    t: float                 # tiempo del ataque (s, reloj de entrada)
-    midi: float | None       # altura YIN (None si no es claramente periódico)
+    t: float                 # onset time (s, input clock)
+    midi: float | None       # YIN pitch (None if not clearly periodic)
     conf: float
     chroma: np.ndarray = field(repr=False)
     db: float
-    legato: bool = False     # ataque detectado por cambio de altura (sin púa)
+    legato: bool = False     # onset detected from a pitch change (no pick attack)
 
     def label(self) -> str:
         if self.midi is not None:
@@ -104,7 +104,7 @@ class Detection:
 
 
 class Recorder:
-    """Buffer creciente de audio mono (también se guarda al final como WAV)."""
+    """Growing mono audio buffer (also saved as a WAV at the end)."""
 
     def __init__(self, sr: int):
         self.sr = sr
@@ -135,16 +135,16 @@ class Detector:
         self.pos = 0
         self.frame = 0
         self.prev = None
-        self.flux: list[float] = []   # solo se guardan los últimos frames necesarios
+        self.flux: list[float] = []   # only the most recent frames are kept
         self.dbs: list[float] = []
-        self.flux_off = 0             # índice absoluto del primer elemento de flux/dbs
+        self.flux_off = 0             # absolute index of the first flux/dbs element
         self.last_onset = -10 ** 9
-        self.last_pick = -10 ** 9     # último ataque de púa (muestra)
-        self.pending: list[tuple[int, bool, float | None]] = []  # (muestra, legato, altura)
+        self.last_pick = -10 ** 9     # last picked onset (sample)
+        self.pending: list[tuple[int, bool, float | None]] = []  # (sample, legato, pitch)
         self.level_db = -120.0
         self.peak = 0.0
-        # seguidor de altura para legato
-        self.track_pitch: int | None = None   # altura estable actual
+        # pitch tracker for legato
+        self.track_pitch: int | None = None   # current stable pitch
         self.cand_pitch: int | None = None
         self.cand_count = 0
         self.cand_first = 0
@@ -162,7 +162,7 @@ class Detector:
                 self._track(fr)
             self.pos += HOP
             self.frame += 1
-            if len(self.flux) > 200:  # no crecer sin límite
+            if len(self.flux) > 200:  # don't grow without bound
                 cut = len(self.flux) - 100
                 del self.flux[:cut], self.dbs[:cut]
                 self.flux_off += cut
@@ -175,7 +175,7 @@ class Detector:
             if leg and hint is not None and (midi is None or round(midi) != hint):
                 midi, conf = float(hint), max(conf, 0.8)
             if not leg and midi is not None and s == self.last_pick and self.last_onset == s:
-                # anclar el seguidor a la altura confirmada del ataque de púa
+                # anchor the tracker to the confirmed pitch of the picked onset
                 self.track_pitch = int(round(midi))
                 self.cand_pitch, self.cand_count = None, 0
             c0 = s + int(CHROMA_OFF * self.sr)
@@ -184,7 +184,7 @@ class Detector:
         return out
 
     def _pick(self) -> None:
-        """Pico local del flux (evalúa el frame anterior: 1 frame de lookahead)."""
+        """Local flux peak (evaluates the previous frame: 1 frame of lookahead)."""
         f = self.flux
         i = len(f) - 2
         if i < 2:
@@ -197,13 +197,13 @@ class Detector:
             if (s - self.last_onset) / self.sr >= self.min_gap:
                 self.last_onset = self.last_pick = s
                 self.pending.append((s, False, None))
-                self.track_pitch = None  # el seguidor se re-engancha a la nota nueva
+                self.track_pitch = None  # the tracker re-locks onto the new note
                 self.cand_pitch, self.cand_count = None, 0
 
     def _track(self, fr: np.ndarray) -> None:
-        """Ataques sin púa: la altura salta a otra nota estable sin un pico de flux."""
+        """Onsets without a pick attack: the pitch jumps to another stable note with no flux peak."""
         if self.pos < self.last_pick + NFFT // 2 + HOP:
-            return  # la ventana todavía incluye la nota anterior al ataque
+            return  # the window still includes the note before the onset
         if self.dbs[-1] < self.gate_db + 6:
             self.track_pitch, self.cand_pitch, self.cand_count = None, None, 0
             return
@@ -215,7 +215,7 @@ class Detector:
         p = int(round(m))
         if p == self.track_pitch or (self.track_pitch is not None
                                      and abs(p - self.track_pitch) in HARMONIC_JUMPS):
-            # misma nota, o salto a un (sub)armónico: casi siempre un error de YIN
+            # same note, or a jump to a (sub)harmonic: almost always a YIN error
             self.cand_pitch, self.cand_count = None, 0
             return
         if p != self.cand_pitch:
@@ -229,7 +229,7 @@ class Detector:
         self.cand_pitch, self.cand_count = None, 0
         s = self.cand_first
         if prev is None or (s - self.last_onset) / self.sr < max(self.min_gap, 0.09):
-            return  # primera altura tras un ataque de púa: no es legato
+            return  # first pitch after a picked onset: not legato
         self.last_onset = s
         self.pending.append((s, True, p))
 

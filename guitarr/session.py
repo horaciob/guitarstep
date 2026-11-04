@@ -1,7 +1,7 @@
-"""Sesión en vivo: une fuente de audio, detector, seguidor y metrónomo.
+"""Live session: ties together the audio source, detector, follower and metronome.
 
-La usan tanto la terminal (tui.py) como la interfaz web (gui/server.py): corre
-el loop en `run()` y expone el estado con `snapshot()` (seguro entre hilos).
+Used by both the terminal (tui.py) and the web UI (gui/server.py): `run()` runs the
+loop and `snapshot()` exposes the state (thread-safe).
 """
 from __future__ import annotations
 
@@ -18,8 +18,8 @@ from . import config
 from .audio_io import FileSource, Metronome, MicSource
 from .core import Reference
 from .dsp import CHROMA_LEN, CHROMA_OFF, HOP, MIN_GAP, NFFT, PITCH_LEN, PITCH_OFF, Detector, Recorder
-from .follow import (Judge, TempoFollower, Trainer, WaitFollower, fmt_dt, group_events, min_repeat_gap,
-                     pass_score)
+from .follow import (Judge, TempoFollower, Trainer, WaitFollower, describe, fmt_dt, group_events,
+                     min_repeat_gap, pass_score)
 
 
 @dataclass
@@ -43,7 +43,7 @@ class LiveOptions:
     target: float = 90.0
     max_speed: float = 1.0
     legato: bool = True
-    count_extras: bool = True        # False para cifrados: los rasguidos de relleno no cuentan
+    count_extras: bool = True        # False for charts: filler strums don't count
     transpose: int = 0
     simulate: Path | None = None
     fast: bool = False
@@ -61,7 +61,7 @@ class LiveSession:
             self.src = MicSource(opts.device, opts.channel, opts.samplerate)
         self.sr = self.src.sr
         self.rec = Recorder(self.sr)
-        # en pasajes rápidos achicamos el mínimo entre ataques y el filtro de re-detección
+        # in fast passages, shrink the minimum onset gap and the re-detection filter
         gap = min_repeat_gap(self.events, opts.speed if opts.mode == "tempo" else 1.0)
         self.det = Detector(self.rec, opts.gate_db, opts.sensitivity,
                             min_gap=float(np.clip(0.6 * gap, 0.035, MIN_GAP)), legato=opts.legato)
@@ -75,13 +75,13 @@ class LiveSession:
                                           loop=opts.loop, trainer=trainer, count_in=opts.count_in,
                                           click=self.use_click, timing_tol=opts.timing_tol,
                                           count_extras=opts.count_extras)
-        # retardo del análisis: frame del detector + ventana de altura tras el ataque
+        # analysis lag: detector frame + pitch window after the onset
         need = max(PITCH_OFF + PITCH_LEN, CHROMA_OFF + CHROMA_LEN / self.sr)
         self.analysis_lag = (NFFT + 2 * HOP) / self.sr + need
         self.lock = threading.RLock()
         self._stop = threading.Event()
         self.log: deque = deque(maxlen=12)
-        self.last = ""
+        self.last: dict | None = None
         self.now = 0.0
         self.running = False
         self.report: dict | None = None
@@ -92,7 +92,7 @@ class LiveSession:
     def stop(self) -> None:
         self._stop.set()
 
-    def _say(self, msg: str | None, t: float, on_message=None) -> None:
+    def _say(self, msg: dict | None, t: float, on_message=None) -> None:
         if not msg:
             return
         self.last = msg
@@ -101,7 +101,8 @@ class LiveSession:
             on_message(t, msg)
 
     def run(self, on_update=None, on_message=None) -> dict:
-        """Loop principal (bloqueante). `on_update()` se llama ~20 veces por segundo."""
+        """Main loop (blocking). `on_update()` is called ~20 times per second;
+        `on_message(t, msg)` for every judgment message."""
         f, det, rec, src = self.follower, self.det, self.rec, self.src
         lat = self.opts.latency_ms / 1000
         metro = None
@@ -110,7 +111,7 @@ class LiveSession:
         src.start()
         try:
             if self.use_click:
-                f.schedule(1.0)  # 1 s para que arranque el audio, después la cuenta de entrada
+                f.schedule(1.0)  # 1 s for the audio to start, then the count-in
                 metro = Metronome(self.opts.output_device, src, f.clicks)
                 metro.start()
             last_ui = 0.0
@@ -136,12 +137,12 @@ class LiveSession:
                         if prev and d.midi is not None and prev.midi is not None and not d.legato \
                                 and round(d.midi) == round(prev.midi) and d.t - prev.t < self.repeat_gap \
                                 and d.db <= prev.db + 1:
-                            continue  # la misma nota sonando, re-detectada
+                            continue  # the same note still ringing, detected again
                         prev = d
                         if f.mode == "tempo" and f.t0 is None:
-                            f.start(d.t)  # sin metrónomo: tu primera nota marca el tempo
+                            f.start(d.t)  # no metronome: your first note sets the start
                         self._say(f.on_detection(d), d.t, on_message)
-                    # en el último bloque ya se analizó todo el audio
+                    # on the last block all the audio has been analyzed
                     horizon = self.now - lat - (0 if ended else self.analysis_lag)
                     self._say(f.tick(horizon if not ended else self.now + 10), self.now, on_message)
                     if f.done:
@@ -149,9 +150,9 @@ class LiveSession:
                 if on_update and (self.now - last_ui >= 0.05 or ended):
                     last_ui = self.now
                     on_update()
-        except KeyboardInterrupt:  # Ctrl+C: terminar normalmente (guardar toma y reporte)
+        except KeyboardInterrupt:  # Ctrl+C: finish normally (save the take and the report)
             pass
-        except Exception as e:  # que la GUI pueda mostrarlo
+        except Exception as e:  # so the GUI can show it
             self.error = str(e)
             raise
         finally:
@@ -166,7 +167,7 @@ class LiveSession:
             self.report = self.build_report(saved)
         return self.report
 
-    # ------------------------------------------------------------ estado
+    # ------------------------------------------------------------ state
     def snapshot(self, before: int = 6, after: int = 14) -> dict:
         with self.lock:
             f, evs = self.follower, self.events
@@ -196,24 +197,27 @@ class LiveSession:
     def build_report(self, saved: Path | None) -> dict:
         f, grid, opts = self.follower, self.grid, self.opts
         evs = self.events
-        judged = [e for e in evs if e.status != "pending"]
-        if not judged and f.history:  # cortaste justo al terminar una vuelta: usar la última
+        # pending events with failed attempts (wait mode, stopped before getting them) count as wrong
+        judged = [e for e in evs if e.status != "pending" or e.errors]
+        if not judged and f.history:  # stopped right after a pass ended: use the last one
             judged = [_Ev(**d) for d in f.history[-1]]
+        status = lambda e: "wrong" if e.status == "pending" else e.status
         first = sum(e.status in ("ok", "octave") for e in judged)
         dts = [e.dt for e in judged if e.dt is not None and e.status in ("ok", "octave")]
         issues = []
         for e in judged:
             bar, beat = grid.bar_of(e.time)
             base = dict(t=round(e.time, 3), bar=bar, beat=round(beat, 2), label=e.label())
-            if e.status in ("wrong", "missed"):
-                issues.append(dict(base, type=e.status, msg=f"{e.label()}: {e.detail}"))
+            if status(e) in ("wrong", "missed"):
+                issues.append(dict(base, type=status(e), detail=e.detail, msg=f"{e.label()}: {describe(e.detail)}"))
             elif e.status == "fixed":
-                issues.append(dict(base, type="fixed",
-                                   msg=f"{e.label()}: {e.errors} intento(s) mal antes de acertar (último: {e.detail})"))
+                issues.append(dict(base, type="fixed", detail=e.detail, attempts=e.errors,
+                                   msg=f"{e.label()}: {e.errors} wrong attempt(s) before getting it "
+                                       f"(last: {describe(e.detail)})"))
             elif f.mode == "tempo" and e.dt is not None and abs(e.dt) > opts.timing_tol:
                 issues.append(dict(base, type="timing", msg=f"{e.label()}: {fmt_dt(e.dt)}",
                                    dt_ms=round(e.dt * 1000)))
-        # compases: acumulado de todas las vueltas
+        # bars: accumulated over every pass
         bars: dict[int, dict] = {}
         all_passes = list(f.history) + ([[dict(time=e.time, status=e.status, errors=e.errors, dt=e.dt)
                                           for e in evs]] if any(e.status != "pending" for e in evs) else [])
@@ -234,7 +238,7 @@ class LiveSession:
             events=len(evs), judged=len(judged), first_try=first,
             first_try_pct=round(100 * first / len(judged), 1) if judged else None,
             fixed=sum(e.status == "fixed" for e in judged),
-            wrong=sum(e.status == "wrong" for e in judged),
+            wrong=sum(status(e) == "wrong" for e in judged),
             missed=sum(e.status == "missed" for e in judged), extras=extras,
             timing_mean_ms=round(1000 * float(np.mean(dts)), 1) if dts else None,
             timing_std_ms=round(1000 * float(np.std(dts)), 1) if dts else None,
@@ -257,7 +261,7 @@ class LiveSession:
 
 
 class _Ev:
-    """Evento reconstruido desde el historial de una vuelta (para el reporte)."""
+    """Event rebuilt from a pass history (for the report)."""
 
     def __init__(self, time, label, status, errors, detail, dt):
         self.time, self._label, self.status, self.errors, self.detail, self.dt = time, label, status, errors, detail, dt
@@ -272,6 +276,6 @@ def save_take(rec: Recorder, folder: Path) -> Path | None:
     if rec.n < rec.sr:
         return None
     folder.mkdir(parents=True, exist_ok=True)
-    path = folder / f"toma-{datetime.now():%Y%m%d-%H%M%S}.wav"
+    path = folder / f"take-{datetime.now():%Y%m%d-%H%M%S}.wav"
     sf.write(path, rec.audio(), rec.sr)
     return path

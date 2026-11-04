@@ -1,0 +1,11 @@
+title: 12-bar blues in A
+level: 3
+bpm: 92
+time: 4/4
+strum: D.DUD.DU
+note: The most-played blues form: 4 bars of I, 2 of IV, 2 of I, then V-IV-I-V.
+
+[Twelve bars]
+A7 | A7 | A7 | A7
+D7 | D7 | A7 | A7
+E7 | D7 | A7 | E7

@@ -1,22 +1,23 @@
-"""Contenido para aprender: diccionario de acordes, cifrados y ruta de aprendizaje.
+"""Learning content: chord dictionary, chord charts and the course.
 
-- guitarr/data/acordes.json   : digitaciones (6ta→1ra, -1 = no suena)
-- guitarr/data/cifrados/*.txt : ejercicios incluidos, en el formato de texto de abajo
-- ~/.guitarr/cifrados/*.txt   : tus cifrados
-- guitarr/data/ruta.json      : niveles → lecciones → ejercicios que se aprueban tocando
+- guitarr/data/chords.json   : fingerings (6th→1st string, -1 = not played)
+- guitarr/data/charts/*.txt  : built-in exercises, in the text format below
+- ~/.guitarr/charts/*.txt    : your own charts
+- guitarr/data/course.json   : levels → lessons → exercises you pass by playing
 
-Formato de cifrado (texto plano):
+Chart format (plain text):
 
-    titulo: Pop en Sol
+    title: Pop in G
     bpm: 90
-    compas: 4/4          # opcional (4/4)
-    capo: 2              # opcional
-    rasgueo: D.DU.UDU    # opcional: D abajo, U arriba, . nada (una casilla por corchea)
-    nota: un consejo     # opcional
+    time: 4/4            # optional (4/4)
+    capo: 2              # optional
+    strum: D.DU.UDU      # optional: D down, U up, . rest (one slot per eighth note)
+    level: 2             # optional
+    note: a tip          # optional
 
-    [Verso]
-    G | D | Em | C       # un compás por barra; "C G" = dos acordes en un compás
-    G | % | Em | -       # % repite el acorde anterior, - es un compás sin tocar
+    [Verse]
+    G | D | Em | C       # one bar per cell; "C G" = two chords in one bar
+    G | % | Em | -       # % repeats the previous chord, - is a silent bar
 """
 from __future__ import annotations
 
@@ -28,18 +29,18 @@ from pathlib import Path
 from . import config
 
 DATA_DIR = Path(__file__).parent / "data"
-OPEN_STRINGS = [40, 45, 50, 55, 59, 64]  # 6ta ... 1ra
-HEADER_KEYS = {"titulo", "artista", "nivel", "bpm", "compas", "capo", "rasgueo", "nota"}
+OPEN_STRINGS = [40, 45, 50, 55, 59, 64]  # 6th ... 1st
+HEADER_KEYS = {"title", "artist", "level", "bpm", "time", "capo", "strum", "note"}
 
 
 class CatalogError(Exception):
     pass
 
 
-# ---------------------------------------------------------------- acordes
+# ---------------------------------------------------------------- chords
 @lru_cache(maxsize=None)
 def _chords_data() -> dict:
-    return json.loads((DATA_DIR / "acordes.json").read_text(encoding="utf-8"))
+    return json.loads((DATA_DIR / "chords.json").read_text(encoding="utf-8"))
 
 
 def chord_groups() -> list[dict]:
@@ -58,18 +59,18 @@ def chord_pitches(chord: dict, capo: int = 0) -> list[int]:
     return [OPEN_STRINGS[i] + capo + f for i, f in enumerate(chord["frets"]) if f is not None and f >= 0]
 
 
-# ---------------------------------------------------------------- cifrados
+# ---------------------------------------------------------------- charts
 def user_dir() -> Path:
-    return config.HOME / "cifrados"
+    return config.HOME / "charts"
 
 
 def slug(text: str) -> str:
     s = re.sub(r"[^\w\-]+", "-", text.lower(), flags=re.UNICODE).strip("-")
-    return s[:60] or "cifrado"
+    return s[:60] or "chart"
 
 
-def parse_cifrado(text: str, cid: str = "cifrado") -> dict:
-    """Texto → cifrado (dict). Errores con número de línea."""
+def parse_chart(text: str, cid: str = "chart") -> dict:
+    """Text → chart (dict). Errors mention the line number."""
     meta: dict = {}
     bars: list[dict] = []
     section = None
@@ -79,7 +80,7 @@ def parse_cifrado(text: str, cid: str = "cifrado") -> dict:
         line = raw.split("#", 1)[0].strip()
         if not line:
             continue
-        m = re.match(r"^([a-záéíóú]+)\s*:\s*(.*)$", line, re.I)
+        m = re.match(r"^([a-z]+)\s*:\s*(.*)$", line, re.I)
         if m and m.group(1).lower() in HEADER_KEYS and "|" not in line:
             meta[m.group(1).lower()] = m.group(2).strip()
             continue
@@ -87,7 +88,7 @@ def parse_cifrado(text: str, cid: str = "cifrado") -> dict:
         if m:
             section = m.group(1).strip()
             continue
-        bpb = _beats_per_bar(meta.get("compas", "4/4"), ln)
+        bpb = _beats_per_bar(meta.get("time", "4/4"), ln)
         for cell in [c.strip() for c in line.split("|")]:
             if not cell:
                 continue
@@ -96,7 +97,7 @@ def parse_cifrado(text: str, cid: str = "cifrado") -> dict:
             for name in names:
                 if name == "%":
                     if prev is None:
-                        raise CatalogError(f"Línea {ln}: '%' sin un acorde antes")
+                        raise CatalogError(f"Line {ln}: '%' with no chord before it")
                     name = prev
                 if name in ("-", "NC", "N.C."):
                     bars.append(dict(chord=None, beats=per, frets=[], section=section))
@@ -108,39 +109,39 @@ def parse_cifrado(text: str, cid: str = "cifrado") -> dict:
                     prev = name
                 section = None
     if not bars:
-        raise CatalogError("El cifrado no tiene compases (líneas con acordes separados por |).")
+        raise CatalogError("The chart has no bars (lines with chords separated by |).")
     try:
         bpm = float(meta.get("bpm", 90))
         capo = int(meta.get("capo", 0) or 0)
-        level = int(meta.get("nivel", 0) or 0)
+        level = int(meta.get("level", 0) or 0)
     except ValueError as e:
-        raise CatalogError(f"Encabezado inválido: {e}") from e
+        raise CatalogError(f"Invalid header: {e}") from e
     if not 20 <= bpm <= 300:
-        raise CatalogError("bpm tiene que estar entre 20 y 300")
-    return dict(id=cid, title=meta.get("titulo") or cid, artist=meta.get("artista"), bpm=bpm,
-                beats_per_bar=_beats_per_bar(meta.get("compas", "4/4"), 0), capo=capo, level=level,
-                strum=meta.get("rasgueo", ""), note=meta.get("nota", ""), bars=bars, missing=unknown)
+        raise CatalogError("bpm must be between 20 and 300")
+    return dict(id=cid, title=meta.get("title") or cid, artist=meta.get("artist"), bpm=bpm,
+                beats_per_bar=_beats_per_bar(meta.get("time", "4/4"), 0), capo=capo, level=level,
+                strum=meta.get("strum", ""), note=meta.get("note", ""), bars=bars, missing=unknown)
 
 
-def _beats_per_bar(compas: str, ln: int) -> int:
-    m = re.match(r"^\s*(\d+)\s*/\s*(\d+)\s*$", compas or "4/4")
+def _beats_per_bar(sig: str, ln: int) -> int:
+    m = re.match(r"^\s*(\d+)\s*/\s*(\d+)\s*$", sig or "4/4")
     if not m or not 1 <= int(m.group(1)) <= 12:
-        raise CatalogError(f"Línea {ln}: compás inválido '{compas}' (p.ej. 4/4, 3/4, 6/8)")
+        raise CatalogError(f"Line {ln}: invalid time signature '{sig}' (e.g. 4/4, 3/4, 6/8)")
     return int(m.group(1))
 
 
-def _cifrado_files() -> dict[str, tuple[Path, bool]]:
-    out = {p.stem: (p, False) for p in sorted((DATA_DIR / "cifrados").glob("*.txt"))}
+def _chart_files() -> dict[str, tuple[Path, bool]]:
+    out = {p.stem: (p, False) for p in sorted((DATA_DIR / "charts").glob("*.txt"))}
     if user_dir().exists():
         out.update({p.stem: (p, True) for p in sorted(user_dir().glob("*.txt"))})
     return out
 
 
-def cifrados() -> list[dict]:
+def charts() -> list[dict]:
     rows = []
-    for cid, (p, mine) in _cifrado_files().items():
+    for cid, (p, mine) in _chart_files().items():
         try:
-            c = parse_cifrado(p.read_text(encoding="utf-8"), cid)
+            c = parse_chart(p.read_text(encoding="utf-8"), cid)
         except CatalogError as e:
             rows.append(dict(id=cid, title=cid, mine=mine, error=str(e)))
             continue
@@ -152,43 +153,43 @@ def cifrados() -> list[dict]:
     return rows
 
 
-def cifrado_text(cid: str) -> tuple[str, bool]:
-    f = _cifrado_files().get(cid)
+def chart_text(cid: str) -> tuple[str, bool]:
+    f = _chart_files().get(cid)
     if f is None:
-        raise CatalogError(f"No encontré el cifrado '{cid}' (ver: guitarr cancionero)")
+        raise CatalogError(f"Chart '{cid}' not found (see: guitarr charts)")
     return f[0].read_text(encoding="utf-8"), f[1]
 
 
-def get_cifrado(cid: str) -> dict:
-    text, _ = cifrado_text(cid)
-    return parse_cifrado(text, cid)
+def get_chart(cid: str) -> dict:
+    text, _ = chart_text(cid)
+    return parse_chart(text, cid)
 
 
-def save_cifrado(text: str, cid: str | None = None) -> dict:
-    c = parse_cifrado(text, cid or "nuevo")
+def save_chart(text: str, cid: str | None = None) -> dict:
+    c = parse_chart(text, cid or "new")
     if c["missing"]:
-        raise CatalogError(f"No conozco estos acordes: {', '.join(c['missing'])} (mirá el diccionario)")
+        raise CatalogError(f"Unknown chords: {', '.join(c['missing'])} (see the chord dictionary)")
     cid = cid or slug(c["title"])
-    builtin = (DATA_DIR / "cifrados" / f"{cid}.txt").exists()
+    builtin = (DATA_DIR / "charts" / f"{cid}.txt").exists()
     if builtin:
-        cid = f"{cid}-mio"
+        cid = f"{cid}-mine"
     user_dir().mkdir(parents=True, exist_ok=True)
     (user_dir() / f"{cid}.txt").write_text(text.strip() + "\n", encoding="utf-8")
     return dict(id=cid, title=c["title"])
 
 
-def delete_cifrado(cid: str) -> None:
-    f = _cifrado_files().get(cid)
+def delete_chart(cid: str) -> None:
+    f = _chart_files().get(cid)
     if f is None or not f[1]:
-        raise CatalogError("Solo se pueden borrar tus propios cifrados.")
+        raise CatalogError("Only your own charts can be deleted.")
     f[0].unlink()
 
 
 def chart_from_chord(cid: str, times: int = 1) -> dict:
     ch = get_chord(cid)
     if ch is None:
-        raise CatalogError(f"No conozco el acorde '{cid}'")
-    return dict(id=f"acorde-{cid}", title=ch["id"], bpm=60, beats_per_bar=1, capo=0,
+        raise CatalogError(f"Unknown chord '{cid}'")
+    return dict(id=f"chord-{cid}", title=ch["id"], bpm=60, beats_per_bar=1, capo=0,
                 bars=[dict(chord=cid, beats=1, frets=ch["frets"]) for _ in range(times)])
 
 
@@ -198,68 +199,68 @@ def chart_alternating(names: list[str], times: int) -> dict:
         for n in names:
             ch = get_chord(n)
             if ch is None:
-                raise CatalogError(f"No conozco el acorde '{n}'")
+                raise CatalogError(f"Unknown chord '{n}'")
             bars.append(dict(chord=n, beats=1, frets=ch["frets"]))
-    return dict(id="cambio-" + "-".join(names), title=" ↔ ".join(names), bpm=60, beats_per_bar=1, capo=0, bars=bars)
+    return dict(id="change-" + "-".join(names), title=" ↔ ".join(names), bpm=60, beats_per_bar=1, capo=0, bars=bars)
 
 
-# ---------------------------------------------------------------- ruta de aprendizaje
+# ---------------------------------------------------------------- course
 @lru_cache(maxsize=None)
-def ruta() -> dict:
-    return json.loads((DATA_DIR / "ruta.json").read_text(encoding="utf-8"))
+def course() -> dict:
+    return json.loads((DATA_DIR / "course.json").read_text(encoding="utf-8"))
 
 
 def lessons() -> list[dict]:
-    return [ls for lvl in ruta()["levels"] for ls in lvl["lessons"]]
+    return [ls for lvl in course()["levels"] for ls in lvl["lessons"]]
 
 
 def get_lesson(lid: str) -> dict:
     ls = next((x for x in lessons() if x["id"] == lid), None)
     if ls is None:
-        raise CatalogError(f"No existe la lección '{lid}'")
+        raise CatalogError(f"Lesson '{lid}' not found")
     return ls
 
 
 def get_exercise(lid: str, eid: str) -> dict:
     ex = next((e for e in get_lesson(lid)["exercises"] if e["id"] == eid), None)
     if ex is None:
-        raise CatalogError(f"No existe el ejercicio '{eid}' en '{lid}'")
+        raise CatalogError(f"Exercise '{eid}' not found in '{lid}'")
     return ex
 
 
 def exercise_setup(lid: str, eid: str):
-    """→ (RefOptions, modo, velocidad, puntaje mínimo) para escuchar un ejercicio."""
+    """→ (RefOptions, mode, speed, minimum score) to listen to an exercise."""
     from .reference import RefOptions
 
     ex = get_exercise(lid, eid)
     kind = ex["kind"]
-    if kind == "notas":
+    if kind == "notes":
         return RefOptions(notes=list(ex["notes"])), "wait", 1.0, ex.get("min", 80)
-    if kind == "acorde":
+    if kind == "chord":
         return RefOptions(chart=chart_from_chord(ex["chord"], ex.get("times", 4))), "wait", 1.0, ex.get("min", 75)
-    if kind == "cambio":
+    if kind == "change":
         return RefOptions(chart=chart_alternating(ex["chords"], ex.get("times", 4))), "wait", 1.0, ex.get("min", 75)
-    if kind == "cifrado":
-        return RefOptions(chart=get_cifrado(ex["cifrado"])), "tempo", ex.get("speed", 1.0), ex.get("min", 80)
-    raise CatalogError(f"Tipo de ejercicio desconocido: {kind}")
+    if kind == "chart":
+        return RefOptions(chart=get_chart(ex["chart"])), "tempo", ex.get("speed", 1.0), ex.get("min", 80)
+    raise CatalogError(f"Unknown exercise kind: {kind}")
 
 
 # ---------------------------------------------------------------- terminal
-def print_songs(cid: str | None = None) -> None:
+def print_charts(cid: str | None = None) -> None:
     if cid is None:
-        print("Cifrados (tocalos con: guitarr live --cifrado ID --mode tempo):\n")
-        for c in cifrados():
+        print("Charts (play one with: guitarr live --chart ID --mode tempo):\n")
+        for c in charts():
             if c.get("error"):
                 print(f"  {c['id']:26s} ⚠️  {c['error']}")
                 continue
-            tag = "  (tuyo)" if c["mine"] else ""
+            tag = "  (yours)" if c["mine"] else ""
             capo = f" capo {c['capo']}" if c["capo"] else ""
             print(f"  {c['id']:26s} {c['title']}  ♩={c['bpm']:g}{capo}  [{' '.join(c['chords'])}]{tag}")
-        print(f"\nTus cifrados van en {user_dir()} (formato: ver `guitarr cancionero --formato`)")
+        print(f"\nYour charts live in {user_dir()} (format: `guitarr charts --format`)")
         return
-    c = get_cifrado(cid)
+    c = get_chart(cid)
     print(f"{c['title']}  ♩={c['bpm']:g}  {c['beats_per_bar']}/4" + (f"  capo {c['capo']}" if c["capo"] else "")
-          + (f"  rasgueo {c['strum']}" if c["strum"] else ""))
+          + (f"  strum {c['strum']}" if c["strum"] else ""))
     if c["note"]:
         print(f"  {c['note']}")
     line: list[str] = []

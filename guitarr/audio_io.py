@@ -1,4 +1,4 @@
-"""Entradas/salidas de audio: interfaz (sounddevice), WAV simulado y metrónomo."""
+"""Audio input/output: interface (sounddevice), simulated WAV input and metronome."""
 from __future__ import annotations
 
 import queue
@@ -11,6 +11,7 @@ from pathlib import Path
 import numpy as np
 
 BLOCK = 256
+# Device names that are NOT an audio interface (also matches Spanish-localized system names).
 BUILTIN_HINTS = re.compile(r"macbook|built-?in|internal|micr[oó]fono|microphone|iphone|ipad|"
                            r"airpods|teams|zoom|blackhole|soundflower|aggregate|virtual", re.I)
 
@@ -22,8 +23,8 @@ class AudioError(Exception):
 def _sd():
     try:
         import sounddevice as sd
-    except OSError as e:  # PortAudio no disponible
-        raise AudioError(f"No pude abrir el sistema de audio: {e}") from e
+    except OSError as e:  # PortAudio not available
+        raise AudioError(f"Could not open the audio system: {e}") from e
     return sd
 
 
@@ -46,7 +47,7 @@ def devices() -> dict:
 
 
 def suggest_input(inputs: list[dict]) -> int | None:
-    """La primera entrada que parece una interfaz de audio (no el micrófono interno)."""
+    """The first input that looks like an audio interface (not the built-in microphone)."""
     for d in inputs:
         if not BUILTIN_HINTS.search(d["name"]):
             return d["index"]
@@ -55,14 +56,14 @@ def suggest_input(inputs: list[dict]) -> int | None:
 
 def list_devices() -> None:
     info = devices()
-    print("Entradas de audio (usá --device N --channel C):\n")
+    print("Audio inputs (use --device N --channel C):\n")
     for d in info["inputs"]:
-        star = "  ← parece tu interfaz" if d["index"] == info["suggested"] else ""
-        print(f"  {d['index']:2d}  {d['name']:40s} {d['channels']} canales  {d['samplerate']} Hz{star}")
-    print("\nSalidas (para el metrónomo, --output-device N):\n")
+        star = "  ← looks like your interface" if d["index"] == info["suggested"] else ""
+        print(f"  {d['index']:2d}  {d['name']:40s} {d['channels']} channels  {d['samplerate']} Hz{star}")
+    print("\nOutputs (for the metronome, --output-device N):\n")
     for d in info["outputs"]:
         print(f"  {d['index']:2d}  {d['name']}")
-    print("\nTip: `guitarr config --device N --channel C` lo deja guardado.")
+    print("\nTip: `guitarr config --device N --channel C` saves it.")
 
 
 class MicSource:
@@ -72,10 +73,10 @@ class MicSource:
         try:
             info = sd.query_devices(dev, "input")
         except (ValueError, sd.PortAudioError) as e:
-            raise AudioError(f"No encontré el dispositivo de entrada '{device}'. Mirá: guitarr devices") from e
+            raise AudioError(f"Input device '{device}' not found. See: guitarr devices") from e
         if channel > info["max_input_channels"]:
-            raise AudioError(f"'{info['name']}' tiene {info['max_input_channels']} entradas; "
-                             f"pediste el canal {channel}.")
+            raise AudioError(f"'{info['name']}' has {info['max_input_channels']} inputs; "
+                             f"you asked for channel {channel}.")
         self.sr = int(samplerate or info["default_samplerate"])
         self.name = info["name"]
         self.q: queue.Queue = queue.Queue()
@@ -95,7 +96,7 @@ class MicSource:
             self.stream = sd.InputStream(device=dev, channels=channel, samplerate=self.sr,
                                          blocksize=BLOCK, dtype="float32", latency="low", callback=cb)
         except sd.PortAudioError as e:
-            raise AudioError(f"No pude abrir '{self.name}': {e}") from e
+            raise AudioError(f"Could not open '{self.name}': {e}") from e
 
     def start(self):
         self.stream.start()
@@ -109,14 +110,14 @@ class MicSource:
 
 
 class FileSource:
-    """Reproduce un WAV como si fuera la entrada en vivo (para probar sin guitarra)."""
+    """Plays a WAV as if it were the live input (to test without a guitar)."""
 
     def __init__(self, path: Path, realtime: bool = True):
         import soundfile as sf
 
         y, self.sr = sf.read(str(path), dtype="float32", always_2d=True)
         self.y = y.mean(axis=1)
-        self.name = f"simulado: {Path(path).name}"
+        self.name = f"simulated: {Path(path).name}"
         self.realtime = realtime
         self.q: queue.Queue = queue.Queue()
         self.adc0 = 0.0
@@ -134,7 +135,7 @@ class FileSource:
                     lag = (i + BLOCK) / self.sr - (time.perf_counter() - t_start)
                     if lag > 0:
                         time.sleep(lag)
-            self.q.put(np.zeros(int(self.sr * 0.6), np.float32))  # cola de silencio
+            self.q.put(np.zeros(int(self.sr * 0.6), np.float32))  # trailing silence
             self.q.put(None)
 
         threading.Thread(target=run, daemon=True).start()
@@ -144,10 +145,10 @@ class FileSource:
 
 
 class Metronome:
-    """Clicks programados en tiempo de entrada (alineados con el reloj del ADC).
+    """Clicks scheduled in input time (aligned with the ADC clock).
 
-    `clicks` es una lista de (tiempo, acento) a la que se le pueden ir agregando
-    clicks mientras suena (para loops y cambios de velocidad)."""
+    `clicks` is a list of (time, accent) that can keep growing while it plays
+    (for loops and speed changes)."""
 
     def __init__(self, device, src: MicSource, clicks: list[tuple[float, bool]], volume: float = 1.0):
         sd = _sd()
@@ -155,7 +156,7 @@ class Metronome:
         try:
             sr = int(sd.query_devices(dev, "output")["default_samplerate"])
         except (ValueError, sd.PortAudioError) as e:
-            raise AudioError(f"No encontré la salida '{device}'.") from e
+            raise AudioError(f"Output device '{device}' not found.") from e
         self.sr, self.src = sr, src
         self.clicks = clicks
         self.idx = 0
@@ -190,7 +191,7 @@ class Metronome:
             self.stream = sd.OutputStream(device=dev, channels=1, samplerate=sr, blocksize=BLOCK,
                                           dtype="float32", latency="low", callback=cb)
         except sd.PortAudioError as e:
-            raise AudioError(f"No pude abrir la salida para el metrónomo: {e}") from e
+            raise AudioError(f"Could not open the metronome output: {e}") from e
 
     def start(self):
         self.stream.start()
@@ -205,6 +206,6 @@ class Metronome:
 
 def check_platform() -> str | None:
     if sys.platform != "darwin":
-        return ("Aviso: la sincronía metrónomo↔entrada está probada en macOS (CoreAudio). "
-                "En otros sistemas calibrá la latencia con `guitarr calibrate`.")
+        return ("Note: metronome↔input sync is tested on macOS (CoreAudio). "
+                "On other systems, calibrate the latency with `guitarr calibrate`.")
     return None

@@ -1,4 +1,4 @@
-/* guitarr — interfaz web. Paleta propia (oscura y clara), todo acotado a .gl. */
+/* guitarr — web UI. Own palette (dark and light), everything scoped to .gl. */
 :root {
   --bg: #0e1014;
   --gl-panel: #161920;
@@ -36,7 +36,7 @@ body { background: var(--bg); color: var(--text); font: 14px/1.5 "Inter", system
 button, input, select, textarea { font: inherit; color: inherit; }
 a { color: inherit; }
 
-/* ---------- estructura */
+/* ---------- shell */
 .shell { display: grid; grid-template-columns: 210px 1fr; min-height: 100vh; }
 .rail { position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; gap: 4px; padding: 16px 12px; border-right: 1px solid var(--border); background: var(--gl-panel); overflow-y: auto; }
 .logo { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 18px; letter-spacing: -.02em; text-decoration: none; padding: 4px 8px 12px; }
@@ -216,7 +216,7 @@ a { color: inherit; }
 .gl .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: spin .7s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ---------- vistas de aprender y herramientas */
+/* ---------- learning views and tools */
 .gl .small { font-size: 12px; }
 .gl .center { justify-content: center; text-align: center; }
 .gl .ok { color: var(--gl-ok); } .gl .err { color: var(--gl-err); }
@@ -326,3 +326,4 @@ a { color: inherit; }
 .gl a.btn { text-decoration: none; }
 .gl .row.left > * { flex: none; }
 .gl .card-grid { grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); }
+.lang { background: var(--gl-panel-2); border: 1px solid var(--border); border-radius: 8px; padding: 5px 8px; color: var(--muted); font-size: 12px; }

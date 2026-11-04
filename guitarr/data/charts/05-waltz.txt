@@ -1,0 +1,10 @@
+title: Waltz in A minor (3/4)
+level: 3
+bpm: 108
+time: 3/4
+strum: D.D.D.
+note: Accent beat 1 of every bar: ONE-two-three.
+
+[A]
+Am | Am | Dm | Dm
+E7 | E7 | Am | Am

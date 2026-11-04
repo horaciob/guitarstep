@@ -1,0 +1,10 @@
+title: Pop in G: I–V–vi–IV
+level: 2
+bpm: 90
+time: 4/4
+strum: D.DU.UDU
+note: Pop's most-used progression. Start the change on the last "and" of the bar, not on beat 1.
+
+[Loop]
+G | D | Em | C
+G | D | Em | C
