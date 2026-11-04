@@ -1,0 +1,10 @@
+titulo: Primer cambio: Em y Am
+nivel: 1
+bpm: 70
+compas: 4/4
+rasgueo: D.D.D.D.
+nota: Un rasguido por tiempo. Dejá los dedos medio y anular "viajando juntos" de una forma a la otra.
+
+[Ida y vuelta]
+Em | Em | Am | Am
+Em | Em | Am | Am

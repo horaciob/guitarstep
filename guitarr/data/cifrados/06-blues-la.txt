@@ -1,0 +1,11 @@
+titulo: Blues de 12 compases en La
+nivel: 3
+bpm: 92
+compas: 4/4
+rasgueo: D.DUD.DU
+nota: La forma más tocada del blues: 4 de I, 2 de IV, 2 de I, V-IV-I-V.
+
+[Doce compases]
+A7 | A7 | A7 | A7
+D7 | D7 | A7 | A7
+E7 | D7 | A7 | E7

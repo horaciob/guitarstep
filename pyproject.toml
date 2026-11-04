@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=68,<81"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "guitarr"
+version = "0.2.0"
+description = "Te escucha tocar la guitarra y te dice qué notas erraste, cuáles salteaste y dónde te fuiste de tiempo."
+readme = "README.md"
+requires-python = ">=3.10,<3.12"   # basic-pitch soporta hasta 3.11
+dependencies = [
+    "basic-pitch==0.4.0",
+    "librosa==0.11.0",
+    "pretty_midi==0.2.11.post0",
+    "PyGuitarPro==0.11",
+    "soundfile==0.14.0",
+    "sounddevice==0.5.6",
+    "numpy==2.4.6",
+    "scipy==1.17.1",
+    "rich==15.0.0",
+    "fastapi==0.162.0",
+    "uvicorn[standard]==0.54.0",
+    "python-multipart==0.0.33",
+    "setuptools<81",           # pkg_resources, que todavía usa una dependencia de basic-pitch
+]
+
+[project.optional-dependencies]
+dev = ["pytest==9.2.0", "httpx==0.28.1"]
+separate = ["demucs"]
+
+[project.scripts]
+guitarr = "guitarr.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["guitarr*"]
+
+[tool.setuptools.package-data]
+"guitarr" = ["data/*.json", "data/cifrados/*.txt"]
+"guitarr.gui" = ["static/**/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+filterwarnings = ["ignore"]

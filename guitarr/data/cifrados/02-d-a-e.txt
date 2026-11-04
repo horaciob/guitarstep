@@ -1,0 +1,10 @@
+titulo: Tres mayores: D, A y E
+nivel: 1
+bpm: 76
+compas: 4/4
+rasgueo: D.D.DUDU
+nota: La forma de A y la de E son la misma, una cuerda corrida. D pide rasguear desde la 4ta.
+
+[Vuelta]
+D | D | A | A
+E | E | A | A

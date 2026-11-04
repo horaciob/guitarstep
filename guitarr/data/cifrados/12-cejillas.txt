@@ -1,0 +1,10 @@
+titulo: Cejillas en movimiento
+nivel: 4
+bpm: 72
+compas: 4/4
+rasgueo: D.D.DUDU
+nota: La misma forma, corrida por el mástil. Soltá la presión entre acordes y volvé a apretar al llegar.
+
+[Vuelta]
+F | Gm | Bb | C
+F | Bm | F#m | C#m

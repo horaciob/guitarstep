@@ -1,0 +1,1166 @@
+{
+ "groups": [
+  {
+   "id": "abiertos-menores",
+   "name": "Abiertos menores"
+  },
+  {
+   "id": "abiertos-mayores",
+   "name": "Abiertos mayores"
+  },
+  {
+   "id": "septimas",
+   "name": "Séptimas"
+  },
+  {
+   "id": "color",
+   "name": "Color (maj7, add9, sus)"
+  },
+  {
+   "id": "cejilla",
+   "name": "Con cejilla"
+  },
+  {
+   "id": "quintas",
+   "name": "Quintas (power chords)"
+  }
+ ],
+ "chords": [
+  {
+   "id": "Em",
+   "name": "Mi menor",
+   "group": "abiertos-menores",
+   "level": 1,
+   "frets": [
+    0,
+    2,
+    2,
+    0,
+    0,
+    0
+   ],
+   "fingers": [
+    0,
+    2,
+    3,
+    0,
+    0,
+    0
+   ],
+   "notes": [
+    "E",
+    "G",
+    "B"
+   ],
+   "note": "Dos dedos y las seis cuerdas sueltas: el acorde ideal para empezar."
+  },
+  {
+   "id": "Am",
+   "name": "La menor",
+   "group": "abiertos-menores",
+   "level": 1,
+   "frets": [
+    -1,
+    0,
+    2,
+    2,
+    1,
+    0
+   ],
+   "fingers": [
+    0,
+    0,
+    2,
+    3,
+    1,
+    0
+   ],
+   "notes": [
+    "C",
+    "E",
+    "A"
+   ],
+   "note": "La 6ta no suena. Arqueá los dedos para que la 1ra quede limpia."
+  },
+  {
+   "id": "Dm",
+   "name": "Re menor",
+   "group": "abiertos-menores",
+   "level": 1,
+   "frets": [
+    -1,
+    -1,
+    0,
+    2,
+    3,
+    1
+   ],
+   "fingers": [
+    0,
+    0,
+    0,
+    2,
+    3,
+    1
+   ],
+   "notes": [
+    "D",
+    "F",
+    "A"
+   ],
+   "note": "Rasgueá desde la 4ta. Suena triste por el Fa de la 1ra cuerda."
+  },
+  {
+   "id": "E",
+   "name": "Mi mayor",
+   "group": "abiertos-mayores",
+   "level": 1,
+   "frets": [
+    0,
+    2,
+    2,
+    1,
+    0,
+    0
+   ],
+   "fingers": [
+    0,
+    2,
+    3,
+    1,
+    0,
+    0
+   ],
+   "notes": [
+    "E",
+    "G#",
+    "B"
+   ],
+   "note": "Es Em con el índice en el traste 1 de la 3ra: escuchá cómo se ilumina."
+  },
+  {
+   "id": "A",
+   "name": "La mayor",
+   "group": "abiertos-mayores",
+   "level": 1,
+   "frets": [
+    -1,
+    0,
+    2,
+    2,
+    2,
+    0
+   ],
+   "fingers": [
+    0,
+    0,
+    1,
+    2,
+    3,
+    0
+   ],
+   "notes": [
+    "C#",
+    "E",
+    "A"
+   ],
+   "note": "Tres dedos apretados en el traste 2; cuidá que suene la 1ra."
+  },
+  {
+   "id": "D",
+   "name": "Re mayor",
+   "group": "abiertos-mayores",
+   "level": 1,
+   "frets": [
+    -1,
+    -1,
+    0,
+    2,
+    3,
+    2
+   ],
+   "fingers": [
+    0,
+    0,
+    0,
+    1,
+    3,
+    2
+   ],
+   "notes": [
+    "D",
+    "F#",
+    "A"
+   ],
+   "note": "Forma de triángulo; desde la 4ta cuerda."
+  },
+  {
+   "id": "G",
+   "name": "Sol mayor",
+   "group": "abiertos-mayores",
+   "level": 2,
+   "frets": [
+    3,
+    2,
+    0,
+    0,
+    0,
+    3
+   ],
+   "fingers": [
+    2,
+    1,
+    0,
+    0,
+    0,
+    3
+   ],
+   "notes": [
+    "D",
+    "G",
+    "B"
+   ],
+   "note": "Suena grande: usa las seis cuerdas."
+  },
+  {
+   "id": "C",
+   "name": "Do mayor",
+   "group": "abiertos-mayores",
+   "level": 2,
+   "frets": [
+    -1,
+    3,
+    2,
+    0,
+    1,
+    0
+   ],
+   "fingers": [
+    0,
+    3,
+    2,
+    0,
+    1,
+    0
+   ],
+   "notes": [
+    "C",
+    "E",
+    "G"
+   ],
+   "note": "Dedos en escalera 3-2-1; la 3ra y la 1ra al aire."
+  },
+  {
+   "id": "Em7",
+   "name": "Mi menor 7",
+   "group": "septimas",
+   "level": 2,
+   "frets": [
+    0,
+    2,
+    2,
+    0,
+    3,
+    0
+   ],
+   "fingers": [
+    0,
+    2,
+    3,
+    0,
+    4,
+    0
+   ],
+   "notes": [
+    "D",
+    "E",
+    "G",
+    "B"
+   ],
+   "note": "Em con el meñique en la 2da: un color más abierto."
+  },
+  {
+   "id": "Am7",
+   "name": "La menor 7",
+   "group": "septimas",
+   "level": 2,
+   "frets": [
+    -1,
+    0,
+    2,
+    0,
+    1,
+    0
+   ],
+   "fingers": [
+    0,
+    0,
+    2,
+    0,
+    1,
+    0
+   ],
+   "notes": [
+    "C",
+    "E",
+    "G",
+    "A"
+   ],
+   "note": "Am levantando el anular."
+  },
+  {
+   "id": "Dm7",
+   "name": "Re menor 7",
+   "group": "septimas",
+   "level": 3,
+   "frets": [
+    -1,
+    -1,
+    0,
+    2,
+    1,
+    1
+   ],
+   "fingers": [
+    0,
+    0,
+    0,
+    2,
+    1,
+    1
+   ],
+   "notes": [
+    "C",
+    "D",
+    "F",
+    "A"
+   ],
+   "note": "Cejilla chica del índice en las dos primeras cuerdas."
+  },
+  {
+   "id": "E7",
+   "name": "Mi 7",
+   "group": "septimas",
+   "level": 2,
+   "frets": [
+    0,
+    2,
+    0,
+    1,
+    0,
+    0
+   ],
+   "fingers": [
+    0,
+    2,
+    0,
+    1,
+    0,
+    0
+   ],
+   "notes": [
+    "D",
+    "E",
+    "G#",
+    "B"
+   ],
+   "note": "E sin el anular: tensión de blues."
+  },
+  {
+   "id": "A7",
+   "name": "La 7",
+   "group": "septimas",
+   "level": 2,
+   "frets": [
+    -1,
+    0,
+    2,
+    0,
+    2,
+    0
+   ],
+   "fingers": [
+    0,
+    0,
+    2,
+    0,
+    3,
+    0
+   ],
+   "notes": [
+    "C#",
+    "E",
+    "G",
+    "A"
+   ],
+   "note": "A dejando la 3ra cuerda al aire."
+  },
+  {
+   "id": "D7",
+   "name": "Re 7",
+   "group": "septimas",
+   "level": 2,
+   "frets": [
+    -1,
+    -1,
+    0,
+    2,
+    1,
+    2
+   ],
+   "fingers": [
+    0,
+    0,
+    0,
+    2,
+    1,
+    3
+   ],
+   "notes": [
+    "C",
+    "D",
+    "F#",
+    "A"
+   ],
+   "note": "Triángulo invertido; pide resolver a G."
+  },
+  {
+   "id": "G7",
+   "name": "Sol 7",
+   "group": "septimas",
+   "level": 3,
+   "frets": [
+    3,
+    2,
+    0,
+    0,
+    0,
+    1
+   ],
+   "fingers": [
+    3,
+    2,
+    0,
+    0,
+    0,
+    1
+   ],
+   "notes": [
+    "D",
+    "F",
+    "G",
+    "B"
+   ],
+   "note": "G con el índice en el traste 1 de la 1ra."
+  },
+  {
+   "id": "B7",
+   "name": "Si 7",
+   "group": "septimas",
+   "level": 3,
+   "frets": [
+    -1,
+    2,
+    1,
+    2,
+    0,
+    2
+   ],
+   "fingers": [
+    0,
+    2,
+    1,
+    3,
+    0,
+    4
+   ],
+   "notes": [
+    "D#",
+    "F#",
+    "A",
+    "B"
+   ],
+   "note": "Cuatro dedos: el puente clásico hacia Em."
+  },
+  {
+   "id": "C7",
+   "name": "Do 7",
+   "group": "septimas",
+   "level": 3,
+   "frets": [
+    -1,
+    3,
+    2,
+    3,
+    1,
+    0
+   ],
+   "fingers": [
+    0,
+    3,
+    2,
+    4,
+    1,
+    0
+   ],
+   "notes": [
+    "C",
+    "E",
+    "A#"
+   ],
+   "note": "C con el meñique en la 3ra cuerda."
+  },
+  {
+   "id": "Cmaj7",
+   "name": "Do maj7",
+   "group": "color",
+   "level": 2,
+   "frets": [
+    -1,
+    3,
+    2,
+    0,
+    0,
+    0
+   ],
+   "fingers": [
+    0,
+    3,
+    2,
+    0,
+    0,
+    0
+   ],
+   "notes": [
+    "C",
+    "E",
+    "G",
+    "B"
+   ],
+   "note": "C sin el índice: suena suspendido y suave."
+  },
+  {
+   "id": "Fmaj7",
+   "name": "Fa maj7",
+   "group": "color",
+   "level": 2,
+   "frets": [
+    -1,
+    -1,
+    3,
+    2,
+    1,
+    0
+   ],
+   "fingers": [
+    0,
+    0,
+    3,
+    2,
+    1,
+    0
+   ],
+   "notes": [
+    "C",
+    "E",
+    "F",
+    "A"
+   ],
+   "note": "La versión amable de F, sin cejilla."
+  },
+  {
+   "id": "Cadd9",
+   "name": "Do add9",
+   "group": "color",
+   "level": 2,
+   "frets": [
+    -1,
+    3,
+    2,
+    0,
+    3,
+    3
+   ],
+   "fingers": [
+    0,
+    2,
+    1,
+    0,
+    3,
+    4
+   ],
+   "notes": [
+    "C",
+    "D",
+    "E",
+    "G"
+   ],
+   "note": "Anular y meñique fijos en la 2da y 1ra: cambia fácil con G."
+  },
+  {
+   "id": "Dsus4",
+   "name": "Re sus4",
+   "group": "color",
+   "level": 2,
+   "frets": [
+    -1,
+    -1,
+    0,
+    2,
+    3,
+    3
+   ],
+   "fingers": [
+    0,
+    0,
+    0,
+    1,
+    3,
+    4
+   ],
+   "notes": [
+    "D",
+    "G",
+    "A"
+   ],
+   "note": "D con el meñique en la 1ra: tensión que pide volver a D."
+  },
+  {
+   "id": "Dsus2",
+   "name": "Re sus2",
+   "group": "color",
+   "level": 2,
+   "frets": [
+    -1,
+    -1,
+    0,
+    2,
+    3,
+    0
+   ],
+   "fingers": [
+    0,
+    0,
+    0,
+    1,
+    2,
+    0
+   ],
+   "notes": [
+    "D",
+    "E",
+    "A"
+   ],
+   "note": "D sin la 1ra pisada: sonido abierto."
+  },
+  {
+   "id": "Asus2",
+   "name": "La sus2",
+   "group": "color",
+   "level": 2,
+   "frets": [
+    -1,
+    0,
+    2,
+    2,
+    0,
+    0
+   ],
+   "fingers": [
+    0,
+    0,
+    1,
+    2,
+    0,
+    0
+   ],
+   "notes": [
+    "E",
+    "A",
+    "B"
+   ],
+   "note": "A sin la 2da cuerda pisada."
+  },
+  {
+   "id": "Asus4",
+   "name": "La sus4",
+   "group": "color",
+   "level": 2,
+   "frets": [
+    -1,
+    0,
+    2,
+    2,
+    3,
+    0
+   ],
+   "fingers": [
+    0,
+    0,
+    1,
+    2,
+    4,
+    0
+   ],
+   "notes": [
+    "D",
+    "E",
+    "A"
+   ],
+   "note": "A con el meñique en el traste 3 de la 2da."
+  },
+  {
+   "id": "F",
+   "name": "Fa mayor",
+   "group": "cejilla",
+   "level": 4,
+   "frets": [
+    1,
+    3,
+    3,
+    2,
+    1,
+    1
+   ],
+   "fingers": [
+    1,
+    3,
+    4,
+    2,
+    1,
+    1
+   ],
+   "notes": [
+    "C",
+    "F",
+    "A"
+   ],
+   "note": "Forma de E con cejilla en el traste 1: apoyá el índice de costado.",
+   "barre": {
+    "fret": 1,
+    "from_string": 6,
+    "to_string": 1
+   }
+  },
+  {
+   "id": "Fm",
+   "name": "Fa menor",
+   "group": "cejilla",
+   "level": 4,
+   "frets": [
+    1,
+    3,
+    3,
+    1,
+    1,
+    1
+   ],
+   "fingers": [
+    1,
+    3,
+    4,
+    1,
+    1,
+    1
+   ],
+   "notes": [
+    "C",
+    "F",
+    "G#"
+   ],
+   "note": "Forma de Em con cejilla en el traste 1.",
+   "barre": {
+    "fret": 1,
+    "from_string": 6,
+    "to_string": 1
+   }
+  },
+  {
+   "id": "Bm",
+   "name": "Si menor",
+   "group": "cejilla",
+   "level": 4,
+   "frets": [
+    -1,
+    2,
+    4,
+    4,
+    3,
+    2
+   ],
+   "fingers": [
+    0,
+    1,
+    3,
+    4,
+    2,
+    1
+   ],
+   "notes": [
+    "D",
+    "F#",
+    "B"
+   ],
+   "note": "Forma de Am con cejilla en el traste 2, desde la 5ta.",
+   "barre": {
+    "fret": 2,
+    "from_string": 5,
+    "to_string": 1
+   }
+  },
+  {
+   "id": "B",
+   "name": "Si mayor",
+   "group": "cejilla",
+   "level": 4,
+   "frets": [
+    -1,
+    2,
+    4,
+    4,
+    4,
+    2
+   ],
+   "fingers": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    1
+   ],
+   "notes": [
+    "D#",
+    "F#",
+    "B"
+   ],
+   "note": "Forma de A con cejilla en el traste 2.",
+   "barre": {
+    "fret": 2,
+    "from_string": 5,
+    "to_string": 1
+   }
+  },
+  {
+   "id": "Bb",
+   "name": "Si bemol",
+   "group": "cejilla",
+   "level": 4,
+   "frets": [
+    -1,
+    1,
+    3,
+    3,
+    3,
+    1
+   ],
+   "fingers": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    1
+   ],
+   "notes": [
+    "D",
+    "F",
+    "A#"
+   ],
+   "note": "Forma de A con cejilla en el traste 1.",
+   "barre": {
+    "fret": 1,
+    "from_string": 5,
+    "to_string": 1
+   }
+  },
+  {
+   "id": "F#m",
+   "name": "Fa# menor",
+   "group": "cejilla",
+   "level": 4,
+   "frets": [
+    2,
+    4,
+    4,
+    2,
+    2,
+    2
+   ],
+   "fingers": [
+    1,
+    3,
+    4,
+    1,
+    1,
+    1
+   ],
+   "notes": [
+    "C#",
+    "F#",
+    "A"
+   ],
+   "note": "Forma de Em con cejilla en el traste 2.",
+   "barre": {
+    "fret": 2,
+    "from_string": 6,
+    "to_string": 1
+   }
+  },
+  {
+   "id": "C#m",
+   "name": "Do# menor",
+   "group": "cejilla",
+   "level": 4,
+   "frets": [
+    -1,
+    4,
+    6,
+    6,
+    5,
+    4
+   ],
+   "fingers": [
+    0,
+    1,
+    3,
+    4,
+    2,
+    1
+   ],
+   "notes": [
+    "C#",
+    "E",
+    "G#"
+   ],
+   "note": "Forma de Am con cejilla en el traste 4.",
+   "barre": {
+    "fret": 4,
+    "from_string": 5,
+    "to_string": 1
+   }
+  },
+  {
+   "id": "Gm",
+   "name": "Sol menor",
+   "group": "cejilla",
+   "level": 4,
+   "frets": [
+    3,
+    5,
+    5,
+    3,
+    3,
+    3
+   ],
+   "fingers": [
+    1,
+    3,
+    4,
+    1,
+    1,
+    1
+   ],
+   "notes": [
+    "D",
+    "G",
+    "A#"
+   ],
+   "note": "Forma de Em con cejilla en el traste 3.",
+   "barre": {
+    "fret": 3,
+    "from_string": 6,
+    "to_string": 1
+   }
+  },
+  {
+   "id": "E5",
+   "name": "Mi quinta",
+   "group": "quintas",
+   "level": 3,
+   "frets": [
+    0,
+    2,
+    2,
+    -1,
+    -1,
+    -1
+   ],
+   "fingers": [
+    0,
+    1,
+    2,
+    0,
+    0,
+    0
+   ],
+   "notes": [
+    "E",
+    "B"
+   ],
+   "note": "Solo dos o tres cuerdas graves: el sonido del rock."
+  },
+  {
+   "id": "A5",
+   "name": "La quinta",
+   "group": "quintas",
+   "level": 3,
+   "frets": [
+    -1,
+    0,
+    2,
+    2,
+    -1,
+    -1
+   ],
+   "fingers": [
+    0,
+    0,
+    1,
+    2,
+    0,
+    0
+   ],
+   "notes": [
+    "E",
+    "A"
+   ],
+   "note": "Tónica en la 5ta cuerda al aire."
+  },
+  {
+   "id": "D5",
+   "name": "Re quinta",
+   "group": "quintas",
+   "level": 3,
+   "frets": [
+    -1,
+    -1,
+    0,
+    2,
+    3,
+    -1
+   ],
+   "fingers": [
+    0,
+    0,
+    0,
+    1,
+    3,
+    0
+   ],
+   "notes": [
+    "D",
+    "A"
+   ],
+   "note": "Tónica en la 4ta cuerda al aire."
+  },
+  {
+   "id": "G5",
+   "name": "Sol quinta",
+   "group": "quintas",
+   "level": 3,
+   "frets": [
+    3,
+    5,
+    5,
+    -1,
+    -1,
+    -1
+   ],
+   "fingers": [
+    1,
+    3,
+    4,
+    0,
+    0,
+    0
+   ],
+   "notes": [
+    "D",
+    "G"
+   ],
+   "note": "Tónica en el traste 3 de la 6ta."
+  },
+  {
+   "id": "C5",
+   "name": "Do quinta",
+   "group": "quintas",
+   "level": 3,
+   "frets": [
+    -1,
+    3,
+    5,
+    5,
+    -1,
+    -1
+   ],
+   "fingers": [
+    0,
+    1,
+    3,
+    4,
+    0,
+    0
+   ],
+   "notes": [
+    "C",
+    "G"
+   ],
+   "note": "Tónica en el traste 3 de la 5ta."
+  },
+  {
+   "id": "F5",
+   "name": "Fa quinta",
+   "group": "quintas",
+   "level": 3,
+   "frets": [
+    1,
+    3,
+    3,
+    -1,
+    -1,
+    -1
+   ],
+   "fingers": [
+    1,
+    3,
+    4,
+    0,
+    0,
+    0
+   ],
+   "notes": [
+    "C",
+    "F"
+   ],
+   "note": "Tónica en el traste 1 de la 6ta."
+  },
+  {
+   "id": "B5",
+   "name": "Si quinta",
+   "group": "quintas",
+   "level": 3,
+   "frets": [
+    -1,
+    2,
+    4,
+    4,
+    -1,
+    -1
+   ],
+   "fingers": [
+    0,
+    1,
+    3,
+    4,
+    0,
+    0
+   ],
+   "notes": [
+    "F#",
+    "B"
+   ],
+   "note": "Tónica en el traste 2 de la 5ta."
+  }
+ ]
+}
