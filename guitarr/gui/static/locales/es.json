@@ -933,6 +933,29 @@
    "no": "Cancelar",
    "restoring": "Restaurando…",
    "restored": "Se restauraron {{n}} archivos. Recargando…"
+  },
+  "today": {
+   "title": "Práctica de hoy",
+   "summary": "{{done}}/{{total}} hechos · {{minutes}} planificados (meta {{goal}})",
+   "step_tune": "Afinar",
+   "step_lesson": "Lección: {{title}}",
+   "step_review_chord": "Repasar el acorde {{chord}}",
+   "step_review_exercise": "Repasar: {{title}}",
+   "step_bars": "{{name}}: compases {{from}}–{{to}}",
+   "step_chart": "Tocar con: {{title}}",
+   "step_drill": "Minuto de cambios: {{a}} ↔ {{b}}",
+   "why_tune": "marcalo cuando termines",
+   "why_lesson": "tu siguiente paso en la ruta",
+   "why_review_chord": "para no olvidarlo",
+   "why_review_exercise": "para no olvidarlo",
+   "why_bars": "tus compases más flojos últimamente",
+   "why_chart": "canciones con metrónomo",
+   "why_drill": "cambios más fluidos",
+   "go": "Ir",
+   "again": "Otra vez",
+   "tick": "¿Listo?",
+   "ticked": "✓ Listo",
+   "all_done": "Todo hecho por hoy. ¡Hasta mañana!"
   }
  },
  "content": {

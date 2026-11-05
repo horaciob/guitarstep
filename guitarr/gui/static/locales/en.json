@@ -933,6 +933,29 @@
    "no": "Cancel",
    "restoring": "Restoring…",
    "restored": "Restored {{n}} files. Reloading…"
+  },
+  "today": {
+   "title": "Today's practice",
+   "summary": "{{done}}/{{total}} done · {{minutes}} planned (goal {{goal}})",
+   "step_tune": "Tune up",
+   "step_lesson": "Lesson: {{title}}",
+   "step_review_chord": "Review the {{chord}} chord",
+   "step_review_exercise": "Review: {{title}}",
+   "step_bars": "{{name}}: bars {{from}}–{{to}}",
+   "step_chart": "Play along: {{title}}",
+   "step_drill": "Chord-change minute: {{a}} ↔ {{b}}",
+   "why_tune": "tick it when you're done",
+   "why_lesson": "your next step in the course",
+   "why_review_chord": "so you don't forget it",
+   "why_review_exercise": "so you don't forget it",
+   "why_bars": "your weakest bars lately",
+   "why_chart": "songs with a metronome",
+   "why_drill": "smoother changes",
+   "go": "Go",
+   "again": "Again",
+   "tick": "Done?",
+   "ticked": "✓ Done",
+   "all_done": "All done for today. See you tomorrow!"
   }
  },
  "content": {}

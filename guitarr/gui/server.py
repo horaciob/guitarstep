@@ -19,7 +19,7 @@ from fastapi import FastAPI, File, Form, HTTPException, UploadFile, WebSocket, W
 from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 
-from .. import __version__, backup, catalog, config, history, plan, progress, rig
+from .. import __version__, backup, catalog, config, history, plan, progress, rig, routine
 from ..audio_io import AudioError, FileSource, MicSource, devices
 from ..reference import REFERENCE_EXT, RefOptions, ReferenceError, list_tracks, load_reference
 
@@ -281,6 +281,21 @@ def set_config(body: dict):
             data["audio"][k] = v
     config.save(data)
     return get_config()
+
+
+# ---------------------------------------------------------------- today's practice
+@app.get("/api/today")
+def api_today():
+    return routine.build()
+
+
+@app.post("/api/today/check")
+def api_today_check(body: dict):
+    step = str(body.get("step") or "")
+    if step != "tune":
+        fail(400, "bad_step", "Only steps that can't be detected can be ticked")
+    progress.check_step(step, bool(body.get("done", True)))
+    return routine.build()
 
 
 # ---------------------------------------------------------------- backup

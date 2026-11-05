@@ -9,6 +9,7 @@ let task = null;
 export async function mount(el, { params }) {
   const data = await api("/api/chords");
   let group = params.group || "all", q = "";
+  const focus = params.chord && data.chords.find(c => c.id === params.chord);   // deep link: #/chords?chord=G
   el.innerHTML = `
     <div class="gl-head"><h1>${esc(t("chords.title"))}</h1>
       <p class="muted">${t("chords.subtitle_html")}</p></div>
@@ -52,6 +53,12 @@ export async function mount(el, { params }) {
   $$("#groups button", el).forEach(b => b.onclick = () => { group = b.dataset.g; render(); });
   $("#q", el).oninput = e => { q = e.target.value.trim().toLowerCase(); render(); };
   render();
+  const card = focus && $(`.chord-card[data-id="${CSS.escape(focus.id)}"]`, el);
+  if (card) {
+    card.classList.add("focus");
+    card.scrollIntoView({ block: "center" });
+    $("[data-act=check]", card).focus();
+  }
 }
 
 async function check(card, ch, data) {

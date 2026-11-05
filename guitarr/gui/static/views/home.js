@@ -1,6 +1,6 @@
 // Home: your level, streak, what's next and what you did lately.
 import { eventText, lang, t, tc } from "../lib/i18n.js";
-import { api, esc } from "../lib/ui.js";
+import { $, $$, api, esc, toast } from "../lib/ui.js";
 import { fmtHM, ring, weekStrip } from "../lib/plan.js";
 
 function ago(iso) {
@@ -12,8 +12,45 @@ function ago(iso) {
   return rtf.format(-Math.round(s / 86400), "day");
 }
 
+/** Title of a step of today's practice, from its kind and params. */
+function stepTitle(s) {
+  const p = s.params;
+  switch (s.kind) {
+    case "lesson": return t("today.step_lesson", { title: tc(`lessons.${p.lesson}.title`, p.lesson) });
+    case "review_chord": return t("today.step_review_chord", { chord: p.chord });
+    case "review_exercise": return t("today.step_review_exercise", { title: tc(`exercises.${p.lesson}/${p.exercise}`, p.exercise) });
+    case "bars": return t("today.step_bars", { name: p.name, from: p.start, to: p.end });
+    case "chart": return t("today.step_chart", { title: tc(`charts.${p.chart}.title`, p.title) });
+    case "drill": return t("today.step_drill", { a: p.chords[0], b: p.chords[1] });
+    default: return t(`today.step_${s.kind}`);
+  }
+}
+
+function todayHtml(r) {
+  const fmt = m => `${Math.floor(m / 60)}:${String(m % 60).padStart(2, "0")}`;
+  return `<div class="row-between"><h2>${esc(t("today.title"))}</h2>
+      <span class="muted small">${esc(t("today.summary", { done: r.done, total: r.steps.length, minutes: fmt(r.minutes), goal: fmt(r.goal) }))}</span></div>
+    <ol class="today-steps">${r.steps.map(s => `<li class="${s.done ? "done" : ""}">
+      <span class="tick" aria-hidden="true">${s.done ? "✓" : ""}</span>
+      <span class="what"><b>${esc(stepTitle(s))}</b><small class="muted">${esc(t(`today.why_${s.kind}`))} · ${s.minutes} min</small></span>
+      ${s.kind === "tune" ? `<button class="btn small${s.done ? "" : " ghost"}" data-tick="${esc(s.id)}" aria-pressed="${s.done}">${esc(t(s.done ? "today.ticked" : "today.tick"))}</button>` : ""}
+      <a class="btn small${s.done ? "" : " primary"}" href="${esc(s.route)}">${esc(t(s.done ? "today.again" : "today.go"))}</a></li>`).join("")}</ol>
+    ${r.done === r.steps.length ? `<p class="note ok">🎉 ${esc(t("today.all_done"))}</p>` : ""}`;
+}
+
+function bindToday(el) {
+  $$("[data-tick]", el).forEach(b => b.onclick = async () => {
+    try {
+      const r = await api("/api/today/check", { json: { step: b.dataset.tick, done: b.getAttribute("aria-pressed") !== "true" } });
+      $("#todayPlan", el).innerHTML = todayHtml(r);
+      bindToday(el);
+    } catch (e) { toast(e.message); }
+  });
+}
+
 export async function mount(el) {
-  const [p, course, hist, plan] = await Promise.all([api("/api/progress"), api("/api/course"), api("/api/history").catch(() => []), api("/api/plan").catch(() => null)]);
+  const [p, course, hist, plan, today] = await Promise.all([api("/api/progress"), api("/api/course"), api("/api/history").catch(() => []),
+    api("/api/plan").catch(() => null), api("/api/today").catch(() => null)]);
   const lv = p.level;
   let weak = null;
   if (hist.length) {
@@ -32,6 +69,7 @@ export async function mount(el) {
   el.innerHTML = `
     <div class="gl-head"><h1>${esc(t(p.practiced_today ? "home.title_done" : "home.title"))}</h1>
       <p class="muted">${esc(p.streak ? t("home.streak_line", { count: p.streak }) : t("home.no_streak"))}</p></div>
+    ${today ? `<div class="panel today-plan" id="todayPlan">${todayHtml(today)}</div>` : ""}
     <div class="dash">
       <div class="panel level-card">
         <small class="muted">${esc(t("level.label", { n: lv.level }))}</small><h2>${esc(t(`level.title_${lv.level}`))}</h2>
@@ -68,4 +106,5 @@ export async function mount(el) {
           : `<p class="muted">${t("home.nothing_yet_html")}</p>`}
       </div>
     </div>`;
+  bindToday(el);
 }

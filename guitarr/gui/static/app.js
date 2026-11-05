@@ -41,8 +41,12 @@ export function showListenerView(view, params = {}) {
   if (view === "analyze") loadTakes();
   if (view !== "tuner") stopTuner();
   if (view !== "settings") stopTest();
-  if (view === "practice" && params.chart) useChart(params.chart);
+  if (view === "practice" && params.chart && !params.from) useChart(params.chart);
   if (view === "practice" && params.demo) loadDemo();
+  if (view === "practice" && params.from && (params.song || params.chart)) {     // deep link to some bars
+    practiceBars(params.chart ? `chart:${params.chart}` : params.song, +params.from, +(params.to || params.from));
+    history.replaceState(null, "", "#/practice");
+  }
   requestAnimationFrame(() => drawTab());
 }
 

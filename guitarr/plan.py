@@ -51,7 +51,7 @@ def path():
 
 def _empty() -> dict:
     cats = [dict(id=c, name=None, default_min=DEFAULT_MINUTES[c], active=True) for c in BUILTIN]
-    return dict(categories=cats, weeks={}, days={}, timer=None)
+    return dict(categories=cats, weeks={}, days={}, timer=None, since=None)
 
 
 def _read() -> dict:
@@ -60,7 +60,11 @@ def _read() -> dict:
     except (OSError, json.JSONDecodeError):
         d = {}
     base = _empty()
-    return {**base, **(d if isinstance(d, dict) else {})}
+    d = {**base, **(d if isinstance(d, dict) else {})}
+    if not d["since"]:              # the first day the plan existed: earlier days have no data
+        known = sorted(d["days"])
+        d["since"] = known[0] if known else date.today().isoformat()
+    return d
 
 
 def _write(d: dict) -> None:
@@ -386,8 +390,11 @@ def view(d: dict | None = None, now: float | None = None) -> dict:
         day = start + timedelta(days=i)
         mins = round(sum(seconds_of(day).values()) / 60)
         state = "future" if day > today else "today" if day == today else "past"
-        days.append(dict(date=day.isoformat(), minutes=None if state == "future" else mins, goal=goal,
-                         state=state, status=None if state == "future" else _status(mins, goal)))
+        if state == "past" and day.isoformat() < d["since"] and not seconds_of(day):
+            state = "before"                     # before you started using the plan
+        blank = state in ("future", "before")
+        days.append(dict(date=day.isoformat(), minutes=None if blank else mins, goal=goal,
+                         state=state, status=None if blank else _status(mins, goal)))
     week_min = sum(x["minutes"] or 0 for x in days)
     finished = [x for x in days if x["state"] == "past"]
     estimate = _status(sum(x["minutes"] for x in finished), goal * len(finished)) if finished else None

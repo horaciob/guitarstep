@@ -20,7 +20,7 @@ export async function mount(el, { params }) {
     b.onclick = () => { location.hash = `#/tools?tab=${b.dataset.tab}`; };
   });
   const box = $("#tool", el);
-  if (tab === "drill") await chordChangeMinute(box);
+  if (tab === "drill") await chordChangeMinute(box, (params.pair || "").split("-"));
   else if (tab === "fretboard") fretboard(box);
   else metronome(box);
 }
@@ -98,7 +98,7 @@ function metronome(box) {
 }
 
 // ------------------------------------------------------------------ chord-change minute
-async function chordChangeMinute(box) {
+async function chordChangeMinute(box, pair = []) {
   const [data, prog] = await Promise.all([api("/api/chords"), api("/api/progress")]);
   const opts = data.chords.map(c => `<option value="${esc(c.id)}">${esc(c.id)} — ${esc(tc(`chords.${c.id}.name`, c.name))}</option>`).join("");
   box.innerHTML = `
@@ -114,7 +114,9 @@ async function chordChangeMinute(box) {
     </div>
     ${Object.keys(prog.drills).length ? `<div class="panel"><h2>${esc(t("tools.records"))}</h2><div class="chips">${Object.entries(prog.drills).map(([k, v]) => `<span class="chip">${esc(k.replace("-", " ↔ "))}: <b>${v}</b></span>`).join("")}</div></div>` : ""}`;
   const c1 = $("#c1", box), c2 = $("#c2", box);
-  c1.value = "Em"; c2.value = "Am";
+  const known = id => data.chords.some(c => c.id === id);
+  c1.value = known(pair[0]) ? pair[0] : "Em";
+  c2.value = known(pair[1]) ? pair[1] : "Am";
   const draw = () => {
     $("#d1", box).innerHTML = chordSvg(data.chords.find(c => c.id === c1.value), { size: 110 });
     $("#d2", box).innerHTML = chordSvg(data.chords.find(c => c.id === c2.value), { size: 110 });

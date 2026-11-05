@@ -216,3 +216,15 @@ def test_plan_api():
     assert c.delete(f"/api/plan/categories/{cid}").status_code == 200
     assert c.delete("/api/plan/categories/nope").json()["detail"]["code"] == "no_category"
     assert json.loads(plan.path().read_text())["categories"][-1]["active"] is False
+
+
+def test_days_before_the_plan_existed_have_no_data():
+    from datetime import date, timedelta
+    v = plan.get()
+    for day in v["week"]["days"]:
+        if day["date"] < date.today().isoformat():
+            assert day["state"] == "before" and day["minutes"] is None and day["status"] is None
+    assert v["week"]["estimate"] is None
+    plan.record_session(dict(type="exercise"), dict(summary=dict(played_s=60)),
+                        day=date.today() - timedelta(days=30))
+    assert plan._read()["since"] == date.today().isoformat()     # set once, not moved by later logs

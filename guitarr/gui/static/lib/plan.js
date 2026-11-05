@@ -32,8 +32,9 @@ export function weekStrip(days) {
   const wd = new Intl.DateTimeFormat(lang(), { weekday: "short" });
   return `<div class="days7">${days.map(d => {
     const label = wd.format(new Date(d.date + "T12:00:00"));
-    const value = d.state === "future" ? "–" : fmtHM(d.minutes);
-    const title = d.state === "future" ? label : `${label} ${fmtDay(d.date)} · ${fmtHM(d.minutes)} / ${fmtHM(d.goal)} · ${statusText(d.status)}`;
+    const blank = d.state === "future" || d.state === "before";
+    const value = blank ? "–" : fmtHM(d.minutes);
+    const title = blank ? `${label} ${fmtDay(d.date)}` : `${label} ${fmtDay(d.date)} · ${fmtHM(d.minutes)} / ${fmtHM(d.goal)} · ${statusText(d.status)}`;
     return `<div class="d7 ${d.state} ${d.status || ""}" title="${esc(title)}"><small>${esc(label)}</small><b>${value}</b></div>`;
   }).join("")}</div>`;
 }

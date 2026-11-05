@@ -29,7 +29,37 @@ EVENT_TEXT = {
 
 
 def _empty() -> dict:
-    return dict(xp=0, days=[], lessons=[], exercises={}, chords={}, drills={}, tutorials={}, events=[])
+    return dict(xp=0, days=[], lessons=[], exercises={}, chords={}, drills={}, tutorials={}, events=[],
+                reviews={}, drill_days={}, checked={})
+
+
+# ---------------------------------------------------------------- spaced review
+# What you already passed comes back after 1, 3, 7, 14, 30 and 60 days. Passing a review moves
+# it to the next interval; failing it brings it back tomorrow.
+REVIEW_DAYS = (1, 3, 7, 14, 30, 60)
+
+
+def _review(d: dict, key: str, ok: bool, today: date | None = None) -> None:
+    today = today or date.today()
+    r = d["reviews"].get(key)
+    if r is None:
+        if ok:
+            d["reviews"][key] = dict(step=0, due=(today + timedelta(days=REVIEW_DAYS[0])).isoformat(),
+                                     last=today.isoformat())
+        return
+    if ok:
+        if today.isoformat() >= r["due"]:          # reviewing early doesn't skip ahead
+            r["step"] = min(r["step"] + 1, len(REVIEW_DAYS) - 1)
+            r["due"] = (today + timedelta(days=REVIEW_DAYS[r["step"]])).isoformat()
+    else:
+        r["step"] = 0
+        r["due"] = (today + timedelta(days=REVIEW_DAYS[0])).isoformat()
+    r["last"] = today.isoformat()
+
+
+def due_reviews(d: dict, today: date | None = None) -> list[tuple[str, dict]]:
+    t = (today or date.today()).isoformat()
+    return sorted(((k, r) for k, r in d["reviews"].items() if r["due"] <= t), key=lambda kr: kr[1]["due"])
 
 
 def path():
@@ -122,10 +152,23 @@ def chord_mastered(cid: str, via: str) -> dict:
         rec = d["chords"].setdefault(cid, {})
         first = not rec
         rec[via] = date.today().isoformat()
+        _review(d, f"chord:{cid}", True)
         xp = XP["chord"] if first else 0
         _award(d, xp, "chord_mastered", chord=cid, via=via)
         _write(d)
         return dict(xp=xp, first=first, chord=cid)
+
+
+def check_step(step: str, done: bool) -> dict:
+    """Ticks (or unticks) a step of today's practice that can't be detected, like tuning up."""
+    today = date.today().isoformat()
+    with _lock:
+        d = _read()
+        steps = set(d["checked"].get(today, []))
+        (steps.add if done else steps.discard)(step)
+        d["checked"] = {today: sorted(steps)}           # only today's ticks are kept
+        _write(d)
+        return d["checked"]
 
 
 def pin_tutorial(lid: str, url: str | None) -> dict:
@@ -159,6 +202,8 @@ def on_session(ctx: dict | None, report: dict) -> dict:
             out.update(passed=passed, score=score, need=need)
             if score is not None and (prev is None or score > prev):
                 d["exercises"][key] = score
+            if score is not None:
+                _review(d, f"exercise:{key}", passed)
             if passed and (prev is None or prev < need):
                 _award(d, XP["exercise"], "exercise_passed", lesson=lid, exercise=eid)
                 out["xp"] += XP["exercise"]
@@ -171,6 +216,8 @@ def on_session(ctx: dict | None, report: dict) -> dict:
         elif kind == "chord":
             ok = s.get("judged", 0) > 0 and (s.get("first_try", 0) > 0 or s.get("fixed", 0) > 0)
             out["passed"] = ok
+            if s.get("judged", 0) > 0:
+                _review(d, f"chord:{ctx['chord']}", ok)
             if ok:
                 rec = d["chords"].setdefault(ctx["chord"], {})
                 first = not rec
@@ -184,6 +231,7 @@ def on_session(ctx: dict | None, report: dict) -> dict:
             best = d["drills"].get(pair, 0)
             out.update(changes=changes, best=max(best, changes), record=changes > best)
             d["drills"][pair] = max(best, changes)
+            d["drill_days"][pair] = date.today().isoformat()
             xp = changes // 2
             if xp:
                 _award(d, xp, "drill", chords=pair, changes=changes)

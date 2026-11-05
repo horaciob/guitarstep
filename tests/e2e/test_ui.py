@@ -126,3 +126,17 @@ def test_rig_impulse_response_is_kept_on_the_server(app_page, tmp_path):
     expect(app_page.locator(".ir-list li.on")).to_contain_text("Room 4x12.wav")
     app_page.locator("[data-ir-del]").click()
     expect(app_page.locator(".ir-list li")).to_have_count(0)
+
+
+def test_today_practice_on_home_and_deep_links(app_page):
+    onboarded(app_page)
+    go(app_page, "home")
+    steps = app_page.locator(".today-steps li")
+    expect(steps.first).to_contain_text("Tune up")
+    app_page.locator("[data-tick=tune]").click()
+    expect(steps.first).to_have_class(re.compile("done"))
+    drill = app_page.locator(".today-steps li", has_text="Chord-change minute")
+    drill.get_by_role("link").click()
+    expect(app_page).to_have_url(re.compile("tab=drill"))
+    go(app_page, "chords?chord=G")
+    expect(app_page.locator('.chord-card.focus[data-id="G"]')).to_be_visible()
