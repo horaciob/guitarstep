@@ -16,10 +16,10 @@ import webbrowser
 from pathlib import Path
 
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile, WebSocket, WebSocketDisconnect
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 
-from .. import __version__, catalog, config, history, plan, progress, rig
+from .. import __version__, backup, catalog, config, history, plan, progress, rig
 from ..audio_io import AudioError, FileSource, MicSource, devices
 from ..reference import REFERENCE_EXT, RefOptions, ReferenceError, list_tracks, load_reference
 
@@ -281,6 +281,30 @@ def set_config(body: dict):
             data["audio"][k] = v
     config.save(data)
     return get_config()
+
+
+# ---------------------------------------------------------------- backup
+MAX_UPLOAD = 1024 ** 3
+
+
+@app.get("/api/backup")
+def api_backup(takes: bool = False):
+    return Response(backup.create(takes), media_type="application/zip",
+                    headers={"Content-Disposition": f'attachment; filename="{backup.filename()}"'})
+
+
+@app.post("/api/backup")
+async def api_restore(file: UploadFile = File(...)):
+    data = await file.read(MAX_UPLOAD + 1)
+    if len(data) > MAX_UPLOAD:
+        fail(400, "backup_too_big", "The backup is too big")
+    with S.lock:
+        if S.session and S.session.running:
+            fail(409, "busy", "Stop practicing first")
+        try:
+            return backup.restore(data)
+        except backup.BackupError as e:
+            fail(400, e.code, str(e))
 
 
 # ---------------------------------------------------------------- practice plan

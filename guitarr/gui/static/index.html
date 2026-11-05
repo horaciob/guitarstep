@@ -244,6 +244,17 @@
           <li data-i18n="settings.tip_soft">If soft attacks aren't detected, raise the sensitivity or lower the noise gate.</li>
         </ul>
       </div>
+      <div class="panel" id="dataPanel">
+        <h2 data-i18n="data.title">Your data</h2>
+        <p class="muted small" data-i18n="data.hint">Progress, practice plan, sound presets, history, songs and charts in one file: keep it safe or move it to another computer.</p>
+        <label class="check"><input type="checkbox" id="bkTakes"> <span data-i18n="data.include_takes">Include recorded takes (bigger file)</span></label>
+        <div class="row left wrap">
+          <a class="btn" id="bkDownload" href="/api/backup" download data-i18n="data.download">Download a backup</a>
+          <label class="btn file-btn"><span data-i18n="data.restore">Restore from a file…</span><input type="file" id="bkFile" accept=".zip,application/zip"></label>
+        </div>
+        <div id="bkConfirm" class="confirm-inline" hidden></div>
+        <p class="small" id="bkStatus" aria-live="polite"></p>
+      </div>
     </div>
   </div>
 </section>

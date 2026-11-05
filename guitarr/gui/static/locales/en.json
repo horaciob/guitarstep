@@ -109,7 +109,9 @@
    "bad_url": "Paste a link starting with https://",
    "bad_format": "Unsupported format: upload MIDI, Guitar Pro or audio",
    "timer_busy": "Another timer is already running or paused.",
-   "no_timer": "There's no timer running."
+   "no_timer": "There's no timer running.",
+   "bad_backup": "That file is not a guitarr backup.",
+   "backup_too_big": "The backup is too big."
   },
   "practice": {
    "title": "🎧 Practice with listening",
@@ -918,6 +920,18 @@
    "err_timer_busy": "Stop its timer first.",
    "err_no_category": "That category no longer exists.",
    "err_generic": "Something went wrong. Try again."
+  },
+  "data": {
+   "title": "Your data",
+   "hint": "Progress, practice plan, sound presets, history, songs and charts in one file: keep it safe or move it to another computer.",
+   "include_takes": "Include recorded takes (bigger file)",
+   "download": "Download a backup",
+   "restore": "Restore from a file…",
+   "restore_q": "Restore “{{name}}”? It replaces your current data (a copy is kept in ~/.guitarr/backups).",
+   "yes": "Restore",
+   "no": "Cancel",
+   "restoring": "Restoring…",
+   "restored": "Restored {{n}} files. Reloading…"
   }
  },
  "content": {}

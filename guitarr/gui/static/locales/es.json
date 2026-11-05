@@ -109,7 +109,9 @@
    "bad_url": "Pegá un link que empiece con https://",
    "bad_format": "Formato no soportado: subí MIDI, Guitar Pro o audio",
    "timer_busy": "Ya hay otro cronómetro corriendo o en pausa.",
-   "no_timer": "No hay ningún cronómetro corriendo."
+   "no_timer": "No hay ningún cronómetro corriendo.",
+   "bad_backup": "Ese archivo no es un respaldo de guitarr.",
+   "backup_too_big": "El respaldo es demasiado grande."
   },
   "practice": {
    "title": "🎧 Practicar con escucha",
@@ -918,6 +920,18 @@
    "err_timer_busy": "Primero detené su cronómetro.",
    "err_no_category": "Esa categoría ya no existe.",
    "err_generic": "Algo salió mal. Probá de nuevo."
+  },
+  "data": {
+   "title": "Tus datos",
+   "hint": "Progreso, plan de práctica, presets de sonido, historial, canciones y cifrados en un archivo: guardalo o llevalo a otra compu.",
+   "include_takes": "Incluir las tomas grabadas (archivo más grande)",
+   "download": "Descargar un respaldo",
+   "restore": "Restaurar desde un archivo…",
+   "restore_q": "¿Restaurar «{{name}}»? Reemplaza tus datos actuales (se guarda una copia en ~/.guitarr/backups).",
+   "yes": "Restaurar",
+   "no": "Cancelar",
+   "restoring": "Restaurando…",
+   "restored": "Se restauraron {{n}} archivos. Recargando…"
   }
  },
  "content": {

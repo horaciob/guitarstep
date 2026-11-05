@@ -271,7 +271,13 @@ Everything lives in `~/.guitarr/` (override with the `GUITARR_HOME` environment 
 | `songs/` | References uploaded from the web UI |
 | `takes/` | Recordings of your live sessions and uploaded takes |
 | `history/` | One JSON per session, per song |
+| `plan.json` | Practice plan: minutes per category, practiced time per day, the running timer |
+| `rig.json` | Tone rig: your current sound and your presets |
+| `irs/` | Cabinet impulse responses you uploaded |
+| `backups/` | Automatic copies made before restoring a backup |
 | `cache/` | Transcriptions, separations and beat grids |
+
+**Backup:** Settings → *Your data* downloads everything above (except the cache, and takes only if you ask) as one zip, and restores it on another computer.
 
 ## Development
 

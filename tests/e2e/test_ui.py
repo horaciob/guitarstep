@@ -97,3 +97,16 @@ def test_every_page_renders_without_errors(app_page):
         go(app_page, route)
         app_page.wait_for_timeout(250)
     expect(app_page.locator("#main")).to_be_visible()
+
+
+def test_backup_download_and_restore(app_page, tmp_path):
+    onboarded(app_page)
+    go(app_page, "settings")
+    with app_page.expect_download() as dl:
+        app_page.locator("#bkDownload").click()
+    path = tmp_path / dl.value.suggested_filename
+    dl.value.save_as(path)
+    assert path.name.startswith("guitarr-backup-") and path.stat().st_size > 0
+    app_page.locator("#bkFile").set_input_files(str(path))
+    app_page.locator("#bkYes").click()
+    expect(app_page.locator("#bkStatus")).to_contain_text("Restored")

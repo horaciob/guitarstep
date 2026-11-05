@@ -879,6 +879,32 @@ async function refreshDevicePill() {
 }
 
 // ------------------------------------------------------------------ startup
+// ------------------------------------------------------------------ your data: backup / restore
+$("#bkTakes").addEventListener("change", e => { $("#bkDownload").href = "/api/backup" + (e.target.checked ? "?takes=true" : ""); });
+$("#bkFile").addEventListener("change", e => {
+  const f = e.target.files[0];
+  if (!f) return;
+  const box = $("#bkConfirm");
+  box.hidden = false;
+  box.innerHTML = `<span class="small">${esc(t("data.restore_q", { name: f.name }))}</span>
+    <button class="btn small danger" id="bkYes">${esc(t("data.yes"))}</button><button class="btn small" id="bkNo">${esc(t("data.no"))}</button>`;
+  const done = () => { box.hidden = true; box.innerHTML = ""; $("#bkFile").value = ""; };
+  $("#bkNo").onclick = done;
+  $("#bkYes").onclick = async () => {
+    const fd = new FormData();
+    fd.append("file", f);
+    $("#bkStatus").textContent = t("data.restoring");
+    $("#bkStatus").className = "small muted";
+    try {
+      const r = await api("/api/backup", { method: "POST", body: fd });
+      $("#bkStatus").textContent = t("data.restored", { n: r.restored });
+      $("#bkStatus").className = "small ok";
+      setTimeout(() => location.reload(), 1200);
+    } catch (err) { $("#bkStatus").textContent = err.message; $("#bkStatus").className = "small err"; }
+    done();
+  };
+});
+
 window.addEventListener("guitarr:device", refreshDevicePill);
 
 (async function init() {
