@@ -114,7 +114,8 @@
    "backup_too_big": "El respaldo es demasiado grande.",
    "bad_ir": "Subí una respuesta al impulso WAV, FLAC o AIFF.",
    "ir_too_long": "Ese archivo es muy largo para una respuesta al impulso (máximo 3 s).",
-   "no_ir": "Esa respuesta al impulso ya no está guardada."
+   "no_ir": "Esa respuesta al impulso ya no está guardada.",
+   "bad_time": "Usá una hora como 19:30."
   },
   "practice": {
    "title": "🎧 Practicar con escucha",
@@ -956,6 +957,19 @@
    "tick": "¿Listo?",
    "ticked": "✓ Listo",
    "all_done": "Todo hecho por hoy. ¡Hasta mañana!"
+  },
+  "reminder": {
+   "title": "Recordatorio diario",
+   "hint": "A esta hora, si todavía no cumpliste la meta de hoy, guitarr te avisa cuánto te falta.",
+   "enable": "Recordarme a las",
+   "time": "Hora",
+   "test": "Probar",
+   "allow": "Permitir notificaciones del navegador",
+   "browser_only": "Acá no hay notificaciones del sistema: el aviso aparece en esta página mientras esté abierta.",
+   "desktop_ok": "Vas a recibir una notificación del sistema mientras guitarr esté abierto.",
+   "saved": "Recordatorio guardado",
+   "notif_title": "guitarr 🎸",
+   "notif_body": "Te faltan {left} hoy para cumplir tu meta de práctica"
   }
  },
  "content": {

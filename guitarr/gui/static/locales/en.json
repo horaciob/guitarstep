@@ -114,7 +114,8 @@
    "backup_too_big": "The backup is too big.",
    "bad_ir": "Upload a WAV, FLAC or AIFF impulse response.",
    "ir_too_long": "That file is too long for an impulse response (3 s max).",
-   "no_ir": "That impulse response isn't saved anymore."
+   "no_ir": "That impulse response isn't saved anymore.",
+   "bad_time": "Use a time like 19:30."
   },
   "practice": {
    "title": "🎧 Practice with listening",
@@ -956,6 +957,19 @@
    "tick": "Done?",
    "ticked": "✓ Done",
    "all_done": "All done for today. See you tomorrow!"
+  },
+  "reminder": {
+   "title": "Daily reminder",
+   "hint": "At this time, if you haven't met today's goal yet, guitarr tells you how much is left.",
+   "enable": "Remind me at",
+   "time": "Time",
+   "test": "Send a test",
+   "allow": "Allow browser notifications",
+   "browser_only": "No desktop notifications here: the reminder shows in this page while it's open.",
+   "desktop_ok": "You'll get a desktop notification while guitarr is running.",
+   "saved": "Reminder saved",
+   "notif_title": "guitarr 🎸",
+   "notif_body": "{left} left today to meet your practice goal"
   }
  },
  "content": {}

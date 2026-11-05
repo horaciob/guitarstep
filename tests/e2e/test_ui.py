@@ -140,3 +140,15 @@ def test_today_practice_on_home_and_deep_links(app_page):
     expect(app_page).to_have_url(re.compile("tab=drill"))
     go(app_page, "chords?chord=G")
     expect(app_page.locator('.chord-card.focus[data-id="G"]')).to_be_visible()
+
+
+def test_reminder_settings_are_saved(app_page):
+    onboarded(app_page)
+    go(app_page, "settings")
+    app_page.locator("#remTime").fill("07:45")
+    app_page.locator("#remOn").check()
+    expect(app_page.locator("#remStatus")).to_contain_text("Reminder saved")
+    import json
+    import urllib.request
+    r = json.load(urllib.request.urlopen(app_page.base + "/api/reminder"))
+    assert r["enabled"] and r["time"] == "07:45" and "{left}" in r["body"]

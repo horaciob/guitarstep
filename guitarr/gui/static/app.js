@@ -772,7 +772,41 @@ function drawHistChart(ss) {
 // ------------------------------------------------------------------ settings
 const Settings = { devices: [], saved: {}, test: null, timer: null };
 
+async function loadReminder() {
+  try {
+    const r = await api("/api/reminder");
+    $("#remOn").checked = r.enabled;
+    $("#remTime").value = r.time;
+    const browserOnly = !r.desktop;
+    $("#remAllow").hidden = !browserOnly || !("Notification" in window) || Notification.permission === "granted";
+    $("#remStatus").textContent = t(browserOnly ? "reminder.browser_only" : "reminder.desktop_ok");
+  } catch { /* no server */ }
+}
+async function saveReminder() {
+  try {
+    await api("/api/reminder", { method: "PUT", json: { enabled: $("#remOn").checked, time: $("#remTime").value,
+      title: t("reminder.notif_title"), body: t("reminder.notif_body") } });
+    $("#remStatus").innerHTML = `<span class="ok">✓ ${esc(t("reminder.saved"))}</span>`;
+  } catch (e) { $("#remStatus").textContent = e.message; }
+}
+$("#remOn").addEventListener("change", saveReminder);
+$("#remTime").addEventListener("change", saveReminder);
+$("#remTest").addEventListener("click", async () => {
+  await saveReminder();
+  const r = await api("/api/reminder/test", { method: "POST" });
+  if (!r.desktop) showBrowserNotification(t("reminder.notif_title"), t("reminder.notif_body").replace("{left}", "0:15"));
+});
+$("#remAllow").addEventListener("click", async () => {
+  if ("Notification" in window) await Notification.requestPermission();
+  loadReminder();
+});
+export function showBrowserNotification(title, body) {
+  if ("Notification" in window && Notification.permission === "granted") new Notification(title, { body });
+  else toast(body);
+}
+
 async function loadSettings() {
+  loadReminder();
   const [dv, cfg] = await Promise.all([api("/api/devices"), api("/api/config")]);
   if (dv.error) toast(dv.error);
   Settings.devices = dv.inputs;

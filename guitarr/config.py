@@ -56,6 +56,8 @@ def _table(name: str, d: dict) -> list[str]:
 def save(data: dict) -> None:
     HOME.mkdir(parents=True, exist_ok=True)
     lines = _table("audio", data.get("audio", {}))
+    if data.get("reminder"):
+        lines += _table("reminder", data["reminder"])
     for song, opts in sorted(data.get("songs", {}).items()):
         lines += _table(f"songs.{_val(song)}", opts)
     tmp = CONFIG_PATH.with_suffix(".tmp")

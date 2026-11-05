@@ -634,3 +634,4 @@ body.is-setup #main { margin: 0 auto; max-width: 760px; padding-top: 48px; }
 .gl .today-steps .what { flex: 1; min-width: 0; }
 .gl .today-steps .what b, .gl .today-steps .what small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .gl .d7.before { opacity: .55; }
+.gl input[type=time] { background: var(--gl-panel-2); border: 1px solid var(--border); border-radius: 8px; padding: 6px 8px; }

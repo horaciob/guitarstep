@@ -244,6 +244,17 @@
           <li data-i18n="settings.tip_soft">If soft attacks aren't detected, raise the sensitivity or lower the noise gate.</li>
         </ul>
       </div>
+      <div class="panel" id="remPanel">
+        <h2 data-i18n="reminder.title">Daily reminder</h2>
+        <p class="muted small" data-i18n="reminder.hint">At this time, if you haven't met today's goal yet, guitarr tells you how much is left.</p>
+        <div class="row left wrap">
+          <label class="check"><input type="checkbox" id="remOn"> <span data-i18n="reminder.enable">Remind me at</span></label>
+          <input type="time" id="remTime" value="19:00" data-i18n-title="reminder.time" aria-label="Time">
+          <button class="btn small" id="remTest" data-i18n="reminder.test">Send a test</button>
+          <button class="btn small" id="remAllow" hidden data-i18n="reminder.allow">Allow browser notifications</button>
+        </div>
+        <p class="small muted" id="remStatus" aria-live="polite"></p>
+      </div>
       <div class="panel" id="dataPanel">
         <h2 data-i18n="data.title">Your data</h2>
         <p class="muted small" data-i18n="data.hint">Progress, practice plan, sound presets, history, songs and charts in one file: keep it safe or move it to another computer.</p>

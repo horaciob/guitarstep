@@ -19,7 +19,7 @@ from fastapi import FastAPI, File, Form, HTTPException, UploadFile, WebSocket, W
 from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 
-from .. import __version__, backup, catalog, config, history, plan, progress, rig, routine
+from .. import __version__, backup, catalog, config, history, plan, progress, reminder, rig, routine
 from ..audio_io import AudioError, FileSource, MicSource, devices
 from ..reference import REFERENCE_EXT, RefOptions, ReferenceError, list_tracks, load_reference
 
@@ -296,6 +296,35 @@ def api_today_check(body: dict):
         fail(400, "bad_step", "Only steps that can't be detected can be ticked")
     progress.check_step(step, bool(body.get("done", True)))
     return routine.build()
+
+
+# ---------------------------------------------------------------- daily reminder
+@app.get("/api/reminder")
+def api_reminder():
+    r = reminder.get()
+    return {**r, "due": reminder.due(cfg=r)}
+
+
+@app.put("/api/reminder")
+def api_reminder_set(body: dict):
+    try:
+        return reminder.update(body.get("enabled"), body.get("time"), body.get("title"), body.get("body"))
+    except reminder.ReminderError as e:
+        fail(400, e.code, str(e))
+
+
+@app.post("/api/reminder/shown")
+def api_reminder_shown():
+    """The page showed the reminder as a browser notification (no desktop notifier)."""
+    reminder.mark_sent()
+    return dict(ok=True)
+
+
+@app.post("/api/reminder/test")
+def api_reminder_test():
+    r = reminder.get()
+    sent = reminder.notify(r["title"], r["body"].replace("{left}", "0:15"))
+    return dict(desktop=sent)
 
 
 # ---------------------------------------------------------------- backup
@@ -741,4 +770,5 @@ def serve(host: str = "127.0.0.1", port: int = 8765, open_browser: bool = True) 
     print(f"guitarr {__version__} — open {url}  (Ctrl+C to quit)")
     if open_browser:
         threading.Timer(1.0, lambda: webbrowser.open(url)).start()
+    reminder.start_loop()
     uvicorn.run(app, host=host, port=port, log_level="warning")

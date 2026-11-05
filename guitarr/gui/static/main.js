@@ -144,6 +144,20 @@ window.addEventListener("guitarr:plan-changed", e => showPlan(e.detail));
 window.addEventListener("guitarr:progress", () => refreshPlan(true));
 refreshPlan();
 
+// Daily reminder without a desktop notifier (e.g. Docker): the open page shows it.
+const { showBrowserNotification } = await import("./app.js");
+async function checkReminder() {
+  try {
+    const r = await api("/api/reminder");
+    if (r.due && !r.desktop) {
+      showBrowserNotification(r.title, r.due);
+      await api("/api/reminder/shown", { method: "POST" });
+    }
+  } catch { /* no server */ }
+}
+setInterval(checkReminder, 60000);
+checkReminder();
+
 const sel = $("#langSelect");
 sel.innerHTML = Object.entries(LANGS).map(([k, v]) => `<option value="${k}">${v}</option>`).join("");
 sel.value = lang();
