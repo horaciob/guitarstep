@@ -19,7 +19,7 @@ RUN apt-get update \
 WORKDIR /app
 
 COPY requirements.txt ./
-RUN grep -vE '^(basic-pitch|pytest|httpx)' requirements.txt > /tmp/requirements.txt \
+RUN grep -vE '^(basic-pitch|pytest|httpx|playwright)' requirements.txt > /tmp/requirements.txt \
  && pip install -r /tmp/requirements.txt \
  && pip install --no-deps basic-pitch==0.4.0 \
  && pip install "mir_eval==0.8.2" "resampy==0.4.2" "scikit-learn==1.9.1" "typing_extensions==4.16.0" "onnxruntime==1.31.1"

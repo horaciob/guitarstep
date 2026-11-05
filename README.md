@@ -276,7 +276,7 @@ Everything lives in `~/.guitarr/` (override with the `GUITARR_HOME` environment 
 ## Development
 
 ```bash
-pytest           # ~90 tests, ~15 s
+pytest           # ~95 tests, ~25 s (browser tests need: python -m playwright install chromium)
 ```
 
 The tests cover:
