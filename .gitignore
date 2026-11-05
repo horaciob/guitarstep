@@ -1,10 +1,32 @@
+# Python
 .venv/
+venv/
 __pycache__/
-*.pyc
+*.py[cod]
 *.egg-info/
 build/
 dist/
+
+# Tests and tooling caches
 .pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+test-results/
+playwright-report/
+
+# Local audio work (stems, separated tracks)
 tomas/
 separated/
+
+# Secrets and local settings
+.env
+.env.*
+
+# Editors and OS
+.vscode/
+.idea/
+*.swp
 .DS_Store
