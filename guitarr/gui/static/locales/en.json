@@ -115,7 +115,8 @@
    "bad_ir": "Upload a WAV, FLAC or AIFF impulse response.",
    "ir_too_long": "That file is too long for an impulse response (3 s max).",
    "no_ir": "That impulse response isn't saved anymore.",
-   "bad_time": "Use a time like 19:30."
+   "bad_time": "Use a time like 19:30.",
+   "bad_tuning": "Unknown tuning."
   },
   "practice": {
    "title": "🎧 Practice with listening",
@@ -428,7 +429,8 @@
    "heard_ok": "✓ {{chord}} sounded right!",
    "not_heard": "I didn't hear {{chord}}. Check the input in Settings and try again.",
    "diagram_label": "{{chord}} chord",
-   "camera_link": "Check with the camera"
+   "camera_link": "Check with the camera",
+   "standard_note": "These diagrams are in standard tuning (your instrument is set to another tuning)."
   },
   "charts": {
    "title": "Charts",
@@ -998,6 +1000,23 @@
    "saved": "Reminder saved",
    "notif_title": "guitarr 🎸",
    "notif_body": "{left} left today to meet your practice goal"
+  },
+  "instrument": {
+   "title": "Instrument",
+   "tuning": "Tuning",
+   "lefty": "Left-handed (mirrors chord diagrams and the fretboard)",
+   "hint": "The tuners, the tablature of your songs and the fretboard follow your tuning. Chord charts and the chord dictionary stay in standard tuning.",
+   "saved": "Instrument saved",
+   "t_standard": "Standard",
+   "t_half_step_down": "Half step down",
+   "t_drop_d": "Drop D",
+   "t_d_standard": "D standard",
+   "t_drop_c": "Drop C",
+   "t_open_g": "Open G",
+   "t_open_d": "Open D",
+   "t_dadgad": "DADGAD",
+   "t_seven_string": "7-string",
+   "t_bass_4": "Bass (4 strings)"
   }
  },
  "content": {}

@@ -1,6 +1,6 @@
 // Chord dictionary: diagrams, sound and "check by ear".
 import { msgText, t, tc } from "../lib/i18n.js";
-import { $, $$, api, bindChordSvg, chordSvg, esc, strum, toast } from "../lib/ui.js";
+import { $, $$, api, bindChordSvg, chordSvg, esc, instrument, strum, toast } from "../lib/ui.js";
 import { listen } from "../lib/listen.js";
 import { icon } from "../lib/icons.js";
 
@@ -12,7 +12,8 @@ export async function mount(el, { params }) {
   const focus = params.chord && data.chords.find(c => c.id === params.chord);   // deep link: #/chords?chord=G
   el.innerHTML = `
     <div class="gl-head"><h1>${esc(t("chords.title"))}</h1>
-      <p class="muted">${t("chords.subtitle_html")}</p></div>
+      <p class="muted">${t("chords.subtitle_html")}</p>
+      ${instrument.tuning !== "standard" ? `<p class="callout small">${esc(t("chords.standard_note"))}</p>` : ""}</div>
     <div class="toolbar">
       <div class="seg" id="groups"></div>
       <input type="search" id="q" placeholder="${esc(t("chords.search"))}" aria-label="${esc(t("chords.search"))}">

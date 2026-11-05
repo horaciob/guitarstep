@@ -2,7 +2,7 @@
    Dependency-free ES module: vanilla JS + canvas + SVG. The router (main.js) calls
    showListenerView / hideListenerViews. All user-facing text goes through i18n. */
 import { issueText, msgIsError, msgText, t, tc } from "./lib/i18n.js";
-import { $, $$, api, esc, noteName, NOTE_NAMES, progressChanged, toast } from "./lib/ui.js";
+import { $, $$, api, esc, instrument, loadInstrument, noteName, NOTE_NAMES, progressChanged, toast } from "./lib/ui.js";
 import { levelVerdict, meterHtml, openInput, setGate, setMeter } from "./lib/input.js";
 
 // Reads a color token and normalizes it to #rrggbb (accepts hsl/rgb) so a hex alpha can be appended.
@@ -401,13 +401,13 @@ function drawTab() {
   const g = cv.getContext("2d");
   g.setTransform(dpr, 0, 0, dpr, 0, 0);
   g.clearRect(0, 0, W, H);
-  const top = 46, gap = 26, strings = 6;
+  const tun = (App.preview && App.preview.tuning) || instrument.strings;
+  const strings = tun.length, top = 46, gap = strings > 6 ? 22 : 26;
   const colors = STATUS_COLOR();
   g.strokeStyle = css("--gl-string");
   g.lineWidth = 1;
   g.font = "600 11px ui-monospace, Menlo, monospace";
   g.fillStyle = css("--muted");
-  const tun = (App.preview && App.preview.tuning) || [64, 59, 55, 50, 45, 40];
   for (let s = 0; s < strings; s++) {
     const y = top + s * gap;
     g.beginPath(); g.moveTo(34, y); g.lineTo(W - 8, y); g.stroke();
@@ -678,9 +678,10 @@ function scrollRollTo(tm) {
 
 // ------------------------------------------------------------------ tuner
 let tws = null;
-const STD = [[64, 1, "E4"], [59, 2, "B3"], [55, 3, "G3"], [50, 4, "D3"], [45, 5, "A2"], [40, 6, "E2"]];
+// open strings of your tuning: [midi, string number, name]
+const strings = () => instrument.strings.map((m, i) => [m, i + 1, noteName(m)]);
 function initTuner() {
-  $("#tStrings").innerHTML = STD.slice().reverse().map(([m, n, l]) =>
+  $("#tStrings").innerHTML = strings().reverse().map(([m, n, l]) =>
     `<div data-m="${m}"><b>${l}</b><small>${esc(t("tuner.string_n", { n }))}</small></div>`).join("");
   let ticks = "";
   for (let c = -50; c <= 50; c += 10) {
@@ -714,7 +715,7 @@ function startTuner() {
     if (r.string) line += ` · ${t("tuner.string_status", { n: r.string, status: t(ok ? "tuner.in_tune" : cents < 0 ? "tuner.tune_up" : "tuner.tune_down") })}`;
     $("#tCents").textContent = line;
     $("#needle").style.transform = `rotate(${Math.max(-50, Math.min(50, cents)) / 50 * 88}deg)`;
-    const near = STD.reduce((a, b) => Math.abs(b[0] - r.midi) < Math.abs(a[0] - r.midi) ? b : a);
+    const near = strings().reduce((a, b) => Math.abs(b[0] - r.midi) < Math.abs(a[0] - r.midi) ? b : a);
     $$("#tStrings div").forEach(d => d.className = +d.dataset.m === near[0] && Math.abs(near[0] - r.midi) < 0.75 ? (ok ? "ok" : "on") : "");
   };
   tws.onclose = () => { tws = null; $("#tStart").textContent = t("tuner.start"); };
@@ -775,6 +776,26 @@ function drawHistChart(ss) {
 // ------------------------------------------------------------------ settings
 const Settings = { devices: [], saved: {}, test: null, timer: null };
 
+// ------------------------------------------------------------------ instrument: tuning and handedness
+async function loadInstrumentPanel() {
+  const inst = await loadInstrument();
+  $("#iTuning").innerHTML = Object.entries(inst.tunings || {}).map(([id, ms]) =>
+    `<option value="${id}">${esc(t(`instrument.t_${id}`))} · ${ms.slice().reverse().map(m => NOTE_NAMES[m % 12]).join(" ")}</option>`).join("");
+  $("#iTuning").value = inst.tuning;
+  $("#iLefty").checked = inst.left_handed;
+}
+async function saveInstrument() {
+  try {
+    await api("/api/instrument", { method: "PUT", json: { tuning: $("#iTuning").value, left_handed: $("#iLefty").checked } });
+    await loadInstrument();
+    initTuner();
+    $("#iStatus").innerHTML = `<span class="ok">✓ ${esc(t("instrument.saved"))}</span>`;
+    window.dispatchEvent(new CustomEvent("guitarr:instrument"));
+  } catch (e) { $("#iStatus").textContent = e.message; }
+}
+$("#iTuning").addEventListener("change", saveInstrument);
+$("#iLefty").addEventListener("change", saveInstrument);
+
 async function loadReminder() {
   try {
     const r = await api("/api/reminder");
@@ -810,6 +831,7 @@ export function showBrowserNotification(title, body) {
 
 async function loadSettings() {
   loadReminder();
+  loadInstrumentPanel();
   const [dv, cfg] = await Promise.all([api("/api/devices"), api("/api/config")]);
   if (dv.error) toast(dv.error);
   Settings.devices = dv.inputs;

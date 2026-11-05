@@ -245,6 +245,13 @@
           <li data-i18n="settings.tip_soft">If soft attacks aren't detected, raise the sensitivity or lower the noise gate.</li>
         </ul>
       </div>
+      <div class="panel" id="instPanel">
+        <h2 data-i18n="instrument.title">Instrument</h2>
+        <label class="field"><span data-i18n="instrument.tuning">Tuning</span><select id="iTuning"></select></label>
+        <label class="check"><input type="checkbox" id="iLefty"> <span data-i18n="instrument.lefty">Left-handed (mirrors chord diagrams and the fretboard)</span></label>
+        <p class="muted small" data-i18n="instrument.hint">The tuners, the tablature of your songs and the fretboard follow your tuning. Chord charts and the chord dictionary stay in standard tuning.</p>
+        <p class="small" id="iStatus" aria-live="polite"></p>
+      </div>
       <div class="panel" id="remPanel">
         <h2 data-i18n="reminder.title">Daily reminder</h2>
         <p class="muted small" data-i18n="reminder.hint">At this time, if you haven't met today's goal yet, guitarr tells you how much is left.</p>

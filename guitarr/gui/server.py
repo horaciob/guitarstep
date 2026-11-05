@@ -298,6 +298,25 @@ def api_today_check(body: dict):
     return routine.build()
 
 
+# ---------------------------------------------------------------- instrument (tuning, handedness)
+@app.get("/api/instrument")
+def api_instrument():
+    from ..core import TUNINGS
+    inst = config.instrument()
+    return {**inst, "strings": config.instrument_tuning(), "tunings": {k: v for k, v in TUNINGS.items()}}
+
+
+@app.put("/api/instrument")
+def api_instrument_set(body: dict):
+    from ..core import TUNINGS
+    tuning = body.get("tuning")
+    if tuning is not None and tuning not in TUNINGS:
+        fail(400, "bad_tuning", "Unknown tuning")
+    lefty = body.get("left_handed")
+    config.save_instrument(tuning=tuning, left_handed=None if lefty is None else bool(lefty))
+    return api_instrument()
+
+
 # ---------------------------------------------------------------- daily reminder
 @app.get("/api/reminder")
 def api_reminder():
@@ -693,7 +712,7 @@ async def ws_tuner(ws: WebSocket):
         await ws.send_json(dict(error=dict(code="audio", message=str(e))))
         await ws.close()
         return
-    tuner = Tuner(src)
+    tuner = Tuner(src, tuning=config.instrument_tuning())
     S.tuner = tuner
     th = threading.Thread(target=tuner.run, daemon=True)
     th.start()

@@ -6,6 +6,12 @@ export const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 export const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 export const NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 export const OPEN = [40, 45, 50, 55, 59, 64];            // 6th … 1st
+// Your instrument (Settings → Instrument): open strings from string 1 down, and handedness.
+export const instrument = { tuning: "standard", left_handed: false, strings: [64, 59, 55, 50, 45, 40] };
+export async function loadInstrument() {
+  try { Object.assign(instrument, await api("/api/instrument")); } catch { /* defaults */ }
+  return instrument;
+}
 export const noteName = p => NOTE_NAMES[((p % 12) + 12) % 12] + (Math.floor(p / 12) - 1);
 
 export async function api(path, opts = {}) {
@@ -77,15 +83,18 @@ export function chordSvg(ch, { size = 120, label = true } = {}) {
   const hi = pressed.length ? Math.max(...pressed) : 1;
   const base = hi <= 4 ? 1 : lo;                  // fret the drawing starts at
   const W = size, H = size * 1.15, padX = W * 0.16, top = H * 0.2, gridW = W - 2 * padX;
-  const nF = 4, fH = (H - top - H * 0.1) / nF, sx = i => padX + i * gridW / 5, fy = n => top + n * fH;
+  // left-handed: the diagram is mirrored (6th string on the right)
+  const nF = 4, fH = (H - top - H * 0.1) / nF, fy = n => top + n * fH;
+  const sx = i => padX + (instrument.left_handed ? 5 - i : i) * gridW / 5;
   let s = `<svg class="chord-svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${esc(t("chords.diagram_label", { chord: ch.id }))}">`;
   for (let n = 0; n <= nF; n++)
     s += `<line x1="${sx(0)}" x2="${sx(5)}" y1="${fy(n)}" y2="${fy(n)}" stroke="currentColor" stroke-opacity="${n === 0 && base === 1 ? 1 : .35}" stroke-width="${n === 0 && base === 1 ? 3 : 1}"/>`;
   for (let i = 0; i < 6; i++)
     s += `<line x1="${sx(i)}" x2="${sx(i)}" y1="${fy(0)}" y2="${fy(nF)}" stroke="currentColor" stroke-opacity=".5" stroke-width="${1 + (5 - i) * 0.25}" data-string="${6 - i}" class="chord-string"/>`;
-  if (base > 1) s += `<text x="${sx(5) + 6}" y="${fy(0.6)}" font-size="${W * 0.09}" fill="currentColor" opacity=".7">${base}</text>`;
+  if (base > 1) s += `<text x="${Math.max(sx(0), sx(5)) + 6}" y="${fy(0.6)}" font-size="${W * 0.09}" fill="currentColor" opacity=".7">${base}</text>`;
   if (ch.barre) {
-    const y = fy(ch.barre.fret - base + 0.5), x1 = sx(6 - ch.barre.from_string), x2 = sx(6 - ch.barre.to_string);
+    const y = fy(ch.barre.fret - base + 0.5);
+    const xa = sx(6 - ch.barre.from_string), xb = sx(6 - ch.barre.to_string), x1 = Math.min(xa, xb), x2 = Math.max(xa, xb);
     s += `<rect x="${x1 - 6}" y="${y - 6}" width="${x2 - x1 + 12}" height="12" rx="6" fill="var(--gl-accent)"/>`;
   }
   frets.forEach((f, i) => {
@@ -99,7 +108,8 @@ export function chordSvg(ch, { size = 120, label = true } = {}) {
       if (fingers[i] && !inBarre) s += `<text x="${x}" y="${y + W * 0.035}" text-anchor="middle" font-size="${W * 0.08}" font-weight="700" fill="var(--gl-accent-ink)">${fingers[i]}</text>`;
     }
   });
-  if (label) s += `<text x="${W / 2}" y="${H - 2}" text-anchor="middle" font-size="${W * 0.085}" fill="var(--muted)">${["E", "A", "D", "G", "B", "E"].join("  ")}</text>`;
+  const names = ["E", "A", "D", "G", "B", "E"];
+  if (label) s += `<text x="${W / 2}" y="${H - 2}" text-anchor="middle" font-size="${W * 0.085}" fill="var(--muted)">${(instrument.left_handed ? names.reverse() : names).join("  ")}</text>`;
   return s + "</svg>";
 }
 

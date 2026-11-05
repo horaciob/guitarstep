@@ -115,7 +115,8 @@
    "bad_ir": "Subí una respuesta al impulso WAV, FLAC o AIFF.",
    "ir_too_long": "Ese archivo es muy largo para una respuesta al impulso (máximo 3 s).",
    "no_ir": "Esa respuesta al impulso ya no está guardada.",
-   "bad_time": "Usá una hora como 19:30."
+   "bad_time": "Usá una hora como 19:30.",
+   "bad_tuning": "Afinación desconocida."
   },
   "practice": {
    "title": "🎧 Practicar con escucha",
@@ -428,7 +429,8 @@
    "heard_ok": "✓ ¡Sonó {{chord}}!",
    "not_heard": "No escuché {{chord}}. Revisá la entrada en Ajustes y probá de nuevo.",
    "diagram_label": "Acorde {{chord}}",
-   "camera_link": "Revisar con la cámara"
+   "camera_link": "Revisar con la cámara",
+   "standard_note": "Estos diagramas están en afinación estándar (tu instrumento tiene otra afinación)."
   },
   "charts": {
    "title": "Cifrados",
@@ -998,6 +1000,23 @@
    "saved": "Recordatorio guardado",
    "notif_title": "guitarr 🎸",
    "notif_body": "Te faltan {left} hoy para cumplir tu meta de práctica"
+  },
+  "instrument": {
+   "title": "Instrumento",
+   "tuning": "Afinación",
+   "lefty": "Zurdo (espeja los diagramas de acordes y el diapasón)",
+   "hint": "Los afinadores, la tablatura de tus canciones y el diapasón siguen tu afinación. Los cifrados y el diccionario de acordes quedan en afinación estándar.",
+   "saved": "Instrumento guardado",
+   "t_standard": "Estándar",
+   "t_half_step_down": "Medio tono abajo",
+   "t_drop_d": "Drop D",
+   "t_d_standard": "Re estándar",
+   "t_drop_c": "Drop C",
+   "t_open_g": "Open G",
+   "t_open_d": "Open D",
+   "t_dadgad": "DADGAD",
+   "t_seven_string": "7 cuerdas",
+   "t_bass_4": "Bajo (4 cuerdas)"
   }
  },
  "content": {

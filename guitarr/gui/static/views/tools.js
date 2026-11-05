@@ -1,6 +1,6 @@
 // Tools: metronome (tap tempo), chord-change minute (counted by ear) and fretboard explorer.
 import { msgIsError, msgText, t, tc } from "../lib/i18n.js";
-import { $, $$, api, audioCtx, chordSvg, click, esc, NOTE_NAMES, OPEN, pluck, toast } from "../lib/ui.js";
+import { $, $$, api, audioCtx, chordSvg, click, esc, instrument, NOTE_NAMES, pluck, toast } from "../lib/ui.js";
 import { listen } from "../lib/listen.js";
 
 let metro = null, drill = null, countdownTimer = null;
@@ -174,31 +174,34 @@ function fretboard(box) {
         <label class="field"><span>${esc(t("tools.show"))}</span><select id="scale">${Object.keys(SCALES).map(s => `<option${s === "minor_pentatonic" ? " selected" : ""} value="${s}">${esc(t(`tools.scale_${s}`))}</option>`).join("")}</select></label>
         <label class="check" style="align-self:end"><input type="checkbox" id="names" checked> ${esc(t("tools.names"))}</label>
       </div>
-      <div class="neck-wrap"><svg id="neck" viewBox="0 0 1000 230" role="img" aria-label="${esc(t("tools.fretboard"))}"></svg></div>
+      <div class="neck-wrap"><svg id="neck" viewBox="0 0 1000 ${25 + (instrument.strings.length - 1) * 34 + 45}" role="img" aria-label="${esc(t("tools.fretboard"))}"></svg></div>
       <p class="muted small">${esc(t("tools.fretboard_hint"))}</p>
     </div>`;
   const draw = () => {
     const root = +$("#root", box).value, scale = SCALES[$("#scale", box).value], names = $("#names", box).checked;
     const F = 15, x0 = 40, w = 940, top = 25, gap = 34;
-    const fx = n => x0 + w * (1 - 2 ** (-n / 12)) / (1 - 2 ** (-F / 12));   // real fret spacing
+    const NS = instrument.strings.length, last = NS - 1;
+    const fx0 = n => x0 + w * (1 - 2 ** (-n / 12)) / (1 - 2 ** (-F / 12));   // real fret spacing
+    const fx = n => (instrument.left_handed ? 1000 - fx0(n) : fx0(n));       // mirrored for left-handed
+    const nutX = instrument.left_handed ? 1000 - (x0 - 18) : x0 - 18;
     let s = "";
-    for (let n = 0; n <= F; n++) s += `<line x1="${fx(n)}" x2="${fx(n)}" y1="${top}" y2="${top + 5 * gap}" stroke="currentColor" stroke-opacity="${n ? .3 : 1}" stroke-width="${n ? 2 : 6}"/>`;
-    [3, 5, 7, 9, 15].forEach(n => s += `<circle cx="${(fx(n - 1) + fx(n)) / 2}" cy="${top + 2.5 * gap}" r="6" fill="currentColor" opacity=".12"/>`);
+    for (let n = 0; n <= F; n++) s += `<line x1="${fx(n)}" x2="${fx(n)}" y1="${top}" y2="${top + last * gap}" stroke="currentColor" stroke-opacity="${n ? .3 : 1}" stroke-width="${n ? 2 : 6}"/>`;
+    [3, 5, 7, 9, 15].forEach(n => s += `<circle cx="${(fx(n - 1) + fx(n)) / 2}" cy="${top + last / 2 * gap}" r="6" fill="currentColor" opacity=".12"/>`);
     s += `<circle cx="${(fx(11) + fx(12)) / 2}" cy="${top + 1.5 * gap}" r="6" fill="currentColor" opacity=".12"/><circle cx="${(fx(11) + fx(12)) / 2}" cy="${top + 3.5 * gap}" r="6" fill="currentColor" opacity=".12"/>`;
-    for (let i = 0; i < 6; i++) s += `<line x1="${x0}" x2="${x0 + w}" y1="${top + i * gap}" y2="${top + i * gap}" stroke="currentColor" stroke-opacity=".5" stroke-width="${1 + i * 0.35}"/>`;
-    for (let i = 0; i < 6; i++) {                 // i = 0 → 1st string (top)
-      const open = OPEN[5 - i];
+    for (let i = 0; i < NS; i++) s += `<line x1="${fx(0)}" x2="${fx(F)}" y1="${top + i * gap}" y2="${top + i * gap}" stroke="currentColor" stroke-opacity=".5" stroke-width="${1 + i * 0.35}"/>`;
+    for (let i = 0; i < NS; i++) {                // i = 0 → 1st string (top)
+      const open = instrument.strings[i];
       for (let n = 0; n <= F; n++) {
         const p = open + n, pc = ((p % 12) - root + 12) % 12;
         const shown = !scale.length || scale.includes(pc);
-        const cx = n === 0 ? x0 - 18 : (fx(n - 1) + fx(n)) / 2, cy = top + i * gap;
+        const cx = n === 0 ? nutX : (fx(n - 1) + fx(n)) / 2, cy = top + i * gap;
         s += `<g class="pos" data-p="${p}" style="cursor:pointer"><rect x="${cx - 16}" y="${cy - 14}" width="32" height="28" fill="transparent"/>`;
         if (shown) s += `<circle cx="${cx}" cy="${cy}" r="11" fill="${pc === 0 ? "var(--gl-accent)" : "var(--gl-panel-2)"}" stroke="${pc === 0 ? "none" : "var(--muted)"}"/>` +
           (names ? `<text x="${cx}" y="${cy + 4}" text-anchor="middle" font-size="10" font-weight="700" fill="${pc === 0 ? "var(--gl-accent-ink)" : "var(--text)"}">${NOTE_NAMES[p % 12]}</text>` : "");
         s += `</g>`;
       }
     }
-    for (let n = 1; n <= F; n++) s += `<text x="${(fx(n - 1) + fx(n)) / 2}" y="${top + 5 * gap + 22}" text-anchor="middle" font-size="11" fill="var(--muted)">${n}</text>`;
+    for (let n = 1; n <= F; n++) s += `<text x="${(fx(n - 1) + fx(n)) / 2}" y="${top + last * gap + 22}" text-anchor="middle" font-size="11" fill="var(--muted)">${n}</text>`;
     const svg = $("#neck", box);
     svg.innerHTML = s;
     $$(".pos", svg).forEach(g => g.addEventListener("click", () => pluck(+g.dataset.p)));

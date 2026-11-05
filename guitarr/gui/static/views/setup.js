@@ -1,10 +1,11 @@
 // First-run setup: pick the guitar input (with a live level meter), tune, and start playing.
 import { t, tc } from "../lib/i18n.js";
-import { $, $$, api, esc, markOnboarded, toast } from "../lib/ui.js";
+import { $, $$, api, esc, instrument, markOnboarded, noteName, toast } from "../lib/ui.js";
 import { icon } from "../lib/icons.js";
 import { levelVerdict, meterHtml, openInput, setMeter } from "../lib/input.js";
 
-const STD = [[40, 6, "E2"], [45, 5, "A2"], [50, 4, "D3"], [55, 3, "G3"], [59, 2, "B3"], [64, 1, "E4"]];
+// open strings of your tuning, lowest first: [midi, string number, name]
+const openStrings = () => instrument.strings.map((m, i) => [m, i + 1, noteName(m)]).reverse();
 const STEPS = ["welcome", "input", "tune", "done"];
 
 
@@ -98,7 +99,7 @@ export async function mount(el, { params }) {
         <div class="mt-note" id="note">—</div>
         <div class="mt-scale"><i class="mt-mid"></i><i class="mt-needle" id="needle"></i></div>
         <div class="muted" id="cents">${esc(t("tuner.play_open"))}</div>
-        <div class="strings" id="strs">${STD.map(([m, n, l]) => `<div data-m="${m}" class="${st.tuned.has(m) ? "ok" : ""}"><b>${l}</b><small>${esc(t("tuner.string_n", { n }))}</small></div>`).join("")}</div>
+        <div class="strings" id="strs">${openStrings().map(([m, n, l]) => `<div data-m="${m}" class="${st.tuned.has(m) ? "ok" : ""}"><b>${l}</b><small>${esc(t("tuner.string_n", { n }))}</small></div>`).join("")}</div>
       </div>
       <div class="listen-box slim">${meterHtml("lv")}</div>
       <div class="setup-actions"><button class="btn ghost" id="back">← ${esc(t("common.back"))}</button>
@@ -121,10 +122,10 @@ export async function mount(el, { params }) {
       needle.style.left = (50 + Math.max(-50, Math.min(50, c))) + "%";
       needle.className = "mt-needle" + (ok ? " ok" : "");
       cents.textContent = `${c > 0 ? "+" : ""}${c.toFixed(0)}¢ · ` + t("tuner.string_status", { n: r.string, status: t(ok ? "tuner.in_tune" : c < 0 ? "tuner.tune_up" : "tuner.tune_down") });
-      const m = STD.find(s => s[1] === r.string)[0];
+      const m = openStrings().find(s => s[1] === r.string)[0];
       if (ok) st.tuned.add(m);
       $$("#strs div", el).forEach(d => d.className = st.tuned.has(+d.dataset.m) ? "ok" : +d.dataset.m === m ? "on" : "");
-      if (st.tuned.size === 6) cents.textContent = t("setup.all_tuned");
+      if (st.tuned.size === instrument.strings.length) cents.textContent = t("setup.all_tuned");
     });
   }
 

@@ -255,8 +255,9 @@ def load_midi(path: Path, track: str | None = None, log: Log = print) -> Referen
     sigs = pm.time_signature_changes
     bpb = sigs[-1].numerator if sigs else 4
     grid = Grid(beats, bpb, bar_starts)
-    assign_tab(notes)
-    return Reference(notes, grid, name=path.stem, path=str(path), track=inst.name or track)
+    tuning = config.instrument_tuning()
+    assign_tab(notes, tuning)
+    return Reference(notes, grid, name=path.stem, path=str(path), track=inst.name or track, tuning=tuning)
 
 
 # ---------------------------------------------------------------- Guitar Pro
@@ -427,8 +428,9 @@ def load_reference(opts: RefOptions, log: Log = print) -> Reference:
         src = separate_guitar(path, log) if opts.separate else path
         log(f"[transcribing] reference: {src.name}")
         notes = transcribe(src, **opts.tx)
-        assign_tab(notes)
-        ref = Reference(notes, audio_grid(src), name=path.stem, path=str(path))
+        tuning = config.instrument_tuning()
+        assign_tab(notes, tuning)
+        ref = Reference(notes, audio_grid(src), name=path.stem, path=str(path), tuning=tuning)
     else:
         raise ReferenceError(f"Unsupported format: {ext} (use MIDI, Guitar Pro or audio)")
     if opts.bpm:

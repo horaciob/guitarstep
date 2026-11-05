@@ -33,13 +33,14 @@ export function detectPitch(buf, sampleRate, { minHz = 70, maxHz = 1300, minRms 
 }
 
 /** Note name, cents off, and the nearest open string (standard tuning) when it's close. */
-export function noteOf(freq, a4 = 440) {
+export function noteOf(freq, a4 = 440, tuning = null) {
+  const open = tuning ? [...tuning].reverse() : STANDARD;          // lowest string first
   const midi = 69 + 12 * Math.log2(freq / a4), near = Math.round(midi);
-  const string = STANDARD.reduce((x, y) => (Math.abs(y - midi) < Math.abs(x - midi) ? y : x));
+  const string = open.reduce((x, y) => (Math.abs(y - midi) < Math.abs(x - midi) ? y : x));
   return {
     note: NOTE_NAMES[((near % 12) + 12) % 12] + (Math.floor(near / 12) - 1),
     cents: (midi - near) * 100,
-    string: Math.abs(string - midi) < 0.75 ? 6 - STANDARD.indexOf(string) : null,
+    string: Math.abs(string - midi) < 0.75 ? open.length - open.indexOf(string) : null,
     stringCents: (midi - string) * 100,
   };
 }

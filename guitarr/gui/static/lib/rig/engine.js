@@ -1,7 +1,7 @@
 // The tone rig: guitar → pedals → amp → cabinet + mic → effects → looper → master → limiter.
 // Runs in the browser (Web Audio) and keeps running while you move around the app, so you can
 // practice with your sound. The listener in Python always hears the clean input.
-import { api } from "../ui.js";
+import { api, instrument } from "../ui.js";
 import { biquad, dbToGain, gainNode, ramp } from "./dsp.js";
 import { buildAmp, buildCab, buildGuitar, EFFECTS } from "./effects.js";
 import { defaultRig, normalize } from "./presets.js";
@@ -127,8 +127,9 @@ class Rig extends EventTarget {
     if (!this.running || !this.tunerAn) return null;
     const buf = new Float32Array(this.tunerAn.fftSize);
     this.tunerAn.getFloatTimeDomainData(buf);
-    const f = detectPitch(buf, this.ctx.sampleRate);
-    return f ? { freq: f, ...noteOf(f) } : null;
+    const lowest = 440 * 2 ** ((Math.min(...instrument.strings) - 69) / 12);     // a bass goes down to 41 Hz
+    const f = detectPitch(buf, this.ctx.sampleRate, { minHz: Math.min(70, 0.8 * lowest) });
+    return f ? { freq: f, ...noteOf(f, 440, instrument.strings) } : null;
   }
 
   // ---------------------------------------------------------------- MIDI expression pedal

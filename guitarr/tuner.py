@@ -10,12 +10,11 @@ import numpy as np
 from .core import STANDARD_TUNING, note_name
 from .dsp import db, yin
 
-STRING_OF = {64: 1, 59: 2, 55: 3, 50: 4, 45: 5, 40: 6}   # open-string MIDI → string number
-
-
 class Tuner:
-    def __init__(self, src, gate_db: float = -55.0, a4: float = 440.0):
+    def __init__(self, src, gate_db: float = -55.0, a4: float = 440.0, tuning: list[int] | None = None):
         self.src, self.sr = src, src.sr
+        self.tuning = list(tuning or STANDARD_TUNING)        # string 1 … n
+        self.fmin = min(60.0, 0.8 * 440 * 2 ** ((min(self.tuning) - 69) / 12))   # low enough for a bass
         self.gate_db = gate_db
         self.a4 = a4
         self.buf = np.zeros(4096, np.float32)
@@ -31,7 +30,7 @@ class Tuner:
         if lvl < self.gate_db:
             self.hist.clear()
             return dict(note=None, level_db=round(lvl, 1))
-        m, conf = yin(self.buf, self.sr, fmin=60.0, fmax=1400.0, thresh=0.15)
+        m, conf = yin(self.buf, self.sr, fmin=self.fmin, fmax=1400.0, thresh=0.15)
         if m is None or conf < 0.85:
             return dict(note=None, level_db=round(lvl, 1))
         m += 12 * np.log2(440.0 / self.a4)
@@ -40,11 +39,11 @@ class Tuner:
         self.hist.append(m)
         mm = float(np.median(self.hist))
         p = int(round(mm))
-        nearest = min(STANDARD_TUNING, key=lambda s: abs(s - mm))
+        nearest = min(self.tuning, key=lambda s: abs(s - mm))
         near = abs(nearest - mm) < 0.75
         return dict(note=note_name(p), midi=round(mm, 2), cents=round((mm - p) * 100, 1),
                     freq=round(self.a4 * 2 ** ((mm - 69) / 12), 2), level_db=round(lvl, 1),
-                    string=STRING_OF[nearest] if near else None,
+                    string=self.tuning.index(nearest) + 1 if near else None,
                     string_note=note_name(nearest) if near else None,
                     string_cents=round((mm - nearest) * 100, 1) if near else None)
 

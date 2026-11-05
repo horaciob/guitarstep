@@ -8,6 +8,23 @@ import numpy as np
 
 NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
 STANDARD_TUNING = [64, 59, 55, 50, 45, 40]  # string 1 (E4) ... string 6 (E2)
+# Open strings from string 1 (highest) down, as MIDI notes.
+TUNINGS = {
+    "standard": STANDARD_TUNING,
+    "half_step_down": [63, 58, 54, 49, 44, 39],
+    "drop_d": [64, 59, 55, 50, 45, 38],
+    "d_standard": [62, 57, 53, 48, 43, 38],
+    "drop_c": [62, 57, 53, 48, 43, 36],
+    "open_g": [62, 59, 55, 50, 43, 38],
+    "open_d": [62, 57, 54, 50, 45, 38],
+    "dadgad": [62, 57, 55, 50, 45, 38],
+    "seven_string": [64, 59, 55, 50, 45, 40, 35],
+    "bass_4": [43, 38, 33, 28],
+}
+
+
+def tuning_of(name: str | None) -> list[int]:
+    return list(TUNINGS.get(name or "standard", STANDARD_TUNING))
 
 
 @dataclass

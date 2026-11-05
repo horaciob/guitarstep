@@ -214,3 +214,24 @@ def test_chart_practice_offers_a_backing_track(app_page):
     expect(app_page.locator("#pBackingWrap")).to_be_visible()
     app_page.locator("#pChartClear").click()
     expect(app_page.locator("#pBackingWrap")).to_be_hidden()
+
+
+def test_tuning_and_left_handed(app_page):
+    onboarded(app_page)
+    go(app_page, "settings")
+    expect(app_page.locator("#iTuning option")).to_have_count(10)
+    app_page.locator("#iTuning").select_option("drop_d")
+    expect(app_page.locator("#iStatus")).to_contain_text("Instrument saved")
+    go(app_page, "tuner")
+    expect(app_page.locator("#tStrings")).to_contain_text("D2")
+    go(app_page, "settings")
+    app_page.locator("#iTuning").select_option("seven_string")
+    app_page.locator("#iLefty").check()
+    expect(app_page.locator("#iStatus")).to_contain_text("Instrument saved")
+    app_page.reload()
+    go(app_page, "tools?tab=fretboard")
+    expect(app_page.locator("#neck")).to_have_attribute("viewBox", "0 0 1000 274")       # 7 strings
+    go(app_page, "chords")
+    expect(app_page.locator(".callout", has_text="standard tuning")).to_be_visible()
+    label = app_page.locator(".chord-card").first.locator("svg text").last
+    expect(label).to_have_text("E  B  G  D  A  E")                                      # mirrored

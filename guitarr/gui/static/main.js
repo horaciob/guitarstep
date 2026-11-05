@@ -5,7 +5,8 @@ await initI18n();
 applyDom();
 
 const { LISTENER_ROUTES, showListenerView, hideListenerViews } = await import("./app.js");
-const { $, $$, api, esc, isOnboarded, toast } = await import("./lib/ui.js");
+const { $, $$, api, esc, isOnboarded, loadInstrument, toast } = await import("./lib/ui.js");
+await loadInstrument();
 const { fillIcons } = await import("./lib/icons.js");
 fillIcons();
 

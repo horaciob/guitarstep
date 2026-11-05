@@ -22,6 +22,7 @@ SONGS_DIR = HOME / "songs"
 TAKES_DIR = HOME / "takes"
 HISTORY_DIR = HOME / "history"
 
+INSTRUMENT_DEFAULTS = dict(tuning="standard", left_handed=False)
 AUDIO_KEYS = ("device", "channel", "output_device", "samplerate", "latency_ms", "gate_db", "sensitivity")
 SONG_KEYS = ("track", "transpose", "start_bar", "end_bar", "mode", "speed", "bpm", "first_beat",
              "beats_per_bar")
@@ -56,6 +57,8 @@ def _table(name: str, d: dict) -> list[str]:
 def save(data: dict) -> None:
     HOME.mkdir(parents=True, exist_ok=True)
     lines = _table("audio", data.get("audio", {}))
+    if data.get("instrument"):
+        lines += _table("instrument", data["instrument"])
     if data.get("reminder"):
         lines += _table("reminder", data["reminder"])
     for song, opts in sorted(data.get("songs", {}).items()):
@@ -70,6 +73,24 @@ def update_audio(**kw) -> dict:
     data["audio"].update({k: v for k, v in kw.items() if k in AUDIO_KEYS and v is not None})
     save(data)
     return data["audio"]
+
+
+def instrument() -> dict:
+    """Your tuning and handedness (used by the tuners, tablature and diagrams)."""
+    return {**INSTRUMENT_DEFAULTS, **load().get("instrument", {})}
+
+
+def instrument_tuning() -> list[int]:
+    from .core import tuning_of
+    return tuning_of(instrument()["tuning"])
+
+
+def save_instrument(**kw) -> dict:
+    data = load()
+    data["instrument"] = {**INSTRUMENT_DEFAULTS, **data.get("instrument", {}),
+                          **{k: v for k, v in kw.items() if k in INSTRUMENT_DEFAULTS and v is not None}}
+    save(data)
+    return data["instrument"]
 
 
 def song_key(path: Path | str) -> str:
