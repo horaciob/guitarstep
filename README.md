@@ -129,7 +129,7 @@ guitarr gui                              # and start practicing
 | **Course** | Levels → lessons → exercises passed by playing; theory, tips, chord diagrams and tutorials |
 | **Chords** | Dictionary by family; hear each string, **Check** by ear, or check your **Posture** with the camera |
 | **Camera** | Calibrate the neck with 4 clicks, form the chord, get per-finger feedback |
-| **Practice** | Live practice against an uploaded song (MIDI, Guitar Pro, audio) or a chart |
+| **Practice** | Live practice against an uploaded song (MIDI, Guitar Pro, MusicXML, text tab, audio) or a chart |
 | **Charts** | Built-in exercises and your own charts, with a live-preview editor |
 | **Tools** | Metronome, chord-change minute, fretboard explorer |
 | **Tuner** | Uses the same input and pitch detection as practice |
@@ -182,6 +182,9 @@ guitarr live song.gp5 --track lead --start-bar 9 --save-preset # remember these 
 The best reference is a **Guitar Pro file** (`.gp3/.gp4/.gp5`) or a **MIDI file exported from a tab** (Guitar Pro, Songsterr, MuseScore).
 
 - Guitar Pro files carry the real string and fret. For MIDI and audio, the tablature is estimated so the hand moves as little as possible.
+- **MusicXML** (`.musicxml`, `.xml`, `.mxl`, e.g. exported from MuseScore) works too; string/fret are read when the file has them.
+- **Text tabs** (`e|---0---2---|`, uploaded as `.txt`) are read with their tuning from the string names. Tabs rarely carry rhythm, so each bar is spread evenly over 4 beats: set the tempo (BPM) in the section options.
+- The tablature follows your tuning (Settings → Instrument).
 - Time-signature changes are respected. Guitar Pro repeats are read as written (not unfolded).
 - Several tracks? `guitarr tracks song.mid`, then `--track 2` or `--track "lead"`.
 - Audio references are transcribed with basic-pitch. Use `--separate` (Demucs) for a full mix, and `--bpm/--first-beat/--beats-per-bar` if the bar grid comes out shifted.
@@ -299,6 +302,7 @@ The tests cover:
 guitarr/
   core.py        notes, bar grid, Reference
   reference.py   MIDI / Guitar Pro / audio / chart loading, transcription cache, tab assignment
+  importers.py   text tab (ASCII) and MusicXML import
   analysis.py    file mode: alignment and matching
   dsp.py         YIN, chromagram, onset detector (pick + legato)
   follow.py      judge and score followers; structured details and messages

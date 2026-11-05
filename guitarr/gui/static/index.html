@@ -58,7 +58,7 @@
       <label class="field" id="pSongField"><span data-i18n="practice.song">Song</span>
         <div class="row" style="gap:6px">
           <select id="pSong" class="songSelect"></select>
-          <label class="btn file-btn small" style="flex:none" data-i18n-title="practice.upload_hint"><span data-i18n="common.upload">Upload</span><input type="file" class="songUpload" accept=".mid,.midi,.gp3,.gp4,.gp5,.gtp,.wav,.mp3,.flac,.ogg,.m4a"></label>
+          <label class="btn file-btn small" style="flex:none" data-i18n-title="practice.upload_hint"><span data-i18n="common.upload">Upload</span><input type="file" class="songUpload" accept=".mid,.midi,.gp3,.gp4,.gp5,.gtp,.musicxml,.xml,.mxl,.tab,.txt,.wav,.mp3,.flac,.ogg,.m4a"></label>
         </div>
       </label>
       <label class="field" id="pTrackWrap" hidden><span data-i18n="practice.track">Track</span><select id="pTrack"></select></label>
@@ -105,7 +105,7 @@
         <div class="choice-grid">
           <button class="choice primary" id="demoBtn"><span data-icon="sparkle" data-size="22"></span><b data-i18n="practice.load_demo">Load the demo</b><small data-i18n="practice.demo_hint">a short riff with planted mistakes, no guitar needed</small></button>
           <a class="choice" href="#/charts"><span data-icon="charts" data-size="22"></span><b data-i18n="practice.browse_charts">Play a chord chart</b><small data-i18n="practice.browse_charts_hint">12 progressions with a metronome</small></a>
-          <label class="choice file-btn"><span data-icon="upload" data-size="22"></span><b data-i18n="practice.upload_own">Upload your own</b><small>MIDI · Guitar Pro · WAV · MP3</small><input type="file" class="songUpload" accept=".mid,.midi,.gp3,.gp4,.gp5,.gtp,.wav,.mp3,.flac,.ogg,.m4a"></label>
+          <label class="choice file-btn"><span data-icon="upload" data-size="22"></span><b data-i18n="practice.upload_own">Upload your own</b><small>MIDI · Guitar Pro · MusicXML · tab · audio</small><input type="file" class="songUpload" accept=".mid,.midi,.gp3,.gp4,.gp5,.gtp,.musicxml,.xml,.mxl,.tab,.txt,.wav,.mp3,.flac,.ogg,.m4a"></label>
         </div>
       </div>
       <div class="panel hud">
@@ -152,7 +152,7 @@
       <label class="field"><span data-i18n="analyze.reference">Song (reference)</span>
         <div class="row" style="gap:6px">
           <select id="aSong" class="songSelect"></select>
-          <label class="btn file-btn small" style="flex:none"><span data-i18n="common.upload">Upload</span><input type="file" class="songUpload" accept=".mid,.midi,.gp3,.gp4,.gp5,.gtp,.wav,.mp3,.flac,.ogg,.m4a"></label>
+          <label class="btn file-btn small" style="flex:none"><span data-i18n="common.upload">Upload</span><input type="file" class="songUpload" accept=".mid,.midi,.gp3,.gp4,.gp5,.gtp,.musicxml,.xml,.mxl,.tab,.txt,.wav,.mp3,.flac,.ogg,.m4a"></label>
         </div>
       </label>
       <label class="field" id="aTrackWrap" hidden><span data-i18n="practice.track">Track</span><select id="aTrack"></select></label>

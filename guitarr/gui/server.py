@@ -482,10 +482,19 @@ def songs():
 
 @app.post("/api/songs")
 async def upload_song(file: UploadFile = File(...)):
+    from ..importers import MAX_BYTES, looks_like_tab
+
     name = _safe_name(file.filename)
-    if Path(name).suffix.lower() not in REFERENCE_EXT:
-        fail(400, "bad_format", "Unsupported format: upload MIDI, Guitar Pro or audio")
     config.SONGS_DIR.mkdir(parents=True, exist_ok=True)
+    if Path(name).suffix.lower() == ".txt":                # a text tab: keep it as .tab
+        text = (await file.read(MAX_BYTES + 1)).decode("utf-8", errors="replace")
+        if not looks_like_tab(text):
+            fail(400, "bad_format", "That text file doesn't look like a tablature")
+        name = Path(name).stem + ".tab"
+        (config.SONGS_DIR / name).write_text(text, encoding="utf-8")
+        return dict(name=name)
+    if Path(name).suffix.lower() not in REFERENCE_EXT:
+        fail(400, "bad_format", "Unsupported format: upload MIDI, Guitar Pro, MusicXML, a text tab or audio")
     with open(config.SONGS_DIR / name, "wb") as f:
         shutil.copyfileobj(file.file, f)
     return dict(name=name)

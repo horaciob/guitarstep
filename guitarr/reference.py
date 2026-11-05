@@ -21,7 +21,9 @@ from .core import STANDARD_TUNING, Grid, Note, Reference
 MIDI_EXT = {".mid", ".midi"}
 GP_EXT = {".gp3", ".gp4", ".gp5", ".gtp"}
 AUDIO_EXT = {".wav", ".mp3", ".flac", ".ogg", ".m4a", ".aif", ".aiff"}
-REFERENCE_EXT = MIDI_EXT | GP_EXT | AUDIO_EXT
+from .importers import MUSICXML_EXT, TAB_EXT, ImportError_, load_musicxml, load_tab  # noqa: E402
+
+REFERENCE_EXT = MIDI_EXT | GP_EXT | AUDIO_EXT | TAB_EXT | MUSICXML_EXT
 
 Log = Callable[[str], None]
 
@@ -424,6 +426,15 @@ def load_reference(opts: RefOptions, log: Log = print) -> Reference:
         ref = load_midi(path, opts.track, log)
     elif ext in GP_EXT:
         ref = load_gp(path, opts.track, log)
+    elif ext in TAB_EXT or ext in MUSICXML_EXT:
+        try:
+            ref = load_tab(path, opts.bpm) if ext in TAB_EXT else load_musicxml(path)
+        except ImportError_ as e:
+            raise ReferenceError(str(e)) from None
+        if any(n.string is None for n in ref.notes):          # MusicXML without fingerings
+            tuning = config.instrument_tuning()
+            assign_tab(ref.notes, tuning)
+            ref.tuning = tuning
     elif ext in AUDIO_EXT:
         src = separate_guitar(path, log) if opts.separate else path
         log(f"[transcribing] reference: {src.name}")
