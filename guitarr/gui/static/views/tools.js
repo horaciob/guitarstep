@@ -105,10 +105,10 @@ async function chordChangeMinute(box, pair = []) {
     <div class="panel">
       <p class="muted">${t("tools.drill_intro_html")}</p>
       <div class="minuto">
-        <div><select id="c1">${opts}</select><div id="d1" class="diagram"></div></div>
+        <div><select id="c1" aria-label="${esc(t("tools.chord_a"))}">${opts}</select><div id="d1" class="diagram"></div></div>
         <div class="minuto-center"><div class="big" id="count">0</div><div class="muted" id="clock">60 s</div>
           <button class="btn primary" id="go">${esc(t("tools.drill_start"))}</button><div class="muted small" id="best"></div></div>
-        <div><select id="c2">${opts}</select><div id="d2" class="diagram"></div></div>
+        <div><select id="c2" aria-label="${esc(t("tools.chord_b"))}">${opts}</select><div id="d2" class="diagram"></div></div>
       </div>
       <div class="ex-msg muted" id="msg" aria-live="polite"></div>
     </div>

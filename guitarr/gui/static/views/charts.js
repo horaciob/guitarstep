@@ -55,8 +55,8 @@ export async function mount(el) {
     <div class="gl-head"><h1>${esc(t("charts.title"))}</h1>
       <p class="muted">${esc(t("charts.subtitle"))}</p></div>
     <div class="row left" style="margin-bottom:16px"><a class="btn primary" href="#/chart/new">${esc(t("charts.new"))}</a></div>
-    ${mine.length ? `<h3>${esc(t("charts.mine"))}</h3><div class="card-grid">${mine.map(card).join("")}</div>` : ""}
-    <h3>${esc(t("charts.builtin"))}</h3><div class="card-grid">${builtin.map(card).join("")}</div>`;
+    ${mine.length ? `<h2 class="sub">${esc(t("charts.mine"))}</h2><div class="card-grid">${mine.map(card).join("")}</div>` : ""}
+    <h2 class="sub">${esc(t("charts.builtin"))}</h2><div class="card-grid">${builtin.map(card).join("")}</div>`;
   $$(".song-card", el).forEach(c => {
     $("[data-act=view]", c).onclick = async () => {
       const box = $(".chart", c);

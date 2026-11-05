@@ -118,13 +118,13 @@
       <div class="panel hud">
         <div class="now-note" id="nowNote">—<small id="nowWhere" data-i18n="practice.pick_song">pick a song</small></div>
         <div class="hud-mid">
-          <div class="lastmsg" id="lastMsg"></div>
+          <div class="lastmsg" id="lastMsg" role="status" aria-live="polite"></div>
           <div class="chips" id="chips"></div>
         </div>
         <div class="speed-badge" id="speedBadge" hidden><div class="v" id="speedVal">100%</div><div class="l" data-i18n="practice.speed_label">speed</div></div>
       </div>
       <div class="panel tabwrap">
-        <canvas id="tabCanvas"></canvas>
+        <canvas id="tabCanvas" role="img" data-i18n-title="practice.tab_label" aria-label="Tablature"></canvas>
         <div class="countdown" id="countdown" hidden></div>
         <div class="overlay-msg" id="overlayMsg" hidden></div>
       </div>

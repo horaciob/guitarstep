@@ -1,6 +1,8 @@
 """End-to-end flows through the web UI."""
 import re
 
+import pytest
+
 from playwright.sync_api import expect
 
 
@@ -257,3 +259,22 @@ def test_phone_layout_and_install_manifest(page, server_url):
     assert m["display"] == "standalone" and {"192x192", "512x512"} <= {i["sizes"] for i in m["icons"]}
     for icon in m["icons"]:
         assert urllib.request.urlopen(server_url + icon["src"]).status == 200
+
+
+@pytest.mark.parametrize("scheme", ["light", "dark"])
+def test_accessibility_audit(browser, server_url, scheme):
+    """axe-core finds no violations on the main pages, in both themes."""
+    axe_mod = pytest.importorskip("axe_playwright_python.sync_playwright")
+    page = browser.new_page(color_scheme=scheme, viewport={"width": 1280, "height": 900})
+    page.goto(server_url + "/static/index.html")
+    page.evaluate("localStorage.setItem('guitarr.onboarded', '1')")
+    axe = axe_mod.Axe()
+    problems = []
+    for route in ["home", "plan", "course", "lesson/strings", "chords", "practice", "charts", "rig", "tuner",
+                  "tools", "tools?tab=drill", "tools?tab=fretboard", "analyze", "history", "settings", "setup"]:
+        page.goto(f"{server_url}/#/{route}")
+        page.wait_for_timeout(500)
+        for v in axe.run(page).response["violations"]:
+            problems.append(f"{route}: {v['id']} ({len(v['nodes'])}) {v['nodes'][0]['target']}")
+    page.close()
+    assert not problems, "\n".join(problems)

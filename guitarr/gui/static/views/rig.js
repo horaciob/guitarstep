@@ -274,13 +274,13 @@ function renderTools() {
   const label = tg => tg.type === "master" ? t("rig.volume") : `${t(`rig.fx_${tg.type}`)} · ${paramLabel(tg.param)}`;
   box.innerHTML = `
     <div class="tool-col">
-      <h3>${esc(t("rig.tuner"))}</h3>
+      <h2>${esc(t("rig.tuner"))}</h2>
       <div class="row left wrap"><button class="btn small${rig.tuning ? " primary" : ""}" id="tuneBtn" ${rig.running ? "" : "disabled"} aria-pressed="${!!rig.tuning}">${esc(t(rig.tuning ? "rig.tuner_off" : "rig.tuner_on"))}</button>
         <span class="muted small">${esc(t(rig.running ? "rig.tuner_hint" : "rig.tuner_needs_on"))}</span></div>
       <div class="rig-tuner" id="rigTuner" ${rig.tuning ? "" : "hidden"}><b id="rtNote">—</b><div class="mt-scale"><i class="mt-mid"></i><i class="mt-needle" id="rtNeedle"></i></div><small class="muted" id="rtInfo"></small></div>
     </div>
     <div class="tool-col">
-      <h3>${esc(t("rig.expression"))}</h3>
+      <h2>${esc(t("rig.expression"))}</h2>
       ${rig.midiAccess ? `<div class="row left wrap">
           <button class="btn small${rig.midiLearning ? " primary" : ""}" id="midiLearn">${esc(rig.midiLearning ? t("rig.midi_move") : m.cc != null ? t("rig.midi_cc", { cc: m.cc }) : t("rig.midi_learn"))}</button>
           <label class="field-inline small">${esc(t("rig.midi_target"))}

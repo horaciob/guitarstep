@@ -413,6 +413,7 @@ function drawTab() {
     g.beginPath(); g.moveTo(34, y); g.lineTo(W - 8, y); g.stroke();
     g.fillText(NOTE_NAMES[tun[s] % 12] || "", 10, y + 4);
   }
+  describeTab(lane);
   if (!lane || !lane.length) {
     g.fillStyle = css("--muted");
     g.font = "14px system-ui";
@@ -458,6 +459,17 @@ function drawTab() {
     }
   }
   g.textAlign = "left";
+}
+
+/** The canvas is a picture: tell screen readers what it shows (the note or chord to play now). */
+function describeTab(lane) {
+  let label = t("practice.tab_placeholder");
+  if (lane && lane.length) {
+    const e = lane.find(x => x.current) || lane[Math.min(Math.round(App.k), lane.length - 1)];
+    const where = (e.tab || []).filter(tb => tb && tb[0]).map(([s, f]) => t("practice.string_fret", { s, f })).join(", ");
+    label = t("practice.tab_now", { label: e.label, where: where || "—", k: e.i + 1, total: lane.length });
+  }
+  if (cv.getAttribute("aria-label") !== label) cv.setAttribute("aria-label", label);
 }
 
 function animate() {

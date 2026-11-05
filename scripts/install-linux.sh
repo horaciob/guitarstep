@@ -9,7 +9,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-skip='^(basic-pitch|pytest|httpx|playwright)'
+skip='^(basic-pitch|pytest|httpx|playwright|axe-playwright)'
 project=1
 for arg in "$@"; do
   case "$arg" in

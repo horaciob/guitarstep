@@ -194,7 +194,10 @@
    "browse_charts_hint": "12 progressions with a metronome",
    "upload_own": "Upload your own",
    "kbd_hint": "<kbd>Space</kbd> start / stop · <kbd>Esc</kbd> stop",
-   "backing": "Bass & drums backing (use headphones)"
+   "backing": "Bass & drums backing (use headphones)",
+   "tab_label": "Tablature",
+   "string_fret": "string {{s}} fret {{f}}",
+   "tab_now": "Tablature. Now: {{label}} ({{where}}), {{k}} of {{total}}"
   },
   "report": {
    "title": "Result",
@@ -499,7 +502,9 @@
    "scale_major_pentatonic": "major pentatonic",
    "scale_blues": "blues",
    "scale_major_triad": "major chord",
-   "scale_minor_triad": "minor chord"
+   "scale_minor_triad": "minor chord",
+   "chord_a": "First chord",
+   "chord_b": "Second chord"
   },
   "camera": {
    "title": "Camera",

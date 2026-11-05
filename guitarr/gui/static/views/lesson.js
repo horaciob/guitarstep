@@ -18,7 +18,7 @@ export async function mount(el, { segs }) {
   const [course, chordData] = await Promise.all([api("/api/course"), api("/api/chords")]);
   const all = course.levels.flatMap(l => l.lessons.map(ls => ({ ...ls, level: l })));
   const idx = all.findIndex(l => l.id === id);
-  if (idx < 0) { el.innerHTML = `<p>${esc(t("lesson.not_found"))} <a href="#/course">${esc(t("lesson.back"))}</a></p>`; return; }
+  if (idx < 0) { el.innerHTML = `<div class="gl-head"><h1>${esc(t("lesson.not_found"))}</h1></div><p><a href="#/course">${esc(t("lesson.back"))}</a></p>`; return; }
   const ls = all[idx], next = all[idx + 1];
   const chords = (ls.chords || []).map(c => chordData.chords.find(x => x.id === c)).filter(Boolean);
   const vid = ls.pinned && youtubeId(ls.pinned);

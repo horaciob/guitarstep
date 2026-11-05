@@ -194,7 +194,10 @@
    "browse_charts_hint": "12 progresiones con metrónomo",
    "upload_own": "Subir el tuyo",
    "kbd_hint": "<kbd>Espacio</kbd> empezar / parar · <kbd>Esc</kbd> parar",
-   "backing": "Acompañamiento de bajo y batería (usá auriculares)"
+   "backing": "Acompañamiento de bajo y batería (usá auriculares)",
+   "tab_label": "Tablatura",
+   "string_fret": "cuerda {{s}} traste {{f}}",
+   "tab_now": "Tablatura. Ahora: {{label}} ({{where}}), {{k}} de {{total}}"
   },
   "report": {
    "title": "Resultado",
@@ -499,7 +502,9 @@
    "scale_major_pentatonic": "pentatónica mayor",
    "scale_blues": "blues",
    "scale_major_triad": "acorde mayor",
-   "scale_minor_triad": "acorde menor"
+   "scale_minor_triad": "acorde menor",
+   "chord_a": "Primer acorde",
+   "chord_b": "Segundo acorde"
   },
   "camera": {
    "title": "Cámara",

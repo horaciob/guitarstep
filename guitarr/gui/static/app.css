@@ -5,7 +5,7 @@
   --gl-panel-2: #1c2029;
   --border: #272c38;
   --text: #e8eaf0;
-  --muted: #8a92a6;
+  --muted: #959cb0;
   --gl-accent: #f4b740;
   --gl-accent-ink: #1a1405;
   --gl-ok: #37c98b;
@@ -21,13 +21,15 @@
 @media (prefers-color-scheme: light) {
   :root:not([data-theme="dark"]) {
     --bg: #f5f6f8; --gl-panel: #ffffff; --gl-panel-2: #f0f2f5; --border: #dde1e8; --text: #1b1f27;
-    --muted: #5f687a; --gl-accent: #d9930f; --gl-accent-ink: #fff; --gl-string: #c3c9d4;
+    --muted: #5a6273; --gl-accent: #e0a020; --gl-accent-ink: #1a1405; --gl-string: #c3c9d4;
+    --gl-ok: #15803d; --gl-warn: #a15c07; --gl-err: #c62828; --gl-info: #1d5fd1; --gl-octave: #7b3fb0;
     --gl-shadow: 0 1px 2px rgba(0,0,0,.06); color-scheme: light;
   }
 }
 :root[data-theme="light"] {
   --bg: #f5f6f8; --gl-panel: #ffffff; --gl-panel-2: #f0f2f5; --border: #dde1e8; --text: #1b1f27;
-  --muted: #5f687a; --gl-accent: #d9930f; --gl-accent-ink: #fff; --gl-string: #c3c9d4;
+  --muted: #5a6273; --gl-accent: #e0a020; --gl-accent-ink: #1a1405; --gl-string: #c3c9d4;
+  --gl-ok: #15803d; --gl-warn: #a15c07; --gl-err: #c62828; --gl-info: #1d5fd1; --gl-octave: #7b3fb0;
   --gl-shadow: 0 1px 2px rgba(0,0,0,.06); color-scheme: light;
 }
 * { box-sizing: border-box; }
@@ -668,3 +670,14 @@ body.is-setup #main { margin: 0 auto; max-width: 760px; padding-top: 48px; }
   .gl-toast { bottom: 76px; }
   body.is-setup .tabbar { display: none; }
 }
+
+/* ---------- accessibility: no dimming by opacity (it breaks text contrast); other cues instead */
+.gl .d7.future, .gl .d7.before { opacity: 1; color: var(--muted); border-style: dashed; background: transparent; }
+.gl .pedal { opacity: 1; }
+.gl .pedal:not(.on) { border-top-color: var(--border); background: var(--gl-panel-2); }
+.gl .pedal:not(.on) .knob-val { stroke: var(--muted); }
+.gl .today-steps li.done { opacity: 1; }
+.gl .today-steps li.done .what b { text-decoration: line-through; text-decoration-color: var(--muted); }
+.gl .lesson.done { opacity: 1; }
+.gl .rig-tools h2 { font-size: 13px; margin: 0 0 8px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .06em; }
+.gl h2.sub { font-size: 13px; margin: 18px 0 8px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .06em; }
