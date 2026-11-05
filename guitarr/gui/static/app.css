@@ -682,3 +682,36 @@ body.is-setup #main { margin: 0 auto; max-width: 760px; padding-top: 48px; }
 .gl .lesson.done { opacity: 1; }
 .gl .rig-tools h2 { font-size: 13px; margin: 0 0 8px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .06em; }
 .gl h2.sub { font-size: 13px; margin: 18px 0 8px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .06em; }
+
+/* ---------- signal check */
+.gl .sg-meter { margin: 14px 0; }
+.gl .big-meter { position: relative; height: 34px; border-radius: 10px; background: var(--gl-panel-2); border: 1px solid var(--border); overflow: hidden; margin-top: 8px; }
+.gl .bm-zone { position: absolute; top: 0; bottom: 0; background: color-mix(in srgb, var(--gl-ok) 20%, transparent); border-left: 2px dashed var(--gl-ok); border-right: 2px dashed var(--gl-ok); }
+.gl .bm-fill { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: color-mix(in srgb, var(--gl-info) 75%, transparent); transition: width .05s linear; }
+.gl .bm-peak { position: absolute; top: 0; bottom: 0; width: 3px; margin-left: -1px; background: var(--text); transition: left .05s linear; }
+.gl .bm-gate { position: absolute; top: -2px; bottom: -2px; width: 3px; background: var(--gl-warn); }
+.gl .bm-clip { position: absolute; right: 8px; top: 7px; font: 800 12px ui-monospace, Menlo, monospace; color: var(--muted); padding: 2px 6px; border-radius: 6px; border: 1px solid var(--border); }
+.gl .bm-clip.on { color: #fff; background: var(--gl-err); border-color: transparent; }
+.gl .bm-scale { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-top: 4px; font-variant-numeric: tabular-nums; }
+.gl .sg-card h2 { font-size: 20px; margin: 0 0 6px; }
+.gl .sg-rec { display: flex; align-items: center; gap: 12px; margin: 10px 0; }
+.gl .sg-rec .pbar { flex: 1; margin: 0; }
+.gl .sg-rec .pbar i { width: 0; background: var(--gl-accent); }
+.gl .sg-result { border-radius: 10px; padding: 12px 14px; margin: 12px 0; border: 1px solid var(--border); background: var(--gl-panel-2); }
+.gl .sg-result.ok { border-color: color-mix(in srgb, var(--gl-ok) 50%, var(--border)); }
+.gl .sg-result.warn { border-color: color-mix(in srgb, var(--gl-warn) 60%, var(--border)); }
+.gl .sg-result p { margin: 6px 0; }
+.gl .tips { margin: 6px 0; padding-left: 18px; } .gl .tips li { margin: 4px 0; }
+.gl .checklist { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; }
+.gl .checklist .check { align-items: flex-start; padding: 8px 10px; border: 1px solid var(--border); border-radius: 10px; background: var(--gl-panel-2); margin: 0; }
+.gl .checklist .check input { margin-top: 3px; }
+.gl .checklist small { display: block; }
+.gl .coach { display: flex; align-items: center; gap: 16px; padding: 16px; border-radius: 12px; border: 2px solid var(--border); margin: 8px 0; }
+.gl .coach .arrow { font-size: 44px; font-weight: 900; width: 54px; text-align: center; line-height: 1; }
+.gl .coach b { font-size: 20px; }
+.gl .coach.ok { border-color: var(--gl-ok); } .gl .coach.ok .arrow { color: var(--gl-ok); }
+.gl .coach.up .arrow, .gl .coach.down .arrow { color: var(--gl-accent); }
+.gl .coach.clip { border-color: var(--gl-err); } .gl .coach.clip .arrow { color: var(--gl-err); }
+.gl .strings div.miss { border-style: dashed; color: var(--muted); }
+.gl .sg-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px 18px; margin: 10px 0; }
+.gl .sg-facts dt { font-size: 12px; color: var(--muted); } .gl .sg-facts dd { margin: 2px 0 0; font-size: 16px; font-weight: 600; }

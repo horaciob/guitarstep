@@ -11,8 +11,12 @@ from .core import STANDARD_TUNING, note_name
 from .dsp import db, yin
 
 class Tuner:
-    def __init__(self, src, gate_db: float = -55.0, a4: float = 440.0, tuning: list[int] | None = None):
+    def __init__(self, src, gate_db: float = -55.0, a4: float = 440.0, tuning: list[int] | None = None,
+                 hum_hz: int | None = None):
+        from .signalcheck import hum_filter
+
         self.src, self.sr = src, src.sr
+        self.hum = hum_filter(src.sr, hum_hz)
         self.tuning = list(tuning or STANDARD_TUNING)        # string 1 … n
         self.fmin = min(60.0, 0.8 * 440 * 2 ** ((min(self.tuning) - 69) / 12))   # low enough for a bass
         self.gate_db = gate_db
@@ -58,6 +62,8 @@ class Tuner:
                     continue
                 if blk is None:
                     break
+                if self.hum is not None:
+                    blk = self.hum(blk)
                 n = len(blk)
                 self.buf = np.concatenate([self.buf[n:], blk]) if n < len(self.buf) else blk[-len(self.buf):]
                 acc += n

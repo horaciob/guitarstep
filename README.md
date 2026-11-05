@@ -160,6 +160,8 @@ Run `guitarr <command> --help` for every option. `python listener.py …` still 
 
 ## Practicing with your guitar
 
+**Signal check** (Settings → *Check my signal*, also offered after the first setup): a guided pass that measures the noise floor and mains hum, walks you through the guitar's knobs and the interface's INST/Hi-Z input, coaches the interface gain with a live meter and sounds (a chime when it's right, a buzz when it clips), spots a limiter/auto-gain squashing your attacks, and records the open strings to find the noise gate and sensitivity that hear exactly the notes you played. You can listen to what guitarr heard, and it can switch on a 50/60 Hz hum filter for practice and the tuner. Especially useful with electric guitars.
+
 ```bash
 guitarr live song.gp5                                          # wait mode: learn it slowly
 guitarr live song.gp5 --mode tempo --speed 0.7                 # metronome at 70%

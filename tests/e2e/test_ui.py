@@ -278,3 +278,31 @@ def test_accessibility_audit(browser, server_url, scheme):
             problems.append(f"{route}: {v['id']} ({len(v['nodes'])}) {v['nodes'][0]['target']}")
     page.close()
     assert not problems, "\n".join(problems)
+
+
+def test_signal_check_walkthrough(app_page):
+    """The whole guided check, fed by the demo take instead of a guitar."""
+    import json
+    import urllib.request
+    onboarded(app_page)
+    take = json.load(urllib.request.urlopen(urllib.request.Request(app_page.base + "/api/demo", method="POST")))["take"]
+    go(app_page, f"signal?simulate={take}")
+    expect(app_page.locator("#sgSource")).to_contain_text("demo-take")
+    app_page.locator("#sgRec").click()                                   # silence (the take plays: not silent)
+    expect(app_page.locator(".sg-result")).to_be_visible(timeout=15000)
+    app_page.get_by_role("button", name="Continue").click()
+    expect(app_page.locator(".checklist li")).to_have_count(6)
+    app_page.get_by_role("button", name="Continue").click()
+    expect(app_page.locator("#sgCoach")).to_be_visible()
+    app_page.locator("#sgRec").click()                                   # strum level
+    expect(app_page.locator(".sg-result")).to_be_visible(timeout=15000)
+    app_page.locator("[data-go=notes]").click()
+    app_page.locator("#sgRec").click()                                   # notes (14 s)
+    expect(app_page.locator(".sg-result")).to_contain_text("Best settings", timeout=30000)
+    app_page.locator("[data-go=listen]").click()
+    expect(app_page.locator("[data-play=notes]")).to_be_visible()
+    app_page.locator("[data-go=done]").click()
+    app_page.locator("#sgSave").click()
+    expect(app_page).to_have_url(re.compile("#/practice"))
+    cfg = json.load(urllib.request.urlopen(app_page.base + "/api/config"))["audio"]
+    assert cfg["gate_db"] is not None and cfg["sensitivity"] is not None

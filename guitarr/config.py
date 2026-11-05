@@ -23,7 +23,7 @@ TAKES_DIR = HOME / "takes"
 HISTORY_DIR = HOME / "history"
 
 INSTRUMENT_DEFAULTS = dict(tuning="standard", left_handed=False)
-AUDIO_KEYS = ("device", "channel", "output_device", "samplerate", "latency_ms", "gate_db", "sensitivity")
+AUDIO_KEYS = ("device", "channel", "output_device", "samplerate", "latency_ms", "gate_db", "sensitivity", "hum_hz")
 SONG_KEYS = ("track", "transpose", "start_bar", "end_bar", "mode", "speed", "bpm", "first_beat",
              "beats_per_bar")
 

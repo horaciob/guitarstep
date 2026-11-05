@@ -19,7 +19,7 @@ from fastapi import FastAPI, File, Form, HTTPException, UploadFile, WebSocket, W
 from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 
-from .. import __version__, backup, catalog, config, history, plan, progress, reminder, rig, routine
+from .. import __version__, backup, catalog, config, history, plan, progress, reminder, rig, routine, signalcheck
 from ..audio_io import AudioError, FileSource, MicSource, devices
 from ..reference import REFERENCE_EXT, RefOptions, ReferenceError, list_tracks, load_reference
 
@@ -49,6 +49,8 @@ class State:
         self.ctx: dict | None = None     # what the session is for: practice, exercise, chord, drill
         self.final: dict | None = None   # report + what was earned (once progress was recorded)
         self.tuner = None
+        self.probe = None            # signal check: live input
+        self.signal: dict = {}       # signal check: results and clips per step
         self.calib: dict = dict(running=False)
 
 
@@ -634,6 +636,7 @@ def live_start(body: dict):
             count_extras=not chart, transpose=_int(body.get("transpose")) or 0,
             simulate=sim, fast=bool(body.get("fast")) and sim is not None,
             backing=bool(body.get("backing")) and chart, hold=ctx.get("hold", 1.0),
+            hum_hz=None if sim else a.get("hum_hz"),
         )
         try:
             sess = LiveSession(ref, opts)
@@ -725,7 +728,7 @@ async def ws_tuner(ws: WebSocket):
         await ws.send_json(dict(error=dict(code="audio", message=str(e))))
         await ws.close()
         return
-    tuner = Tuner(src, tuning=config.instrument_tuning())
+    tuner = Tuner(src, tuning=config.instrument_tuning(), hum_hz=a.get("hum_hz"))
     S.tuner = tuner
     th = threading.Thread(target=tuner.run, daemon=True)
     th.start()
@@ -740,6 +743,102 @@ async def ws_tuner(ws: WebSocket):
         tuner.stop()
         if S.tuner is tuner:
             S.tuner = None
+
+
+# ---------------------------------------------------------------- signal check
+def _input_source(ws_params) -> MicSource:
+    a = audio_settings()
+    dev = ws_params.get("device")
+    device = (int(dev) if dev.lstrip("-").isdigit() else dev) if dev else a.get("device")
+    channel = _int(ws_params.get("channel")) or a.get("channel") or 1
+    return MicSource(device, channel, a.get("samplerate") if dev is None else None)
+
+
+@app.websocket("/ws/signal")
+async def ws_signal(ws: WebSocket):
+    """Live input levels for the signal check; the last seconds are kept for the measurements."""
+    await ws.accept()
+    if (S.session and S.session.running) or S.tuner:
+        await ws.send_json(dict(error=dict(code="busy", message="Stop practicing or tuning first.")))
+        await ws.close()
+        return
+    try:
+        sim = ws.query_params.get("simulate")            # a recorded take instead of the input (tests, demos)
+        src = FileSource(take_path(sim)) if sim else _input_source(ws.query_params)
+    except HTTPException as e:
+        await ws.send_json(dict(error=e.detail))
+        await ws.close()
+        return
+    except (AudioError, ValueError) as e:
+        await ws.send_json(dict(error=dict(code="audio", message=str(e))))
+        await ws.close()
+        return
+    probe = signalcheck.Probe(src)
+    S.probe, S.signal = probe, {}
+    th = threading.Thread(target=probe.run, daemon=True)
+    th.start()
+    try:
+        await ws.send_json(dict(source=src.name, sr=src.sr))
+        while th.is_alive():
+            await ws.send_json(probe.reading)
+            await asyncio.sleep(signalcheck.LEVEL_EVERY)
+    except (WebSocketDisconnect, RuntimeError):
+        pass
+    finally:
+        probe.stop()          # it stops listening but keeps its last seconds for the measurements
+
+
+@app.post("/api/signal/measure")
+def api_signal_measure(body: dict):
+    """Analyzes the last `seconds` of input for one step: silence | strum | notes."""
+    probe = S.probe
+    if probe is None:
+        fail(409, "no_probe", "The signal check isn't listening")
+    step = body.get("step")
+    seconds = min(max(_float(body.get("seconds")) or 4, 1), signalcheck.BUFFER_S)
+    y = probe.last(seconds)
+    if len(y) < probe.sr * 0.8:
+        fail(400, "too_short", "Not enough audio yet")
+    if step == "silence":
+        r = signalcheck.analyze_silence(y, probe.sr)
+    elif step == "strum":
+        r = signalcheck.analyze_strum(y, probe.sr)
+    elif step == "notes":
+        sil = S.signal.get("silence", {}).get("result", {})
+        r = signalcheck.analyze_notes(y, probe.sr, int(body.get("expected") or 6), config.instrument_tuning(),
+                                      sil.get("floor_db"), sil.get("hum_hz"))
+    else:
+        fail(400, "bad_step", "Unknown step")
+    S.signal[step] = dict(result=r, audio=y, sr=probe.sr)
+    return r
+
+
+@app.get("/api/signal/clip/{step}")
+def api_signal_clip(step: str):
+    """The audio of a step, to hear what guitarr heard."""
+    got = S.signal.get(step)
+    if not got:
+        fail(404, "no_clip", "Nothing recorded for that step yet")
+    return Response(signalcheck.wav_bytes(got["audio"], got["sr"]), media_type="audio/wav")
+
+
+@app.post("/api/signal/apply")
+def api_signal_apply(body: dict):
+    """Saves what the check found: noise gate, sensitivity and the hum filter."""
+    keys = {}
+    if body.get("gate_db") is not None:
+        keys["gate_db"] = max(-90.0, min(-20.0, float(body["gate_db"])))
+    if body.get("sensitivity") is not None:
+        keys["sensitivity"] = max(0.3, min(3.0, float(body["sensitivity"])))
+    data = config.load()
+    data["audio"].update(keys)
+    hum = body.get("hum_hz")
+    if hum in (50, 60):
+        data["audio"]["hum_hz"] = hum
+    elif "hum_hz" in body:
+        data["audio"].pop("hum_hz", None)
+    config.save(data)
+    return dict(audio=audio_settings())
 
 
 # ---------------------------------------------------------------- calibration

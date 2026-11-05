@@ -51,6 +51,7 @@ class LiveOptions:
     simulate: Path | None = None
     fast: bool = False
     backing: bool = False            # bass & drums with the metronome (chord charts)
+    hum_hz: int | None = None        # mains hum to filter out (50 / 60), from the signal check
     hold: float = 1.0                # bend mode: seconds to hold the target
     save_dir: Path = field(default_factory=lambda: config.TAKES_DIR)
 
@@ -94,6 +95,7 @@ class LiveSession:
         self.log: deque = deque(maxlen=12)
         self.last: dict | None = None
         self.now = 0.0
+        self.hum = None                    # built in run(), once the input's sample rate is known
         self.note_times: list[float] = []     # every detection, for the playing time
         self.running = False
         self.report: dict | None = None
@@ -116,6 +118,8 @@ class LiveSession:
         """Main loop (blocking). `on_update()` is called ~20 times per second;
         `on_message(t, msg)` for every judgment message."""
         f, det, rec, src = self.follower, self.det, self.rec, self.src
+        from .signalcheck import hum_filter
+        self.hum = hum_filter(self.sr, self.opts.hum_hz)
         lat = self.opts.latency_ms / 1000
         metro = None
         prev = None
@@ -136,6 +140,8 @@ class LiveSession:
                     blk = np.zeros(0, np.float32)
                 with self.lock:
                     while blk is not None:
+                        if self.hum is not None:
+                            blk = self.hum(blk)
                         rec.append(blk)
                         det.update_level(blk)
                         try:
