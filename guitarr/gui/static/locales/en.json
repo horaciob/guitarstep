@@ -111,7 +111,10 @@
    "timer_busy": "Another timer is already running or paused.",
    "no_timer": "There's no timer running.",
    "bad_backup": "That file is not a guitarr backup.",
-   "backup_too_big": "The backup is too big."
+   "backup_too_big": "The backup is too big.",
+   "bad_ir": "Upload a WAV, FLAC or AIFF impulse response.",
+   "ir_too_long": "That file is too long for an impulse response (3 s max).",
+   "no_ir": "That impulse response isn't saved anymore."
   },
   "practice": {
    "title": "🎧 Practice with listening",
@@ -794,9 +797,6 @@
    "ir_load": "Load IR",
    "ir_clear": "Remove IR",
    "ir_loaded": "Using IR: {{name}}",
-   "ir_missing": "“{{name}}” isn't loaded in this session: load it again.",
-   "ir_too_long": "That file is too long for an IR (3 s max).",
-   "ir_bad": "Couldn't read that file as audio.",
    "looper_hint": "Record a phrase, then play over it. It records your sound with all the effects.",
    "lp_rec": "Record",
    "lp_close": "Close loop",
@@ -844,7 +844,8 @@
    "opt_8": "8",
    "level": "Level",
    "yes": "Yes",
-   "no": "No"
+   "no": "No",
+   "ir_replaces_mic": "The impulse response already includes the cabinet and the microphone."
   },
   "plan": {
    "title": "Practice plan",

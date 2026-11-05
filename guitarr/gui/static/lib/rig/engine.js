@@ -41,9 +41,18 @@ class Rig extends EventTarget {
   }
   save() {
     clearTimeout(this._saveT);
-    this._saveT = setTimeout(() => {
-      api("/api/rig/current", { method: "PUT", json: { rig: { rig: this.state, source: this.source, preset: this.preset } } }).catch(() => {});
-    }, 600);
+    this._savePending = true;
+    this._saveT = setTimeout(() => this.flush(), 600);
+  }
+  /** Sends a pending save now; also on page close/reload, so the last change isn't lost. */
+  flush() {
+    if (!this._savePending) return;
+    clearTimeout(this._saveT);
+    this._savePending = false;
+    fetch("/api/rig/current", {
+      method: "PUT", keepalive: true, headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ rig: { rig: this.state, source: this.source, preset: this.preset } }),
+    }).catch(() => {});
   }
   async refreshPresets() {
     try { this.userPresets = (await api("/api/rig")).presets; } catch { /* offline */ }
@@ -217,6 +226,11 @@ class Rig extends EventTarget {
   /** Recreates the modules and reconnects them (after a structural change), with a short fade. */
   rebuild(immediate = false) {
     if (!this.ctx || !this.running) return;
+    const ir = this.state.cab.ir;
+    if (ir && !this.irs.has(ir)) {          // a saved IR: decode it first (once), then build
+      this.ensureIR(ir).then(ok => { if (!ok) this.state.cab.ir = null; this.rebuild(immediate); });
+      return;
+    }
     const token = (this._rb = (this._rb || 0) + 1);
     const go = () => {
       if (token !== this._rb) return;
@@ -337,14 +351,33 @@ class Rig extends EventTarget {
     this.save();
     this.emit();
   }
+  /** Uploads an impulse response to ~/.guitarr/irs and uses it. */
   async loadIR(file) {
-    if (!this.ctx) { await this.ensureCtx(); if (!this.running) await this.ctx.suspend(); }
-    const buf = await this.ctx.decodeAudioData(await file.arrayBuffer());
-    if (buf.duration > 3) throw new Error("ir_too_long");
-    this.irs.set(file.name, buf);
-    this.setCab({ ir: file.name, on: true });
+    const fd = new FormData();
+    fd.append("file", file);
+    const saved = await api("/api/rig/irs", { method: "POST", body: fd });
+    await this.ensureIR(saved.name, await file.arrayBuffer());
+    this.setCab({ ir: saved.name, on: true });
+    return saved.name;
   }
+  /** Decodes a saved impulse response (once per session). */
+  async ensureIR(name, bytes = null) {
+    if (!name || this.irs.has(name)) return true;
+    if (!this.ctx) { await this.ensureCtx(); if (!this.running) await this.ctx.suspend(); }
+    try {
+      const data = bytes || await (await fetch(`/api/rig/irs/${encodeURIComponent(name)}`)).arrayBuffer();
+      this.irs.set(name, await this.ctx.decodeAudioData(data));
+      return true;
+    } catch { return false; }
+  }
+  useIR(name) { this.setCab({ ir: name, on: true }); }
   clearIR() { this.setCab({ ir: null }); }
+  async listIRs() { try { return await api("/api/rig/irs"); } catch { return []; } }
+  async deleteIR(name) {
+    await api(`/api/rig/irs/${encodeURIComponent(name)}`, { method: "DELETE" });
+    this.irs.delete(name);
+    if (this.state.cab.ir === name) this.clearIR();
+  }
 
   /** Loads a preset or saved sound. Your listening volume and input trim stay as they are. */
   loadState(rigState, preset) {
@@ -379,4 +412,5 @@ class Rig extends EventTarget {
 }
 
 export const rig = new Rig();
+window.addEventListener("pagehide", () => rig.flush());
 window.dispatchEvent(new CustomEvent("guitarr:rig-ready", { detail: rig }));

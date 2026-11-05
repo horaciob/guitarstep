@@ -369,6 +369,28 @@ def api_rig_preset_save(body: dict):
     return _rig(rig.save_preset, body.get("name"), body.get("rig"))
 
 
+@app.get("/api/rig/irs")
+def api_rig_irs():
+    return rig.list_irs()
+
+
+@app.post("/api/rig/irs")
+async def api_rig_ir_upload(file: UploadFile = File(...)):
+    data = await file.read(rig.IR_MAX_BYTES + 1)
+    return _rig(rig.save_ir, file.filename, data)
+
+
+@app.get("/api/rig/irs/{name}")
+def api_rig_ir(name: str):
+    return FileResponse(_rig(rig.ir_path, name))
+
+
+@app.delete("/api/rig/irs/{name}")
+def api_rig_ir_delete(name: str):
+    _rig(rig.delete_ir, name)
+    return dict(ok=True)
+
+
 @app.delete("/api/rig/presets/{pid}")
 def api_rig_preset_delete(pid: str):
     if not rig.delete_preset(pid):

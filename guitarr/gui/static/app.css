@@ -619,3 +619,7 @@ body.is-setup #main { margin: 0 auto; max-width: 760px; padding-top: 48px; }
 .gl .plan-card .days7 { margin: 0; gap: 3px; }
 .gl .plan-card .d7 { padding: 3px 0; } .gl .plan-card .d7 b { font-size: 10px; }
 .gl .confirm-inline { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.gl .ir-list { list-style: none; padding: 0; margin: 6px 0 10px; display: flex; flex-direction: column; gap: 4px; }
+.gl .ir-list li { display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 4px 8px; border-radius: 8px; border: 1px solid var(--border); }
+.gl .ir-list li.on { border-color: var(--gl-accent); }
+.gl .linkish { border: 0; background: none; color: var(--text); cursor: pointer; text-align: left; padding: 2px 0; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

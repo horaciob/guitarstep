@@ -81,3 +81,26 @@ def test_rig_api():
     assert c.put("/api/rig/current", json=dict(rig=dict(x="a" * 70_000))).json()["detail"]["code"] == "rig_too_big"
     assert c.delete(f"/api/rig/presets/{p['id']}").status_code == 200
     assert c.delete(f"/api/rig/presets/{p['id']}").status_code == 404
+
+
+def test_rig_impulse_responses():
+    import io
+
+    import numpy as np
+    import soundfile as sf
+
+    c = client()
+    buf = io.BytesIO()
+    sf.write(buf, np.r_[1.0, np.zeros(4799)].astype("float32"), 48000, format="WAV")
+    r = c.post("/api/rig/irs", files=dict(file=("My cab 4x12.wav", buf.getvalue(), "audio/wav")))
+    assert r.status_code == 200 and r.json()["name"] == "My cab 4x12.wav"
+    assert [x["name"] for x in c.get("/api/rig/irs").json()] == ["My cab 4x12.wav"]
+    assert c.get("/api/rig/irs/My cab 4x12.wav").content == buf.getvalue()
+    assert c.get("/api/rig/irs/..%2F..%2Fconfig.toml").status_code in (400, 404)
+    assert c.post("/api/rig/irs", files=dict(file=("x.exe", b"MZ"))).json()["detail"]["code"] == "bad_ir"
+    assert c.post("/api/rig/irs", files=dict(file=("x.wav", b"not audio"))).json()["detail"]["code"] == "bad_ir"
+    long = io.BytesIO()
+    sf.write(long, np.zeros(48000 * 4, "float32"), 48000, format="WAV")
+    assert c.post("/api/rig/irs", files=dict(file=("long.wav", long.getvalue()))).json()["detail"]["code"] == "ir_too_long"
+    assert c.delete("/api/rig/irs/My cab 4x12.wav").status_code == 200
+    assert c.get("/api/rig/irs").json() == []

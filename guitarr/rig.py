@@ -9,6 +9,7 @@ from __future__ import annotations
 import json
 import re
 import uuid
+from pathlib import Path
 
 from . import config
 
@@ -83,6 +84,62 @@ def save_preset(name: str, rig: dict) -> dict:
         d["presets"].append(preset)
     _write(d)
     return preset
+
+
+# ---------------------------------------------------------------- impulse responses (cabinets)
+IR_MAX_BYTES = 5 * 1024 * 1024
+IR_MAX_SECONDS = 3.0
+IR_EXT = (".wav", ".flac", ".aif", ".aiff")
+
+
+def ir_dir():
+    return config.HOME / "irs"
+
+
+def _ir_name(name: str) -> str:
+    stem = re.sub(r"[^\w .()+-]", "_", Path(str(name or "")).stem).strip(" .") or "ir"
+    ext = Path(str(name or "")).suffix.lower()
+    if ext not in IR_EXT:
+        raise RigError("bad_ir", "Upload a WAV, FLAC or AIFF impulse response")
+    return stem[:60] + ext
+
+
+def list_irs() -> list[dict]:
+    d = ir_dir()
+    if not d.is_dir():
+        return []
+    return [dict(name=p.name, bytes=p.stat().st_size) for p in sorted(d.iterdir()) if p.suffix.lower() in IR_EXT]
+
+
+def ir_path(name: str):
+    p = ir_dir() / Path(str(name or "")).name
+    if p.suffix.lower() not in IR_EXT or not p.is_file():
+        raise RigError("no_ir", "Impulse response not found")
+    return p
+
+
+def save_ir(name: str, data: bytes) -> dict:
+    """Checks that it really is a short audio file before keeping it."""
+    import io
+
+    import soundfile as sf
+
+    fname = _ir_name(name)
+    if len(data) > IR_MAX_BYTES:
+        raise RigError("ir_too_long", "That file is too long for an impulse response")
+    try:
+        info = sf.info(io.BytesIO(data))
+    except Exception:
+        raise RigError("bad_ir", "Couldn't read that file as audio") from None
+    if info.duration > IR_MAX_SECONDS:
+        raise RigError("ir_too_long", "That file is too long for an impulse response")
+    ir_dir().mkdir(parents=True, exist_ok=True)
+    (ir_dir() / fname).write_bytes(data)
+    return dict(name=fname, bytes=len(data))
+
+
+def delete_ir(name: str) -> None:
+    ir_path(name).unlink()
 
 
 def delete_preset(pid: str) -> bool:

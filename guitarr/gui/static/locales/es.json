@@ -111,7 +111,10 @@
    "timer_busy": "Ya hay otro cronómetro corriendo o en pausa.",
    "no_timer": "No hay ningún cronómetro corriendo.",
    "bad_backup": "Ese archivo no es un respaldo de guitarr.",
-   "backup_too_big": "El respaldo es demasiado grande."
+   "backup_too_big": "El respaldo es demasiado grande.",
+   "bad_ir": "Subí una respuesta al impulso WAV, FLAC o AIFF.",
+   "ir_too_long": "Ese archivo es muy largo para una respuesta al impulso (máximo 3 s).",
+   "no_ir": "Esa respuesta al impulso ya no está guardada."
   },
   "practice": {
    "title": "🎧 Practicar con escucha",
@@ -762,9 +765,6 @@
    "ir_load": "Cargar IR",
    "ir_clear": "Quitar IR",
    "ir_loaded": "Usando IR: {{name}}",
-   "ir_missing": "«{{name}}» no está cargado en esta sesión: volvé a cargarlo.",
-   "ir_too_long": "Ese archivo es muy largo para un IR (máximo 3 s).",
-   "ir_bad": "No pude leer ese archivo como audio.",
    "looper_hint": "Grabá una frase y tocá encima. Graba tu sonido con todos los efectos.",
    "lp_rec": "Grabar",
    "lp_close": "Cerrar loop",
@@ -844,7 +844,8 @@
    "opt_8": "8",
    "level": "Nivel",
    "yes": "Sí",
-   "no": "No"
+   "no": "No",
+   "ir_replaces_mic": "La respuesta al impulso ya incluye el gabinete y el micrófono."
   },
   "plan": {
    "title": "Plan de práctica",

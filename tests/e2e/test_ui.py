@@ -110,3 +110,19 @@ def test_backup_download_and_restore(app_page, tmp_path):
     app_page.locator("#bkFile").set_input_files(str(path))
     app_page.locator("#bkYes").click()
     expect(app_page.locator("#bkStatus")).to_contain_text("Restored")
+
+
+def test_rig_impulse_response_is_kept_on_the_server(app_page, tmp_path):
+    import numpy as np
+    import soundfile as sf
+
+    ir = tmp_path / "Room 4x12.wav"
+    sf.write(ir, np.r_[1.0, np.zeros(2399)].astype("float32"), 48000)
+    onboarded(app_page)
+    go(app_page, "rig")
+    app_page.locator("#irFile").set_input_files(str(ir))
+    expect(app_page.locator(".ir-list li.on")).to_contain_text("Room 4x12.wav")
+    app_page.reload()                                       # still there after a reload
+    expect(app_page.locator(".ir-list li.on")).to_contain_text("Room 4x12.wav")
+    app_page.locator("[data-ir-del]").click()
+    expect(app_page.locator(".ir-list li")).to_have_count(0)

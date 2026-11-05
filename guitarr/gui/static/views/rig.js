@@ -394,37 +394,48 @@ function renderAmp() {
 const defaultsOf = type => Object.fromEntries(AMP_KNOBS.map(p => [p.id, (AMPS[type].defaults || {})[p.id] ?? p.def]));
 
 // ------------------------------------------------------------------ cabinet and microphone
-function renderCab() {
+async function renderCab() {
   const sec = $("#sec-cab", root), c = rig.state.cab, m = rig.state.mic;
-  const irLoaded = c.ir && rig.irs.has(c.ir);
+  const irs = await rig.listIRs();
+  if (!root) return;
+  const usingIR = c.ir && irs.some(x => x.name === c.ir);
   sec.innerHTML = `<div class="sec-head"><h2>${icon("mic")} ${esc(t("rig.sec_cab"))}</h2>
       <label class="check"><input type="checkbox" id="cabOn" ${c.on ? "checked" : ""}> ${esc(t("rig.cab_on"))}</label></div>
     <div class="panel">
       <div class="pick-row" id="cabTypes">${Object.keys(CABS).map(id =>
-        `<button class="pick${id === c.type && !irLoaded ? " on" : ""}" data-id="${id}"><b>${esc(t(`rig.cab_${id}`))}</b><small>${esc(t(`rig.cab_${id}_desc`))}</small></button>`).join("")}</div>
+        `<button class="pick${id === c.type && !usingIR ? " on" : ""}" data-id="${id}"><b>${esc(t(`rig.cab_${id}`))}</b><small>${esc(t(`rig.cab_${id}_desc`))}</small></button>`).join("")}</div>
       <div class="cab-row">
-        <div><h3>${esc(t("rig.mic"))}</h3><div class="seg mic-seg" id="micTypes">${Object.keys(MICS).map(id =>
-          `<button data-id="${id}" class="${id === m.type ? "active" : ""}" title="${esc(t(`rig.mic_${id}_desc`))}">${esc(t(`rig.mic_${id}`))}</button>`).join("")}</div>
+        <div><h3>${esc(t("rig.mic"))}</h3>${usingIR ? `<p class="muted small">${esc(t("rig.ir_replaces_mic"))}</p>` : `<div class="seg mic-seg" id="micTypes">${Object.keys(MICS).map(id =>
+          `<button data-id="${id}" class="${id === m.type ? "active" : ""}" title="${esc(t(`rig.mic_${id}_desc`))}">${esc(t(`rig.mic_${id}`))}</button>`).join("")}</div>`}
           <div class="knobs" id="micKnobs"></div></div>
         <div class="ir-box"><h3>${esc(t("rig.ir"))}</h3>
-          <p class="muted small">${esc(irLoaded ? t("rig.ir_loaded", { name: c.ir }) : c.ir ? t("rig.ir_missing", { name: c.ir }) : t("rig.ir_hint"))}</p>
-          <div class="row left"><label class="btn small file-btn">${icon("upload", 14)} ${esc(t("rig.ir_load"))}<input type="file" id="irFile" accept="audio/wav,.wav,audio/*"></label>
-          ${c.ir ? `<button class="btn small ghost" id="irClear">${esc(t("rig.ir_clear"))}</button>` : ""}</div></div>
+          <p class="muted small">${esc(usingIR ? t("rig.ir_loaded", { name: c.ir }) : t("rig.ir_hint"))}</p>
+          ${irs.length ? `<ul class="ir-list">${irs.map(x => `<li class="${x.name === c.ir ? "on" : ""}">
+              <button class="linkish" data-ir="${esc(x.name)}" aria-pressed="${x.name === c.ir}">${esc(x.name)}</button>
+              <button class="ib" data-ir-del="${esc(x.name)}" title="${esc(t("rig.remove"))}" aria-label="${esc(t("rig.remove"))} ${esc(x.name)}">✕</button></li>`).join("")}</ul>` : ""}
+          <div class="row left"><label class="btn small file-btn">${icon("upload", 14)} ${esc(t("rig.ir_load"))}<input type="file" id="irFile" accept=".wav,.flac,.aif,.aiff,audio/wav"></label>
+          ${usingIR ? `<button class="btn small ghost" id="irClear">${esc(t("rig.ir_clear"))}</button>` : ""}</div></div>
       </div>
     </div>`;
   $$("#cabTypes .pick", sec).forEach(b => b.onclick = () => { rig.setCab({ type: b.dataset.id, ir: null }); renderCab(); renderFlow(); });
   $("#cabOn", sec).onchange = e => { rig.setCab({ on: e.target.checked }); renderFlow(); };
   $$("#micTypes button", sec).forEach(b => b.onclick = () => { rig.setMic({ type: b.dataset.id }); renderCab(); });
-  const box = $("#micKnobs", sec);
-  const k = (id, def, f) => box.append(knob({ label: t(`rig.mic_${id}_knob`), min: 0, max: 1, step: 0.01, value: m[id], def, size: 48, format: f, onInput: v => rig.setMic({ [id]: v }) }));
-  k("position", 0.3, v => v < 0.33 ? t("rig.center") : v > 0.66 ? t("rig.edge") : t("rig.off_axis"));
-  k("distance", 0.2, v => `${Math.round(1 + v * 59)} cm`);
-  k("room", 0.1, v => `${Math.round(v * 100)}%`);
+  if (!usingIR) {
+    const box = $("#micKnobs", sec);
+    const k = (id, def, f) => box.append(knob({ label: t(`rig.mic_${id}_knob`), min: 0, max: 1, step: 0.01, value: m[id], def, size: 48, format: f, onInput: v => rig.setMic({ [id]: v }) }));
+    k("position", 0.3, v => v < 0.33 ? t("rig.center") : v > 0.66 ? t("rig.edge") : t("rig.off_axis"));
+    k("distance", 0.2, v => `${Math.round(1 + v * 59)} cm`);
+    k("room", 0.1, v => `${Math.round(v * 100)}%`);
+  }
+  $$("[data-ir]", sec).forEach(b => b.onclick = () => { rig.useIR(b.dataset.ir); renderCab(); });
+  $$("[data-ir-del]", sec).forEach(b => b.onclick = async () => {
+    try { await rig.deleteIR(b.dataset.irDel); renderCab(); } catch (e) { toast(e.message); }
+  });
   $("#irFile", sec).onchange = async e => {
     const f = e.target.files[0];
     if (!f) return;
-    try { await rig.loadIR(f); renderCab(); toast(t("rig.ir_loaded", { name: f.name }), true); }
-    catch (err) { toast(err.message === "ir_too_long" ? t("rig.ir_too_long") : t("rig.ir_bad")); }
+    try { const name = await rig.loadIR(f); renderCab(); toast(t("rig.ir_loaded", { name }), true); }
+    catch (err) { toast(err.message); }
   };
   const clr = $("#irClear", sec);
   if (clr) clr.onclick = () => { rig.clearIR(); renderCab(); };
