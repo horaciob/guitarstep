@@ -1,6 +1,7 @@
 // Home: your level, streak, what's next and what you did lately.
 import { eventText, lang, t, tc } from "../lib/i18n.js";
 import { api, esc } from "../lib/ui.js";
+import { fmtHM, ring, weekStrip } from "../lib/plan.js";
 
 function ago(iso) {
   const s = (Date.now() - new Date(iso)) / 1000;
@@ -12,7 +13,7 @@ function ago(iso) {
 }
 
 export async function mount(el) {
-  const [p, course, hist] = await Promise.all([api("/api/progress"), api("/api/course"), api("/api/history").catch(() => [])]);
+  const [p, course, hist, plan] = await Promise.all([api("/api/progress"), api("/api/course"), api("/api/history").catch(() => []), api("/api/plan").catch(() => null)]);
   const lv = p.level;
   let weak = null;
   if (hist.length) {
@@ -37,10 +38,15 @@ export async function mount(el) {
         <div class="xpbar"><i style="width:${Math.round(lv.progress * 100)}%"></i></div>
         <div class="muted small">${esc(lv.next_xp ? t("home.xp_to_next", { xp: p.xp, left: lv.next_xp - p.xp, n: lv.level + 1 }) : t("home.xp_max", { xp: p.xp }))}</div>
       </div>
-      <div class="panel">
+      ${plan ? `<a class="panel plan-card" href="#/plan">
+        <div class="plan-card-top">${ring(plan.week.goal ? 100 * plan.week.minutes / plan.week.goal : 0, plan.week.estimate, 64)}
+          <div><small class="muted">${esc(t("plan.this_week"))}</small><h2>${fmtHM(plan.week.minutes)} <span class="muted small">/ ${fmtHM(plan.week.goal)}</span></h2>
+          <small class="muted">🔥 ${esc(t("plan.goal_streak_short", { count: plan.streak }))} · ${esc(plan.week.previous == null ? t("plan.no_data_prev") : t("plan.prev_short", { time: fmtHM(plan.week.previous) }))}</small></div></div>
+        ${weekStrip(plan.week.days)}
+      </a>` : `<div class="panel">
         <small class="muted">${esc(t("home.streak"))}</small><h2>🔥 ${esc(t("common.days", { count: p.streak }))}</h2>
         <div class="week">${week.map(d => `<span class="${d.on ? "on" : ""}" title="${d.iso}"><i></i>${esc(d.label)}</span>`).join("")}</div>
-      </div>
+      </div>`}
       <div class="panel">
         <small class="muted">${esc(t("nav.course"))}</small><h2>${esc(t("home.lessons", { done: p.lessons.length, total: all.length }))}</h2>
         <div class="muted small">${esc(t("home.mastered", { chords: Object.keys(p.chords).length, records: Object.keys(p.drills).length }))}</div>

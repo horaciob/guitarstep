@@ -1,0 +1,15 @@
+.git
+.venv
+**/__pycache__
+**/*.pyc
+*.egg-info
+build
+dist
+.pytest_cache
+tests
+demo
+tomas
+separated
+.DS_Store
+compose*.yaml
+Dockerfile

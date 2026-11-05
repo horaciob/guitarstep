@@ -5,7 +5,7 @@ await initI18n();
 applyDom();
 
 const { LISTENER_ROUTES, showListenerView, hideListenerViews } = await import("./app.js");
-const { $, $$, api, esc } = await import("./lib/ui.js");
+const { $, $$, api, esc, toast } = await import("./lib/ui.js");
 const { fillIcons } = await import("./lib/icons.js");
 const { isOnboarded } = await import("./views/setup.js");
 fillIcons();
@@ -20,6 +20,8 @@ const VIEWS = {
   tools: () => import("./views/tools.js"),
   camera: () => import("./views/camera.js"),
   setup: () => import("./views/setup.js"),
+  rig: () => import("./views/rig.js"),
+  plan: () => import("./views/plan.js"),
 };
 const NAV_OF = { lesson: "course", chart: "charts", camera: "chords", setup: "settings" };
 const view = $("#view");
@@ -65,6 +67,77 @@ async function refreshProgress() {
       <span class="muted">${p.xp} XP · 🔥 ${esc(t("common.days", { count: p.streak }))}${p.practiced_today ? " ✓" : ""}</span>`;
   } catch { /* no server */ }
 }
+
+// The tone rig keeps playing across pages: show it in the sidebar with an off switch.
+const { rig } = await import("./lib/rig/engine.js");
+function refreshRigPill() {
+  const pill = $("#rigPill");
+  pill.hidden = !rig.running;
+  if (!rig.running) return;
+  const p = rig.preset;
+  $("#rigPillName").textContent = t("rig.pill", { name: p ? (p.kind === "factory" ? t(`rig.preset.${p.id}`) : p.name) : t("rig.custom") });
+}
+rig.addEventListener("change", refreshRigPill);
+$("#rigPillOff").title = t("rig.turn_off");
+$("#rigPillOff").setAttribute("aria-label", t("rig.turn_off"));
+$("#rigPillOff").onclick = () => rig.stop();
+
+// Practice plan: today's minutes in the sidebar, the running timer (kept alive with a
+// heartbeat while any page is open) and a nudge after each session.
+const { catName, fmtClock, fmtHM } = await import("./lib/plan.js");
+let plan = null, planAt = 0, beat = null;
+function showPlan(v) {
+  plan = v; planAt = performance.now();
+  const td = v.today, el = $("#railToday");
+  el.hidden = false;
+  el.innerHTML = `<span>${esc(t("plan.rail_today"))} <b>${fmtHM(td.minutes)}</b> / ${fmtHM(td.goal)}${td.remaining === 0 ? " ✓" : ""}</span>
+    <div class="bar"><i class="${td.status || ""}" style="width:${td.goal ? Math.min(100, 100 * td.minutes / td.goal) : 0}%"></i></div>`;
+  const tm = v.timer, pill = $("#timerPill");
+  pill.hidden = !tm;
+  if (tm) {
+    const c = v.categories.find(x => x.id === tm.category);
+    pill.classList.toggle("paused", !tm.running);
+    $("#timerPillPause").textContent = tm.running ? "❚❚" : "▶";
+    $("#timerPillPause").title = t(tm.running ? "plan.pause" : "plan.resume");
+    $("#timerPillPause").setAttribute("aria-label", $("#timerPillPause").title);
+    pill.dataset.name = c ? catName(c) : "";
+    paintTimer();
+  }
+  clearInterval(beat); beat = null;
+  if (tm && tm.running) beat = setInterval(async () => {
+    try { const r = await api("/api/plan/timer", { json: { action: "beat" } }); showPlan(r); window.dispatchEvent(new CustomEvent("guitarr:plan", { detail: r })); }
+    catch { /* offline: the server pauses the timer by itself */ }
+  }, 20000);
+}
+function paintTimer() {
+  const tm = plan && plan.timer;
+  if (!tm) return;
+  const secs = tm.elapsed + (tm.running ? (performance.now() - planAt) / 1000 : 0);
+  $("#timerPillName").textContent = `⏱ ${$("#timerPill").dataset.name} · ${tm.running ? fmtClock(secs) : t("plan.paused")}`;
+}
+setInterval(paintTimer, 1000);
+$("#timerPillPause").onclick = async () => {
+  try {
+    const r = await api("/api/plan/timer", { json: { action: plan.timer.running ? "pause" : "resume" } });
+    showPlan(r); window.dispatchEvent(new CustomEvent("guitarr:plan", { detail: r }));
+  } catch (e) { toast(e.message); }
+};
+async function refreshPlan(afterSession = false) {
+  const before = plan && plan.today;
+  try {
+    const v = await api("/api/plan");
+    showPlan(v);
+    window.dispatchEvent(new CustomEvent("guitarr:plan", { detail: v }));
+    const td = v.today;
+    if (afterSession && before && td.minutes > before.minutes) {
+      if (td.remaining === 0 && before.remaining > 0) toast(t("plan.goal_met_toast"), true);
+      else if (td.remaining > 0) toast(t("plan.left_today", { left: fmtHM(td.remaining) }));
+    }
+  } catch { /* no server */ }
+}
+window.addEventListener("guitarr:plan-changed", e => showPlan(e.detail));
+window.addEventListener("guitarr:progress", () => refreshPlan(true));
+refreshPlan();
 
 const sel = $("#langSelect");
 sel.innerHTML = Object.entries(LANGS).map(([k, v]) => `<option value="${k}">${v}</option>`).join("");

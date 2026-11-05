@@ -44,6 +44,8 @@ def test_live_session_over_api_and_websocket():
                 break
             assert m["type"] == "state"
     assert report and report["summary"]["judged"] == 33
+    assert 5 < report["summary"]["played_s"] < 60          # playing time from the detected notes
+    assert report["award"]["practice_s"] == 0               # simulated: not added to the plan
     st = c.get("/api/live/state").json()
     assert st["active"] and st["report"]["mode"] == "tempo"
 
@@ -61,3 +63,21 @@ def test_config_api():
     r = c.post("/api/config", json=dict(device="3", channel="2", latency_ms="11.5", gate_db="-55",
                                         sensitivity="", output_device="")).json()
     assert r["saved"] == {"device": 3, "channel": 2, "latency_ms": 11.5, "gate_db": -55.0}
+
+
+def test_rig_api():
+    c = client()
+    assert c.get("/api/rig").json() == dict(current=None, presets=[])
+    tone = dict(amp=dict(type="crunch", on=True, params=dict(gain=6)), pedals=[], post=[])
+    assert c.put("/api/rig/current", json=dict(rig=tone)).status_code == 200
+    assert c.get("/api/rig").json()["current"] == tone
+    p = c.post("/api/rig/presets", json=dict(name="  My   blues ", rig=tone)).json()
+    assert p["name"] == "My blues" and p["id"]
+    again = c.post("/api/rig/presets", json=dict(name="my blues", rig={**tone, "pedals": [1]})).json()
+    assert again["id"] == p["id"]                       # same name overwrites
+    assert len(c.get("/api/rig").json()["presets"]) == 1
+    assert c.post("/api/rig/presets", json=dict(name="", rig=tone)).json()["detail"]["code"] == "bad_name"
+    assert c.put("/api/rig/current", json=dict(rig="x")).status_code == 400
+    assert c.put("/api/rig/current", json=dict(rig=dict(x="a" * 70_000))).json()["detail"]["code"] == "rig_too_big"
+    assert c.delete(f"/api/rig/presets/{p['id']}").status_code == 200
+    assert c.delete(f"/api/rig/presets/{p['id']}").status_code == 404

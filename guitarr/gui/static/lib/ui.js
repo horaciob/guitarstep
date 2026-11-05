@@ -19,18 +19,33 @@ export async function api(path, opts = {}) {
   const r = await fetch(path, o);
   let data = null;
   try { data = await r.json(); } catch { /* no body */ }
-  if (!r.ok) throw new Error(errorText(data && (data.detail || data.error)) || `Error ${r.status}`);
+  if (!r.ok) {
+    const detail = data && (data.detail || data.error);
+    const err = new Error(errorText(detail) || `Error ${r.status}`);
+    err.code = detail && detail.code;          // lets a form show the error under the right field
+    throw err;
+  }
   return data;
 }
 
-let toastTimer;
+// Toasts are queued, so two messages in a row (e.g. "+15 XP" and "20 min left today") both show.
+const toastQueue = [];
+let toastBusy = false;
 export function toast(msg, ok = false) {
-  const t = $("#toast");
-  t.textContent = msg;
-  t.className = "gl-toast" + (ok ? " ok" : "");
-  t.hidden = false;
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => (t.hidden = true), 4500);
+  if (!msg) return;
+  const last = toastQueue[toastQueue.length - 1];
+  if (last && last.msg === msg) return;
+  toastQueue.push({ msg, ok });
+  if (!toastBusy) nextToast();
+}
+function nextToast() {
+  const item = toastQueue.shift(), el = $("#toast");
+  if (!item) { toastBusy = false; el.hidden = true; return; }
+  toastBusy = true;
+  el.textContent = item.msg;
+  el.className = "gl-toast" + (item.ok ? " ok" : "");
+  el.hidden = false;
+  setTimeout(nextToast, toastQueue.length ? 3200 : 4500);
 }
 
 export const progressChanged = () => window.dispatchEvent(new CustomEvent("guitarr:progress"));

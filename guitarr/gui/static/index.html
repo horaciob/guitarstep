@@ -17,11 +17,13 @@
     <nav id="nav" data-i18n-title="nav.label">
       <div class="rail-group" data-i18n="nav.learn">Learn</div>
       <a href="#/home" data-route="home"><span class="ico" data-icon="home"></span><span data-i18n="nav.home">Home</span></a>
+      <a href="#/plan" data-route="plan"><span class="ico" data-icon="target"></span><span data-i18n="nav.plan">Practice plan</span></a>
       <a href="#/course" data-route="course"><span class="ico" data-icon="course"></span><span data-i18n="nav.course">Course</span></a>
       <a href="#/chords" data-route="chords"><span class="ico" data-icon="chords"></span><span data-i18n="nav.chords">Chords</span></a>
       <div class="rail-group" data-i18n="nav.play">Play</div>
       <a href="#/practice" data-route="practice"><span class="ico" data-icon="practice"></span><span data-i18n="nav.practice">Practice</span></a>
       <a href="#/charts" data-route="charts"><span class="ico" data-icon="charts"></span><span data-i18n="nav.charts">Charts</span></a>
+      <a href="#/rig" data-route="rig"><span class="ico" data-icon="amp"></span><span data-i18n="nav.rig">Amp &amp; effects</span></a>
       <a href="#/tuner" data-route="tuner"><span class="ico" data-icon="tuner"></span><span data-i18n="nav.tuner">Tuner</span></a>
       <a href="#/tools" data-route="tools"><span class="ico" data-icon="tools"></span><span data-i18n="nav.tools">Tools</span></a>
       <div class="rail-group" data-i18n="nav.review">Review</div>
@@ -29,6 +31,9 @@
       <a href="#/history" data-route="history"><span class="ico" data-icon="history"></span><span data-i18n="nav.history">History</span></a>
     </nav>
     <div class="rail-foot">
+      <div class="rig-pill timer-pill" id="timerPill" hidden><a href="#/plan" id="timerPillName"></a><button type="button" id="timerPillPause">❚❚</button></div>
+      <a class="rail-today" id="railToday" href="#/plan" hidden></a>
+      <div class="rig-pill" id="rigPill" hidden><a href="#/rig" id="rigPillName"></a><button type="button" id="rigPillOff" data-icon="power" data-size="15"></button></div>
       <a class="rail-progress" id="railProgress" href="#/home" data-i18n-title="nav.progress"></a>
       <div class="rail-row">
         <a class="gl-device" id="devicePill" href="#/settings" data-route="settings" data-i18n-title="nav.device"><span class="dot"></span><span id="deviceName">—</span></a>
@@ -244,7 +249,7 @@
 </section>
   </main>
 </div>
-<div class="gl-toast" id="toast" hidden></div>
+<div class="gl-toast" id="toast" role="status" aria-live="polite" hidden></div>
 <script type="module" src="/static/main.js"></script>
 </body>
 </html>

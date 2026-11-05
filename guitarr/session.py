@@ -17,6 +17,7 @@ import numpy as np
 from . import config
 from .audio_io import FileSource, Metronome, MicSource
 from .core import Reference
+from .plan import active_seconds
 from .dsp import CHROMA_LEN, CHROMA_OFF, HOP, MIN_GAP, NFFT, PITCH_LEN, PITCH_OFF, Detector, Recorder
 from .follow import (Judge, TempoFollower, Trainer, WaitFollower, describe, fmt_dt, group_events,
                      min_repeat_gap, pass_score)
@@ -83,6 +84,7 @@ class LiveSession:
         self.log: deque = deque(maxlen=12)
         self.last: dict | None = None
         self.now = 0.0
+        self.note_times: list[float] = []     # every detection, for the playing time
         self.running = False
         self.report: dict | None = None
         self.error: str | None = None
@@ -134,6 +136,7 @@ class LiveSession:
                     self.now = rec.n / self.sr
                     for d in det.process():
                         d.t -= lat
+                        self.note_times.append(d.t)
                         if prev and d.midi is not None and prev.midi is not None and not d.legato \
                                 and round(d.midi) == round(prev.midi) and d.t - prev.t < self.repeat_gap \
                                 and d.db <= prev.db + 1:
@@ -243,7 +246,7 @@ class LiveSession:
             timing_mean_ms=round(1000 * float(np.mean(dts)), 1) if dts else None,
             timing_std_ms=round(1000 * float(np.std(dts)), 1) if dts else None,
             tuning_cents=None if tun is None else round(tun, 1),
-            score=None,
+            score=None, played_s=active_seconds(self.note_times),
         )
         if any(e.status != "pending" for e in evs):
             summary["score"] = pass_score(judged, getattr(f, "pass_extras", 0) if f.mode == "tempo" else 0,

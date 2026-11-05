@@ -19,7 +19,7 @@ from fastapi import FastAPI, File, Form, HTTPException, UploadFile, WebSocket, W
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
-from .. import __version__, catalog, config, history, progress
+from .. import __version__, catalog, config, history, plan, progress, rig
 from ..audio_io import AudioError, FileSource, MicSource, devices
 from ..reference import REFERENCE_EXT, RefOptions, ReferenceError, list_tracks, load_reference
 
@@ -283,6 +283,75 @@ def set_config(body: dict):
     return get_config()
 
 
+# ---------------------------------------------------------------- practice plan
+def _plan(fn, *a):
+    try:
+        return fn(*a)
+    except plan.PlanError as e:
+        fail(400, e.code, str(e))
+
+
+@app.get("/api/plan")
+def api_plan():
+    return plan.get()
+
+
+@app.put("/api/plan/goal")
+def api_plan_goal(body: dict):
+    return _plan(plan.set_weekly_goal, body.get("weekly_minutes"))
+
+
+@app.put("/api/plan/categories/{cid}")
+def api_plan_minutes(cid: str, body: dict):
+    return _plan(plan.set_minutes, cid, body.get("minutes"))
+
+
+@app.post("/api/plan/categories")
+def api_plan_add(body: dict):
+    return _plan(plan.add_category, body.get("name"), body.get("minutes"))
+
+
+@app.delete("/api/plan/categories/{cid}")
+def api_plan_remove(cid: str):
+    return _plan(plan.remove_category, cid)
+
+
+@app.post("/api/plan/timer")
+def api_plan_timer(body: dict):
+    return _plan(plan.timer, str(body.get("action") or ""), body.get("category"))
+
+
+# ---------------------------------------------------------------- tone rig (amp, pedals…)
+def _rig(fn, *a):
+    try:
+        return fn(*a)
+    except rig.RigError as e:
+        fail(400, e.code, str(e))
+
+
+@app.get("/api/rig")
+def api_rig():
+    return rig.get()
+
+
+@app.put("/api/rig/current")
+def api_rig_current(body: dict):
+    _rig(rig.save_current, body.get("rig"))
+    return dict(ok=True)
+
+
+@app.post("/api/rig/presets")
+def api_rig_preset_save(body: dict):
+    return _rig(rig.save_preset, body.get("name"), body.get("rig"))
+
+
+@app.delete("/api/rig/presets/{pid}")
+def api_rig_preset_delete(pid: str):
+    if not rig.delete_preset(pid):
+        fail(404, "no_preset", "Preset not found")
+    return dict(ok=True)
+
+
 # ---------------------------------------------------------------- songs
 @app.get("/api/songs")
 def songs():
@@ -411,6 +480,8 @@ def live_start(body: dict):
         if S.tuner:
             S.tuner.stop()
         ropts, ctx = ref_options(body)
+        if not body.get("simulate"):
+            plan.pause_timer()          # the session counts its own time
         try:
             ref = load_reference(ropts, log=lambda m: None)
         except ReferenceError as e:
@@ -446,6 +517,7 @@ def live_start(body: dict):
                 if ctx["type"] == "practice" and rep["summary"]["judged"] and not opts.simulate:
                     history.save(rep, S.section)
                 rep["award"] = progress.on_session(ctx, rep)
+                rep["award"]["practice_s"] = plan.record_session(ctx, rep)
                 rep["context"] = ctx
                 S.final = rep
             except Exception as e:  # kept in sess.error for the UI

@@ -1,0 +1,23 @@
+# guitarr with Docker Compose.
+#
+#   docker compose up --build          → http://localhost:8765
+#
+# Audio input: containers can't reach CoreAudio, so on macOS and Windows live listening
+# (practice, tuner, lessons, chord checks) has no guitar input. Analyzing uploaded takes,
+# charts, the course, the demo ("Simulate with a recorded take") and history all work.
+# On a Linux host, add the ALSA override to hear your interface:
+#
+#   docker compose -f compose.yaml -f compose.linux-audio.yaml up --build
+services:
+  guitarr:
+    build: .
+    image: guitarr:0.2.0
+    container_name: guitarr
+    ports:
+      - "127.0.0.1:8765:8765"   # local only: the UI has no authentication
+    volumes:
+      - guitarr-data:/data      # config, songs, takes, history and progress
+    restart: unless-stopped
+
+volumes:
+  guitarr-data:

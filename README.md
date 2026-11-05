@@ -20,6 +20,7 @@ guitarr gui          # opens http://127.0.0.1:8765
 - [Features](#features)
 - [Requirements](#requirements)
 - [Installation](#installation)
+  - [With Docker Compose](#with-docker-compose)
 - [Quick start](#quick-start)
 - [The web UI](#the-web-ui)
 - [Command line](#command-line)
@@ -51,6 +52,12 @@ guitarr gui          # opens http://127.0.0.1:8765
 - **Camera**: hand tracking (MediaPipe, fully local) checks that each finger is on the right string and fret.
 - **Tools**: metronome with tap tempo; a **chord-change minute** that counts only the clean changes it heard and keeps your record per chord pair; a fretboard explorer with scales and arpeggios.
 
+**Plan**
+- **Practice plan**: daily minutes per category (technique, songs, theory and your own). Time counts on its own while you play with guitarr, counting only the time you're actually playing (long pauses are left out); a timer covers practice away from the app. See the week at a glance (each day green, yellow or red with its minutes), a weekly progress ring, last week's total and a streak of days that met their goal. Changing the plan only affects the current week.
+
+**Sound**
+- **Amp & effects**: a full virtual rig in the browser, with live monitoring through headphones. It covers guitar voicings (single-coil, humbucker, P-90, hollow, acoustic, nylon, 12-string, baritone), 17 pedals and effects, 9 amps, 8 cabinets with 4 microphone types (position, distance, room), your own cabinet IRs, a looper and 13 factory presets. Save your own presets too. A **virtual guitar** plays original riffs so you can try sounds without an instrument. The rig keeps playing while you practice, and the listener always grades your clean signal.
+
 **Review**
 - **Take analysis**: transcribes a recording and aligns it with the reference, even at another tempo, then draws a piano roll of reference vs. what you played.
 - **History**: score over time per song, plus your weakest bars, with a one-click "practice these bars with the trainer".
@@ -74,6 +81,22 @@ pip install -e ".[separate]"     # optional: Demucs, to isolate the guitar from 
 ```
 
 Dependency versions are pinned in `pyproject.toml` and `requirements.txt`: basic-pitch, librosa and NumPy often break between releases.
+
+### With Docker Compose
+
+```bash
+docker compose up --build        # → http://localhost:8765
+```
+
+Your data (config, songs, takes, history, progress) lives in the `guitarr-data` volume.
+
+**Audio input:** containers can't reach CoreAudio, so on **macOS and Windows** the container has no guitar input. Take analysis, charts, the course content, the demo and simulated practice ("Simulate with a recorded take") work; live listening needs the native install above. On a **Linux** host, pass your ALSA devices through:
+
+```bash
+docker compose -f compose.yaml -f compose.linux-audio.yaml up --build
+```
+
+The image runs basic-pitch's bundled ONNX model with onnxruntime, because its TensorFlow dependency on Linux conflicts with the pinned NumPy 2.x.
 
 ## Quick start
 
@@ -253,7 +276,7 @@ Everything lives in `~/.guitarr/` (override with the `GUITARR_HOME` environment 
 ## Development
 
 ```bash
-pytest           # 68 tests, ~15 s
+pytest           # ~90 tests, ~15 s
 ```
 
 The tests cover:

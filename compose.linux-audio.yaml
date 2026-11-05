@@ -1,0 +1,8 @@
+# Linux hosts only: gives the container your ALSA sound devices (audio interface / USB cable).
+#   docker compose -f compose.yaml -f compose.linux-audio.yaml up --build
+services:
+  guitarr:
+    devices:
+      - /dev/snd:/dev/snd
+    group_add:
+      - audio
