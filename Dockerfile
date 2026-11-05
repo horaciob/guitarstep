@@ -1,8 +1,8 @@
 # guitarr web UI in a container.
 #
-# basic-pitch 0.4.0 pulls TensorFlow on Linux, which needs NumPy 1.x and clashes with the
-# pinned NumPy 2.x. In the image we install it without dependencies and run its bundled
-# ONNX model through onnxruntime instead (same model, different runtime).
+# Dependencies are installed by scripts/install-linux.sh (shared with CI): basic-pitch runs
+# its bundled ONNX model through onnxruntime, because its TensorFlow dependency on Linux
+# clashes with the pinned NumPy 2.x.
 FROM python:3.11-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -19,10 +19,8 @@ RUN apt-get update \
 WORKDIR /app
 
 COPY requirements.txt ./
-RUN grep -vE '^(basic-pitch|pytest|httpx|playwright)' requirements.txt > /tmp/requirements.txt \
- && pip install -r /tmp/requirements.txt \
- && pip install --no-deps basic-pitch==0.4.0 \
- && pip install "mir_eval==0.8.2" "resampy==0.4.2" "scikit-learn==1.9.1" "typing_extensions==4.16.0" "onnxruntime==1.31.1"
+COPY scripts/install-linux.sh scripts/
+RUN scripts/install-linux.sh --deps-only
 
 COPY pyproject.toml README.md ./
 COPY guitarr ./guitarr

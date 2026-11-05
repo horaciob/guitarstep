@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: System libraries
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends libportaudio2 libsndfile1 ffmpeg
+      - name: Python dependencies
+        run: scripts/install-linux.sh --dev
+      - name: Browser for the UI tests
+        run: python -m playwright install --with-deps chromium
+      - name: Check that both locales have the same keys
+        run: |
+          python - <<'EOF'
+          import json
+          def keys(d, p=""):
+              return {p + k for k in d} | {x for k, v in d.items() if isinstance(v, dict) for x in keys(v, p + k + ".")}
+          en = keys(json.load(open("guitarr/gui/static/locales/en.json"))["ui"])
+          es = keys(json.load(open("guitarr/gui/static/locales/es.json"))["ui"])
+          assert en == es, f"missing in es: {sorted(en - es)[:20]} · missing in en: {sorted(es - en)[:20]}"
+          EOF
+      - name: Tests
+        run: python -m pytest -q
+
+  docker:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the image
+        run: docker build -t guitarr:ci .
+      - name: Smoke test
+        run: |
+          docker run -d --name guitarr -p 8765:8765 guitarr:ci
+          for i in $(seq 30); do curl -sf localhost:8765/api/status && exit 0; sleep 2; done
+          docker logs guitarr; exit 1
