@@ -915,7 +915,7 @@
    "weekly_goal": "Weekly goal",
    "daily_is": "= {{goal}} a day",
    "save_goal": "Apply",
-   "weekly_hint": "Changing the weekly goal scales your categories and keeps their proportions. Only this week changes; past weeks stay as they were.",
+   "weekly_hint": "Changing the weekly goal scales your categories and keeps their proportions. It applies from today on: the days already gone keep their goal, and past weeks stay as they were.",
    "categories": "Minutes per day",
    "auto_short": "auto",
    "remove_q": "Remove?",

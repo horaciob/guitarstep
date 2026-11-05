@@ -249,3 +249,26 @@ def test_plans_saved_before_free_play_get_it():
     d["categories"] = [c for c in d["categories"] if c["id"] != "free"]
     plan._write(d)
     assert any(c["id"] == "free" for c in plan.get()["categories"])
+
+
+def test_changing_the_plan_mid_week_keeps_past_days_goals():
+    from datetime import date, timedelta
+    today = date.today()
+    d = plan._read()
+    d["since"] = (today - timedelta(days=30)).isoformat()
+    start = plan.week_start(today)
+    d["weeks"][start.isoformat()] = dict(minutes=dict(technique=10, repertoire=15, theory=5))
+    if start < today:
+        d["days"][start.isoformat()] = dict(technique=30 * 60)            # Monday met its 30-min goal
+    plan._write(d)
+    plan.set_weekly_goal(7 * 60)                                          # 60 a day from now on
+    v = plan.get()
+    assert v["today"]["goal"] == 60
+    if start < today:
+        monday = v["week"]["days"][0]
+        assert monday["goal"] == 30 and monday["status"] == "met"         # still green
+        assert plan._read()["day_goals"][start.isoformat()] == 30
+    # a second change doesn't overwrite the frozen goal
+    plan.set_weekly_goal(7 * 20)
+    if start < today:
+        assert plan._read()["day_goals"][start.isoformat()] == 30

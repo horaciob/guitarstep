@@ -915,7 +915,7 @@
    "weekly_goal": "Meta semanal",
    "daily_is": "= {{goal}} por día",
    "save_goal": "Aplicar",
-   "weekly_hint": "Al cambiar la meta semanal se ajustan tus categorías manteniendo su proporción. Solo cambia esta semana; las anteriores quedan como estaban.",
+   "weekly_hint": "Al cambiar la meta semanal se ajustan tus categorías manteniendo su proporción. Aplica de hoy en adelante: los días que ya pasaron conservan su meta y las semanas anteriores quedan como estaban.",
    "categories": "Minutos por día",
    "auto_short": "auto",
    "remove_q": "¿Quitar?",

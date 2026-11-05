@@ -2,7 +2,8 @@
 
 - A week runs Monday to Sunday. Each week keeps its own minutes per category, so changing
   the plan only affects the current week; past weeks stay as they were.
-- The daily goal is the sum of the category minutes; the weekly goal is 7 × that.
+- The daily goal is the sum of the category minutes; the weekly goal is 7 × that. Changing
+  the plan mid-week keeps the goal the days already gone had (they're frozen first).
 - Time is counted on its own while you play with the listener (exercises, chord checks and
   drills → technique; songs and charts → repertoire). It counts *playing* time: pauses longer
   than a few seconds between notes are left out. A manual timer covers everything else
@@ -53,7 +54,7 @@ def path():
 
 def _empty() -> dict:
     cats = [dict(id=c, name=None, default_min=DEFAULT_MINUTES[c], active=True) for c in BUILTIN]
-    return dict(categories=cats, weeks={}, days={}, timer=None, since=None)
+    return dict(categories=cats, weeks={}, days={}, timer=None, since=None, day_goals={})
 
 
 def _read() -> dict:
@@ -132,8 +133,22 @@ def _week(d: dict, day: date) -> dict:
 
 
 def _daily_goal(d: dict, day: date) -> int | None:
+    frozen = d.get("day_goals", {}).get(day.isoformat())
+    if frozen is not None:
+        return frozen
     w = d["weeks"].get(week_start(day).isoformat())
     return None if w is None else sum(w["minutes"].values())
+
+
+def _freeze_past(d: dict, today: date) -> None:
+    """Before the plan changes, the days of this week that are over keep their goal."""
+    w = _week(d, today)
+    goal = sum(w["minutes"].values())
+    frozen = d.setdefault("day_goals", {})
+    day = week_start(today)
+    while day < today:
+        frozen.setdefault(day.isoformat(), goal)
+        day += timedelta(days=1)
 
 
 def _log(d: dict, day: date, cid: str, seconds: float) -> None:
@@ -268,6 +283,7 @@ def set_minutes(cid: str, minutes) -> dict:
         c = _cat(d, cid)
         if not c["active"]:
             raise PlanError("no_category", "No such category")
+        _freeze_past(d, date.today())
         w = _week(d, date.today())
         if m == 0 and sum(v for k, v in w["minutes"].items() if k != cid) == 0:
             raise PlanError("zero_goal", "The plan needs at least one minute a day")
@@ -284,6 +300,7 @@ def set_weekly_goal(total_minutes) -> dict:
     daily = math.ceil(total / 7)
     with _lock:
         d = _read()
+        _freeze_past(d, date.today())
         w = _week(d, date.today())
         ids = list(w["minutes"])
         if not ids:
@@ -334,6 +351,7 @@ def add_category(name: str, minutes) -> dict:
         else:
             c = dict(id="c" + uuid.uuid4().hex[:8], name=name, default_min=m, active=True)
             d["categories"].append(c)
+        _freeze_past(d, date.today())
         _week(d, date.today())["minutes"][c["id"]] = m
         _write(d)
         return view(d)
@@ -349,6 +367,7 @@ def remove_category(cid: str) -> dict:
             raise PlanError("last_category", "Keep at least one category")
         if d.get("timer") and d["timer"]["category"] == cid:
             raise PlanError("timer_busy", "Stop its timer first")
+        _freeze_past(d, date.today())
         w = _week(d, date.today())
         rest = sum(v for k, v in w["minutes"].items() if k != cid)
         if rest == 0:
@@ -415,11 +434,12 @@ def view(d: dict | None = None, now: float | None = None) -> dict:
         if state == "past" and day.isoformat() < d["since"] and not seconds_of(day):
             state = "before"                     # before you started using the plan
         blank = state in ("future", "before")
-        days.append(dict(date=day.isoformat(), minutes=None if blank else mins, goal=goal,
-                         state=state, status=None if blank else _status(mins, goal)))
+        dgoal = d.get("day_goals", {}).get(day.isoformat(), goal) if state == "past" else goal
+        days.append(dict(date=day.isoformat(), minutes=None if blank else mins, goal=dgoal,
+                         state=state, status=None if blank else _status(mins, dgoal)))
     week_min = sum(x["minutes"] or 0 for x in days)
     finished = [x for x in days if x["state"] == "past"]
-    estimate = _status(sum(x["minutes"] for x in finished), goal * len(finished)) if finished else None
+    estimate = _status(sum(x["minutes"] for x in finished), sum(x["goal"] for x in finished)) if finished else None
     prev_start = start - timedelta(days=7)
     prev_days = [prev_start + timedelta(days=i) for i in range(7)]
     has_prev = prev_start.isoformat() in d["weeks"] or any(x.isoformat() in d["days"] for x in prev_days)
