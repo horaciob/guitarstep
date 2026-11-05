@@ -790,20 +790,34 @@ const Settings = { devices: [], saved: {}, test: null, timer: null };
 
 // ------------------------------------------------------------------ instrument: tuning and handedness
 async function loadInstrumentPanel() {
+  // until it's loaded you can't change it (a late load would undo your change)
+  $("#iTuning").disabled = $("#iLefty").disabled = true;
+  $("#iStatus").textContent = "";
   const inst = await loadInstrument();
   $("#iTuning").innerHTML = Object.entries(inst.tunings || {}).map(([id, ms]) =>
     `<option value="${id}">${esc(t(`instrument.t_${id}`))} · ${ms.slice().reverse().map(m => NOTE_NAMES[m % 12]).join(" ")}</option>`).join("");
   $("#iTuning").value = inst.tuning;
   $("#iLefty").checked = inst.left_handed;
+  $("#iTuning").disabled = $("#iLefty").disabled = false;
 }
-async function saveInstrument() {
+// saves run one after another, and the status says "Saving…" until the last one is done
+let instSaving = Promise.resolve(), instPending = 0;
+function saveInstrument() {
+  instPending++;
+  $("#iStatus").textContent = t("instrument.saving");
+  instSaving = instSaving.then(doSaveInstrument).finally(() => {
+    if (--instPending === 0 && !$("#iStatus").dataset.err) $("#iStatus").innerHTML = `<span class="ok">✓ ${esc(t("instrument.saved"))}</span>`;
+  });
+  return instSaving;
+}
+async function doSaveInstrument() {
   try {
     await api("/api/instrument", { method: "PUT", json: { tuning: $("#iTuning").value, left_handed: $("#iLefty").checked } });
     await loadInstrument();
     initTuner();
-    $("#iStatus").innerHTML = `<span class="ok">✓ ${esc(t("instrument.saved"))}</span>`;
+    delete $("#iStatus").dataset.err;
     window.dispatchEvent(new CustomEvent("guitarr:instrument"));
-  } catch (e) { $("#iStatus").textContent = e.message; }
+  } catch (e) { $("#iStatus").textContent = e.message; $("#iStatus").dataset.err = "1"; }
 }
 $("#iTuning").addEventListener("change", saveInstrument);
 $("#iLefty").addEventListener("change", saveInstrument);
