@@ -10,7 +10,7 @@ import { knob } from "../lib/rig/knob.js";
 import { RIFFS, VOICES } from "../lib/rig/synth.js";
 
 const HP_KEY = "guitarr.rig.headphones";
-let root = null, raf = 0, onChange = null, onLoop = null, onParam = null, onMidi = null, confirmDelete = false;
+let root = null, raf = 0, onChange = null, onLoop = null, onParam = null, onMidi = null, onRec = null, confirmDelete = false;
 const knobsByTarget = new Map();      // "uid:param" or "master" → knob element (to follow an expression pedal)
 
 const fmt = (unit, v) => {
@@ -51,6 +51,8 @@ export async function mount(el) {
     if (k !== toolsKey) { toolsKey = k; renderTools(); }
   };
   onLoop = () => renderLooper();
+  onRec = () => { const sec = root && $("#sec-looper", root); if (sec) renderRecorder(sec); };
+  rig.addEventListener("change", onRec);
   rig.addEventListener("change", onChange);
   rig.addEventListener("looper", onLoop);
   onParam = e => { const k = knobsByTarget.get(e.detail.target); if (k && k.isConnected) k.setValue(e.detail.value); };
@@ -67,6 +69,8 @@ export function unmount() {
   if (onLoop) rig.removeEventListener("looper", onLoop);
   if (onParam) rig.removeEventListener("param", onParam);
   if (onMidi) rig.removeEventListener("midi", onMidi);
+  if (onRec) rig.removeEventListener("change", onRec);
+  clearInterval(recTick);
   if (rig.tuning) rig.setTuning(false);
   knobsByTarget.clear();
   root = null;
@@ -507,6 +511,43 @@ async function renderCab() {
   if (clr) clr.onclick = () => { rig.clearIR(); renderCab(); };
 }
 
+// ------------------------------------------------------------------ recorder
+let recTick = 0;
+function renderRecorder(sec) {
+  const box = $("#recBtns", sec);
+  if (!box) return;
+  const key = `${rig.running}|${!!rig.recording}|${!!rig.lastTake}`;
+  if (box.dataset.k === key) return;
+  box.dataset.k = key;
+  clearInterval(recTick);
+  if (rig.recording) {
+    box.innerHTML = `<button class="btn lp-rec live" id="recStop">■ ${esc(t("rig.rec_stop"))}</button><span class="mono" id="recTime">0:00</span>`;
+    recTick = setInterval(() => {
+      const s = Math.floor(rig.recordingSeconds()), el = $("#recTime", sec);
+      if (el) el.textContent = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+    }, 500);
+    $("#recStop", box).onclick = () => { rig.stopRecording(); renderRecorder(sec); };
+    return;
+  }
+  box.innerHTML = `<button class="btn lp-rec" id="recStart" ${rig.running ? "" : "disabled"}>● ${esc(t("rig.rec_start"))}</button>
+    ${rig.lastTake ? `<a class="btn" id="recDl" download>${esc(t("rig.rec_download", { s: Math.round(rig.lastTakeSeconds) }))}</a>
+      <button class="btn" id="recSave">${esc(t("rig.rec_save"))}</button>` : ""}`;
+  $("#recStart", box).onclick = () => { rig.startRecording(); renderRecorder(sec); };
+  const dl = $("#recDl", box);
+  if (dl) {
+    dl.href = URL.createObjectURL(rig.lastTake);
+    dl.download = takeName();
+  }
+  const save = $("#recSave", box);
+  if (save) save.onclick = async () => {
+    const fd = new FormData();
+    fd.append("file", new File([rig.lastTake], takeName(), { type: "audio/wav" }));
+    try { const r = await api("/api/takes", { method: "POST", body: fd }); toast(t("rig.rec_saved", { name: r.name }), true); }
+    catch (e) { toast(e.message); }
+  };
+}
+const takeName = () => `rig-${new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-")}.wav`;
+
 // ------------------------------------------------------------------ looper
 function renderLooper() {
   const sec = $("#sec-looper", root);
@@ -515,7 +556,8 @@ function renderLooper() {
   const pct = L.len ? (L.pos / L.len) * 100 : st === "recording" ? (L.pos / L.max) * 100 : 0;
   if (!sec.firstChild) {
     sec.innerHTML = `<div class="sec-head"><h2>${icon("history")} ${esc(t("rig.sec_looper"))}</h2><p class="muted small">${esc(t("rig.looper_hint"))}</p></div>
-      <div class="panel looper"><div class="row left" id="lpBtns"></div><div class="lp-bar"><i id="lpPos"></i></div><b id="lpState"></b></div>`;
+      <div class="panel looper"><div class="row left" id="lpBtns"></div><div class="lp-bar"><i id="lpPos"></i></div><b id="lpState"></b>
+        <div class="rec-row"><h3>${esc(t("rig.rec_title"))}</h3><div class="row left wrap" id="recBtns"></div><p class="muted small">${esc(t("rig.rec_hint"))}</p></div></div>`;
   }
   const btns = $("#lpBtns", sec);
   const want = `${st}|${running}`;
@@ -529,6 +571,7 @@ function renderLooper() {
       <button class="btn ghost" data-c="clear" ${st !== "empty" ? "" : "disabled"}>${esc(t("rig.lp_clear"))}</button>`;
     $$("button", btns).forEach(b => b.onclick = () => rig.loop(b.dataset.c));
   }
+  renderRecorder(sec);
   $("#lpPos", sec).style.width = pct.toFixed(1) + "%";
   $("#lpPos", sec).className = st;
   $("#lpState", sec).textContent = !running ? t("rig.lp_off") : t(`rig.lp_${st}`, { len: L.len.toFixed(1), pos: L.pos.toFixed(1) });

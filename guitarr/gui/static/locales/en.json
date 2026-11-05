@@ -863,7 +863,14 @@
    "midi_unsupported": "This browser has no MIDI support (try Chrome or Edge).",
    "midi_denied": "The browser didn't allow MIDI access.",
    "fx_volume": "Volume pedal",
-   "fx_volume_desc": "swells and level, great with an expression pedal"
+   "fx_volume_desc": "swells and level, great with an expression pedal",
+   "rec_title": "Record your sound",
+   "rec_hint": "Records what you hear: every effect and the looper. Up to 10 minutes. Your clean takes for grading are saved separately.",
+   "rec_start": "Record",
+   "rec_stop": "Stop",
+   "rec_download": "Download .wav ({{s}} s)",
+   "rec_save": "Save to my takes",
+   "rec_saved": "Saved: {{name}}"
   },
   "plan": {
    "title": "Practice plan",

@@ -182,3 +182,26 @@ def test_rig_tuner_and_midi_expression(app_page):
     }""")
     assert "E4" in result["notes"], result
     assert result["cc"] == 11 and result["top"] == 10 and abs(result["mid"] - 5.04) < 0.01
+
+
+def test_rig_records_a_wav_with_the_effects(app_page):
+    onboarded(app_page)
+    go(app_page, "rig")
+    expect(app_page.get_by_role("heading", name="Amp & effects")).to_be_visible()
+    info = app_page.evaluate("""async () => {
+      const { rig } = await import('/static/lib/rig/engine.js');
+      await rig.setSource({ kind: 'virtual', riff: 'power_riff' });
+      await rig.start();
+      rig.startRecording();
+      await new Promise(r => setTimeout(r, 1500));
+      const blob = rig.stopRecording();
+      await rig.stop();
+      const head = new Uint8Array(await blob.slice(0, 12).arrayBuffer());
+      const pcm = new Int16Array(await blob.slice(44).arrayBuffer());
+      let peak = 0; for (const v of pcm) peak = Math.max(peak, Math.abs(v));
+      return { riff: String.fromCharCode(...head.slice(0, 4)), wave: String.fromCharCode(...head.slice(8, 12)),
+               seconds: rig.lastTakeSeconds, peak };
+    }""")
+    assert info["riff"] == "RIFF" and info["wave"] == "WAVE"
+    assert 1.0 < info["seconds"] < 2.5 and info["peak"] > 100       # it's not silence
+    expect(app_page.locator("#recDl")).to_be_visible()

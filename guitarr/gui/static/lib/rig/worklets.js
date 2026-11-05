@@ -193,3 +193,17 @@ class LooperProcessor extends AudioWorkletProcessor {
   }
 }
 registerProcessor("rig-looper", LooperProcessor);
+
+// ------------------------------------------------------------------ recorder (sends stereo blocks to the page)
+class RecorderProcessor extends AudioWorkletProcessor {
+  constructor() { super(); this.on = false; this.port.onmessage = e => { this.on = e.data === "start"; }; }
+  process(inputs) {
+    const inp = inputs[0];
+    if (this.on && inp.length) {
+      const l = inp[0], r = inp[1] || inp[0];
+      this.port.postMessage([l.slice(0), r.slice(0)]);
+    }
+    return true;
+  }
+}
+registerProcessor("rig-recorder", RecorderProcessor);

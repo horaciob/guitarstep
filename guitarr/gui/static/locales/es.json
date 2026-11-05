@@ -863,7 +863,14 @@
    "midi_unsupported": "Este navegador no soporta MIDI (probá Chrome o Edge).",
    "midi_denied": "El navegador no permitió el acceso MIDI.",
    "fx_volume": "Pedal de volumen",
-   "fx_volume_desc": "swells y nivel, ideal con pedal de expresión"
+   "fx_volume_desc": "swells y nivel, ideal con pedal de expresión",
+   "rec_title": "Grabar tu sonido",
+   "rec_hint": "Graba lo que escuchás: todos los efectos y el looper. Hasta 10 minutos. Tus tomas limpias para corregir se guardan aparte.",
+   "rec_start": "Grabar",
+   "rec_stop": "Parar",
+   "rec_download": "Descargar .wav ({{s}} s)",
+   "rec_save": "Guardar en mis tomas",
+   "rec_saved": "Guardada: {{name}}"
   },
   "plan": {
    "title": "Plan de práctica",

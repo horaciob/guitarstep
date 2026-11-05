@@ -9,6 +9,7 @@ import { VirtualGuitar } from "./synth.js";
 import { detectPitch, noteOf } from "./pitch.js";
 
 const WORKLETS = "/static/lib/rig/worklets.js";
+const MAX_RECORD_S = 600;           // 10 minutes of stereo 16-bit ≈ 115 MB in memory
 
 class Rig extends EventTarget {
   constructor() {
@@ -76,6 +77,44 @@ class Rig extends EventTarget {
     this.startFreePlay();
     this.emit();
   }
+
+  // ---------------------------------------------------------------- recording your sound (with every effect)
+  startRecording() {
+    if (!this.running || this.recording) return;
+    this.recChunks = []; this.recFrames = 0;
+    this.recording = { started: performance.now() };
+    this.recorder.port.postMessage("start");
+    this.emit();
+  }
+  onRecordBlock([l, r]) {
+    if (!this.recording) return;
+    const n = l.length, pcm = new Int16Array(n * 2);
+    for (let i = 0; i < n; i++) {
+      pcm[2 * i] = Math.max(-1, Math.min(1, l[i])) * 32767;
+      pcm[2 * i + 1] = Math.max(-1, Math.min(1, r[i])) * 32767;
+    }
+    this.recChunks.push(pcm);
+    this.recFrames += n;
+    if (this.recFrames >= this.ctx.sampleRate * MAX_RECORD_S) this.stopRecording();
+  }
+  /** Stops and returns the take as a 16-bit stereo WAV blob. */
+  stopRecording() {
+    if (!this.recording) return null;
+    this.recorder.port.postMessage("stop");
+    this.recording = null;
+    const data = this.recChunks, frames = this.recFrames, sr = this.ctx.sampleRate;
+    this.recChunks = [];
+    const head = new DataView(new ArrayBuffer(44)), str = (o, s) => [...s].forEach((ch, i) => head.setUint8(o + i, ch.charCodeAt(0)));
+    str(0, "RIFF"); head.setUint32(4, 36 + frames * 4, true); str(8, "WAVE"); str(12, "fmt ");
+    head.setUint32(16, 16, true); head.setUint16(20, 1, true); head.setUint16(22, 2, true); head.setUint32(24, sr, true);
+    head.setUint32(28, sr * 4, true); head.setUint16(32, 4, true); head.setUint16(34, 16, true); str(36, "data");
+    head.setUint32(40, frames * 4, true);
+    this.lastTake = frames ? new Blob([head, ...data], { type: "audio/wav" }) : null;
+    this.lastTakeSeconds = frames / sr;
+    this.emit();
+    return this.lastTake;
+  }
+  recordingSeconds() { return this.recording ? (performance.now() - this.recording.started) / 1000 : 0; }
 
   // ---------------------------------------------------------------- tuner (mutes the output, like a pedal tuner)
   setTuning(on) {
@@ -169,6 +208,7 @@ class Rig extends EventTarget {
 
   async stop() {
     if (!this.running) return;
+    if (this.recording) this.stopRecording();
     this.running = false;
     clearInterval(this._freeT);
     this.flushFreePlay();
@@ -199,6 +239,8 @@ class Rig extends EventTarget {
     this.limiter.threshold.value = -6; this.limiter.knee.value = 0; this.limiter.ratio.value = 20;
     this.limiter.attack.value = 0.002; this.limiter.release.value = 0.1;
     this.outMeter = c.createAnalyser(); this.outMeter.fftSize = 1024;
+    this.recorder = new AudioWorkletNode(c, "rig-recorder", { numberOfOutputs: 0 });
+    this.recorder.port.onmessage = e => this.onRecordBlock(e.data);
     this.looper = new AudioWorkletNode(c, "rig-looper", { outputChannelCount: [2], processorOptions: { seconds: 90 } });
     this.looper.port.onmessage = e => { this.looperState = e.data; this.emit("looper", e.data); };
     this.tunerAn = c.createAnalyser(); this.tunerAn.fftSize = 4096;
@@ -211,6 +253,7 @@ class Rig extends EventTarget {
     this.level.connect(this.looper).connect(this.mix);
     this.mix.connect(this.mixMeter);
     this.mix.connect(this.master).connect(this.dcBlock).connect(this.limiter).connect(this.outMeter).connect(c.destination);
+    this.limiter.connect(this.recorder);
     this.applyLevels();
   }
 
