@@ -601,6 +601,7 @@ def live_start(body: dict):
             legato=body.get("legato", not chart) and not chart,
             count_extras=not chart, transpose=_int(body.get("transpose")) or 0,
             simulate=sim, fast=bool(body.get("fast")) and sim is not None,
+            backing=bool(body.get("backing")) and chart,
         )
         try:
             sess = LiveSession(ref, opts)

@@ -189,7 +189,8 @@
    "browse_charts": "Tocar un cifrado",
    "browse_charts_hint": "12 progresiones con metrónomo",
    "upload_own": "Subir el tuyo",
-   "kbd_hint": "<kbd>Espacio</kbd> empezar / parar · <kbd>Esc</kbd> parar"
+   "kbd_hint": "<kbd>Espacio</kbd> empezar / parar · <kbd>Esc</kbd> parar",
+   "backing": "Acompañamiento de bajo y batería (usá auriculares)"
   },
   "report": {
    "title": "Resultado",

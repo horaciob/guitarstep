@@ -86,6 +86,7 @@ async function loadDemo() {
     const r = await api("/api/demo", { method: "POST" });
     App.chart = null;
     $("#pChartBanner").hidden = true;
+    $("#pBackingWrap").hidden = true;
     $("#pSongField").hidden = false;
     await loadSongs(r.song);
     await loadTakes();
@@ -158,6 +159,7 @@ async function useChart(id) {
     const info = { ...chart, bars: chart.bars.length };
     App.chart = info;
     showEmptyPractice();
+    $("#pBackingWrap").hidden = false;
     $("#pChartBanner").hidden = false;
     $("#pSongField").hidden = true;
     $("#pTrackWrap").hidden = true;
@@ -177,6 +179,7 @@ async function useChart(id) {
 $("#pChartClear").addEventListener("click", () => {
   App.chart = null;
   $("#pChartBanner").hidden = true;
+  $("#pBackingWrap").hidden = true;
   $("#pSongField").hidden = false;
   history.replaceState(null, "", "#/practice");
   if (App.songs.length) onSongChange("p");
@@ -291,7 +294,7 @@ $("#pStartBtn").addEventListener("click", async () => {
     ...refBody("p"), mode: App.mode, speed: $("#pSpeed").value / 100, click: $("#pClick").checked,
     loop: $("#pLoop").checked, trainer: $("#pTrainer").checked, speed_step: $("#pStep").value,
     target: $("#pTarget").value, max_speed: $("#pMax").value, legato: $("#pLegato").checked,
-    simulate: $("#pSimulate").value || null,
+    simulate: $("#pSimulate").value || null, backing: !!App.chart && $("#pBacking").checked && $("#pClick").checked,
   };
   if (!body.song && !body.chart) return toast(t("practice.pick_song_first"));
   try {

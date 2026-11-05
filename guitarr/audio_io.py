@@ -150,7 +150,8 @@ class Metronome:
     `clicks` is a list of (time, accent) that can keep growing while it plays
     (for loops and speed changes)."""
 
-    def __init__(self, device, src: MicSource, clicks: list[tuple[float, bool]], volume: float = 1.0):
+    def __init__(self, device, src: MicSource, clicks: list[tuple[float, bool]], volume: float = 1.0,
+                 backing: list[tuple[float, str]] | None = None, backing_volume: float = 0.5):
         sd = _sd()
         dev = parse_device(device)
         try:
@@ -165,6 +166,24 @@ class Metronome:
         tt = np.arange(n) / sr
         self.wave = {True: (0.6 * volume * env * np.sin(2 * np.pi * 1600 * tt)).astype(np.float32),
                      False: (0.4 * volume * env * np.sin(2 * np.pi * 1000 * tt)).astype(np.float32)}
+        self.backing = backing if backing is not None else []
+        self.bidx = 0
+        self.sounds = BackingSounds(sr, backing_volume)
+
+        def mix(outdata, frames, lo, hi, items, start, wave_of):
+            """Adds the items that sound in [lo, hi) and returns the first index still needed."""
+            j, first = start, start
+            while j < len(items) and items[j][0] < hi:
+                ct, key = items[j]
+                w = wave_of(key)
+                off = int(round((ct - lo) * sr))
+                a, b = max(0, off), min(frames, off + len(w))
+                if b > a:
+                    outdata[a:b, 0] += w[a - off:b - off]
+                if ct + len(w) / sr < hi and first == j:
+                    first = j + 1
+                j += 1
+            return first
 
         def cb(outdata, frames, t, status):
             outdata.fill(0)
@@ -174,18 +193,9 @@ class Metronome:
             dac = t.outputBufferDacTime or (t.currentTime + (st.latency if st else 0.0))
             lo = dac - self.src.adc0
             hi = lo + frames / sr
-            j = self.idx
-            clicks = self.clicks
-            while j < len(clicks) and clicks[j][0] < hi:
-                ct, acc = clicks[j]
-                w = self.wave[acc]
-                off = int(round((ct - lo) * sr))
-                a, b = max(0, off), min(frames, off + len(w))
-                if b > a:
-                    outdata[a:b, 0] += w[a - off:b - off]
-                if ct + len(w) / sr < hi:
-                    self.idx = j + 1
-                j += 1
+            self.idx = mix(outdata, frames, lo, hi, self.clicks, self.idx, self.wave.__getitem__)
+            if self.backing:
+                self.bidx = mix(outdata, frames, lo, hi, self.backing, self.bidx, self.sounds.get)
 
         try:
             self.stream = sd.OutputStream(device=dev, channels=1, samplerate=sr, blocksize=BLOCK,
@@ -202,6 +212,42 @@ class Metronome:
             self.stream.close()
         except Exception:
             pass
+
+
+class BackingSounds:
+    """Synthesized drums and bass for the chart backing (made once per sound)."""
+
+    def __init__(self, sr: int, volume: float = 0.5):
+        self.sr, self.volume, self.cache = sr, volume, {}
+
+    def get(self, key: str) -> np.ndarray:
+        w = self.cache.get(key)
+        if w is None:
+            w = self.cache[key] = (self.volume * self._make(key)).astype(np.float32)
+        return w
+
+    def _make(self, key: str) -> np.ndarray:
+        sr, rng = self.sr, np.random.default_rng(7)
+        if key == "kick":
+            n = int(0.25 * sr); t = np.arange(n) / sr
+            f = 45 + 75 * np.exp(-t / 0.03)
+            return 0.9 * np.sin(2 * np.pi * np.cumsum(f) / sr) * np.exp(-t / 0.09)
+        if key == "snare":
+            n = int(0.18 * sr); t = np.arange(n) / sr
+            noise = rng.standard_normal(n)
+            noise = noise - np.convolve(noise, np.ones(4) / 4, mode="same")     # brighter
+            return (0.35 * noise * np.exp(-t / 0.05) + 0.3 * np.sin(2 * np.pi * 185 * t) * np.exp(-t / 0.03))
+        if key == "hat":
+            n = int(0.05 * sr); t = np.arange(n) / sr
+            noise = np.diff(rng.standard_normal(n + 1))
+            return 0.12 * noise * np.exp(-t / 0.012)
+        if key.startswith("bass:"):
+            midi = int(key.split(":")[1])
+            f = 440 * 2 ** ((midi - 69) / 12)
+            n = int(0.7 * sr); t = np.arange(n) / sr
+            env = np.minimum(1, t / 0.005) * np.exp(-t / 0.35)
+            return 0.7 * env * (np.sin(2 * np.pi * f * t) + 0.35 * np.sin(4 * np.pi * f * t) + 0.12 * np.sin(6 * np.pi * f * t))
+        return np.zeros(1)
 
 
 def check_platform() -> str | None:

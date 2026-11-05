@@ -189,7 +189,8 @@
    "browse_charts": "Play a chord chart",
    "browse_charts_hint": "12 progressions with a metronome",
    "upload_own": "Upload your own",
-   "kbd_hint": "<kbd>Space</kbd> start / stop · <kbd>Esc</kbd> stop"
+   "kbd_hint": "<kbd>Space</kbd> start / stop · <kbd>Esc</kbd> stop",
+   "backing": "Bass & drums backing (use headphones)"
   },
   "report": {
    "title": "Result",

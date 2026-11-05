@@ -205,3 +205,12 @@ def test_rig_records_a_wav_with_the_effects(app_page):
     assert info["riff"] == "RIFF" and info["wave"] == "WAVE"
     assert 1.0 < info["seconds"] < 2.5 and info["peak"] > 100       # it's not silence
     expect(app_page.locator("#recDl")).to_be_visible()
+
+
+def test_chart_practice_offers_a_backing_track(app_page):
+    onboarded(app_page)
+    go(app_page, "practice?chart=01-em-am")
+    expect(app_page.locator("#pChartBanner")).to_be_visible()
+    expect(app_page.locator("#pBackingWrap")).to_be_visible()
+    app_page.locator("#pChartClear").click()
+    expect(app_page.locator("#pBackingWrap")).to_be_hidden()

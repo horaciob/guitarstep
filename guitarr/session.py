@@ -48,6 +48,7 @@ class LiveOptions:
     transpose: int = 0
     simulate: Path | None = None
     fast: bool = False
+    backing: bool = False            # bass & drums with the metronome (chord charts)
     save_dir: Path = field(default_factory=lambda: config.TAKES_DIR)
 
 
@@ -76,6 +77,7 @@ class LiveSession:
                                           loop=opts.loop, trainer=trainer, count_in=opts.count_in,
                                           click=self.use_click, timing_tol=opts.timing_tol,
                                           count_extras=opts.count_extras)
+            self.follower.capo = getattr(ref, "capo", 0) or 0
         # analysis lag: detector frame + pitch window after the onset
         need = max(PITCH_OFF + PITCH_LEN, CHROMA_OFF + CHROMA_LEN / self.sr)
         self.analysis_lag = (NFFT + 2 * HOP) / self.sr + need
@@ -114,7 +116,8 @@ class LiveSession:
         try:
             if self.use_click:
                 f.schedule(1.0)  # 1 s for the audio to start, then the count-in
-                metro = Metronome(self.opts.output_device, src, f.clicks)
+                metro = Metronome(self.opts.output_device, src, f.clicks,
+                                  backing=getattr(f, "backing", None) if self.opts.backing else None)
                 metro.start()
             last_ui = 0.0
             ended = False

@@ -10,6 +10,8 @@ The web UI translates `code` + `params`; the CLI prints `text`.
 """
 from __future__ import annotations
 
+import re
+
 from dataclasses import dataclass, field
 
 import numpy as np
@@ -134,6 +136,45 @@ def group_events(notes: list[Note], win: float = 0.035) -> list[Event]:
         else:
             evs.append(Event(n.start, [n.pitch], [(n.string, n.fret)], name=n.label))
     return evs
+
+
+_ROOTS = dict(C=0, D=2, E=4, F=5, G=7, A=9, B=11)
+
+
+def chord_root(name: str | None) -> int | None:
+    """Pitch class of a chord's bass note: "F#m7" → 6, "C/G" → 7."""
+    if not name:
+        return None
+    part = name.split("/")[-1] if "/" in name else name
+    m = re.match(r"([A-G])([#b]?)", part.strip())
+    if not m:
+        return None
+    return (_ROOTS[m.group(1)] + {"#": 1, "b": -1, "": 0}[m.group(2)]) % 12
+
+
+def backing_track(events, grid, bar0: float, section_end: float, bar_start: float, speed: float, capo: int = 0):
+    """Bass & drums for a chord chart, as (time, sound) on the input clock.
+    Drums: kick on 1 (and 3), snare on the backbeats, hi-hat in eighths. Bass: the chord's
+    root on 1 (and 3), between E1 and D#2; chord names are relative to the capo, so it's added.
+    Sounds: "kick", "snare", "hat", "bass:<midi>"."""
+    names = [(e.time, e.name) for e in events if e.name]
+    out = []
+    k = 0
+    for bi, b in enumerate(grid.beats):
+        if not (bar0 - 1e-3 <= b < section_end - 1e-3):
+            continue
+        k = 0 if grid.is_downbeat(bi) else k + 1
+        t = bar_start + (b - bar0) / speed
+        nxt = grid.beats[bi + 1] if bi + 1 < len(grid.beats) else b + grid.beat_len(b)
+        half = (nxt - b) / speed / 2
+        strong = k == 0 or (grid.bpb >= 4 and k == grid.bpb // 2)
+        out.append((t, "kick" if strong else "snare"))
+        out += [(t, "hat"), (t + half, "hat")]
+        chord = next((n for tm, n in reversed(names) if tm <= b + 1e-3), names[0][1] if names else None)
+        root = chord_root(chord)
+        if strong and root is not None:
+            out.append((t, f"bass:{28 + (root + capo - 4) % 12}"))
+    return sorted(out)
 
 
 def min_repeat_gap(events: list[Event], speed: float = 1.0) -> float:
@@ -326,6 +367,8 @@ class TempoFollower:
         self.passes: list[dict] = []
         self.history: list[list[dict]] = []
         self.clicks: list[tuple[float, bool]] = []  # append-only (read by the metronome)
+        self.backing: list[tuple[float, str]] = []  # append-only: (time, sound) for bass & drums (charts)
+        self.capo = 0                               # set by the session for charts with a capo
         self.pass_end = np.inf
         self.finished = False
         self.bar0 = grid.bar_time(grid.bar_index(events[0].time))  # start of the first note's bar
@@ -357,6 +400,7 @@ class TempoFollower:
             if self.bar0 - 1e-3 <= b < self.section_end - 1e-3:
                 clicks.append((bar_start + (b - self.bar0) / self.speed, g.is_downbeat(bi)))
         self.clicks.extend(sorted(clicks))
+        self.backing.extend(backing_track(self.events, g, self.bar0, self.section_end, bar_start, self.speed, self.capo))
 
     def start(self, t_first: float) -> None:
         """Without a metronome: your first note sets the start."""
