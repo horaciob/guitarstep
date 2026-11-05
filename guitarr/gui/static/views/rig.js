@@ -10,7 +10,8 @@ import { knob } from "../lib/rig/knob.js";
 import { RIFFS, VOICES } from "../lib/rig/synth.js";
 
 const HP_KEY = "guitarr.rig.headphones";
-let root = null, raf = 0, onChange = null, onLoop = null, confirmDelete = false;
+let root = null, raf = 0, onChange = null, onLoop = null, onParam = null, onMidi = null, confirmDelete = false;
+const knobsByTarget = new Map();      // "uid:param" or "master" → knob element (to follow an expression pedal)
 
 const fmt = (unit, v) => {
   if (unit === "dB") return `${v > 0 ? "+" : ""}${(+v).toFixed(Math.abs(v) < 10 && v % 1 ? 1 : 0)} dB`;
@@ -32,6 +33,7 @@ export async function mount(el) {
     <div class="rig-bar panel" id="rigBar"></div>
     <div class="rig-hp callout" id="rigHp" hidden></div>
     <div class="panel rig-source" id="rigSource"></div>
+    <div class="panel rig-tools" id="rigTools"></div>
     <nav class="flow" id="rigFlow" aria-label="${esc(t("rig.flow"))}"></nav>
     <section class="rig-sec" id="sec-guitar"></section>
     <section class="rig-sec" id="sec-pedals"></section>
@@ -42,11 +44,20 @@ export async function mount(el) {
     <dialog class="rig-dialog" id="fxDialog"></dialog>
     <p class="muted small center">${esc(t("rig.clean_note"))}</p>`;
   renderAll();
-  onChange = () => { updateBar(); renderFlow(); };
+  let toolsKey = "";
+  onChange = () => {
+    updateBar(); renderFlow();
+    const k = JSON.stringify([rig.running, !!rig.tuning, !!rig.midiAccess, rig.midiLearning, rig.midiTargets().length]);
+    if (k !== toolsKey) { toolsKey = k; renderTools(); }
+  };
   onLoop = () => renderLooper();
   rig.addEventListener("change", onChange);
   rig.addEventListener("looper", onLoop);
-  const tick = () => { meters(); raf = requestAnimationFrame(tick); };
+  onParam = e => { const k = knobsByTarget.get(e.detail.target); if (k && k.isConnected) k.setValue(e.detail.value); };
+  onMidi = () => renderTools();
+  rig.addEventListener("param", onParam);
+  rig.addEventListener("midi", onMidi);
+  const tick = () => { meters(); tunerTick(); raf = requestAnimationFrame(tick); };
   raf = requestAnimationFrame(tick);
 }
 
@@ -54,11 +65,15 @@ export function unmount() {
   cancelAnimationFrame(raf);
   if (onChange) rig.removeEventListener("change", onChange);
   if (onLoop) rig.removeEventListener("looper", onLoop);
+  if (onParam) rig.removeEventListener("param", onParam);
+  if (onMidi) rig.removeEventListener("midi", onMidi);
+  if (rig.tuning) rig.setTuning(false);
+  knobsByTarget.clear();
   root = null;
 }
 
 function renderAll() {
-  renderBar(); renderSource(); renderFlow(); renderGuitar(); renderBoard("pedals"); renderAmp(); renderCab(); renderBoard("post"); renderLooper();
+  renderBar(); renderSource(); renderTools(); renderFlow(); renderGuitar(); renderBoard("pedals"); renderAmp(); renderCab(); renderBoard("post"); renderLooper();
 }
 
 // ------------------------------------------------------------------ top bar: power, presets, levels
@@ -112,6 +127,7 @@ function renderBar() {
     knob({ label: t("rig.input_trim"), min: -24, max: 24, step: 0.5, value: rig.state.input.trim, def: 0, size: 44, format: v => fmt("dB", v), onInput: v => rig.setLevel("input", v) }),
     knob({ label: t("rig.level"), min: -24, max: 12, step: 0.5, value: rig.state.level || 0, def: 0, size: 44, format: v => fmt("dB", v), onInput: v => rig.setLevel("level", v) }),
     knob({ label: t("rig.volume"), min: -40, max: 6, step: 0.5, value: rig.state.master.volume, def: -12, size: 44, format: v => fmt("dB", v), onInput: v => rig.setLevel("master", v) }));
+  knobsByTarget.set("master", trims.lastChild);
   $("#rigPower", bar).onclick = () => power();
   $("#rigPreset", bar).onchange = e => loadPreset(e.target.value);
   $("#rigSave", bar).onclick = savePreset;
@@ -245,6 +261,54 @@ function renderSource() {
   on("#srcCh", "change", e => rig.setSource({ channel: +e.target.value }));
 }
 
+// ------------------------------------------------------------------ tuner and expression pedal
+function renderTools() {
+  const box = $("#rigTools", root);
+  if (!box) return;
+  const m = rig.source.midi || {};
+  const targets = rig.midiTargets();
+  const label = tg => tg.type === "master" ? t("rig.volume") : `${t(`rig.fx_${tg.type}`)} · ${paramLabel(tg.param)}`;
+  box.innerHTML = `
+    <div class="tool-col">
+      <h3>${esc(t("rig.tuner"))}</h3>
+      <div class="row left wrap"><button class="btn small${rig.tuning ? " primary" : ""}" id="tuneBtn" ${rig.running ? "" : "disabled"} aria-pressed="${!!rig.tuning}">${esc(t(rig.tuning ? "rig.tuner_off" : "rig.tuner_on"))}</button>
+        <span class="muted small">${esc(t(rig.running ? "rig.tuner_hint" : "rig.tuner_needs_on"))}</span></div>
+      <div class="rig-tuner" id="rigTuner" ${rig.tuning ? "" : "hidden"}><b id="rtNote">—</b><div class="mt-scale"><i class="mt-mid"></i><i class="mt-needle" id="rtNeedle"></i></div><small class="muted" id="rtInfo"></small></div>
+    </div>
+    <div class="tool-col">
+      <h3>${esc(t("rig.expression"))}</h3>
+      ${rig.midiAccess ? `<div class="row left wrap">
+          <button class="btn small${rig.midiLearning ? " primary" : ""}" id="midiLearn">${esc(rig.midiLearning ? t("rig.midi_move") : m.cc != null ? t("rig.midi_cc", { cc: m.cc }) : t("rig.midi_learn"))}</button>
+          <label class="field-inline small">${esc(t("rig.midi_target"))}
+            <select id="midiTarget"><option value="">—</option>${targets.map(tg => `<option value="${esc(tg.id)}" ${tg.id === m.target ? "selected" : ""}>${esc(label(tg))}</option>`).join("")}</select></label></div>
+          <p class="muted small">${esc(t("rig.midi_devices", { names: [...rig.midiAccess.inputs.values()].map(i => i.name).join(", ") || "—" }))}</p>`
+        : `<div class="row left wrap"><button class="btn small" id="midiConnect">${esc(t("rig.midi_connect"))}</button><span class="muted small">${esc(t("rig.midi_hint"))}</span></div>`}
+    </div>`;
+  const tb = $("#tuneBtn", box);
+  if (tb) tb.onclick = () => { rig.setTuning(!rig.tuning); renderTools(); };
+  const mc = $("#midiConnect", box);
+  if (mc) mc.onclick = async () => {
+    try { await rig.connectMidi(); renderTools(); }
+    catch (e) { toast(e.message === "no_midi" ? t("rig.midi_unsupported") : t("rig.midi_denied")); }
+  };
+  const ml = $("#midiLearn", box);
+  if (ml) ml.onclick = () => { rig.learnMidi(!rig.midiLearning); renderTools(); };
+  const mt = $("#midiTarget", box);
+  if (mt) mt.onchange = e => rig.setMidiTarget(e.target.value || null);
+}
+
+function tunerTick() {
+  if (!rig.tuning) return;
+  const p = rig.pitch(), note = $("#rtNote", root), needle = $("#rtNeedle", root), info = $("#rtInfo", root);
+  if (!note) return;
+  if (!p) { note.textContent = "—"; note.className = ""; needle.style.left = "50%"; info.textContent = t("tuner.play_open"); return; }
+  const c = p.string ? p.stringCents : p.cents, ok = Math.abs(c) <= 5;
+  note.textContent = p.note; note.className = ok ? "ok" : "";
+  needle.style.left = (50 + Math.max(-50, Math.min(50, c))) + "%";
+  needle.className = "mt-needle" + (ok ? " ok" : "");
+  info.textContent = `${c > 0 ? "+" : ""}${c.toFixed(0)}¢ · ${p.freq.toFixed(1)} Hz` + (p.string ? ` · ${t("tuner.string_n", { n: p.string })}` : "");
+}
+
 // ------------------------------------------------------------------ signal flow strip
 function renderFlow() {
   const f = $("#rigFlow", root);
@@ -336,8 +400,10 @@ function pedal(e, where) {
       });
       choices.append(seg);
     } else {
-      knobs.append(knob({ label: paramLabel(p.id), min: p.min, max: p.max, step: p.step, value: e.params[p.id], def: p.def, size: 46,
-        format: v => fmt(p.unit, v), onInput: v => rig.setEffectParam(e.uid, p.id, v) }));
+      const k = knob({ label: paramLabel(p.id), min: p.min, max: p.max, step: p.step, value: e.params[p.id], def: p.def, size: 46,
+        format: v => fmt(p.unit, v), onInput: v => rig.setEffectParam(e.uid, p.id, v) });
+      knobsByTarget.set(`${e.uid}:${p.id}`, k);
+      knobs.append(k);
     }
   }
   $(".footswitch", el).onclick = () => { rig.toggleEffect(e.uid); el.classList.toggle("on", e.on); $(".footswitch", el).setAttribute("aria-pressed", e.on); };

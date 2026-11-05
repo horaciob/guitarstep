@@ -47,3 +47,9 @@ def app_page(page, server_url):
     page.base = server_url
     yield page
     assert not errors, errors
+
+
+@pytest.fixture(scope="session")
+def browser_type_launch_args(browser_type_launch_args):
+    # let the tone rig's AudioContext start without a click (headless has no audio output anyway)
+    return {**browser_type_launch_args, "args": ["--autoplay-policy=no-user-gesture-required"]}

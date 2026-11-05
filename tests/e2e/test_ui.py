@@ -152,3 +152,33 @@ def test_reminder_settings_are_saved(app_page):
     import urllib.request
     r = json.load(urllib.request.urlopen(app_page.base + "/api/reminder"))
     assert r["enabled"] and r["time"] == "07:45" and "{left}" in r["body"]
+
+
+def test_rig_tuner_and_midi_expression(app_page):
+    onboarded(app_page)
+    go(app_page, "rig")
+    expect(app_page.get_by_role("heading", name="Amp & effects")).to_be_visible()
+    result = app_page.evaluate("""async () => {
+      const { rig } = await import('/static/lib/rig/engine.js');
+      const { makeEffect } = await import('/static/lib/rig/presets.js');
+      await rig.setSource({ kind: 'virtual', riff: 'sustained' });
+      await rig.start();
+      rig.setTuning(true);
+      const notes = new Set();
+      for (let i = 0; i < 60; i++) { const p = rig.pitch(); if (p) notes.add(p.note); await new Promise(r => setTimeout(r, 100)); }
+      rig.setTuning(false);
+      const vol = makeEffect('volume');
+      rig.addEffect('pedals', vol);
+      rig.learnMidi(true);
+      rig.onMidi([0xB0, 11, 0]);                       // learns CC 11
+      rig.setMidiTarget(vol.uid + ':level');
+      rig.onMidi([0xB0, 11, 127]);
+      const top = rig.find(vol.uid).e.params.level;
+      rig.onMidi([0xB0, 11, 64]);
+      const mid = rig.find(vol.uid).e.params.level;
+      rig.onMidi([0x90, 11, 10]);                      // a note-on is ignored
+      await rig.stop();
+      return { notes: [...notes], cc: rig.source.midi.cc, top, mid };
+    }""")
+    assert "E4" in result["notes"], result
+    assert result["cc"] == 11 and result["top"] == 10 and abs(result["mid"] - 5.04) < 0.01

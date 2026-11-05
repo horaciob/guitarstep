@@ -6,6 +6,7 @@ import { biquad, dbToGain, gainNode, ramp } from "./dsp.js";
 import { buildAmp, buildCab, buildGuitar, EFFECTS } from "./effects.js";
 import { defaultRig, normalize } from "./presets.js";
 import { VirtualGuitar } from "./synth.js";
+import { detectPitch, noteOf } from "./pitch.js";
 
 const WORKLETS = "/static/lib/rig/worklets.js";
 
@@ -76,6 +77,74 @@ class Rig extends EventTarget {
     this.emit();
   }
 
+  // ---------------------------------------------------------------- tuner (mutes the output, like a pedal tuner)
+  setTuning(on) {
+    this.tuning = !!on;
+    this.applyLevels();
+    this.emit();
+  }
+  /** Current pitch of the input, or null. */
+  pitch() {
+    if (!this.running || !this.tunerAn) return null;
+    const buf = new Float32Array(this.tunerAn.fftSize);
+    this.tunerAn.getFloatTimeDomainData(buf);
+    const f = detectPitch(buf, this.ctx.sampleRate);
+    return f ? { freq: f, ...noteOf(f) } : null;
+  }
+
+  // ---------------------------------------------------------------- MIDI expression pedal
+  /** Asks the browser for MIDI access and listens to every input. */
+  async connectMidi() {
+    if (!navigator.requestMIDIAccess) throw new Error("no_midi");
+    this.midiAccess = this.midiAccess || await navigator.requestMIDIAccess();
+    const attach = () => this.midiAccess.inputs.forEach(inp => { inp.onmidimessage = e => this.onMidi(e.data); });
+    attach();
+    this.midiAccess.onstatechange = attach;
+    this.emit();
+    return [...this.midiAccess.inputs.values()].map(i => i.name);
+  }
+  learnMidi(on = true) { this.midiLearning = on; this.emit(); }
+  setMidiTarget(target) { this.source.midi = { ...(this.source.midi || {}), target }; this.save(); this.emit(); }
+  /** Targets an expression pedal can move: the volume, or any knob in the chain. */
+  midiTargets() {
+    const out = [{ id: "master", type: "master" }];
+    for (const where of ["pedals", "post"]) {
+      for (const e of this.state[where]) {
+        for (const p of EFFECTS[e.type].params) if (p.type !== "choice") out.push({ id: `${e.uid}:${p.id}`, type: e.type, param: p.id });
+      }
+    }
+    return out;
+  }
+  onMidi(data) {
+    const [status, cc, value] = data;
+    if ((status & 0xf0) !== 0xb0) return;                     // control change only
+    if (this.midiLearning) {
+      this.source.midi = { ...(this.source.midi || {}), cc };
+      this.midiLearning = false;
+      this.save();
+      this.emit("midi", { learned: cc });
+      this.emit();
+      return;
+    }
+    const m = this.source.midi;
+    if (!m || m.cc !== cc || !m.target) return;
+    const v = value / 127;
+    if (m.target === "master") {
+      this.state.master.volume = Math.round((-40 + 40 * v) * 2) / 2;
+      this.applyLevels();
+      this.save();
+      this.emit("param", { target: "master", value: this.state.master.volume });
+      return;
+    }
+    const [uidv, param] = m.target.split(":");
+    const f = this.find(uidv);
+    const spec = f && EFFECTS[f.e.type].params.find(p => p.id === param);
+    if (!spec) return;
+    const val = spec.min + (spec.max - spec.min) * v;
+    this.setEffectParam(uidv, param, val);
+    this.emit("param", { target: m.target, value: val });
+  }
+
   // ---------------------------------------------------------------- free play → practice plan
   /** With your real guitar in, time with signal counts as free play (pauses over 8 s don't). */
   startFreePlay() {
@@ -132,6 +201,8 @@ class Rig extends EventTarget {
     this.outMeter = c.createAnalyser(); this.outMeter.fftSize = 1024;
     this.looper = new AudioWorkletNode(c, "rig-looper", { outputChannelCount: [2], processorOptions: { seconds: 90 } });
     this.looper.port.onmessage = e => { this.looperState = e.data; this.emit("looper", e.data); };
+    this.tunerAn = c.createAnalyser(); this.tunerAn.fftSize = 4096;
+    this.inTrim.connect(this.tunerAn);
     this.inTrim.connect(this.inMeter);
     this.inTrim.connect(this.chainIn);
     this.level = gainNode(c);           // the sound's own level (saved with presets)
@@ -146,7 +217,7 @@ class Rig extends EventTarget {
   applyLevels() {
     if (!this.ctx) return;
     ramp(this.ctx, this.inTrim.gain, dbToGain(this.state.input.trim));
-    ramp(this.ctx, this.master.gain, dbToGain(this.state.master.volume));
+    ramp(this.ctx, this.master.gain, this.tuning ? 0 : dbToGain(this.state.master.volume));
     ramp(this.ctx, this.level.gain, dbToGain(this.state.level || 0));
   }
 

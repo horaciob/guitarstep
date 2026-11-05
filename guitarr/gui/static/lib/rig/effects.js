@@ -29,6 +29,16 @@ export const EFFECTS = {
       return { input: n, output: n, set, dispose: disposer(n) };
     },
   },
+  volume: {
+    group: "dynamics", color: "#9aa0ad",
+    params: [ten("level", 10)],
+    build(ctx, p) {
+      const g = gainNode(ctx);
+      const set = (k, v) => { if (k === "level") ramp(ctx, g.gain, (v / 10) ** 2, 0.02); };   // squared: feels even
+      Object.entries(p).forEach(([k, v]) => set(k, v));
+      return { input: g, output: g, set, dispose: () => {} };
+    },
+  },
   compressor: {
     group: "dynamics", color: "#4f9dde",
     params: [ten("sustain", 5), knob("attack", 1, 50, 8, "ms", 1), ten("level", 6), ten("blend", 10)],
