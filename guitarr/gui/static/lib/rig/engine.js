@@ -379,3 +379,4 @@ class Rig extends EventTarget {
 }
 
 export const rig = new Rig();
+window.dispatchEvent(new CustomEvent("guitarr:rig-ready", { detail: rig }));

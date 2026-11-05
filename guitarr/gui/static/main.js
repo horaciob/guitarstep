@@ -5,9 +5,8 @@ await initI18n();
 applyDom();
 
 const { LISTENER_ROUTES, showListenerView, hideListenerViews } = await import("./app.js");
-const { $, $$, api, esc, toast } = await import("./lib/ui.js");
+const { $, $$, api, esc, isOnboarded, toast } = await import("./lib/ui.js");
 const { fillIcons } = await import("./lib/icons.js");
-const { isOnboarded } = await import("./views/setup.js");
 fillIcons();
 
 const VIEWS = {
@@ -69,7 +68,14 @@ async function refreshProgress() {
 }
 
 // The tone rig keeps playing across pages: show it in the sidebar with an off switch.
-const { rig } = await import("./lib/rig/engine.js");
+// Its engine is only loaded when you open the rig page (or something else needs it).
+let rig = null;
+window.addEventListener("guitarr:rig-ready", e => {
+  if (rig) return;
+  rig = e.detail;
+  rig.addEventListener("change", refreshRigPill);
+  refreshRigPill();
+});
 function refreshRigPill() {
   const pill = $("#rigPill");
   pill.hidden = !rig.running;
@@ -77,10 +83,9 @@ function refreshRigPill() {
   const p = rig.preset;
   $("#rigPillName").textContent = t("rig.pill", { name: p ? (p.kind === "factory" ? t(`rig.preset.${p.id}`) : p.name) : t("rig.custom") });
 }
-rig.addEventListener("change", refreshRigPill);
 $("#rigPillOff").title = t("rig.turn_off");
 $("#rigPillOff").setAttribute("aria-label", t("rig.turn_off"));
-$("#rigPillOff").onclick = () => rig.stop();
+$("#rigPillOff").onclick = () => rig && rig.stop();
 
 // Practice plan: today's minutes in the sidebar, the running timer (kept alive with a
 // heartbeat while any page is open) and a nudge after each session.

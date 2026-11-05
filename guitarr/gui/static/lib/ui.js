@@ -48,6 +48,15 @@ function nextToast() {
   setTimeout(nextToast, toastQueue.length ? 3200 : 4500);
 }
 
+// First-run setup: done (or skipped) once per browser.
+const ONBOARDED = "guitarr.onboarded";
+export function isOnboarded() {
+  try { return localStorage.getItem(ONBOARDED) === "1"; } catch { return true; }
+}
+export function markOnboarded() {
+  try { localStorage.setItem(ONBOARDED, "1"); } catch { /* storage unavailable */ }
+}
+
 export const progressChanged = () => window.dispatchEvent(new CustomEvent("guitarr:progress"));
 
 export function youtubeSearch(q) {

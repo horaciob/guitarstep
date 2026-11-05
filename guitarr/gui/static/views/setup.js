@@ -1,19 +1,12 @@
 // First-run setup: pick the guitar input (with a live level meter), tune, and start playing.
 import { t, tc } from "../lib/i18n.js";
-import { $, $$, api, esc, toast } from "../lib/ui.js";
+import { $, $$, api, esc, markOnboarded, toast } from "../lib/ui.js";
 import { icon } from "../lib/icons.js";
 import { levelVerdict, meterHtml, openInput, setMeter } from "../lib/input.js";
 
-const KEY = "guitarr.onboarded";
 const STD = [[40, 6, "E2"], [45, 5, "A2"], [50, 4, "D3"], [55, 3, "G3"], [59, 2, "B3"], [64, 1, "E4"]];
 const STEPS = ["welcome", "input", "tune", "done"];
 
-export function isOnboarded() {
-  try { return localStorage.getItem(KEY) === "1"; } catch { return true; }
-}
-function markOnboarded() {
-  try { localStorage.setItem(KEY, "1"); } catch { /* storage unavailable */ }
-}
 
 let input = null, retry = null;
 
