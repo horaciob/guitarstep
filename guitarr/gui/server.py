@@ -384,6 +384,13 @@ def api_plan_remove(cid: str):
     return _plan(plan.remove_category, cid)
 
 
+@app.post("/api/plan/free")
+def api_plan_free(body: dict):
+    if S.session and S.session.running:          # the listening session already counts this time
+        return dict(counted=0.0)
+    return dict(counted=_plan(plan.record_free_play, body.get("seconds")))
+
+
 @app.post("/api/plan/timer")
 def api_plan_timer(body: dict):
     return _plan(plan.timer, str(body.get("action") or ""), body.get("category"))

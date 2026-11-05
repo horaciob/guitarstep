@@ -921,7 +921,10 @@
    "err_last_category": "Keep at least one category.",
    "err_timer_busy": "Stop its timer first.",
    "err_no_category": "That category no longer exists.",
-   "err_generic": "Something went wrong. Try again."
+   "err_generic": "Something went wrong. Try again.",
+   "cat_free": "Free play",
+   "no_goal": "No goal of its own",
+   "auto_free": "counts while the amp & effects are on"
   },
   "data": {
    "title": "Your data",

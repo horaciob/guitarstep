@@ -72,12 +72,37 @@ class Rig extends EventTarget {
     }
     this.running = true;
     this.rebuild(true);
+    this.startFreePlay();
     this.emit();
+  }
+
+  // ---------------------------------------------------------------- free play → practice plan
+  /** With your real guitar in, time with signal counts as free play (pauses over 8 s don't). */
+  startFreePlay() {
+    clearInterval(this._freeT);
+    this._freeAcc = 0; this._lastSignal = 0;
+    this._freeT = setInterval(() => {
+      if (!this.running || this.source.kind !== "input") return;
+      const now = performance.now();
+      if (this.levels().input > -45) this._lastSignal = now;
+      if (this._lastSignal && now - this._lastSignal <= 8000) this._freeAcc += 0.5;
+      if (this._freeAcc >= 30) this.flushFreePlay();
+    }, 500);
+  }
+  flushFreePlay() {
+    const seconds = Math.round(this._freeAcc || 0);
+    this._freeAcc = 0;
+    if (seconds < 1) return;
+    fetch("/api/plan/free", { method: "POST", keepalive: true, headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ seconds }) })
+      .then(() => window.dispatchEvent(new CustomEvent("guitarr:plan-refresh"))).catch(() => {});
   }
 
   async stop() {
     if (!this.running) return;
     this.running = false;
+    clearInterval(this._freeT);
+    this.flushFreePlay();
     this.disconnectSource();
     if (this.ctx) await this.ctx.suspend();
     this.emit();
@@ -412,5 +437,5 @@ class Rig extends EventTarget {
 }
 
 export const rig = new Rig();
-window.addEventListener("pagehide", () => rig.flush());
+window.addEventListener("pagehide", () => { rig.flush(); rig.flushFreePlay(); });
 window.dispatchEvent(new CustomEvent("guitarr:rig-ready", { detail: rig }));

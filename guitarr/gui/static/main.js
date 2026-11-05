@@ -142,6 +142,7 @@ async function refreshPlan(afterSession = false) {
 }
 window.addEventListener("guitarr:plan-changed", e => showPlan(e.detail));
 window.addEventListener("guitarr:progress", () => refreshPlan(true));
+window.addEventListener("guitarr:plan-refresh", () => refreshPlan(false));
 refreshPlan();
 
 // Daily reminder without a desktop notifier (e.g. Docker): the open page shows it.

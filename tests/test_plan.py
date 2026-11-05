@@ -26,7 +26,7 @@ def keep_open(t0: float, t1: float):
 
 def test_defaults_and_week_view():
     v = plan.get()
-    assert [c["id"] for c in v["categories"]] == ["technique", "repertoire", "theory"]
+    assert [c["id"] for c in v["categories"]] == ["technique", "repertoire", "theory", "free"]
     assert v["today"]["goal"] == 30 and v["week"]["goal"] == 210
     assert v["today"]["remaining"] == 30 and v["today"]["status"] == "low"
     assert len(v["week"]["days"]) == 7 and v["week"]["previous"] is None
@@ -46,7 +46,7 @@ def test_sessions_are_tracked_by_category():
     plan.record_session(dict(type="practice", chart=True), dict(summary=dict(played_s=120)))
     plan.record_session(dict(type="practice"), dict(summary=dict(played_s=500), simulated=True))   # not counted
     cats = {c["id"]: c["today_s"] for c in plan.get()["categories"]}
-    assert cats == dict(technique=90, repertoire=120, theory=0)
+    assert cats == dict(technique=90, repertoire=120, theory=0, free=0)
     assert plan.get()["today"]["minutes"] == round(210 / 60)
 
 
@@ -113,7 +113,7 @@ def test_past_weeks_keep_their_plan():
 def test_weekly_goal_rescales_proportionally():
     v = plan.set_weekly_goal(7 * 60)             # 60 a day from 10/15/5
     mins = {c["id"]: c["minutes"] for c in v["categories"]}
-    assert sum(mins.values()) == 60 and mins == dict(technique=20, repertoire=30, theory=10)
+    assert sum(mins.values()) == 60 and mins == dict(technique=20, repertoire=30, theory=10, free=0)
     v = plan.set_weekly_goal(100)                # ceil(100/7) = 15, leftover to the largest
     mins = {c["id"]: c["minutes"] for c in v["categories"]}
     assert sum(mins.values()) == 15 and max(mins, key=mins.get) == "repertoire"
@@ -152,6 +152,10 @@ def test_categories_add_remove_and_validation():
     assert next(c for c in v["categories"] if c["id"] == sc["id"])["minutes"] == 8
     for cid in ("technique", "repertoire", sc["id"]):
         plan.remove_category(cid)
+    with pytest.raises(PlanError) as e:
+        plan.remove_category("theory")                    # free play has no minutes: the goal would be 0
+    assert e.value.code == "zero_goal"
+    plan.remove_category("free")
     with pytest.raises(PlanError) as e:
         plan.remove_category("theory")
     assert e.value.code == "last_category"
@@ -228,3 +232,20 @@ def test_days_before_the_plan_existed_have_no_data():
     plan.record_session(dict(type="exercise"), dict(summary=dict(played_s=60)),
                         day=date.today() - timedelta(days=30))
     assert plan._read()["since"] == date.today().isoformat()     # set once, not moved by later logs
+
+
+def test_free_play_from_the_tone_rig():
+    assert plan.record_free_play(45) == 45
+    assert plan.record_free_play(10_000) == plan.MAX_FREE_CHUNK_S          # one report can't add hours
+    with pytest.raises(PlanError):
+        plan.record_free_play("lots")
+    cats = {c["id"]: c for c in plan.get()["categories"]}
+    assert cats["free"]["today_s"] == 45 + plan.MAX_FREE_CHUNK_S and cats["free"]["auto"]
+    assert plan.get()["today"]["goal"] == 30                              # free play has no goal of its own
+
+
+def test_plans_saved_before_free_play_get_it():
+    d = plan._read()
+    d["categories"] = [c for c in d["categories"] if c["id"] != "free"]
+    plan._write(d)
+    assert any(c["id"] == "free" for c in plan.get()["categories"])

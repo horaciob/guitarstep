@@ -28,9 +28,11 @@ from . import config
 
 _lock = threading.Lock()
 
-BUILTIN = ("technique", "repertoire", "theory")
-DEFAULT_MINUTES = dict(technique=10, repertoire=15, theory=5)
+BUILTIN = ("technique", "repertoire", "theory", "free")
+DEFAULT_MINUTES = dict(technique=10, repertoire=15, theory=5, free=0)
 AUTO_CATEGORY = dict(exercise="technique", chord="technique", drill="technique", practice="repertoire")
+AUTO_IDS = ("technique", "repertoire", "free")     # counted on their own (free = playing with the tone rig on)
+MAX_FREE_CHUNK_S = 120                             # the page reports free play every ~30 s
 MAX_GAP_S = 8.0          # a longer silence between notes is a pause, not practice
 TAIL_S = 1.5             # the last note rings a little
 MAX_MINUTES = 600        # per category and day
@@ -61,6 +63,8 @@ def _read() -> dict:
         d = {}
     base = _empty()
     d = {**base, **(d if isinstance(d, dict) else {})}
+    if not any(c["id"] == "free" for c in d["categories"]):     # added after the first version
+        d["categories"].append(dict(id="free", name=None, default_min=0, active=True))
     if not d["since"]:              # the first day the plan existed: earlier days have no data
         known = sorted(d["days"])
         d["since"] = known[0] if known else date.today().isoformat()
@@ -238,6 +242,24 @@ def record_session(ctx: dict | None, report: dict, day: date | None = None) -> f
     return secs
 
 
+def record_free_play(seconds, day: date | None = None) -> float:
+    """Playing time reported by the tone rig (real input, signal above the noise floor)."""
+    try:
+        secs = float(seconds)
+    except (TypeError, ValueError):
+        raise PlanError("bad_seconds", "Seconds must be a number") from None
+    secs = max(0.0, min(secs, MAX_FREE_CHUNK_S))
+    if secs:
+        with _lock:
+            d = _read()
+            if any(c["id"] == "free" and c["active"] for c in d["categories"]):
+                _log(d, day or date.today(), "free", secs)
+                _write(d)
+            else:
+                secs = 0.0
+    return secs
+
+
 # ---------------------------------------------------------------- editing the plan
 def set_minutes(cid: str, minutes) -> dict:
     m = _minutes(minutes)
@@ -409,7 +431,7 @@ def view(d: dict | None = None, now: float | None = None) -> dict:
         if not c["active"]:
             continue
         cats.append(dict(id=c["id"], name=c["name"], builtin=c["id"] in BUILTIN, default_min=c["default_min"],
-                         minutes=w["minutes"].get(c["id"], 0), auto=c["id"] in AUTO_CATEGORY.values(),
+                         minutes=w["minutes"].get(c["id"], 0), auto=c["id"] in AUTO_IDS,
                          today_s=round(today_s.get(c["id"], 0.0), 1)))
     timer_view = None
     if tm:

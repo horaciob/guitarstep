@@ -95,10 +95,10 @@ function catCard(c) {
   return `<div class="panel cat ${state}${met ? " met" : ""}">
     <div class="cat-main">
       <b>${esc(catName(c))}</b>
-      <small class="muted">${esc(t("plan.goal_day", { goal: fmtHM(c.minutes) }))} · ${c.auto ? `${icon("headphones", 12)} ${esc(t("plan.auto"))}` : esc(t("plan.manual"))}${state === "paused" ? " · " + esc(t("plan.paused")) : ""}</small>
+      <small class="muted">${esc(c.minutes ? t("plan.goal_day", { goal: fmtHM(c.minutes) }) : t("plan.no_goal"))} · ${c.auto ? `${icon("headphones", 12)} ${esc(t(c.id === "free" ? "plan.auto_free" : "plan.auto"))}` : esc(t("plan.manual"))}${state === "paused" ? " · " + esc(t("plan.paused")) : ""}</small>
       <div class="pbar thin"><i data-bar="${esc(c.id)}" style="width:${goal ? Math.min(100, 100 * secs / goal) : 0}%"></i></div>
     </div>
-    <div class="cat-side"><span class="cat-time"><b data-time="${esc(c.id)}">${fmtHM(Math.round(secs / 60))}</b> / ${fmtHM(c.minutes)}</span>
+    <div class="cat-side"><span class="cat-time"><b data-time="${esc(c.id)}">${fmtHM(Math.round(secs / 60))}</b>${c.minutes ? ` / ${fmtHM(c.minutes)}` : ""}</span>
       ${met ? `<span class="pill ok">✓ ${esc(t("plan.done"))}</span>` : ""}<div class="cat-ctl">${controls}</div></div>
   </div>`;
 }

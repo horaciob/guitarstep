@@ -921,7 +921,10 @@
    "err_last_category": "Tiene que quedar al menos una categoría.",
    "err_timer_busy": "Primero detené su cronómetro.",
    "err_no_category": "Esa categoría ya no existe.",
-   "err_generic": "Algo salió mal. Probá de nuevo."
+   "err_generic": "Algo salió mal. Probá de nuevo.",
+   "cat_free": "Tocar libre",
+   "no_goal": "Sin meta propia",
+   "auto_free": "se cuenta con el ampli y efectos encendido"
   },
   "data": {
    "title": "Tus datos",
