@@ -274,6 +274,7 @@ a { color: inherit; }
 .gl .exercise { border: 1px solid var(--border); border-radius: 10px; padding: 10px; background: var(--gl-panel-2); }
 .gl .ex-head { display: flex; gap: 10px; align-items: center; }
 .gl .ex-head > div { flex: 1; min-width: 0; } .gl .ex-head small { display: block; }
+.gl .exercise .tab { margin: 8px 0 0; font: 13px/1.35 ui-monospace, "SF Mono", Menlo, monospace; overflow-x: auto; color: var(--text); }
 .gl .ex-live { margin-top: 10px; }
 .gl .ex-progress { height: 6px; border-radius: 99px; background: var(--border); overflow: hidden; }
 .gl .ex-progress i { display: block; height: 100%; width: 0; background: var(--gl-accent); transition: width .15s; }

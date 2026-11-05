@@ -35,7 +35,8 @@ def _empty() -> dict:
 
 # ---------------------------------------------------------------- spaced review
 # What you already passed comes back after 1, 3, 7, 14, 30 and 60 days. Passing a review moves
-# it to the next interval; failing it brings it back tomorrow.
+# it to the next interval; failing it brings it back tomorrow. Passing the 60-day review retires
+# it: it's yours, and it stops coming back (failing it later starts it over).
 REVIEW_DAYS = (1, 3, 7, 14, 30, 60)
 
 
@@ -48,10 +49,15 @@ def _review(d: dict, key: str, ok: bool, today: date | None = None) -> None:
                                      last=today.isoformat())
         return
     if ok:
-        if today.isoformat() >= r["due"]:          # reviewing early doesn't skip ahead
-            r["step"] = min(r["step"] + 1, len(REVIEW_DAYS) - 1)
+        if r.get("retired"):
+            pass
+        elif today.isoformat() >= r["due"] and r["step"] == len(REVIEW_DAYS) - 1:
+            r["retired"] = True
+        elif today.isoformat() >= r["due"]:          # reviewing early doesn't skip ahead
+            r["step"] += 1
             r["due"] = (today + timedelta(days=REVIEW_DAYS[r["step"]])).isoformat()
     else:
+        r.pop("retired", None)
         r["step"] = 0
         r["due"] = (today + timedelta(days=REVIEW_DAYS[0])).isoformat()
     r["last"] = today.isoformat()
@@ -59,7 +65,7 @@ def _review(d: dict, key: str, ok: bool, today: date | None = None) -> None:
 
 def due_reviews(d: dict, today: date | None = None) -> list[tuple[str, dict]]:
     t = (today or date.today()).isoformat()
-    return sorted(((k, r) for k, r in d["reviews"].items() if r["due"] <= t), key=lambda kr: kr[1]["due"])
+    return sorted(((k, r) for k, r in d["reviews"].items() if r["due"] <= t and not r.get("retired")), key=lambda kr: kr[1]["due"])
 
 
 def path():

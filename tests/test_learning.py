@@ -12,7 +12,7 @@ from guitarr import catalog, progress
 from guitarr.core import Grid, Note
 from guitarr.dsp import Detection, chroma
 from guitarr.follow import Judge, TempoFollower, WaitFollower, group_events
-from guitarr.gui.server import app
+from guitarr.gui.server import app, ref_options
 from guitarr.reference import RefOptions, load_reference
 from guitarr.session import LiveOptions, LiveSession
 
@@ -44,7 +44,7 @@ def test_lessons_reference_existing_material():
         for ex in ls["exercises"]:
             opts, mode, speed, need = catalog.exercise_setup(ls["id"], ex["id"])
             ref = load_reference(opts, log=lambda m: None)
-            assert ref.notes and mode in ("wait", "tempo") and 0 < need <= 100
+            assert ref.notes and mode in ("wait", "tempo", "bend") and 0 < need <= 100
 
 
 def test_spanish_translations_cover_all_content():
@@ -56,6 +56,37 @@ def test_spanish_translations_cover_all_content():
     assert set(es["lessons"]) == {ls["id"] for ls in catalog.lessons()}
     assert set(es["exercises"]) == {f"{ls['id']}/{e['id']}" for ls in catalog.lessons() for e in ls["exercises"]}
     assert set(es["charts"]) == {c["id"] for c in catalog.charts()}
+
+
+def test_lick_tab_expands_to_the_notes_you_hear():
+    steps = catalog.parse_lick("3:7b9r7 3:5h7p5 2:5/7~ 1:8\\5")
+    assert [(st["fret"], st["pitch"], st["tech"], st["glide_from"]) for st in steps] == [
+        (7, 64, "bend", 62), (7, 62, "release", 64),          # the picked fret 7 isn't a note of its own
+        (5, 60, "pick", None), (7, 62, "hammer", None), (5, 60, "pull", None),
+        (5, 64, "pick", None), (7, 66, "slide", 64), (8, 72, "pick", None), (5, 69, "slide", 72)]
+    assert steps[6]["vibrato"] and not steps[5]["vibrato"]
+    # transposed: same shape, an octave up when it would fall off the neck
+    assert [st["fret"] for st in catalog.parse_lick("2:5 3:7b9", shift=-5)] == [0, 2]
+    assert [st["fret"] for st in catalog.parse_lick("2:3", shift=-5)] == [10]
+    assert [st["pitch"] - 2 for st in catalog.parse_lick("1:5 2:8b10")] == [st["pitch"] for st in catalog.parse_lick("1:5 2:8b10", shift=-2)]
+
+
+@pytest.mark.parametrize("tab,err", [("7:5", "can't read"), ("3:5x7", "can't read"), ("3:7b5", "bends down"), ("", "no notes")])
+def test_lick_tab_errors(tab, err):
+    with pytest.raises(catalog.CatalogError, match=err):
+        catalog.parse_lick(tab)
+
+
+def test_course_api_sends_lick_and_bend_steps():
+    c = TestClient(app)
+    lessons = {ls["id"]: ls for lv in c.get("/api/course").json()["levels"] for ls in lv["lessons"]}
+    bends = {e["id"]: e for e in lessons["blues-bends"]["exercises"]}
+    assert len(bends["bend-g7"]["steps"]) == 10 and bends["bend-g7"]["steps"][0]["pitch"] == 64
+    turn = {e["id"]: e for e in lessons["blues-turnaround"]["exercises"]}
+    assert [s["pitch"] - 5 for s in turn["turn-a"]["steps"]] == [s["pitch"] for s in turn["turn-e"]["steps"]]
+    assert "steps" not in turn["turn-chart"]
+    _, ctx = ref_options(dict(exercise=dict(lesson="blues-minor", exercise="bend-e8")))
+    assert ctx["mode"] == "bend" and ctx["hold"] == 1.5 and ctx["min"] == 70
 
 
 CHART = """title: Test

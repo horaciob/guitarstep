@@ -73,7 +73,11 @@
    "unclear": "no se entendió la nota: {{heard}}",
    "missed": "no sonó",
    "skipped": "salteada",
-   "skipped_before": "salteada (antes: {{before}})"
+   "skipped_before": "salteada (antes: {{before}})",
+   "bend_ok": "sostenido, {{cents}} cents, oscilación {{wobble}}",
+   "bend_flat": "el bend no llegó ({{cents}} cents abajo)",
+   "bend_sharp": "el bend se pasó ({{cents}} cents arriba)",
+   "bend_short": "llegaste, pero lo sostuviste solo {{held}} s"
   },
   "msg": {
    "wrong": "{{detail}} — esperaba {{label}}",
@@ -415,7 +419,10 @@
    "passed": "✓ Aprobado con {{score}}%",
    "lesson_done": "¡lección completa!",
    "not_played": "No llegaste a tocar. Probá de nuevo.",
-   "failed": "{{score}}% — necesitás {{need}}%. ¡Otra vez!"
+   "failed": "{{score}}% — necesitás {{need}}%. ¡Otra vez!",
+   "bend_target": "cuerda {{string}}, traste {{fret}} → {{note}} · {{tries}} intentos · sostené {{hold}} s",
+   "bend_ready": "Tocá la nota, estirala hasta el destino y sostenela. Cada intento cuenta.",
+   "tab_label": "Tablatura"
   },
   "chords": {
    "title": "Acordes",
@@ -1215,6 +1222,10 @@
    "n5": {
     "title": "Cejilla y melodía",
     "subtitle": "F con cejilla y tu primera escala."
+   },
+   "n6": {
+    "title": "El blues",
+    "subtitle": "Shuffle, terceras que siguen a los acordes, bends con destino, frases que responden y una historia en tres vueltas."
    }
   },
   "lessons": {
@@ -1357,6 +1368,143 @@
     "tutorials": [
      "escala pentatonica menor la guitarra posicion 1"
     ]
+   },
+   "blues-shuffle": {
+    "title": "El shuffle y la forma de 12 compases",
+    "theory": [
+     "Las corcheas del shuffle son larga-corta, como la primera y la última nota de un tresillo: \"daa-da, daa-da\".",
+     "Escuchá la forma como tres giros: el compás 5 va al IV, el 9 al V y el 11 vuelve a casa, al I.",
+     "Quick change: el compás 2 visita el IV y vuelve. Las dos versiones son blues de verdad; decide la grabación con la que tocás.",
+     "El último compás (el V) es el turnaround: te devuelve al principio. Para terminar el tema, quedate en el I."
+    ],
+    "tips": [
+     "Marcá el 2 y el 4 con el pie: en el contratiempo está el peso del blues.",
+     "Escuchá: los instrumentales de Freddie King y la banda de Chicago de Muddy Waters son escuelas de shuffle."
+    ],
+    "tutorials": [
+     "ritmo shuffle blues guitarra",
+     "blues 12 compases quick change",
+     "bajo boogie guitarra blues"
+    ]
+   },
+   "blues-thirds": {
+    "title": "Tercera menor, tercera mayor",
+    "theory": [
+     "La pentatónica menor tiene Do sobre A7, pero el acorde tiene Do#. El blues vive de ese choque: Do es el lamento, Do# la respuesta.",
+     "Cada acorde tiene su par: Do→Do# en A7, Fa→Fa# en D7, Sol→Sol# en E7.",
+     "Las terceras y las séptimas nombran el acorde mejor que la tónica: caé en una de ellas justo cuando cambia el acorde.",
+     "En un blues menor lento la tercera menor es la casa y no necesita resolver (mirá la lección de blues menor)."
+    ],
+    "tips": [
+     "Ligá, deslizá o empujá la tercera menor hasta la mayor: no te quedes en la tercera menor sobre un acorde mayor.",
+     "Prueba de oído: tocá tu pentatónica de siempre, pero pará en Do#, Fa# y Sol# en los compases 1, 5 y 9. De golpe se oyen los cambios."
+    ],
+    "tutorials": [
+     "blues guitarra tercera menor a mayor",
+     "notas guía blues guitarra",
+     "mezclar pentatónica mayor y menor blues"
+    ]
+   },
+   "blues-bends": {
+    "title": "Bends con destino",
+    "theory": [
+     "Un bend no es \"empujar lo más que puedas\": va de una nota a otra nota concreta.",
+     "Escuchá el destino primero: tocá el traste 9 de la cuerda Sol y después estirá el traste 7 hasta que suene igual.",
+     "Sostenelo: uno o dos segundos justo en la nota, sin que se siga subiendo ni se caiga.",
+     "Empujá con dos o tres dedos juntos y girá la muñeca, como quien gira una llave."
+    ],
+    "tips": [
+     "El bend de medio tono sobre la tercera menor (Do → Do# sobre La) es el \"curl\" que suena tan a blues.",
+     "Pará si sentís dolor agudo o adormecimiento; la fuerza se construye de a poco.",
+     "Escuchá: B.B. King y Albert King hicieron una carrera de estirar hasta notas exactas."
+    ],
+    "tutorials": [
+     "ejercicio bending afinado guitarra",
+     "técnica de bends blues",
+     "bend de medio tono blues"
+    ]
+   },
+   "blues-answers": {
+    "title": "Pregunta y respuesta",
+    "theory": [
+     "El blues habla: una frase pregunta y la siguiente responde. La voz pregunta y la guitarra responde, o tu guitarra hace las dos cosas.",
+     "Una frase tiene cinco partes: dónde empieza, su ritmo, su dirección, la nota donde cae y cómo termina.",
+     "Una buena respuesta conserva algo de la pregunta (el ritmo, la dirección o la última nota) y cambia otra cosa.",
+     "Dejá espacio después de cada frase: el silencio deja que se oiga la respuesta."
+    ],
+    "tips": [
+     "Las preguntas terminan abiertas (en la 5ª o la 4ª); las respuestas vuelven a casa (a la tónica, o a la tercera mayor).",
+     "Escuchá: en vivo, B.B. King responde cada línea de la voz con muy pocas notas."
+    ],
+    "tutorials": [
+     "pregunta y respuesta blues guitarra",
+     "fraseo estilo bb king",
+     "fraseo blues dejar espacio"
+    ]
+   },
+   "blues-turnaround": {
+    "title": "El turnaround",
+    "theory": [
+     "Los compases 11 y 12 son el turnaround: una frase corta que lleva de vuelta al principio de la forma.",
+     "Una línea cromática que baja de la 7ª a la 5ª (Sol, Fa#, Fa, Mi en La) es la manera clásica de llegar.",
+     "Termina en el acorde V (E7 en La): no tiene que sonar terminado, tiene que empujarte al compás 1."
+    ],
+    "tips": [
+     "Tocalo al final de cada vuelta y vas a dejar de perderte en la forma.",
+     "Es la misma forma en cualquier tonalidad: movela para que empiece en la tónica."
+    ],
+    "tutorials": [
+     "turnaround blues guitarra",
+     "turnaround cromático blues"
+    ]
+   },
+   "blues-minor": {
+    "title": "Blues menor lento: notas largas",
+    "theory": [
+     "En un blues menor la tercera menor (Do en La menor) es la casa: no necesita resolver a la tercera mayor.",
+     "Menos notas, más peso: un blues lento deja al descubierto el bend, el vibrato y el final de cada nota.",
+     "Retrasá el vibrato: dejá sonar la nota medio tiempo y recién ahí empezalo, con el centro afinado.",
+     "El E7 del compás 9 es el momento más fuerte: apuntá a Sol# ahí, la única tercera mayor del tema."
+    ],
+    "tips": [
+     "Apagá la cuerda cuando termina la frase: el silencio sostiene el pulso.",
+     "Escuchá: \"The Thrill Is Gone\" de B.B. King es una clase de notas largas."
+    ],
+    "tutorials": [
+     "blues menor lento guitarra",
+     "técnica de vibrato blues",
+     "solo blues menor notas largas"
+    ]
+   },
+   "blues-eight-bar": {
+    "title": "Blues de ocho compases",
+    "theory": [
+     "No todo blues tiene 12 compases: en la forma de 8 el V ya llega en el compás 2.",
+     "I · V · IV · IV · I · V · I-IV · I-V. No lo cuentes como un 12 compases corto: escuchá sus propios giros.",
+     "El ritmo y la melodía comparten el mismo tiempo: cuando volvés de una frase a los acordes, el pulso no puede saltar."
+    ],
+    "tips": [
+     "Escuchá: \"Key to the Highway\" (Big Bill Broonzy, y después Derek and the Dominos) es el clásico de 8 compases."
+    ],
+    "tutorials": [
+     "blues de 8 compases guitarra",
+     "key to the highway ritmo guitarra"
+    ]
+   },
+   "blues-story": {
+    "title": "Tres vueltas, una historia",
+    "theory": [
+     "La vuelta 1 presenta un motivo, en el registro grave y con pocas notas. La 2 lo repite con un cambio. La 3 sube o suena más fuerte, y termina con claridad.",
+     "Desarrollalo cambiando una cosa por vez: el final, el registro, el ritmo o la dinámica. Si cambiás todo, nadie reconoce el motivo.",
+     "Más y más rápido no es la única manera de crecer: el espacio, la repetición y el registro también construyen."
+    ],
+    "tips": [
+     "Grabá las tres vueltas sin parar. Si te equivocás, seguí: eso también es práctica."
+    ],
+    "tutorials": [
+     "desarrollo de motivo solo blues",
+     "cómo armar un solo de blues en tres vueltas"
+    ]
    }
   },
   "exercises": {
@@ -1379,7 +1527,32 @@
    "barre/f-x4": "F cuatro veces, que suenen las 6",
    "barre/andalusian-chart": "Cadencia andaluza",
    "pentatonic/pentatonic-up": "Subí la escala, nota por nota",
-   "pentatonic/pentatonic-down": "Y bajala"
+   "pentatonic/pentatonic-down": "Y bajala",
+   "blues-shuffle/boogie-a": "Línea de bajo boogie en La",
+   "blues-shuffle/boogie-e": "La misma línea en Mi, en la cuerda grave",
+   "blues-shuffle/shuffle-e": "Shuffle en Mi, quick change",
+   "blues-thirds/curl-a7": "Do a Do# sobre A7",
+   "blues-thirds/curl-d7": "Fa a Fa# sobre D7",
+   "blues-thirds/curl-e7": "Sol a Sol# sobre E7",
+   "blues-thirds/thirds": "Caé en la tercera de cada acorde: Do# (A7), Fa# (D7), Sol# (E7), Do# (A7)",
+   "blues-bends/bend-g7": "Bend de un tono: cuerda Sol, traste 7 → Mi",
+   "blues-bends/bend-b8": "Bend de un tono: cuerda Si, traste 8 → La",
+   "blues-bends/bend-curl": "Curl de medio tono: cuerda Sol, traste 5 → Do#",
+   "blues-answers/question": "La pregunta: termina abierta, en Mi",
+   "blues-answers/answer": "La respuesta: vuelve a casa, a La",
+   "blues-answers/answer-e": "La misma respuesta en Mi",
+   "blues-turnaround/turn-a": "Turnaround en La",
+   "blues-turnaround/turn-e": "El mismo turnaround en Mi",
+   "blues-turnaround/turn-chart": "Blues en La a velocidad completa",
+   "blues-minor/bend-e8": "Bend de un tono: Mi agudo, traste 8 → Re, sostenido 1,5 s",
+   "blues-minor/long-answer": "Una respuesta larga que cae en Do",
+   "blues-minor/minor-chart": "Blues menor lento en La menor",
+   "blues-eight-bar/eight-slow": "Blues de 8 compases al 80%",
+   "blues-eight-bar/eight-full": "Blues de 8 compases a velocidad completa",
+   "blues-story/motif": "El motivo",
+   "blues-story/variation": "El mismo motivo, otro final",
+   "blues-story/higher": "El motivo una octava arriba",
+   "blues-story/story-chart": "Tres vueltas en La, con final"
   },
   "charts": {
    "01-em-am": {
@@ -1429,13 +1602,33 @@
    "12-moving-barres": {
     "title": "Cejillas en movimiento",
     "note": "La misma forma, corrida por el mástil. Soltá la presión entre acordes y volvé a apretar al llegar."
+   },
+   "13-shuffle-in-e": {
+    "title": "Shuffle en Mi, quick change",
+    "note": "Quick change: el compás 2 ya va al IV (A7) y vuelve. Swingealo: larga-corta, larga-corta."
+   },
+   "14-slow-minor-blues-am": {
+    "title": "Blues menor lento en La menor",
+    "note": "Sentí tres pulsos dentro de cada tiempo (12/8). Dejá sonar cada acorde: el espacio es parte del tema."
+   },
+   "15-eight-bar-blues-a": {
+    "title": "Blues de ocho compases en La",
+    "note": "Ocho compases, no doce: el V llega en el compás 2. No lo cuentes como un 12 compases corto."
+   },
+   "16-three-choruses-a": {
+    "title": "Tres vueltas en La, con final",
+    "note": "Tres vueltas a los 12 compases. El último compás de la tercera es el final: pará en A7."
    }
   },
   "sections": {
    "Back and forth": "Ida y vuelta",
    "Loop": "Vuelta",
    "Twelve bars": "Doce compases",
-   "Verse": "Verso"
+   "Verse": "Verso",
+   "Chorus 1": "Vuelta 1",
+   "Chorus 2": "Vuelta 2",
+   "Chorus 3": "Vuelta 3",
+   "Eight bars": "Ocho compases"
   }
  }
 }

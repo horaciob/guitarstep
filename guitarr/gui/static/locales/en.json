@@ -73,7 +73,11 @@
    "unclear": "couldn't tell the note: {{heard}}",
    "missed": "didn't sound",
    "skipped": "skipped",
-   "skipped_before": "skipped (before: {{before}})"
+   "skipped_before": "skipped (before: {{before}})",
+   "bend_ok": "held, {{cents}} cents, wobble {{wobble}}",
+   "bend_flat": "bend fell short ({{cents}} cents flat)",
+   "bend_sharp": "bend went too far ({{cents}} cents sharp)",
+   "bend_short": "reached it, but held only {{held}} s"
   },
   "msg": {
    "wrong": "{{detail}} — expected {{label}}",
@@ -415,7 +419,10 @@
    "passed": "✓ Passed with {{score}}%",
    "lesson_done": "lesson complete!",
    "not_played": "You didn't play. Try again.",
-   "failed": "{{score}}% — you need {{need}}%. Again!"
+   "failed": "{{score}}% — you need {{need}}%. Again!",
+   "bend_target": "string {{string}}, fret {{fret}} → {{note}} · {{tries}} tries · hold {{hold}} s",
+   "bend_ready": "Pick the note, bend up to the target and hold it. Every try counts.",
+   "tab_label": "Tab"
   },
   "chords": {
    "title": "Chords",

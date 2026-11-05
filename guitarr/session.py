@@ -18,14 +18,16 @@ from . import config
 from .audio_io import FileSource, Metronome, MicSource
 from .core import Reference
 from .plan import active_seconds
-from .dsp import CHROMA_LEN, CHROMA_OFF, HOP, MIN_GAP, NFFT, PITCH_LEN, PITCH_OFF, Detector, Recorder
-from .follow import (Judge, TempoFollower, Trainer, WaitFollower, describe, fmt_dt, group_events,
-                     min_repeat_gap, pass_score)
+from .dsp import CHROMA_LEN, CHROMA_OFF, HOP, MIN_GAP, NFFT, PITCH_LEN, PITCH_OFF, Detector, Recorder, db, yin
+from .follow import (BendFollower, Judge, TempoFollower, Trainer, WaitFollower, describe, fmt_dt,
+                     group_events, min_repeat_gap, pass_score)
+
+PITCH_WIN, PITCH_STEP = 2048, 0.03   # continuous pitch (bend mode): window (samples) and step (s)
 
 
 @dataclass
 class LiveOptions:
-    mode: str = "wait"               # wait | tempo
+    mode: str = "wait"               # wait | tempo | bend
     speed: float = 1.0
     device: str | int | None = None
     channel: int = 1
@@ -49,6 +51,7 @@ class LiveOptions:
     simulate: Path | None = None
     fast: bool = False
     backing: bool = False            # bass & drums with the metronome (chord charts)
+    hold: float = 1.0                # bend mode: seconds to hold the target
     save_dir: Path = field(default_factory=lambda: config.TAKES_DIR)
 
 
@@ -69,8 +72,13 @@ class LiveSession:
                             min_gap=float(np.clip(0.6 * gap, 0.035, MIN_GAP)), legato=opts.legato)
         self.repeat_gap = float(np.clip(0.6 * gap, 0.04, 0.1))
         self.use_click = opts.mode == "tempo" and opts.click and not opts.simulate
+        self.pitch_pos = 0
         if opts.mode == "wait":
             self.follower = WaitFollower(self.events, self.judge, opts.loop)
+        elif opts.mode == "bend":
+            src = ref.notes[0].glide_from
+            self.follower = BendFollower(self.events, self.judge, src if src is not None else ref.notes[0].pitch - 2,
+                                         hold=opts.hold)
         else:
             trainer = Trainer(opts.speed_step, opts.target, opts.max_speed) if opts.trainer else None
             self.follower = TempoFollower(self.events, self.judge, opts.speed, opts.window, self.grid,
@@ -148,6 +156,9 @@ class LiveSession:
                         if f.mode == "tempo" and f.t0 is None:
                             f.start(d.t)  # no metronome: your first note sets the start
                         self._say(f.on_detection(d), d.t, on_message)
+                    if f.mode == "bend":
+                        for t, m in self._pitch_frames(lat):
+                            self._say(f.on_pitch(t, m), t, on_message)
                     # on the last block all the audio has been analyzed
                     horizon = self.now - lat - (0 if ended else self.analysis_lag)
                     self._say(f.tick(horizon if not ended else self.now + 10), self.now, on_message)
@@ -172,6 +183,21 @@ class LiveSession:
         with self.lock:
             self.report = self.build_report(saved)
         return self.report
+
+    def _pitch_frames(self, lat: float) -> list[tuple[float, float | None]]:
+        """Pitch every PITCH_STEP seconds of new audio (None when quiet or unclear)."""
+        out = []
+        step = int(PITCH_STEP * self.sr)
+        while self.pitch_pos + PITCH_WIN <= self.rec.n:
+            x = self.rec.data[self.pitch_pos:self.pitch_pos + PITCH_WIN]
+            m = None
+            if db(x) > self.opts.gate_db + 6:
+                mm, conf = yin(x, self.sr, thresh=0.15)
+                if mm is not None and conf >= 0.8:
+                    m = mm + self.opts.transpose
+            out.append(((self.pitch_pos + PITCH_WIN) / self.sr - lat, m))
+            self.pitch_pos += step
+        return out
 
     # ------------------------------------------------------------ state
     def snapshot(self, before: int = 6, after: int = 14) -> dict:

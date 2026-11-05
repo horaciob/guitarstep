@@ -459,6 +459,416 @@
      ]
     }
    ]
+  },
+  {
+   "id": "n6",
+   "number": 6,
+   "title": "The blues",
+   "subtitle": "Shuffle, thirds that follow the chords, bends with a target, phrases that answer, and a story in three choruses.",
+   "lessons": [
+    {
+     "id": "blues-shuffle",
+     "title": "The shuffle and the 12-bar form",
+     "minutes": 15,
+     "theory": [
+      "Shuffle eighths are long-short, like the first and last notes of a triplet: \"daa-da, daa-da\".",
+      "Hear the form as three turns: bar 5 goes to the IV, bar 9 to the V, bar 11 back home to the I.",
+      "Quick change: bar 2 visits the IV and comes back. Both versions are real blues; the recording you play with decides.",
+      "The last bar (the V) is the turnaround: it sends you back to the top. To end the song, stay on the I."
+     ],
+     "tips": [
+      "Tap your foot on 2 and 4: the backbeat is where the blues feels heavy.",
+      "Listen: Freddie King's instrumentals and Muddy Waters' Chicago band are shuffle schools in themselves."
+     ],
+     "chords": [
+      "E7",
+      "A7",
+      "B7"
+     ],
+     "tutorials": [
+      "blues shuffle rhythm guitar lesson",
+      "12 bar blues quick change explained",
+      "boogie bass line guitar lesson"
+     ],
+     "exercises": [
+      {
+       "id": "boogie-a",
+       "kind": "lick",
+       "title": "Boogie bass line in A",
+       "tab": "5:0 5:4 4:2 4:4 4:5 4:4 4:2 5:4",
+       "min": 80
+      },
+      {
+       "id": "boogie-e",
+       "kind": "lick",
+       "title": "The same line in E, on the low string",
+       "tab": "6:0 6:4 5:2 5:4 5:5 5:4 5:2 6:4",
+       "min": 80
+      },
+      {
+       "id": "shuffle-e",
+       "kind": "chart",
+       "title": "Shuffle in E, quick change",
+       "chart": "13-shuffle-in-e",
+       "speed": 0.8,
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "blues-thirds",
+     "title": "Minor third, major third",
+     "minutes": 15,
+     "theory": [
+      "The minor pentatonic has C over A7, but the chord has C#. The blues lives on that clash: C is the cry, C# the answer.",
+      "Every chord has its own pair: C→C# on A7, F→F# on D7, G→G# on E7.",
+      "Thirds and sevenths name a chord better than its root: land on one of them right when the chord changes.",
+      "In a slow minor blues the minor third is home and doesn't need to resolve (see the minor blues lesson)."
+     ],
+     "tips": [
+      "Hammer, slide or nudge the minor third up to the major third: don't sit on the minor third over a major chord.",
+      "Listening test: play your usual pentatonic, but stop on C#, F# and G# in bars 1, 5 and 9. The changes suddenly appear."
+     ],
+     "chords": [
+      "A7",
+      "D7",
+      "E7"
+     ],
+     "tutorials": [
+      "blues guitar minor third to major third",
+      "guide tones blues guitar",
+      "mixing major and minor pentatonic blues"
+     ],
+     "exercises": [
+      {
+       "id": "curl-a7",
+       "kind": "lick",
+       "title": "C to C# over A7",
+       "tab": "4:7 3:5h6 3:7 2:5 3:5h6 4:7",
+       "min": 80
+      },
+      {
+       "id": "curl-d7",
+       "kind": "lick",
+       "title": "F to F# over D7",
+       "tab": "2:6h7 2:5 3:7",
+       "min": 80
+      },
+      {
+       "id": "curl-e7",
+       "kind": "lick",
+       "title": "G to G# over E7",
+       "tab": "4:5h6 5:7 5:5 4:5h6 5:7",
+       "min": 80
+      },
+      {
+       "id": "thirds",
+       "kind": "notes",
+       "title": "Land on each chord's third: C# (A7), F# (D7), G# (E7), C# (A7)",
+       "notes": [
+        61,
+        66,
+        56,
+        61
+       ],
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "blues-bends",
+     "title": "Bends with a target",
+     "minutes": 15,
+     "theory": [
+      "A bend isn't \"push as far as you can\": it goes from one note to another, specific note.",
+      "Hear the target first: play fret 9 on the G string, then bend fret 7 until it sounds the same.",
+      "Hold it: one or two seconds right on pitch, without creeping up or sagging.",
+      "Push with two or three fingers together and turn the wrist, as if turning a key."
+     ],
+     "tips": [
+      "A half-step bend on the minor third (C → C# over A) is the \"curl\" that sounds so bluesy.",
+      "Stop if you feel sharp pain or numbness; build strength little by little.",
+      "Listen: B.B. King and Albert King made a career out of bending to exact notes."
+     ],
+     "tutorials": [
+      "guitar bending in tune exercise",
+      "blues bends technique lesson",
+      "half step bend curl blues"
+     ],
+     "exercises": [
+      {
+       "id": "bend-g7",
+       "kind": "bend",
+       "title": "Whole-step bend: G string, fret 7 → E",
+       "string": 3,
+       "fret": 7,
+       "bend": 2,
+       "tries": 10,
+       "hold": 1.0,
+       "min": 70
+      },
+      {
+       "id": "bend-b8",
+       "kind": "bend",
+       "title": "Whole-step bend: B string, fret 8 → A",
+       "string": 2,
+       "fret": 8,
+       "bend": 2,
+       "tries": 10,
+       "hold": 1.0,
+       "min": 70
+      },
+      {
+       "id": "bend-curl",
+       "kind": "bend",
+       "title": "Half-step curl: G string, fret 5 → C#",
+       "string": 3,
+       "fret": 5,
+       "bend": 1,
+       "tries": 10,
+       "hold": 1.0,
+       "min": 70
+      }
+     ]
+    },
+    {
+     "id": "blues-answers",
+     "title": "Call and response",
+     "minutes": 15,
+     "theory": [
+      "The blues talks: one phrase asks, the next one answers. The voice asks and the guitar answers, or your guitar does both.",
+      "A phrase has five parts: where it starts, its rhythm, its direction, the note it lands on and how it ends.",
+      "A good answer keeps one thing from the question (the rhythm, the direction or the last note) and changes another.",
+      "Leave space after each phrase: the silence lets the answer be heard."
+     ],
+     "tips": [
+      "Questions end open (on the 5th or the 4th); answers come home (to the root, or to the major third).",
+      "Listen: B.B. King's live recordings answer every vocal line with very few notes."
+     ],
+     "tutorials": [
+      "call and response blues guitar lesson",
+      "bb king style phrasing lesson",
+      "blues phrasing leaving space"
+     ],
+     "exercises": [
+      {
+       "id": "question",
+       "kind": "lick",
+       "title": "The question: it ends open, on E",
+       "tab": "2:5 2:8 1:5 2:8b10 2:8 2:5",
+       "min": 80
+      },
+      {
+       "id": "answer",
+       "kind": "lick",
+       "title": "The answer: it comes home to A",
+       "tab": "2:8b10r8 2:5 3:7 3:5h6 4:7",
+       "min": 80
+      },
+      {
+       "id": "answer-e",
+       "kind": "lick",
+       "title": "The same answer in E",
+       "tab": "2:8b10r8 2:5 3:7 3:5h6 4:7",
+       "min": 80,
+       "shift": -5
+      }
+     ]
+    },
+    {
+     "id": "blues-turnaround",
+     "title": "The turnaround",
+     "minutes": 12,
+     "theory": [
+      "Bars 11 and 12 are the turnaround: a short phrase that leads back to the top of the form.",
+      "A chromatic line falling from the 7th to the 5th (G, F#, F, E in A) is the classic way to get there.",
+      "It ends on the V chord (E7 in A): it shouldn't sound finished, it should pull you into bar 1."
+     ],
+     "tips": [
+      "Play it at the end of every chorus and you'll stop losing the form.",
+      "It's the same shape in any key: move it so it starts on the root."
+     ],
+     "chords": [
+      "A7",
+      "E7"
+     ],
+     "tutorials": [
+      "blues turnaround lick lesson",
+      "chromatic blues turnaround guitar"
+     ],
+     "exercises": [
+      {
+       "id": "turn-a",
+       "kind": "lick",
+       "title": "Turnaround in A",
+       "tab": "1:5 2:8 2:7 2:6 2:5 4:6 5:7",
+       "min": 80
+      },
+      {
+       "id": "turn-e",
+       "kind": "lick",
+       "title": "The same turnaround in E",
+       "tab": "1:5 2:8 2:7 2:6 2:5 4:6 5:7",
+       "min": 80,
+       "shift": -5
+      },
+      {
+       "id": "turn-chart",
+       "kind": "chart",
+       "title": "Blues in A at full speed",
+       "chart": "06-blues-in-a",
+       "speed": 1.0,
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "blues-minor",
+     "title": "Slow minor blues: long notes",
+     "minutes": 15,
+     "theory": [
+      "In a minor blues the minor third (C in A minor) is home: it doesn't need to resolve to the major third.",
+      "Fewer notes, more weight: a slow blues exposes the bend, the vibrato and the end of every note.",
+      "Delay the vibrato: let the note sound for half a beat, then start it, keeping its center on pitch.",
+      "The E7 in bar 9 is the strongest moment: aim at G# there, the only major third in the song."
+     ],
+     "tips": [
+      "Mute the string when the phrase ends: the silence keeps the pulse going.",
+      "Listen: B.B. King's \"The Thrill Is Gone\" is a lesson in long notes."
+     ],
+     "chords": [
+      "Am",
+      "Dm",
+      "E7"
+     ],
+     "tutorials": [
+      "slow minor blues guitar lesson",
+      "blues vibrato technique lesson",
+      "minor blues soloing long notes"
+     ],
+     "exercises": [
+      {
+       "id": "bend-e8",
+       "kind": "bend",
+       "title": "Whole-step bend: high E, fret 8 → D, held 1.5 s",
+       "string": 1,
+       "fret": 8,
+       "bend": 2,
+       "tries": 10,
+       "hold": 1.5,
+       "min": 70
+      },
+      {
+       "id": "long-answer",
+       "kind": "lick",
+       "title": "A long answer that lands on C",
+       "tab": "1:5 1:8b10 1:8 1:5 2:8 2:5 3:7 3:5~",
+       "min": 80
+      },
+      {
+       "id": "minor-chart",
+       "kind": "chart",
+       "title": "Slow minor blues in A minor",
+       "chart": "14-slow-minor-blues-am",
+       "speed": 1.0,
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "blues-eight-bar",
+     "title": "Eight-bar blues",
+     "minutes": 12,
+     "theory": [
+      "Not every blues has 12 bars: in the 8-bar form the V arrives as early as bar 2.",
+      "I · V · IV · IV · I · V · I-IV · I-V. Don't count it as a short 12-bar: hear its own turns.",
+      "Rhythm and lead share the same time: when you go back from a phrase to the chords, the pulse mustn't skip."
+     ],
+     "tips": [
+      "Listen: \"Key to the Highway\" (Big Bill Broonzy, later Derek and the Dominos) is the 8-bar classic."
+     ],
+     "chords": [
+      "A7",
+      "D7",
+      "E7"
+     ],
+     "tutorials": [
+      "8 bar blues guitar lesson",
+      "key to the highway guitar lesson rhythm"
+     ],
+     "exercises": [
+      {
+       "id": "eight-slow",
+       "kind": "chart",
+       "title": "Eight-bar blues at 80%",
+       "chart": "15-eight-bar-blues-a",
+       "speed": 0.8,
+       "min": 80
+      },
+      {
+       "id": "eight-full",
+       "kind": "chart",
+       "title": "Eight-bar blues at full speed",
+       "chart": "15-eight-bar-blues-a",
+       "speed": 1.0,
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "blues-story",
+     "title": "Three choruses, one story",
+     "minutes": 18,
+     "theory": [
+      "Chorus 1 states a motif, low and with few notes. Chorus 2 repeats it with a change. Chorus 3 goes higher or louder, then ends clearly.",
+      "Develop it by changing one thing at a time: the ending, the register, the rhythm or the dynamics. Change everything and nobody recognizes the motif.",
+      "More and faster isn't the only way to build: space, repetition and register build too."
+     ],
+     "tips": [
+      "Record the three choruses without stopping. If you make a mistake, keep going: that's practice too."
+     ],
+     "chords": [
+      "A7",
+      "D7",
+      "E7"
+     ],
+     "tutorials": [
+      "blues solo motif development",
+      "how to build a blues solo three choruses"
+     ],
+     "exercises": [
+      {
+       "id": "motif",
+       "kind": "lick",
+       "title": "The motif",
+       "tab": "3:7 2:5 2:8 2:5 3:7 3:5",
+       "min": 80
+      },
+      {
+       "id": "variation",
+       "kind": "lick",
+       "title": "The same motif, a new ending",
+       "tab": "3:7 2:5 2:8 2:5 3:7b9 4:7",
+       "min": 80
+      },
+      {
+       "id": "higher",
+       "kind": "lick",
+       "title": "The motif an octave up",
+       "tab": "1:10 1:12 1:15 1:12 1:10 1:8",
+       "min": 80
+      },
+      {
+       "id": "story-chart",
+       "kind": "chart",
+       "title": "Three choruses in A, with an ending",
+       "chart": "16-three-choruses-a",
+       "speed": 0.9,
+       "min": 80
+      }
+     ]
+    }
+   ]
   }
  ]
 }

@@ -130,3 +130,63 @@ def test_note_late_inside_window_is_not_marked_missed_before_analysis(demo_dir):
     assert ev.status == "pending"
     f.on_detection(fake_det(ev.due + 0.15, 62))
     assert ev.status == "ok"
+
+
+# ---------------------------------------------------------------- bends and licks
+def synth_curve(tries, gap=0.4, lead=0.3):
+    """Picked notes whose pitch follows keyframes [(seconds, midi), ...], one list per note."""
+    out = [np.zeros(int(SR * lead))]
+    for keys in tries:
+        ts, ms = zip(*keys)
+        n = int(SR * ts[-1])
+        m = np.interp(np.arange(n) / SR, ts, ms)
+        ph = 2 * np.pi * np.cumsum(440 * 2 ** ((m - 69) / 12)) / SR
+        y = sum(np.sin(h * ph) / h for h in range(1, 6))
+        env = (np.minimum(1, np.arange(n) / (0.003 * SR)) * np.exp(-np.arange(n) / (2.5 * SR))
+               * np.minimum(1, (n - np.arange(n)) / (0.03 * SR)))
+        out += [0.3 * y * env, np.zeros(int(SR * gap))]
+    return np.concatenate(out).astype(np.float32)
+
+
+def run_wav(tmp_path, y, ref, **kw):
+    import soundfile as sf
+
+    wav = tmp_path / "take.wav"
+    sf.write(wav, y, SR)
+    return LiveSession(ref, LiveOptions(simulate=wav, fast=True, **kw)).run()
+
+
+def test_bend_tries_are_judged_by_the_held_pitch(tmp_path):
+    from guitarr import catalog
+
+    ref = load_reference(RefOptions(tab=catalog.bend_steps(dict(string=3, fret=7, bend=2, tries=4))), log=lambda m: None)
+    assert [n.pitch for n in ref.notes] == [64] * 4 and ref.notes[0].glide_from == 62
+    y = synth_curve([
+        [(0, 62), (0.3, 62), (0.45, 64), (1.8, 64), (1.9, 62), (2.2, 62)],   # in tune, held: hit
+        [(0, 62), (1.0, 62)],                                                # picked, no bend: not a try
+        [(0, 62), (0.3, 62), (0.45, 63.4), (1.8, 63.4)],                     # 60 cents flat
+        [(0, 62), (0.3, 62), (0.45, 64), (0.9, 64), (1.0, 62), (1.4, 62)],   # let go after 0.5 s
+        [(0, 62), (0.2, 62), (0.35, 64.6), (1.8, 64.6)],                     # 60 cents sharp
+    ])
+    r = run_wav(tmp_path, y, ref, mode="bend", hold=1.0)
+    kinds = [it["detail"]["kind"] for it in r["issues"]]
+    assert kinds == ["bend_flat", "bend_short", "bend_sharp"]
+    assert r["summary"]["judged"] == r["summary"]["events"] == 4
+    assert r["summary"]["score"] == 25
+    flat, short, sharp = (it["detail"] for it in r["issues"])
+    assert -75 < flat["cents"] < -45 and 0.3 <= short["held"] <= 0.7 and 45 < sharp["cents"] < 75
+    assert "fell short" in describe(flat) and "too far" in describe(sharp)
+
+
+def test_lick_bend_and_slide_dont_count_the_notes_on_the_way(tmp_path):
+    from guitarr import catalog
+
+    ref = load_reference(RefOptions(tab=catalog.parse_lick("3:7b9 3:5/7 2:5")), log=lambda m: None)
+    assert [(n.pitch, n.fret, n.glide_from) for n in ref.notes] == [(64, 7, 62), (60, 5, None), (62, 7, 60), (64, 5, None)]
+    y = synth_curve([
+        [(0, 62), (0.25, 62), (0.45, 64), (0.8, 64)],     # pick D, bend slowly to E
+        [(0, 60), (0.35, 60), (0.40, 62), (0.8, 62)],     # C, quick slide to D
+        [(0, 64), (0.5, 64)],
+    ], gap=0.15)
+    r = run_wav(tmp_path, y, ref, mode="wait")
+    assert r["summary"]["first_try"] == 4 and r["issues"] == []

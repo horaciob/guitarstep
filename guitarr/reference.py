@@ -47,6 +47,7 @@ class RefOptions:
     min_amp: float = 0.2
     chart: dict | None = None       # chord chart instead of a file
     notes: list[int] | None = None  # MIDI note sequence (course exercises)
+    tab: list[dict] | None = None   # tab steps: string, fret, pitch, glide_from (licks, bends)
 
     @property
     def tx(self) -> dict:
@@ -390,6 +391,17 @@ def load_note_sequence(pitches: list[int], bpm: float = 60) -> Reference:
 
 
 # ---------------------------------------------------------------- listings / main entry point
+def load_tab_sequence(steps: list[dict], bpm: float = 60) -> Reference:
+    """Tab steps, one per beat (wait or bend mode). A bend or slide keeps the fret you pick
+    and expects the pitch you arrive at."""
+    beat = 60 / bpm
+    notes = [Note(k * beat, (k + 0.9) * beat, int(st["pitch"]), 0.8, st["string"], st["fret"],
+                  glide_from=st.get("glide_from")) for k, st in enumerate(steps)]
+    if not notes:
+        raise ReferenceError("The exercise has no notes.")
+    return Reference(notes, Grid.from_bpm(bpm, 0.0, 4, len(notes) * beat + 10), name="exercise", path="exercise")
+
+
 def list_tracks(path: Path) -> list[dict]:
     path = Path(path)
     ext = path.suffix.lower()
@@ -416,6 +428,8 @@ def load_reference(opts: RefOptions, log: Log = print) -> Reference:
         return _slice(load_chart(opts.chart), opts, log)
     if opts.notes is not None:
         return load_note_sequence(opts.notes)
+    if opts.tab is not None:
+        return load_tab_sequence(opts.tab)
     if opts.path is None:
         raise ReferenceError("Missing reference.")
     path = Path(opts.path)

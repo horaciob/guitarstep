@@ -96,7 +96,10 @@ def ref_options(body: dict) -> tuple[RefOptions, dict]:
         if body.get("exercise"):
             lid, eid = body["exercise"]["lesson"], body["exercise"]["exercise"]
             opts, mode, speed, need = catalog.exercise_setup(lid, eid)
-            return opts, dict(type="exercise", lesson=lid, exercise=eid, min=need, mode=mode, speed=speed)
+            ctx = dict(type="exercise", lesson=lid, exercise=eid, min=need, mode=mode, speed=speed)
+            if mode == "bend":
+                ctx["hold"] = float(catalog.get_exercise(lid, eid).get("hold", 1.0))
+            return opts, ctx
         if body.get("drill"):
             chords = list(body["drill"]["chords"])[:2]
             return RefOptions(chart=catalog.chart_alternating(chords, 60)), dict(
@@ -211,7 +214,8 @@ def api_course():
         ls = []
         for x in lvl["lessons"]:
             exs = [dict(e, best=p["exercises"].get(f"{x['id']}/{e['id']}"),
-                        passed=p["exercises"].get(f"{x['id']}/{e['id']}", -1) >= e.get("min", 80))
+                        passed=p["exercises"].get(f"{x['id']}/{e['id']}", -1) >= e.get("min", 80),
+                        **({"steps": catalog.exercise_steps(e)} if e["kind"] in ("lick", "bend") else {}))
                    for e in x["exercises"]]
             ls.append(dict(x, exercises=exs, done=x["id"] in p["lessons"], pinned=p["tutorials"].get(x["id"])))
         levels.append(dict(lvl, lessons=ls))
@@ -629,7 +633,7 @@ def live_start(body: dict):
             legato=body.get("legato", not chart) and not chart,
             count_extras=not chart, transpose=_int(body.get("transpose")) or 0,
             simulate=sim, fast=bool(body.get("fast")) and sim is not None,
-            backing=bool(body.get("backing")) and chart,
+            backing=bool(body.get("backing")) and chart, hold=ctx.get("hold", 1.0),
         )
         try:
             sess = LiveSession(ref, opts)

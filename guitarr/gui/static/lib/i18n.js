@@ -70,6 +70,10 @@ export function detailText(d) {
     case "wrong_note": return t("detail.wrong_note", { note: d.played });
     case "unclear": return t("detail.unclear", { heard: d.heard });
     case "missed": return t("detail.missed");
+    case "bend_ok": return t("detail.bend_ok", { cents: (d.cents > 0 ? "+" : "") + d.cents, wobble: d.wobble });
+    case "bend_flat": return t("detail.bend_flat", { cents: Math.abs(d.cents) });
+    case "bend_sharp": return t("detail.bend_sharp", { cents: d.cents });
+    case "bend_short": return t("detail.bend_short", { held: d.held });
     case "skipped": return d.before ? t("detail.skipped_before", { before: detailText(d.before), interpolation: { escapeValue: false } }) : t("detail.skipped");
     default: return "";
   }

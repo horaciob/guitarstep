@@ -5,6 +5,14 @@
 - ~/.guitarr/charts/*.txt    : your own charts
 - guitarr/data/course.json   : levels → lessons → exercises you pass by playing
 
+Lick tabs (course exercises of kind "lick") are space-separated tokens, "string:fret"
+followed by what the fretting hand does next, as in written tab:
+
+    3:5h7   hammer-on to fret 7      3:7p5   pull-off to fret 5
+    3:5/7   slide up to fret 7       3:7\\5   slide down to fret 5
+    3:7b9   bend up to fret 9's pitch (the picked fret 7 isn't a note of its own)
+    3:7b9r7 bend and release         2:5~    vibrato (doesn't change the notes)
+
 Chart format (plain text):
 
     title: Pop in G
@@ -204,6 +212,80 @@ def chart_alternating(names: list[str], times: int) -> dict:
     return dict(id="change-" + "-".join(names), title=" ↔ ".join(names), bpm=60, beats_per_bar=1, capo=0, bars=bars)
 
 
+# ---------------------------------------------------------------- licks and bends
+_TOKEN = re.compile(r"^([1-6]):(\d+)((?:[hpbr/\\]\d+|~)*)$")
+_OP = re.compile(r"([hpbr/\\])(\d+)|~")
+TECH = {"h": "hammer", "p": "pull", "/": "slide", "\\": "slide", "b": "bend", "r": "release"}
+
+
+def _pitch(string: int, fret: int) -> int:
+    return OPEN_STRINGS[6 - string] + fret
+
+
+def _shift_token(string: int, frets: list[int], shift: int) -> list[int]:
+    """Moves a token's frets by `shift` semitones, an octave up or down if it falls off the neck."""
+    out = [f + shift for f in frets]
+    if min(out) < 0:
+        out = [f + 12 for f in out]
+    elif max(out) > 20:
+        out = [f - 12 for f in out]
+    return out
+
+
+def parse_lick(tab: str, shift: int = 0) -> list[dict]:
+    """Lick tab → steps (string, fret, pitch, tech, glide_from, vibrato). Errors name the token."""
+    steps: list[dict] = []
+    for tok in tab.split():
+        m = _TOKEN.match(tok)
+        if not m:
+            raise CatalogError(f"Lick: can't read '{tok}' (e.g. 3:5, 3:5h7, 3:7b9r7, 2:5~)")
+        string = int(m.group(1))
+        ops = [(o.group(1), int(o.group(2))) if o.group(1) else ("~", None) for o in _OP.finditer(m.group(3))]
+        frets = _shift_token(string, [int(m.group(2))] + [f for op, f in ops if f is not None], shift)
+        fi = iter(frets)
+        fret = next(fi)
+        cur = _pitch(string, fret)
+        if not ops or ops[0][0] != "b":
+            steps.append(dict(string=string, fret=fret, pitch=cur, tech="pick", glide_from=None, vibrato=False))
+        for op, _ in ops:
+            if op == "~":
+                if steps:
+                    steps[-1]["vibrato"] = True
+                continue
+            to = next(fi)
+            p = _pitch(string, to)
+            if op == "b" and p <= cur:
+                raise CatalogError(f"Lick: '{tok}' bends down")
+            glide = cur if op in ("b", "r", "/", "\\") else None
+            # a bend is still fretted where you picked it; everything else moves the finger
+            shown = fret if op == "b" else to
+            steps.append(dict(string=string, fret=shown, pitch=p, tech=TECH[op], glide_from=glide, vibrato=False))
+            cur = p
+            if op != "b":
+                fret = to
+    if not steps:
+        raise CatalogError("Lick: no notes")
+    return steps
+
+
+def bend_steps(ex: dict) -> list[dict]:
+    """A bend exercise: the same bend, once per try."""
+    s, f, up = int(ex["string"]), int(ex["fret"]), int(ex.get("bend", 2))
+    if not 1 <= up <= 3:
+        raise CatalogError("A bend goes up 1 to 3 semitones")
+    one = dict(string=s, fret=f, pitch=_pitch(s, f) + up, tech="bend", glide_from=_pitch(s, f), vibrato=False)
+    return [dict(one) for _ in range(int(ex.get("tries", 10)))]
+
+
+def exercise_steps(ex: dict) -> list[dict] | None:
+    """Tab steps of a lick or bend exercise (None for other kinds)."""
+    if ex["kind"] == "lick":
+        return parse_lick(ex["tab"], int(ex.get("shift", 0)))
+    if ex["kind"] == "bend":
+        return bend_steps(ex)
+    return None
+
+
 # ---------------------------------------------------------------- course
 @lru_cache(maxsize=None)
 def course() -> dict:
@@ -242,6 +324,10 @@ def exercise_setup(lid: str, eid: str):
         return RefOptions(chart=chart_alternating(ex["chords"], ex.get("times", 4))), "wait", 1.0, ex.get("min", 75)
     if kind == "chart":
         return RefOptions(chart=get_chart(ex["chart"])), "tempo", ex.get("speed", 1.0), ex.get("min", 80)
+    if kind == "lick":
+        return RefOptions(tab=exercise_steps(ex)), "wait", 1.0, ex.get("min", 80)
+    if kind == "bend":
+        return RefOptions(tab=exercise_steps(ex)), "bend", 1.0, ex.get("min", 70)
     raise CatalogError(f"Unknown exercise kind: {kind}")
 
 

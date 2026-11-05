@@ -1,0 +1,11 @@
+title: Slow minor blues in A minor
+level: 6
+bpm: 60
+time: 4/4
+strum: D...D.DU
+note: Feel three pulses inside every beat (12/8). Let each chord ring: the space is part of the song.
+
+[Twelve bars]
+Am | Am | Am | Am
+Dm | Dm | Am | Am
+E7 | Dm | Am | E7

@@ -38,6 +38,20 @@ def test_review_schedule_moves_forward_and_resets():
     assert "chord:Am" not in d["reviews"]
 
 
+def test_passing_the_last_review_retires_it():
+    d = progress._empty()
+    last = len(progress.REVIEW_DAYS) - 1
+    d["reviews"]["exercise:blues-bends/bend-g7"] = dict(step=last, due=TODAY.isoformat(), last=None)
+    progress._review(d, "exercise:blues-bends/bend-g7", True, TODAY)
+    assert d["reviews"]["exercise:blues-bends/bend-g7"]["retired"]
+    assert progress.due_reviews(d, TODAY + timedelta(days=400)) == []
+    progress._review(d, "exercise:blues-bends/bend-g7", True, TODAY + timedelta(days=400))   # still retired
+    assert d["reviews"]["exercise:blues-bends/bend-g7"]["retired"]
+    progress._review(d, "exercise:blues-bends/bend-g7", False, TODAY + timedelta(days=401))  # lost it: starts over
+    r = d["reviews"]["exercise:blues-bends/bend-g7"]
+    assert "retired" not in r and r["step"] == 0 and progress.due_reviews(d, TODAY + timedelta(days=402))
+
+
 def test_due_reviews_show_up_and_tick_when_done():
     d = progress._read()
     d["reviews"]["chord:G"] = dict(step=1, due=(TODAY - timedelta(days=1)).isoformat(), last=None)

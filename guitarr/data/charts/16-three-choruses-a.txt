@@ -1,0 +1,21 @@
+title: Three choruses in A, with an ending
+level: 6
+bpm: 92
+time: 4/4
+strum: D.DUD.DU
+note: Three times around the 12 bars. The last bar of the third chorus is the ending: stop on A7.
+
+[Chorus 1]
+A7 | D7 | A7 | A7
+D7 | D7 | A7 | A7
+E7 | D7 | A7 | E7
+
+[Chorus 2]
+A7 | D7 | A7 | A7
+D7 | D7 | A7 | A7
+E7 | D7 | A7 | E7
+
+[Chorus 3]
+A7 | D7 | A7 | A7
+D7 | D7 | A7 | A7
+E7 | D7 | A7 | A7

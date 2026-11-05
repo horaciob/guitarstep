@@ -1,0 +1,10 @@
+title: Eight-bar blues in A
+level: 6
+bpm: 88
+time: 4/4
+strum: D.DUD.DU
+note: Eight bars, not twelve: the V arrives in bar 2. Don't count it as a short 12-bar.
+
+[Eight bars]
+A7 | E7 | D7 | D7
+A7 | E7 | A7 D7 | A7 E7

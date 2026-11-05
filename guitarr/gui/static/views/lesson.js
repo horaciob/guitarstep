@@ -1,12 +1,34 @@
 // A lesson: theory, chords, tutorials (videos) and exercises you pass by playing.
-import { msgIsError, msgText, t, tc } from "../lib/i18n.js";
+import { lang, msgIsError, msgText, t, tc } from "../lib/i18n.js";
 import { $, $$, api, bindChordSvg, chordSvg, esc, noteName, pluck, strum, toast, youtubeId, youtubeSearch } from "../lib/ui.js";
 import { listen } from "../lib/listen.js";
 
 let task = null;
 
+const STRINGS = ["e", "B", "G", "D", "A", "E"];   // tab lines, 1st string on top
+
+/** Tab for lick and bend steps: one column per note, with h p / \ b r ~ as in written tab. */
+function tabText(steps) {
+  const lines = STRINGS.map(s => `${s}|-`);
+  steps.forEach(st => {
+    const from = st.glide_from;
+    const cell = st.tech === "bend" ? `${st.fret}b${st.fret + st.pitch - from}`
+      : st.tech === "release" ? `r${st.fret}`
+      : st.tech === "hammer" ? `h${st.fret}` : st.tech === "pull" ? `p${st.fret}`
+      : st.tech === "slide" ? `${st.pitch > from ? "/" : "\\"}${st.fret}` : `${st.fret}`;
+    const txt = cell + (st.vibrato ? "~" : "");
+    lines.forEach((l, i) => { lines[i] += (i === st.string - 1 ? txt : "-".repeat(txt.length)) + "--"; });
+  });
+  return lines.map(l => l + "|").join("\n");
+}
+
 function exerciseTarget(ex) {
   if (ex.kind === "notes") return ex.notes.map(noteName).join(" ");
+  if (ex.kind === "lick") return ex.steps.map(s => noteName(s.pitch)).join(" ");
+  if (ex.kind === "bend") {
+    const s = ex.steps[0];
+    return t("lesson.bend_target", { string: s.string, fret: s.fret, note: noteName(s.pitch), tries: ex.steps.length, hold: (ex.hold ?? 1).toLocaleString(lang()) });
+  }
   if (ex.kind === "chord") return `${ex.chord} × ${ex.times}`;
   if (ex.kind === "change") return `${ex.chords.join(" ↔ ")} × ${ex.times}`;
   if (ex.kind === "chart") return t("lesson.chart_at", { pct: Math.round(ex.speed * 100) });
@@ -41,6 +63,7 @@ export async function mount(el, { segs }) {
                 <div><b>${esc(exTitle(ex))}</b><small class="muted">${esc(exerciseTarget(ex))} · ${esc(t("lesson.pass_with", { min: ex.min }))}${ex.best != null ? ` · ${esc(t("lesson.your_best", { best: Math.round(ex.best) }))}` : ""}</small></div>
                 <button class="btn small" data-act="hear" title="${esc(t("lesson.hear_hint"))}">♪</button>
                 <button class="btn small primary" data-act="go">${esc(t("lesson.listen"))}</button></div>
+              ${ex.kind === "lick" ? `<pre class="tab" aria-label="${esc(t("lesson.tab_label"))}">${esc(tabText(ex.steps))}</pre>` : ""}
               <div class="ex-live" hidden><div class="ex-progress"><i></i></div><div class="ex-msg muted"></div></div>
             </div>`).join("")}</div></div>
       </div>
@@ -78,6 +101,8 @@ export async function mount(el, { segs }) {
 function preview(ex, chordData) {
   const ch = id => chordData.chords.find(c => c.id === id);
   if (ex.kind === "notes") ex.notes.forEach((p, k) => pluck(p, k * 0.45));
+  else if (ex.kind === "lick") ex.steps.forEach((s, k) => pluck(s.pitch, k * 0.3));
+  else if (ex.kind === "bend") { pluck(ex.steps[0].glide_from, 0); pluck(ex.steps[0].pitch, 0.6); }
   else if (ex.kind === "chord") strum(ch(ex.chord));
   else if (ex.kind === "change") ex.chords.forEach((c, k) => setTimeout(() => strum(ch(c)), k * 900));
   else toast(t("lesson.open_chart"));
@@ -89,7 +114,7 @@ async function run(el, segs, ls, ex, box) {
   live.hidden = false;
   btn.textContent = t("lesson.stop");
   msg.className = "ex-msg muted";
-  msg.textContent = ex.kind === "chart" ? t("lesson.wait_count_in") : t("lesson.play_when_ready");
+  msg.textContent = t(ex.kind === "chart" ? "lesson.wait_count_in" : ex.kind === "bend" ? "lesson.bend_ready" : "lesson.play_when_ready");
   btn.onclick = () => task && task.stop();
   task = listen({ exercise: { lesson: ls.id, exercise: ex.id }, click: true }, {
     onState: s => {

@@ -1,6 +1,7 @@
 """Score followers: judge every detected onset against the reference.
 
   WaitFollower  : waits until you play the next note/chord correctly.
+  BendFollower  : bend to a target pitch and hold it; one event per try.
   TempoFollower : every event has its moment on the metronome; judges note and
                   timing. Supports looping and the speed trainer.
 
@@ -53,6 +54,14 @@ def describe(d: dict | None) -> str:
         return f"couldn't tell the note: {d['heard']}"
     if k == "missed":
         return "didn't sound"
+    if k == "bend_ok":
+        return f"held, {d['cents']:+.0f} cents, wobble {d['wobble']:.0f}"
+    if k == "bend_flat":
+        return f"bend fell short ({abs(d['cents']):.0f} cents flat)"
+    if k == "bend_sharp":
+        return f"bend went too far ({d['cents']:.0f} cents sharp)"
+    if k == "bend_short":
+        return f"reached it, but held only {d['held']:.1f} s"
     if k == "skipped":
         before = d.get("before")
         return "skipped" + (f" (before: {describe(before)})" if before else "")
@@ -114,6 +123,7 @@ class Event:
     win: float = 0.2          # window to accept an onset for it (tempo mode)
     name: str | None = None   # chord name (charts); otherwise the notes are named
     tentative: tuple | None = None  # provisional error: (t, note) in case it was an extra note
+    allow: set = field(default_factory=set)  # pitches passed on the way to it (bends, slides): not errors
 
     @property
     def is_chord(self) -> bool:
@@ -134,8 +144,16 @@ def group_events(notes: list[Note], win: float = 0.035) -> list[Event]:
                 evs[-1].pitches.append(n.pitch)
                 evs[-1].tab.append((n.string, n.fret))
         else:
-            evs.append(Event(n.start, [n.pitch], [(n.string, n.fret)], name=n.label))
+            evs.append(Event(n.start, [n.pitch], [(n.string, n.fret)], name=n.label, allow=_glide(n)))
     return evs
+
+
+def _glide(n: Note) -> set:
+    """Pitches heard while bending or sliding into a note, the starting one included."""
+    if n.glide_from is None:
+        return set()
+    lo, hi = sorted((n.glide_from, n.pitch))
+    return set(range(lo, hi + 1)) - {n.pitch}
 
 
 _ROOTS = dict(C=0, D=2, E=4, F=5, G=7, A=9, B=11)
@@ -293,6 +311,8 @@ class WaitFollower:
                 ev.detail = detail
             self._advance(det, ev)
             return message("hit", label=ev.label(), detail=detail, dt_ms=None)
+        if ev.allow and det.midi is not None and int(round(det.midi + self.judge.transpose)) in ev.allow:
+            return None  # still on the way to it (picked before the bend, or sliding)
         if self.k > 0:
             prev = self.events[self.k - 1]
             if (prev.is_chord or ev.is_chord) and set(prev.pitches) != set(ev.pitches) \
@@ -327,6 +347,129 @@ class WaitFollower:
 
     def tick(self, now: float) -> None:
         pass
+
+
+# ---------------------------------------------------------------- bend mode
+class BendFollower:
+    """Bend practice: every event is one try at bending from `glide_from` up to the event's
+    pitch and holding it there. It follows the continuous pitch (`on_pitch`), not onsets.
+
+    A try starts when the string sounds below the target and rises at least `RISE` semitones.
+    It's a hit once the pitch stays within ±`tol` cents of the target for `hold` seconds. It
+    fails if the bend comes back down, or the note dies, before that. Picking without bending
+    isn't a try. After a hit, the next try needs the pitch back down (or silence)."""
+
+    mode = "bend"
+    RISE = 0.4          # semitones above where it started: now it's a try
+    SILENCE = 0.25      # s without pitch: the note died
+    SMOOTH = 3          # frames in the median filter
+
+    def __init__(self, events: list[Event], judge: Judge, source: int, hold: float = 1.0, tol_cents: float = 30.0):
+        self.events, self.judge = events, judge
+        self.src, self.tgt = float(source), float(events[0].pitches[0])
+        self.hold, self.tol = hold, tol_cents / 100
+        self.k = 0
+        self.passes: list[dict] = []
+        self.extras: list = []
+        self.history: list = []
+        self.armed = True
+        self.recent: list[float] = []
+        self._new_try()
+
+    def _new_try(self) -> None:
+        self.start_m = None       # pitch where the try started
+        self.peak = None
+        self.rising = False
+        self.since = None         # start of the current in-tune stretch
+        self.cents: list[float] = []
+        self.longest = 0.0
+        self.sharp = self.inside = 0
+        self.quiet_from = None
+
+    @property
+    def done(self) -> bool:
+        return self.k >= len(self.events)
+
+    def on_detection(self, det: Detection) -> None:
+        return None
+
+    def tick(self, now: float) -> None:
+        return None
+
+    def on_pitch(self, t: float, midi: float | None) -> dict | None:
+        if self.done:
+            return None
+        if midi is not None and min(abs(midi - self.src), abs(midi - self.tgt)) > 3:
+            return None                                   # YIN octave slip or another string
+        if midi is None:
+            self.recent = []
+            if self.quiet_from is None:
+                self.quiet_from = t
+            if t - self.quiet_from >= self.SILENCE:
+                self.armed = True
+                if self.rising:
+                    return self._fail()
+                self._new_try()
+            return None
+        self.quiet_from = None
+        self.recent = (self.recent + [midi])[-self.SMOOTH:]
+        m = float(np.median(self.recent))
+        if not self.armed:
+            if m < self.tgt - 0.5:
+                self.armed = True
+                self._new_try()
+            return None
+        if self.start_m is None:
+            if m >= self.tgt - self.tol:
+                return None                               # already up there: not a bend
+            self.start_m = self.peak = m
+        self.peak = max(self.peak, m)
+        if not self.rising and m - self.start_m >= self.RISE:
+            self.rising = True
+        if not self.rising:
+            self.start_m = min(self.start_m, m)
+            return None
+        dev = m - self.tgt
+        if abs(dev) <= self.tol:
+            self.inside += 1
+            if self.since is None:
+                self.since, self.cents = t, []
+            self.cents.append(dev * 100)
+            self.longest = max(self.longest, t - self.since)
+            if t - self.since >= self.hold:
+                return self._hit()
+            return None
+        self.since = None
+        if dev > self.tol:
+            self.sharp += 1
+        if m < self.start_m + self.RISE / 2:              # let go before holding it
+            return self._fail()
+        return None
+
+    def _hit(self) -> dict:
+        ev = self.events[self.k]
+        ev.status = "ok"
+        ev.detail = dict(kind="bend_ok", cents=round(float(np.mean(self.cents))),
+                         wobble=round(float(np.std(self.cents))))
+        self._next()
+        return message("hit", label=ev.label(), detail=ev.detail, dt_ms=None)
+
+    def _fail(self) -> dict:
+        ev = self.events[self.k]
+        ev.status = "wrong"
+        if self.longest >= 0.1:
+            ev.detail = dict(kind="bend_short", held=round(self.longest, 1))
+        elif self.sharp > self.inside:
+            ev.detail = dict(kind="bend_sharp", cents=round((self.peak - self.tgt) * 100))
+        else:
+            ev.detail = dict(kind="bend_flat", cents=round((self.peak - self.tgt) * 100))
+        self._next()
+        return message("wrong", label=ev.label(), detail=ev.detail)
+
+    def _next(self) -> None:
+        self.k += 1
+        self.armed = False
+        self._new_try()
 
 
 # ---------------------------------------------------------------- tempo mode

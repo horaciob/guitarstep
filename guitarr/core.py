@@ -36,6 +36,7 @@ class Note:
     string: int | None = None   # 1 = highest string
     fret: int | None = None
     label: str | None = None    # chord name it belongs to (charts)
+    glide_from: int | None = None  # reached by bending/sliding from this pitch (licks)
 
 
 def note_name(p: int) -> str:
@@ -43,7 +44,8 @@ def note_name(p: int) -> str:
 
 
 def shifted(n: Note, dt: float = 0.0, dp: int = 0) -> Note:
-    return Note(n.start + dt, n.end + dt, n.pitch + dp, n.amp, n.string, n.fret, n.label)
+    return Note(n.start + dt, n.end + dt, n.pitch + dp, n.amp, n.string, n.fret, n.label,
+                None if n.glide_from is None else n.glide_from + dp)
 
 
 # ---------------------------------------------------------------- bar grid
