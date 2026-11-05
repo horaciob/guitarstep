@@ -74,6 +74,12 @@ guitarr gui          # opens http://127.0.0.1:8765
 ## Installation
 
 ```bash
+make install                     # creates .venv and does all of the below (dev tools + Chromium for browser tests)
+```
+
+Or by hand:
+
+```bash
 python3.11 -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"          # installs the `guitarr` command and the test tools
