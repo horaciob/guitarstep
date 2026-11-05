@@ -19,7 +19,10 @@
    "progress": "Tu progreso",
    "device": "Entrada de audio de la guitarra",
    "rig": "Ampli y efectos",
-   "plan": "Plan de práctica"
+   "plan": "Plan de práctica",
+   "menu": "Menú",
+   "plan_short": "Plan",
+   "rig_short": "Ampli"
   },
   "common": {
    "upload": "Subir",

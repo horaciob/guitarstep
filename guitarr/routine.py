@@ -76,7 +76,10 @@ def build(today: date | None = None) -> dict:
         elif "/" in ref:
             lid, eid = ref.split("/", 1)
             if any(x["id"] == lid for x in lessons):
-                add(key, "review_exercise", REVIEW_MIN, f"#/lesson/{lid}", done, "technique", lesson=lid, exercise=eid)
+                ls = next(x for x in lessons if x["id"] == lid)
+                ex = next((e for e in ls["exercises"] if e["id"] == eid), {})
+                add(key, "review_exercise", REVIEW_MIN, f"#/lesson/{lid}", done, "technique", lesson=lid, exercise=eid,
+                    title=ex.get("title", eid))
 
     nxt = next((x for x in lessons if x["id"] not in d["lessons"]), None)
     done_lesson = next((e["params"]["lesson"] for e in events if e["code"] in ("exercise_passed", "lesson_completed")), None)
@@ -84,7 +87,7 @@ def build(today: date | None = None) -> dict:
         lid = done_lesson or nxt["id"]
         ls = next(x for x in lessons if x["id"] == lid)
         add(f"lesson:{lid}", "lesson", ls.get("minutes", 10), f"#/lesson/{lid}", bool(done_lesson), "technique",
-            lesson=lid)
+            lesson=lid, title=ls["title"])
 
     for song in history.songs()[:5]:                       # weakest bars of a recent song
         sessions = history.load_sessions(song["id"])

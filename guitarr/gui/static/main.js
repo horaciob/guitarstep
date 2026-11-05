@@ -7,7 +7,7 @@ applyDom();
 const { LISTENER_ROUTES, showListenerView, hideListenerViews } = await import("./app.js");
 const { $, $$, api, esc, isOnboarded, loadInstrument, toast } = await import("./lib/ui.js");
 await loadInstrument();
-const { fillIcons } = await import("./lib/icons.js");
+const { fillIcons, icon } = await import("./lib/icons.js");
 fillIcons();
 
 const VIEWS = {
@@ -34,8 +34,18 @@ function parse() {
   return { name: segs[0] || "home", segs: segs.slice(1), params: Object.fromEntries(new URLSearchParams(qs || "")) };
 }
 
+// Phone layout: the menu is a drop-down from the top bar (closed again on every navigation).
+function setMenu(open) {
+  document.body.classList.toggle("nav-open", open);
+  $("#navToggle").setAttribute("aria-expanded", String(open));
+  $("#navToggle span").innerHTML = icon(open ? "close" : "menu", 22);
+}
+$("#navToggle").onclick = () => setMenu(!document.body.classList.contains("nav-open"));
+document.addEventListener("keydown", e => { if (e.key === "Escape" && document.body.classList.contains("nav-open")) setMenu(false); });
+
 async function route() {
   const { name, segs, params } = parse();
+  setMenu(false);
   const my = ++seq;
   $$("[data-route]").forEach(a => a.classList.toggle("active", a.dataset.route === (NAV_OF[name] || name)));
   document.body.classList.toggle("is-setup", name === "setup");

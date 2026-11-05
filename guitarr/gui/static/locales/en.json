@@ -19,7 +19,10 @@
    "progress": "Your progress",
    "device": "Guitar audio input",
    "rig": "Amp & effects",
-   "plan": "Practice plan"
+   "plan": "Practice plan",
+   "menu": "Menu",
+   "plan_short": "Plan",
+   "rig_short": "Amp"
   },
   "common": {
    "upload": "Upload",

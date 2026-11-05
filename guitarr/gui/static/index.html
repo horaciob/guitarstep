@@ -2,9 +2,15 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>guitarr</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><text y='19' font-size='18'>🎸</text></svg>">
+<link rel="icon" href="/static/icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
+<link rel="manifest" href="/static/manifest.json">
+<meta name="theme-color" content="#0e1014" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="description" content="A guitar practice companion that listens to you.">
 <link rel="stylesheet" href="/static/app.css">
 </head>
 <body>
@@ -14,6 +20,7 @@
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
       guitarr
     </a>
+    <button class="nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="nav" data-i18n-title="nav.menu"><span data-icon="menu" data-size="22"></span></button>
     <nav id="nav" data-i18n-title="nav.label">
       <div class="rail-group" data-i18n="nav.learn">Learn</div>
       <a href="#/home" data-route="home"><span class="ico" data-icon="home"></span><span data-i18n="nav.home">Home</span></a>
@@ -279,6 +286,13 @@
 </section>
   </main>
 </div>
+<nav class="tabbar" id="tabbar" data-i18n-title="nav.label">
+  <a href="#/home" data-route="home"><span data-icon="home"></span><span data-i18n="nav.home">Home</span></a>
+  <a href="#/plan" data-route="plan"><span data-icon="target"></span><span data-i18n="nav.plan_short">Plan</span></a>
+  <a href="#/practice" data-route="practice"><span data-icon="practice"></span><span data-i18n="nav.practice">Practice</span></a>
+  <a href="#/chords" data-route="chords"><span data-icon="chords"></span><span data-i18n="nav.chords">Chords</span></a>
+  <a href="#/rig" data-route="rig"><span data-icon="amp"></span><span data-i18n="nav.rig_short">Amp</span></a>
+</nav>
 <div class="gl-toast" id="toast" role="status" aria-live="polite" hidden></div>
 <script type="module" src="/static/main.js"></script>
 </body>

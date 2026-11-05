@@ -235,3 +235,25 @@ def test_tuning_and_left_handed(app_page):
     expect(app_page.locator(".callout", has_text="standard tuning")).to_be_visible()
     label = app_page.locator(".chord-card").first.locator("svg text").last
     expect(label).to_have_text("E  B  G  D  A  E")                                      # mirrored
+
+
+def test_phone_layout_and_install_manifest(page, server_url):
+    import json
+    import urllib.request
+    page.set_viewport_size({"width": 390, "height": 844})
+    page.goto(server_url + "/static/index.html")
+    page.evaluate("localStorage.setItem('guitarr.onboarded', '1')")
+    page.goto(server_url + "/#/home")
+    expect(page.locator("#tabbar")).to_be_visible()
+    expect(page.locator("#nav")).to_be_hidden()
+    page.locator("#navToggle").click()
+    expect(page.locator("#nav")).to_be_visible()
+    page.locator("#nav a[data-route=plan]").click()
+    expect(page).to_have_url(re.compile("#/plan"))
+    expect(page.locator("#nav")).to_be_hidden()
+    expect(page.locator("#tabbar a[data-route=plan]")).to_have_class(re.compile("active"))
+    assert page.evaluate("document.documentElement.scrollWidth") <= 390
+    m = json.load(urllib.request.urlopen(server_url + "/static/manifest.json"))
+    assert m["display"] == "standalone" and {"192x192", "512x512"} <= {i["sizes"] for i in m["icons"]}
+    for icon in m["icons"]:
+        assert urllib.request.urlopen(server_url + icon["src"]).status == 200

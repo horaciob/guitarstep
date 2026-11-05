@@ -16,9 +16,9 @@ function ago(iso) {
 function stepTitle(s) {
   const p = s.params;
   switch (s.kind) {
-    case "lesson": return t("today.step_lesson", { title: tc(`lessons.${p.lesson}.title`, p.lesson) });
+    case "lesson": return t("today.step_lesson", { title: tc(`lessons.${p.lesson}.title`, p.title || p.lesson) });
     case "review_chord": return t("today.step_review_chord", { chord: p.chord });
-    case "review_exercise": return t("today.step_review_exercise", { title: tc(`exercises.${p.lesson}/${p.exercise}`, p.exercise) });
+    case "review_exercise": return t("today.step_review_exercise", { title: tc(`exercises.${p.lesson}/${p.exercise}`, p.title || p.exercise) });
     case "bars": return t("today.step_bars", { name: p.name, from: p.start, to: p.end });
     case "chart": return t("today.step_chart", { title: tc(`charts.${p.chart}.title`, p.title) });
     case "drill": return t("today.step_drill", { a: p.chords[0], b: p.chords[1] });
