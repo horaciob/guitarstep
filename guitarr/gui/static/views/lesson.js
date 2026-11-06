@@ -2,8 +2,10 @@
 import { lang, msgIsError, msgText, t, tc } from "../lib/i18n.js";
 import { $, $$, api, bindChordSvg, chordSvg, esc, noteName, pluck, strum, toast, youtubeId, youtubeSearch } from "../lib/ui.js";
 import { listen } from "../lib/listen.js";
+import { chartGuide, playChart } from "./charts.js";
 
-let task = null;
+let task = null, demo = null;
+const guides = new Map();   // exercise id → { guide, chart } for chart exercises
 
 const STRINGS = ["e", "B", "G", "D", "A", "E"];   // tab lines, 1st string on top
 
@@ -61,9 +63,10 @@ export async function mount(el, { segs }) {
             <div class="exercise${ex.passed ? " passed" : ""}" data-id="${esc(ex.id)}">
               <div class="ex-head"><span class="state">${ex.passed ? "✓" : "○"}</span>
                 <div><b>${esc(exTitle(ex))}</b><small class="muted">${esc(exerciseTarget(ex))} · ${esc(t("lesson.pass_with", { min: ex.min }))}${ex.best != null ? ` · ${esc(t("lesson.your_best", { best: Math.round(ex.best) }))}` : ""}</small></div>
-                <button class="btn small" data-act="hear" title="${esc(t("lesson.hear_hint"))}">♪</button>
+                <button class="btn small" data-act="hear" title="${esc(t(ex.kind === "chart" ? "lesson.demo_hint" : "lesson.hear_hint"))}">♪</button>
                 <button class="btn small primary" data-act="go">${esc(t("lesson.listen"))}</button></div>
               ${ex.kind === "lick" ? `<pre class="tab" aria-label="${esc(t("lesson.tab_label"))}">${esc(tabText(ex.steps))}</pre>` : ""}
+              ${ex.kind === "chart" ? `<div class="ex-guide"></div>` : ""}
               <div class="ex-live" hidden><div class="ex-progress"><i></i></div><div class="ex-msg muted"></div></div>
             </div>`).join("")}</div></div>
       </div>
@@ -91,11 +94,41 @@ export async function mount(el, { segs }) {
       mount(el, { segs });
     } catch (e) { toast(e.message); }
   };
+  guides.clear();
+  await Promise.all(ls.exercises.filter(ex => ex.kind === "chart").map(async ex => {
+    const { chart } = await api(`/api/charts/${encodeURIComponent(ex.chart)}`);
+    const box = $(`.exercise[data-id="${CSS.escape(ex.id)}"] .ex-guide`, el);
+    const note = chart.note && tc(`charts.${chart.id}.note`, chart.note);
+    guides.set(ex.id, { chart, guide: chartGuide(box, chart, { speed: ex.speed, note }) });
+  }));
   $$(".exercise", el).forEach(box => {
     const ex = ls.exercises.find(e => e.id === box.dataset.id);
-    $("[data-act=hear]", box).onclick = () => preview(ex, chordData);
+    $("[data-act=hear]", box).onclick = () => ex.kind === "chart" ? toggleDemo(ex, box) : preview(ex, chordData);
     $("[data-act=go]", box).onclick = () => run(el, segs, ls, ex, box);
   });
+}
+
+/** Chart exercises: plays the chart at the exercise's speed while the guide shows what to strum. */
+function toggleDemo(ex, box) {
+  if (demo) return stopDemo();
+  if (task) return toast(t("lesson.busy"));
+  const g = guides.get(ex.id), btn = $("[data-act=hear]", box);
+  if (!g) return;
+  demo = playChart(g.chart, { speed: ex.speed });
+  const mine = demo;
+  g.guide.setClock(demo.clock);
+  btn.textContent = "■";
+  btn.title = t("lesson.demo_stop");
+  mine.done.then(() => {
+    g.guide.setClock(null);
+    btn.textContent = "♪";
+    btn.title = t("lesson.demo_hint");
+    if (demo === mine) demo = null;
+  });
+}
+
+function stopDemo() {
+  if (demo) { demo.stop(); demo = null; }
 }
 
 function preview(ex, chordData) {
@@ -110,6 +143,12 @@ function preview(ex, chordData) {
 
 async function run(el, segs, ls, ex, box) {
   if (task) return toast(t("lesson.busy"));
+  stopDemo();   // the microphone would hear it
+  const g = guides.get(ex.id);
+  let pos = null, at = 0;
+  const rate = g ? g.chart.bpm * ex.speed / 60 : 0;
+  // between state polls the playhead runs on its own at the exercise's tempo
+  if (g) g.guide.setClock(() => pos == null ? null : pos + (performance.now() - at) / 1000 * rate);
   const live = $(".ex-live", box), bar = $(".ex-progress i", box), msg = $(".ex-msg", box), btn = $("[data-act=go]", box);
   live.hidden = false;
   btn.textContent = t("lesson.stop");
@@ -120,6 +159,8 @@ async function run(el, segs, ls, ex, box) {
     onState: s => {
       bar.style.width = `${Math.round(100 * Math.min(s.k, s.total) / s.total)}%`;
       if (s.countdown) msg.textContent = t("lesson.count_in", { n: s.countdown });
+      pos = s.pos ?? null;
+      at = performance.now();
     },
     onMessage: m => { msg.textContent = msgText(m); msg.className = "ex-msg " + (msgIsError(m) ? "err" : "ok"); },
   });
@@ -137,6 +178,7 @@ async function run(el, segs, ls, ex, box) {
     msg.className = "ex-msg err";
     msg.textContent = e.message;
   } finally {
+    if (g) g.guide.setClock(null);
     task = null;
     btn.textContent = t("lesson.listen");
     btn.onclick = () => run(el, segs, ls, ex, box);
@@ -145,4 +187,7 @@ async function run(el, segs, ls, ex, box) {
 
 export function unmount() {
   if (task) { task.stop(); task = null; }
+  stopDemo();
+  guides.forEach(g => g.guide.setClock(null));
+  guides.clear();
 }

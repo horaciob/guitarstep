@@ -558,13 +558,24 @@ class TempoFollower:
     def k(self) -> int:
         return next((i for i, e in enumerate(self.events) if e.status == "pending"), len(self.events))
 
+    def _bar_start(self) -> float:
+        """Input-clock time where the current pass starts (after the count-in)."""
+        return self.events[0].due - (self.events[0].time - self.bar0) / self.speed
+
     def countdown(self, now: float) -> int | None:
         if self.t0 is None:
             return None
-        bar_start = self.events[0].due - (self.events[0].time - self.bar0) / self.speed
+        bar_start = self._bar_start()
         if now >= bar_start:
             return None
         return int(np.ceil((bar_start - now) / self.beat_len()))
+
+    def position(self, now: float) -> float | None:
+        """Beats since the start of the section at `now` (negative during the count-in), for the UI's playhead."""
+        if self.t0 is None:
+            return None
+        ref = self.bar0 + (now - self._bar_start()) * self.speed
+        return self.grid.beat_pos(ref) - self.grid.beat_pos(self.bar0)
 
     # -- judging
     def _extra(self, det: Detection) -> dict | None:

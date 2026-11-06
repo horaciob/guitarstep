@@ -218,6 +218,27 @@ def test_chart_practice_offers_a_backing_track(app_page):
     expect(app_page.locator("#pBackingWrap")).to_be_hidden()
 
 
+def test_chart_exercise_shows_a_guide_and_plays_a_demo(app_page):
+    onboarded(app_page)
+    go(app_page, "lesson/first-change")
+    box = app_page.locator('.exercise[data-id="em-am-chart"]')
+    guide = box.locator(".ex-guide")
+    expect(guide).to_contain_text("One strum per beat")
+    expect(guide).to_contain_text("♩ = 49 (70%")
+    expect(guide.locator(".bar-cell span")).to_have_count(8)
+    demo = box.locator("[data-act=hear]")
+    demo.click()                                   # headless Chromium has no audio output
+    expect(demo).to_have_text("■")
+    expect(guide.locator(".g-pos")).to_contain_text("Count-in")
+    expect(guide.locator(".bar-cell span.on")).to_have_count(1, timeout=10_000)
+    expect(guide.locator(".strum span.on")).to_have_count(1)
+    expect(guide.locator(".g-pos")).to_contain_text("bar 1 of 8")
+    expect(guide.locator(".g-next")).to_contain_text("next: Am in")
+    demo.click()
+    expect(demo).to_have_text("♪")
+    expect(guide.locator(".bar-cell span.on")).to_have_count(0)
+
+
 def test_tuning_and_left_handed(app_page):
     onboarded(app_page)
     go(app_page, "settings")
@@ -270,7 +291,7 @@ def test_accessibility_audit(browser, server_url, scheme):
     page.evaluate("localStorage.setItem('guitarr.onboarded', '1')")
     axe = axe_mod.Axe()
     problems = []
-    for route in ["home", "plan", "course", "lesson/strings", "chords", "practice", "charts", "rig", "tuner",
+    for route in ["home", "plan", "course", "lesson/strings", "lesson/first-change", "chords", "practice", "charts", "rig", "tuner",
                   "tools", "tools?tab=drill", "tools?tab=fretboard", "analyze", "history", "settings", "setup"]:
         page.goto(f"{server_url}/#/{route}")
         page.wait_for_timeout(500)

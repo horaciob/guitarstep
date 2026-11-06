@@ -214,6 +214,7 @@ class LiveSession:
             judged = [e for e in evs if e.status != "pending"]
             good = sum(e.status in ("ok", "octave") for e in judged)
             countdown = f.countdown(self.now) if f.mode == "tempo" else None
+            pos = f.position(self.now) if f.mode == "tempo" else None
             bar, beat = self.grid.bar_of(evs[k].time)
             return dict(
                 running=self.running, mode=f.mode, source=self.src.name,
@@ -221,6 +222,7 @@ class LiveSession:
                 level_db=round(self.det.level_db, 1), peak=round(self.det.peak, 3),
                 clip=self.det.peak >= 0.98, gate_db=self.opts.gate_db, tuning=self.judge.tuning(),
                 k=f.k, total=len(evs), bar=bar, beat=round(beat, 2),
+                pos=None if pos is None else round(pos, 3),
                 lane=[dict(i=i, label=e.label(), status=e.status, detail=e.detail, tab=e.tab,
                            pitches=e.pitches, time=round(e.time, 3), current=i == f.k,
                            dt=None if e.dt is None else round(e.dt * 1000)) for i, e in enumerate(evs[lo:hi], lo)],

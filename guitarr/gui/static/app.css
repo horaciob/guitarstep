@@ -253,6 +253,14 @@ a { color: inherit; }
 .gl .strum .d b { color: var(--gl-accent); } .gl .strum .u b { color: var(--gl-info); } .gl .strum .r b { color: var(--muted); }
 .gl .bars { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin: 4px 0; }
 .gl .bar-cell { display: flex; gap: 6px; justify-content: center; padding: 8px 4px; border: 1px solid var(--border); border-radius: 6px; font-weight: 700; background: var(--gl-panel-2); }
+.gl .strum span.on, .gl .bar-cell span.on { background: var(--gl-accent); outline: 2px solid var(--gl-accent); }
+.gl .strum span.on b, .gl .strum span.on small, .gl .bar-cell span.on { color: var(--gl-accent-ink); }
+.gl .bar-cell span { border-radius: 4px; padding: 0 6px; }
+.gl .ex-guide { margin-top: 10px; display: grid; gap: 6px; }
+.gl .ex-guide p { margin: 0; }
+.gl .guide-now { display: flex; align-items: center; gap: 12px; }
+.gl .guide-now .g-chord { font-size: 32px; line-height: 1; min-width: 2.2em; }
+.gl .guide-now > span { display: grid; }
 .gl .bars-section { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-top: 8px; }
 .gl .editor { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
 @media (max-width: 900px) { .gl .editor { grid-template-columns: 1fr; } }

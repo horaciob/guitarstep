@@ -160,9 +160,9 @@ export function pluck(midi, when = 0, gain = 0.35) {
   src.start(ac.currentTime + when);
 }
 
-export function strum(ch, { down = true, gap = 0.018, capo = 0 } = {}) {
+export function strum(ch, { down = true, gap = 0.018, capo = 0, when = 0 } = {}) {
   const idx = [0, 1, 2, 3, 4, 5].filter(i => ch.frets[i] >= 0);
-  (down ? idx : idx.reverse()).forEach((i, k) => pluck(OPEN[i] + capo + ch.frets[i], k * gap, 0.22));
+  (down ? idx : idx.reverse()).forEach((i, k) => pluck(OPEN[i] + capo + ch.frets[i], when + k * gap, 0.22));
 }
 
 export function click(when, accent = false) {

@@ -118,6 +118,17 @@ def test_trainer_speeds_up_after_clean_pass_and_loops():
     assert f.passes[-1]["score"] == 0 and f.speed == pytest.approx(0.5)
 
 
+def test_position_follows_the_metronome_in_beats():
+    notes = [Note(k * 0.5, k * 0.5 + 0.4, 60 + k) for k in range(4)]
+    grid = Grid(np.arange(12) * 0.5, 4)
+    f = TempoFollower(group_events(notes), Judge(), speed=0.5, window=0.2, grid=grid, click=True)
+    assert f.position(0.0) is None                # not scheduled yet
+    f.schedule(1.0)                               # count-in: 4 beats of 1 s (0.5 s at 50%)
+    assert f.position(1.0) == pytest.approx(-4)
+    assert f.position(5.0) == pytest.approx(0)    # first beat of the section
+    assert f.position(7.5) == pytest.approx(2.5)
+
+
 def test_note_late_inside_window_is_not_marked_missed_before_analysis(demo_dir):
     """The follower must not close a note's window while its onset is still being
     analyzed (~110 ms of lag)."""
