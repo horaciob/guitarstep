@@ -1734,6 +1734,10 @@
    "16-three-choruses-a": {
     "title": "Tres vueltas en La, con final",
     "note": "Tres vueltas a los 12 compases. El último compás de la tercera es el final: pará en A7."
+   },
+   "17-november-rain": {
+    "title": "November Rain",
+    "note": "Cifrado simplificado en afinación estándar. El disco está afinado medio tono abajo, así que suena medio tono más grave que vos. Los solos y el puente son de guitarra líder y no están en este chart."
    }
   },
   "sections": {
@@ -1744,7 +1748,8 @@
    "Chorus 1": "Vuelta 1",
    "Chorus 2": "Vuelta 2",
    "Chorus 3": "Vuelta 3",
-   "Eight bars": "Ocho compases"
+   "Eight bars": "Ocho compases",
+   "Chorus": "Estribillo"
   }
  }
 }

@@ -1,0 +1,23 @@
+title: November Rain
+artist: Guns N' Roses
+level: 5
+bpm: 78
+time: 4/4
+strum: D...D.DU
+note: Simplified chord sheet in standard tuning. The record is tuned a half step down, so it sounds a half step lower than you. The solos and the bridge are lead guitar and are not part of this chart.
+
+[Verse]
+F | Dm | C | C
+F | Dm | C | C
+
+[Chorus]
+Dm | G | C | C
+Dm | G | C | C
+
+[Verse]
+F | Dm | C | C
+F | Dm | C | C
+
+[Chorus]
+Dm | G | C | C
+Dm | G | C | C
