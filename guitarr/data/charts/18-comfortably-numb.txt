@@ -1,0 +1,25 @@
+title: Comfortably Numb
+artist: Pink Floyd
+level: 5
+bpm: 64
+time: 4/4
+strum: D...D.DU
+note: Simplified chord sheet in standard tuning. The verse sits in B minor and the chorus lifts to D major. The solos are lead guitar and are not part of this chart.
+
+[Verse]
+Bm | Bm | A | A
+G | G | Em | Bm
+
+[Chorus]
+D | A | D | A
+C | G | D | D
+C | G | A | A
+
+[Verse]
+Bm | Bm | A | A
+G | G | Em | Bm
+
+[Chorus]
+D | A | D | A
+C | G | D | D
+C | G | A | A

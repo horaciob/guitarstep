@@ -869,6 +869,217 @@
      ]
     }
    ]
+  },
+  {
+   "id": "n7",
+   "number": 7,
+   "title": "Songs",
+   "subtitle": "Real songs: their chords, their form, the techniques they use, and the chart at your own pace.",
+   "lessons": [
+    {
+     "id": "november-rain",
+     "title": "November Rain (Guns N' Roses)",
+     "minutes": 20,
+     "theory": [
+      "The record is tuned a half step down and sounds in B major. In standard tuning you play the same shapes in C: F, Dm, C and G.",
+      "The verse walks F → Dm → C: two chords that share notes (F and A) and then a rest on C, the home chord.",
+      "The chorus swaps the start: Dm → G → C. G pulls back to C, so every line closes at home.",
+      "It's a slow ballad: every chord lasts a full bar. Your job is to change on time and let each one ring."
+     ],
+     "tips": [
+      "The F barre is the hard part. If it doesn't ring yet, play the small F (strings 1 to 4) and move to the full barre later.",
+      "Change during the last beat of the bar, not after the first beat of the next one.",
+      "Strum softly: one long down strum on beat 1, and a light down-down-up at the end of the bar.",
+      "Play along with the record only after you retune a half step down; for grading here, stay in standard tuning."
+     ],
+     "chords": [
+      "F",
+      "Dm",
+      "C",
+      "G"
+     ],
+     "tutorials": [
+      "november rain guitar chords lesson",
+      "november rain guitar solo lesson",
+      "f barre chord beginner tips"
+     ],
+     "exercises": [
+      {
+       "id": "f-chord",
+       "kind": "chord",
+       "title": "Ring the F barre four times",
+       "chord": "F",
+       "times": 4,
+       "min": 70
+      },
+      {
+       "id": "f-dm",
+       "kind": "change",
+       "title": "F ↔ Dm (verse)",
+       "chords": [
+        "F",
+        "Dm"
+       ],
+       "times": 4,
+       "min": 75
+      },
+      {
+       "id": "dm-g-c",
+       "kind": "change",
+       "title": "Dm → G → C (chorus)",
+       "chords": [
+        "Dm",
+        "G",
+        "C"
+       ],
+       "times": 3,
+       "min": 75
+      },
+      {
+       "id": "bend-c",
+       "kind": "bend",
+       "title": "Ballad bend: G string, fret 7 → E",
+       "string": 3,
+       "fret": 7,
+       "bend": 2,
+       "tries": 8,
+       "hold": 1.5,
+       "min": 70
+      },
+      {
+       "id": "melody-c",
+       "kind": "lick",
+       "title": "A slow phrase in C, ending with vibrato",
+       "tab": "2:5 2:8 1:5 2:8 2:5 3:7b9 3:5~",
+       "min": 80
+      },
+      {
+       "id": "nr-chart-slow",
+       "kind": "chart",
+       "title": "The whole chart at 70%",
+       "chart": "17-november-rain",
+       "speed": 0.7,
+       "min": 80
+      },
+      {
+       "id": "nr-chart",
+       "kind": "chart",
+       "title": "The whole chart at full speed",
+       "chart": "17-november-rain",
+       "speed": 1.0,
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "comfortably-numb",
+     "title": "Comfortably Numb (Pink Floyd)",
+     "minutes": 20,
+     "theory": [
+      "Standard tuning. The verse is in B minor: Bm → A → G → Em, and back to Bm.",
+      "The chorus moves to D major, the relative major of B minor: same notes, a brighter home.",
+      "In the chorus, C is borrowed (it isn't in D major): it gives that floating feel before G and A take you back.",
+      "The famous solos live in the B minor pentatonic around fret 7 and 10: long bends, wide vibrato and lots of space."
+     ],
+     "tips": [
+      "Bm is a barre at fret 2. If it doesn't ring yet, play only strings 1 to 4.",
+      "It's slow (about 64 BPM): count four beats per chord out loud before you play along.",
+      "In a bend, the target pitch matters more than the speed: go up slowly until it sounds right, then hold it.",
+      "Leave silence between phrases. In this style, the space is part of the solo."
+     ],
+     "chords": [
+      "Bm",
+      "A",
+      "G",
+      "Em",
+      "D",
+      "C"
+     ],
+     "tutorials": [
+      "comfortably numb guitar chords lesson",
+      "comfortably numb solo lesson",
+      "how to bend in tune guitar"
+     ],
+     "exercises": [
+      {
+       "id": "bm-a",
+       "kind": "change",
+       "title": "Bm ↔ A (verse)",
+       "chords": [
+        "Bm",
+        "A"
+       ],
+       "times": 4,
+       "min": 75
+      },
+      {
+       "id": "g-em",
+       "kind": "change",
+       "title": "G ↔ Em (verse)",
+       "chords": [
+        "G",
+        "Em"
+       ],
+       "times": 4,
+       "min": 75
+      },
+      {
+       "id": "d-a-c-g",
+       "kind": "change",
+       "title": "D → A → C → G (chorus)",
+       "chords": [
+        "D",
+        "A",
+        "C",
+        "G"
+       ],
+       "times": 2,
+       "min": 75
+      },
+      {
+       "id": "bend-b",
+       "kind": "bend",
+       "title": "Long bend: B string, fret 10 → B",
+       "string": 2,
+       "fret": 10,
+       "bend": 2,
+       "tries": 8,
+       "hold": 2.0,
+       "min": 70
+      },
+      {
+       "id": "pent-b",
+       "kind": "lick",
+       "title": "B minor pentatonic at fret 7, down and up",
+       "tab": "1:10 1:7 2:10 2:7 3:9 3:7 3:9 2:7 2:10 1:7 1:10",
+       "min": 80
+      },
+      {
+       "id": "bend-phrase",
+       "kind": "lick",
+       "title": "Bend, release and answer with vibrato",
+       "tab": "3:9b11r9 3:7 4:9 2:10b12 1:7~",
+       "min": 80
+      },
+      {
+       "id": "cn-chart-slow",
+       "kind": "chart",
+       "title": "The whole chart at 70%",
+       "chart": "18-comfortably-numb",
+       "speed": 0.7,
+       "min": 80
+      },
+      {
+       "id": "cn-chart",
+       "kind": "chart",
+       "title": "The whole chart at full speed",
+       "chart": "18-comfortably-numb",
+       "speed": 1.0,
+       "min": 80
+      }
+     ]
+    }
+   ]
   }
  ]
 }

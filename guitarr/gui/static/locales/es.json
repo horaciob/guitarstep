@@ -1342,6 +1342,10 @@
    "n6": {
     "title": "El blues",
     "subtitle": "Shuffle, terceras que siguen a los acordes, bends con destino, frases que responden y una historia en tres vueltas."
+   },
+   "n7": {
+    "title": "Canciones",
+    "subtitle": "Canciones reales: sus acordes, su forma, las técnicas que usan y el cifrado a tu ritmo."
    }
   },
   "lessons": {
@@ -1621,6 +1625,46 @@
      "desarrollo de motivo solo blues",
      "cómo armar un solo de blues en tres vueltas"
     ]
+   },
+   "november-rain": {
+    "title": "November Rain (Guns N' Roses)",
+    "theory": [
+     "El disco está afinado medio tono abajo y suena en Si mayor. En afinación estándar tocás las mismas posiciones en Do: F, Dm, C y G.",
+     "La estrofa va F → Dm → C: dos acordes que comparten notas (Fa y La) y después un descanso en C, el acorde de casa.",
+     "El estribillo cambia el comienzo: Dm → G → C. G tira de vuelta a C, así que cada línea cierra en casa.",
+     "Es una balada lenta: cada acorde dura un compás entero. Tu trabajo es cambiar a tiempo y dejar sonar cada uno."
+    ],
+    "tips": [
+     "La cejilla de F es lo difícil. Si todavía no suena, tocá el F chico (cuerdas 1 a 4) y pasá a la cejilla completa más adelante.",
+     "Cambiá durante el último tiempo del compás, no después del primer tiempo del siguiente.",
+     "Rasgueá suave: un rasguido largo hacia abajo en el tiempo 1, y un abajo-abajo-arriba liviano al final del compás.",
+     "Tocá junto al disco solo después de bajar la afinación medio tono; para la calificación acá, quedate en afinación estándar."
+    ],
+    "tutorials": [
+     "november rain acordes guitarra clase",
+     "november rain solo guitarra clase",
+     "cejilla de fa consejos principiantes"
+    ]
+   },
+   "comfortably-numb": {
+    "title": "Comfortably Numb (Pink Floyd)",
+    "theory": [
+     "Afinación estándar. La estrofa está en Si menor: Bm → A → G → Em, y de vuelta a Bm.",
+     "El estribillo pasa a Re mayor, el relativo mayor de Si menor: las mismas notas, una casa más luminosa.",
+     "En el estribillo, C es prestado (no está en Re mayor): da esa sensación de flotar antes de que G y A te lleven de vuelta.",
+     "Los solos famosos viven en la pentatónica de Si menor alrededor de los trastes 7 y 10: bends largos, vibrato amplio y mucho espacio."
+    ],
+    "tips": [
+     "Bm es una cejilla en el traste 2. Si todavía no suena, tocá solo las cuerdas 1 a 4.",
+     "Es lenta (unos 64 BPM): contá cuatro tiempos por acorde en voz alta antes de tocar junto al disco.",
+     "En un bend importa más la nota de destino que la velocidad: subí despacio hasta que suene bien y sostenela.",
+     "Dejá silencio entre frases. En este estilo, el espacio es parte del solo."
+    ],
+    "tutorials": [
+     "comfortably numb acordes guitarra clase",
+     "comfortably numb solo clase",
+     "cómo hacer bends afinados guitarra"
+    ]
    }
   },
   "exercises": {
@@ -1668,7 +1712,22 @@
    "blues-story/motif": "El motivo",
    "blues-story/variation": "El mismo motivo, otro final",
    "blues-story/higher": "El motivo una octava arriba",
-   "blues-story/story-chart": "Tres vueltas en La, con final"
+   "blues-story/story-chart": "Tres vueltas en La, con final",
+   "november-rain/f-chord": "Hacé sonar la cejilla de F cuatro veces",
+   "november-rain/f-dm": "F ↔ Dm (estrofa)",
+   "november-rain/dm-g-c": "Dm → G → C (estribillo)",
+   "november-rain/bend-c": "Bend de balada: cuerda Sol, traste 7 → Mi",
+   "november-rain/melody-c": "Una frase lenta en Do, que termina con vibrato",
+   "november-rain/nr-chart-slow": "El cifrado completo al 70%",
+   "november-rain/nr-chart": "El cifrado completo a velocidad normal",
+   "comfortably-numb/bm-a": "Bm ↔ A (estrofa)",
+   "comfortably-numb/g-em": "G ↔ Em (estrofa)",
+   "comfortably-numb/d-a-c-g": "D → A → C → G (estribillo)",
+   "comfortably-numb/bend-b": "Bend largo: cuerda Si, traste 10 → Si",
+   "comfortably-numb/pent-b": "Pentatónica de Si menor en el traste 7, bajando y subiendo",
+   "comfortably-numb/bend-phrase": "Bend, soltar y responder con vibrato",
+   "comfortably-numb/cn-chart-slow": "El cifrado completo al 70%",
+   "comfortably-numb/cn-chart": "El cifrado completo a velocidad normal"
   },
   "charts": {
    "01-em-am": {
@@ -1738,6 +1797,10 @@
    "17-november-rain": {
     "title": "November Rain",
     "note": "Cifrado simplificado en afinación estándar. El disco está afinado medio tono abajo, así que suena medio tono más grave que vos. Los solos y el puente son de guitarra líder y no están en este chart."
+   },
+   "18-comfortably-numb": {
+    "title": "Comfortably Numb",
+    "note": "Cifrado simplificado en afinación estándar. La estrofa está en Si menor y el estribillo sube a Re mayor. Los solos son de guitarra líder y no están en este cifrado."
    }
   },
   "sections": {
