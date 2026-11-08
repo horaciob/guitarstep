@@ -96,9 +96,18 @@ def ref_options(body: dict) -> tuple[RefOptions, dict]:
     common = dict(start_bar=_int(body.get("start_bar")), end_bar=_int(body.get("end_bar")))
     try:
         if body.get("exercise"):
-            lid, eid = body["exercise"]["lesson"], body["exercise"]["exercise"]
-            opts, mode, speed, need = catalog.exercise_setup(lid, eid)
-            ctx = dict(type="exercise", lesson=lid, exercise=eid, min=need, mode=mode, speed=speed)
+            from .. import quiz
+
+            req = body["exercise"]
+            lid, eid = req["lesson"], req["exercise"]
+            variant, testout = bool(req.get("variant")), bool(req.get("testout"))
+            if testout and not quiz.testout_ready(lid):
+                fail(400, "testout_quiz", "Answer the questions of the check first")
+            opts, mode, speed, need = catalog.exercise_setup(lid, eid, variant=variant)
+            ctx = dict(type="exercise", lesson=lid, exercise=eid, min=need, mode=mode, speed=speed,
+                       guidance=max(0, min(2, _int(req.get("guidance")) or 0)), hints=0, variant=variant, testout=testout)
+            if testout:
+                ctx["min"] = max(need, quiz.TESTOUT_PLAY_NEED)
             if mode == "bend":
                 ctx["hold"] = float(catalog.get_exercise(lid, eid).get("hold", 1.0))
             return opts, ctx
@@ -278,6 +287,92 @@ def exercise_finish(body: dict):
     return dict(summary=dict(score=r["score"]), award=award)
 
 
+@app.post("/api/exercise/variation")
+def exercise_variation(body: dict):
+    """The exercise a 4th higher (another key or position): what to show; the listener uses it next."""
+    from .. import quiz
+
+    try:
+        ex = catalog.get_exercise(body.get("lesson", ""), body.get("exercise", ""))
+    except catalog.CatalogError as e:
+        fail(404, "catalog", str(e))
+    v = quiz.make_variant(body["lesson"], ex)
+    if v is None:
+        fail(400, "no_variation", "This exercise doesn't move to another key")
+    return dict(label=v["_label"], **_exercise_extras(v))
+
+
+@app.post("/api/lesson/seen")
+def lesson_seen(body: dict):
+    try:
+        catalog.get_lesson(body.get("lesson", ""))
+    except catalog.CatalogError as e:
+        fail(404, "catalog", str(e))
+    progress.mark_seen(body["lesson"])
+    return dict(ok=True)
+
+
+@app.post("/api/lesson/testout")
+def lesson_testout(body: dict):
+    from .. import quiz
+
+    try:
+        ls = catalog.get_lesson(body.get("lesson", ""))
+    except catalog.CatalogError as e:
+        fail(404, "catalog", str(e))
+    return quiz.testout_start(ls["id"], ls)
+
+
+@app.post("/api/lesson/testout/finish")
+def lesson_testout_finish(body: dict):
+    """Grades the questions of a check. Passing them unlocks the part you play (or completes the lesson
+    when there's nothing to play)."""
+    from .. import quiz
+
+    try:
+        r = quiz.finish(str(body.get("token", "")))
+    except quiz.QuizError as e:
+        fail(400, "quiz_expired", str(e))
+    ok = quiz.testout_answered(r["lesson"], r["score"])
+    award = dict(passed=ok, score=r["score"], need=r["need"], xp=0)
+    final = next((e["id"] for e in reversed(catalog.get_lesson(r["lesson"])["exercises"]) if e["kind"] not in ("quiz", "pick")), None)
+    if ok and final is None:
+        award.update(progress.test_out(r["lesson"]))
+    return dict(summary=dict(score=r["score"]), award=award, final=final if ok else None)
+
+
+@app.get("/api/charts/{cid}/sections")
+def chart_sections_get(cid: str):
+    try:
+        chart = catalog.get_chart(cid)
+    except catalog.CatalogError as e:
+        fail(404, "catalog", str(e))
+    saved = progress.get()["sections"].get(cid, {})
+    secs = [dict(s, state=saved.get(s["key"], {}).get("state", "not_started"), bpm=saved.get(s["key"], {}).get("bpm"))
+            for s in catalog.chart_sections(chart)]
+    return dict(sections=secs, states=list(progress.SECTION_STATES), mastery=progress.section_mastery([s["state"] for s in secs]))
+
+
+@app.post("/api/charts/{cid}/sections")
+def chart_sections_set(cid: str, body: dict):
+    try:
+        chart = catalog.get_chart(cid)
+    except catalog.CatalogError as e:
+        fail(404, "catalog", str(e))
+    if body.get("key") not in {s["key"] for s in catalog.chart_sections(chart)}:
+        fail(400, "bad_section", "That chart has no such section")
+    try:
+        progress.set_section(cid, body["key"], body.get("state"), _float(body.get("bpm")))
+    except ValueError as e:
+        fail(400, str(e), "Invalid state or tempo (20–300 BPM)" if str(e) == "bad_bpm" else "Invalid state")
+    return chart_sections_get(cid)
+
+
+@app.get("/api/glossary")
+def glossary():
+    return json.loads((catalog.DATA_DIR / "glossary.json").read_text(encoding="utf-8"))
+
+
 # ---------------------------------------------------------------- theory (tools)
 @app.get("/api/theory/scale")
 def theory_scale(key: str = "C", name: str = "major"):
@@ -335,6 +430,29 @@ def theory_voice_lead(body: dict):
         fail(400, "theory", str(e))
 
 
+def _lesson_flow(lid: str, exs: list[dict], p: dict) -> dict:
+    """Where you are in the lesson's five steps, and understanding vs playing kept apart.
+    discover: you opened it · understand: its quizzes · guided: what you play with help on screen ·
+    independent: the same with less help · apply: charts and the exercise in another key."""
+    answer = [e for e in exs if e["how"] == "answer"]
+    played = [e for e in exs if e["how"] == "play"]
+    guided = [e for e in exs if e["stage"] == "guided"]
+    fade = [e for e in guided if e["fadeable"]]
+    apply = [e for e in exs if e["stage"] == "apply"]
+    vary = [e for e in exs if e["can_vary"]]
+    seen = lid in p["seen"] or any(e["best"] is not None for e in exs)
+    steps = dict(
+        discover=seen,
+        understand=all(e["passed"] for e in answer) if answer else seen,
+        guided=all(e["passed"] for e in guided) if guided else all(e["passed"] for e in played),
+        independent=all((e["guidance"] or 0) >= 1 for e in fade) if fade else all(e["passed"] for e in played),
+        apply=(all(e["passed"] for e in apply) if apply else True) and (any(e["varied"] for e in vary) if vary else True),
+    )
+    return dict(flow=[dict(step=s, done=steps[s]) for s in catalog.STAGES],
+                understood=dict(done=sum(e["passed"] for e in answer), total=len(answer)),
+                played=dict(done=sum(e["passed"] for e in played), total=len(played)))
+
+
 @app.get("/api/course")
 def api_course():
     p = progress.get()
@@ -342,11 +460,17 @@ def api_course():
     for lvl in catalog.course()["levels"]:
         ls = []
         for x in lvl["lessons"]:
-            exs = [dict(e, best=p["exercises"].get(f"{x['id']}/{e['id']}"),
-                        passed=p["exercises"].get(f"{x['id']}/{e['id']}", -1) >= e.get("min", 80),
-                        how="answer" if e["kind"] in ("quiz", "pick") else "play", **_exercise_extras(e))
-                   for e in x["exercises"]]
-            ls.append(dict(x, exercises=exs, chords=catalog.lesson_chords(x), figures=[_figure(f) for f in x.get("figures", [])], done=x["id"] in p["lessons"], pinned=p["tutorials"].get(x["id"])))
+            exs = []
+            for e in x["exercises"]:
+                key = f"{x['id']}/{e['id']}"
+                exs.append(dict(e, best=p["exercises"].get(key), passed=p["exercises"].get(key, -1) >= e.get("min", 80),
+                                how="answer" if e["kind"] in ("quiz", "pick") else "play", stage=catalog.exercise_stage(e),
+                                fadeable=e["kind"] in catalog.FADEABLE, guidance=p["guidance"].get(key),
+                                can_vary=catalog.variation(e) is not None,
+                                varied=p["variations"].get(key, -1) >= e.get("min", 80), **_exercise_extras(e)))
+            ls.append(dict(x, exercises=exs, chords=catalog.lesson_chords(x), figures=[_figure(f) for f in x.get("figures", [])],
+                           done=x["id"] in p["lessons"], pinned=p["tutorials"].get(x["id"]),
+                           tested_out=x["id"] in p["tested_out"], **_lesson_flow(x["id"], exs, p)))
         levels.append(dict(lvl, lessons=ls))
     nxt = next((x for lv in levels for x in lv["lessons"] if not x["done"]), None)
     return dict(levels=levels, next=nxt and dict(id=nxt["id"], title=nxt["title"]))
@@ -791,6 +915,21 @@ def live_start(body: dict):
             threading.Timer(ctx["seconds"] + 1.5, sess.stop).start()
     return dict(ok=True, events=len(sess.events), context=ctx,
                 grid_bpm=round(60 / ref.grid.beat_len(ref.notes[0].start), 1))
+
+
+@app.post("/api/live/hint")
+def live_hint():
+    """A hint for the note or chord you're on: where to play it. Each request is counted with the result."""
+    sess, ctx = S.session, S.ctx
+    if not sess or not ctx or ctx.get("type") != "exercise":
+        fail(404, "no_session", "No exercise is listening")
+    ctx["hints"] = ctx.get("hints", 0) + 1
+    snap = sess.snapshot()
+    cur = next((e for e in snap["lane"] if e["current"]), None)
+    if cur is None:
+        return dict(hints=ctx["hints"], hint=None)
+    tab = [list(x) for x in cur.get("tab") or []]
+    return dict(hints=ctx["hints"], hint=dict(label=cur["label"], tab=tab))
 
 
 @app.post("/api/live/stop")

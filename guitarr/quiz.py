@@ -464,6 +464,73 @@ def finish(token: str) -> dict:
     return dict(lesson=d["lesson"], exercise=d["exercise"], need=d["need"], score=round(100 * right / len(d["items"]), 1))
 
 
+# ---------------------------------------------------------------- variations and testing out
+_variants: dict[tuple[str, str], dict] = {}
+_testout_ok: dict[str, bool] = {}
+TESTOUT_NEED, TESTOUT_PLAY_NEED = 85, 90
+
+
+def make_variant(lid: str, ex: dict) -> dict | None:
+    """Builds (and remembers) the exercise in another key or position; the listener uses it next."""
+    from . import catalog
+
+    v = catalog.variation(ex)
+    if v is not None:
+        with _lock:
+            _variants[(lid, ex["id"])] = v
+    return v
+
+
+def variant_of(lid: str, ex: dict) -> dict:
+    with _lock:
+        v = _variants.get((lid, ex["id"]))
+    return v or make_variant(lid, ex) or ex
+
+
+def testout_start(lid: str, lesson: dict, seed: int | None = None) -> dict:
+    """A check to skip a lesson: two questions from each of its quizzes, then its last exercise to play at
+    a higher bar. → {token, items, final, need, play_need}."""
+    rng = random.Random(seed if seed is not None else secrets.randbits(32))
+    answer = [e for e in lesson["exercises"] if e["kind"] in ("quiz", "pick")]
+    played = [e for e in lesson["exercises"] if e["kind"] not in ("quiz", "pick")]
+    items = []
+    for e in answer:
+        two = {**e, "count": 2}
+        items += (_quiz_items(rng, two))
+    out = dict(final=played[-1]["id"] if played else None, need=TESTOUT_NEED, play_need=TESTOUT_PLAY_NEED, token=None, items=[])
+    with _lock:
+        _testout_ok.pop(lid, None)
+    if items:
+        token = secrets.token_urlsafe(12)
+        with _lock:
+            _draws[token] = dict(lesson=lid, exercise="__testout__", need=TESTOUT_NEED, items=items, answers={})
+        out.update(token=token, items=[{k: v for k, v in it.items() if k not in ("answer", "expected", "want")} for it in items])
+    else:
+        with _lock:
+            _testout_ok[lid] = True                       # nothing to answer: only the playing part
+    return out
+
+
+def _quiz_items(rng, ex) -> list[dict]:
+    n = int(ex.get("count", 6))
+    if ex["kind"] == "pick":
+        return [pick_item(rng, ex) for _ in range(n)]
+    types = ex["quiz"] if isinstance(ex["quiz"], list) else [ex["quiz"]]
+    return [QUIZ[types[i % len(types)]](rng, ex) for i in range(n)]
+
+
+def testout_answered(lid: str, score: float) -> bool:
+    ok = score >= TESTOUT_NEED
+    with _lock:
+        _testout_ok[lid] = ok
+    return ok
+
+
+def testout_ready(lid: str) -> bool:
+    with _lock:
+        return _testout_ok.get(lid, False)
+
+
 def drawn_notes(lid: str, ex: dict) -> list[int]:
     """The notes of the latest draw of a play-it exercise (drawing one if the UI didn't)."""
     with _lock:

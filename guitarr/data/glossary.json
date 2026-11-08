@@ -1,0 +1,241 @@
+{
+ "terms": {
+  "half_step": {
+   "term": "half step",
+   "aliases": [
+    "half steps",
+    "semitone",
+    "semitones"
+   ],
+   "text": "The smallest distance in Western music: one fret on the guitar, one key to the next on a piano."
+  },
+  "whole_step": {
+   "term": "whole step",
+   "aliases": [
+    "whole steps"
+   ],
+   "text": "Two half steps: two frets."
+  },
+  "interval": {
+   "term": "interval",
+   "aliases": [
+    "intervals"
+   ],
+   "text": "The distance between two notes, counted in half steps and named by size (3rd, 5th…) and quality (major, minor, perfect)."
+  },
+  "octave": {
+   "term": "octave",
+   "aliases": [
+    "octaves"
+   ],
+   "text": "The same note 12 half steps higher or lower: it sounds like the same note, brighter or darker."
+  },
+  "enharmonic": {
+   "term": "enharmonic",
+   "aliases": [
+    "two names"
+   ],
+   "text": "Two names for the same pitch, like C♯ and D♭. The key decides which name is correct."
+  },
+  "root": {
+   "term": "root",
+   "aliases": [
+    "roots"
+   ],
+   "text": "The note a chord or scale is built on and named after: C is the root of C major and of Cmaj7."
+  },
+  "degree": {
+   "term": "degree",
+   "aliases": [
+    "degrees",
+    "scale degree"
+   ],
+   "text": "A note's place in the key, counted from the root: 1, 2, 3… A ♭ or ♯ means a half step lower or higher than in the major scale."
+  },
+  "scale": {
+   "term": "scale",
+   "aliases": [
+    "scales"
+   ],
+   "text": "A set of notes in order, defined by its pattern of steps from the root."
+  },
+  "major_scale": {
+   "term": "major scale",
+   "aliases": [],
+   "text": "The scale with the steps W W H W W W H. Most of harmony is explained from it."
+  },
+  "relative_minor": {
+   "term": "relative minor",
+   "aliases": [
+    "relative major"
+   ],
+   "text": "The minor key with the same notes as a major key, built on its 6th degree (A minor for C major)."
+  },
+  "pentatonic": {
+   "term": "pentatonic",
+   "aliases": [],
+   "text": "A five-note scale. The minor pentatonic is 1 ♭3 4 5 ♭7; the major pentatonic is 1 2 3 5 6."
+  },
+  "mode": {
+   "term": "mode",
+   "aliases": [
+    "modes"
+   ],
+   "text": "The notes of a scale played with a different note as home. Each mode has its own color."
+  },
+  "tab": {
+   "term": "tab",
+   "aliases": [
+    "tablature"
+   ],
+   "text": "Guitar notation with six lines for the strings (high E on top) and numbers for the frets."
+  },
+  "triad": {
+   "term": "triad",
+   "aliases": [
+    "triads"
+   ],
+   "text": "A three-note chord: root, 3rd and 5th."
+  },
+  "chord_tone": {
+   "term": "chord tone",
+   "aliases": [
+    "chord tones"
+   ],
+   "text": "A note that belongs to the chord (root, 3rd, 5th, 7th…), as opposed to a passing note."
+  },
+  "inversion": {
+   "term": "inversion",
+   "aliases": [
+    "inversions"
+   ],
+   "text": "A chord with a note other than the root in the bass. C/E is C major in 1st inversion."
+  },
+  "slash_chord": {
+   "term": "slash chord",
+   "aliases": [
+    "slash names"
+   ],
+   "text": "A chord written with the bass note after a slash: C/G means C with G in the bass."
+  },
+  "seventh_chord": {
+   "term": "seventh chord",
+   "aliases": [
+    "seventh chords"
+   ],
+   "text": "A triad plus a 7th: maj7, 7, m7, m7♭5, dim7…"
+  },
+  "dominant": {
+   "term": "dominant",
+   "aliases": [
+    "dominant 7"
+   ],
+   "text": "The V chord of a key, or any 7 chord (1 3 5 ♭7). Its tension wants to resolve."
+  },
+  "extension": {
+   "term": "extension",
+   "aliases": [
+    "extensions",
+    "tension",
+    "tensions"
+   ],
+   "text": "Notes stacked above the 7th: 9, 11, 13 (and their altered forms ♭9, ♯9, ♯11, ♭13)."
+  },
+  "diatonic": {
+   "term": "diatonic",
+   "aliases": [],
+   "text": "Made only of the notes of the key. The diatonic chords of C are C Dm Em F G Am B°."
+  },
+  "roman_numeral": {
+   "term": "roman numerals",
+   "aliases": [
+    "numerals"
+   ],
+   "text": "Chords named by their degree in the key (I, ii, V7…), so a progression reads the same in any key."
+  },
+  "voicing": {
+   "term": "voicing",
+   "aliases": [
+    "voicings"
+   ],
+   "text": "Which notes of a chord you play, in what order and on which strings."
+  },
+  "drop2": {
+   "term": "drop 2",
+   "aliases": [
+    "drop-2"
+   ],
+   "text": "A four-note voicing made by moving the second note from the top of a close chord down an octave."
+  },
+  "shell": {
+   "term": "shell",
+   "aliases": [
+    "shells"
+   ],
+   "text": "A three-note voicing: root, 3rd and 7th."
+  },
+  "guide_tones": {
+   "term": "guide tones",
+   "aliases": [
+    "guide tone"
+   ],
+   "text": "The 3rd and 7th of a chord: they tell the chord type and move smoothly from chord to chord."
+  },
+  "voice_leading": {
+   "term": "voice leading",
+   "aliases": [],
+   "text": "Moving each note of a chord to the nearest note of the next one."
+  },
+  "ii_v_i": {
+   "term": "ii–V–I",
+   "aliases": [
+    "ii–V"
+   ],
+   "text": "The minor 7 on degree 2, the dominant on 5, and the major chord on 1: the most common progression in jazz."
+  },
+  "turnaround": {
+   "term": "turnaround",
+   "aliases": [
+    "turnarounds"
+   ],
+   "text": "A short progression at the end of a form that leads back to the start."
+  },
+  "tritone": {
+   "term": "tritone",
+   "aliases": [],
+   "text": "The interval of three whole steps (6 frets). It splits the octave in half."
+  },
+  "swing": {
+   "term": "swing",
+   "aliases": [],
+   "text": "Playing pairs of eighth notes long–short: the second one of each pair lands late."
+  },
+  "comping": {
+   "term": "comping",
+   "aliases": [],
+   "text": "Accompanying with chords in rhythm behind a melody or a solo."
+  },
+  "approach_note": {
+   "term": "approach note",
+   "aliases": [
+    "approach notes",
+    "approach"
+   ],
+   "text": "A note a step away that leads into a target note."
+  },
+  "enclosure": {
+   "term": "enclosure",
+   "aliases": [
+    "enclosures"
+   ],
+   "text": "Surrounding a target note: the note above, the note below, then the target."
+  },
+  "bpm": {
+   "term": "BPM",
+   "aliases": [
+    "tempo"
+   ],
+   "text": "Beats per minute: how fast the music goes."
+  }
+ }
+}

@@ -113,7 +113,9 @@ def test_trainer_speeds_up_after_clean_pass_and_loops():
     assert msg["code"] == "pass" and msg["params"]["new_speed"] == 0.6 and "50% → 60%" in msg["text"]
     assert len(f.clicks) > n_clicks               # scheduled the next pass
     assert all(e.status == "pending" for e in f.events)
-    # bad pass: slows down
+    # one bad pass keeps the tempo you earned; a second one in a row slows down
+    f.tick(f.pass_end + 0.01)
+    assert f.passes[-1]["score"] == 0 and f.speed == pytest.approx(0.6)
     f.tick(f.pass_end + 0.01)
     assert f.passes[-1]["score"] == 0 and f.speed == pytest.approx(0.5)
 

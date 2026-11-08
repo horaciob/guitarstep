@@ -137,6 +137,8 @@ export function eventText(e) {
   switch (e.code) {
     case "exercise_passed": return t("event.exercise_passed", { title: tc(`exercises.${p.lesson}/${p.exercise}`, p.exercise), ...raw });
     case "lesson_completed": return t("event.lesson_completed", { title: tc(`lessons.${p.lesson}.title`, p.lesson), ...raw });
+    case "lesson_tested_out": return t("event.lesson_tested_out", { title: tc(`lessons.${p.lesson}.title`, p.lesson), ...raw });
+    case "variation_passed": return t("event.variation_passed", { title: tc(`exercises.${p.lesson}/${p.exercise}`, p.exercise), ...raw });
     case "chord_mastered": return t(p.via === "camera" ? "event.chord_camera" : "event.chord_ear", { chord: p.chord });
     case "drill": return t("event.drill", { chords: String(p.chords).replace("-", " ↔ "), n: p.changes });
     case "take_analysis": return t("event.take_analysis", { score: Math.round(p.score) });

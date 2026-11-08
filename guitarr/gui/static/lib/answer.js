@@ -34,17 +34,17 @@ function play(item) {
  * onProgress(done, total) after each answer; resolves with the server's {summary, award} when finished,
  * or null if stopped. Returns { done, stop }.
  */
-export function runAnswers(box, { lesson, exercise, onProgress }) {
+export function runAnswers(box, { lesson, exercise, onProgress, drawn = null, finishUrl = "/api/exercise/finish" }) {
   let stopped = false, finishNow = null;
   const done = (async () => {
-    const d = await api("/api/exercise/draw", { json: { lesson, exercise } });
+    const d = drawn || await api("/api/exercise/draw", { json: { lesson, exercise } });
     const n = d.items.length;
     for (let i = 0; i < n && !stopped; i++) {
       await ask(box, d.token, d.items[i], i, n, () => stopped, f => { finishNow = f; });
       onProgress && onProgress(i + 1, n);
     }
     if (stopped) return null;
-    return api("/api/exercise/finish", { json: { token: d.token } });
+    return api(finishUrl, { json: { token: d.token } });
   })();
   return { done, stop() { stopped = true; finishNow && finishNow(); } };
 }

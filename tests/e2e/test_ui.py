@@ -343,7 +343,7 @@ def test_lesson_continue_keys_and_result_ring(app_page):
 def test_course_shows_progress_per_level(app_page):
     onboarded(app_page)
     go(app_page, "course")
-    expect(app_page.locator(".level").first.locator(".lvl-prog")).to_contain_text("0 of 4 lessons")
+    expect(app_page.locator(".level").first.locator(".lvl-prog")).to_contain_text("0 of 5 lessons")
 
 
 def test_quiz_exercise_is_answered_and_graded_on_the_server(app_page):
@@ -518,3 +518,53 @@ def test_signal_check_walkthrough(app_page):
     expect(app_page).to_have_url(re.compile("#/practice"))
     cfg = json.load(urllib.request.urlopen(app_page.base + "/api/config"))["audio"]
     assert cfg["gate_db"] is not None and cfg["sensitivity"] is not None
+
+
+def test_lesson_steps_glossary_guidance_and_review_link(app_page):
+    onboarded(app_page)
+    go(app_page, "lesson/major-scale")
+    steps = app_page.locator(".stepper li")
+    expect(steps).to_have_count(5)
+    expect(steps.first).to_contain_text("Discover")
+    expect(app_page.locator(".meters-row")).to_contain_text("Understood 0 of 1")
+    expect(app_page.locator(".meters-row")).to_contain_text("Played 0 of 2")
+    term = app_page.locator(".theory button.term").first
+    term.click()
+    expect(app_page.locator("#termDialog")).to_be_visible()
+    app_page.keyboard.press("Escape")
+    # a review on the home page opens the exercise straight away, with the guidance choice
+    go(app_page, "lesson/major-scale?ex=g-position")
+    focus = app_page.locator("dialog.ex-focus")
+    expect(focus.locator("#fTitle")).to_have_text("G major in one position")
+    expect(focus.locator("#fGuide button")).to_have_count(3)
+    expect(focus.locator(".focus-body pre.tab")).to_be_visible()
+    focus.locator('#fGuide button[data-g="2"]').click()                      # no help: no tab, no names
+    expect(focus.locator(".focus-body pre.tab")).to_have_count(0)
+    expect(focus.locator(".f-now")).to_have_text("?")
+
+
+def test_level_recap_and_test_out_entry(app_page):
+    onboarded(app_page)
+    go(app_page, "course")
+    expect(app_page.locator(".lesson", has_text="Level 8 recap")).to_be_visible()
+    go(app_page, "lesson/recap-n8")
+    expect(app_page.locator(".exercise").first).to_contain_text("Half steps, whole steps and two names")
+    expect(app_page.locator("#testOut")).to_have_count(0)                   # a recap can't be skipped
+    go(app_page, "lesson/intervals")
+    app_page.locator("#testOut").click()
+    focus = app_page.locator("dialog.ex-focus")
+    expect(focus.locator("#fTitle")).to_have_text("Test out of this lesson")
+    focus.locator("[data-f=go]").click()
+    expect(focus.locator(".q-count")).to_have_text("Question 1 of 2")
+
+
+def test_chart_sections_progress(app_page):
+    onboarded(app_page)
+    go(app_page, "chart/25-song-form-aaba")
+    rows = app_page.locator(".sec-row")
+    expect(rows).to_have_count(4)
+    expect(rows.nth(2)).to_contain_text("bars 17–24")
+    rows.nth(2).locator('[data-st="ready"]').click()
+    expect(app_page.locator(".mastery")).to_contain_text("25%")
+    expect(app_page.locator(".sec-row").nth(2).locator('[data-st="ready"]')).to_have_attribute("aria-pressed", "true")
+    expect(app_page.locator(".sec-row").nth(2).locator("a")).to_have_attribute("href", re.compile("from=17&to=24"))

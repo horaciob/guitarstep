@@ -71,10 +71,17 @@ def test_spanish_translations_cover_all_content():
     from pathlib import Path
 
     es = json.loads((Path(catalog.__file__).parent / "gui/static/locales/es.json").read_text())["content"]
+    written = [ls for ls in catalog.lessons() if not ls.get("recap")]     # level recaps are generated (UI strings)
     assert set(es["chords"]) == {c["id"] for c in catalog.chords()}
-    assert set(es["lessons"]) == {ls["id"] for ls in catalog.lessons()}
-    assert set(es["exercises"]) == {f"{ls['id']}/{e['id']}" for ls in catalog.lessons() for e in ls["exercises"]}
+    assert set(es["lessons"]) == {ls["id"] for ls in written}
+    assert set(es["exercises"]) == {f"{ls['id']}/{e['id']}" for ls in written for e in ls["exercises"]}
     assert set(es["charts"]) == {c["id"] for c in catalog.charts()}
+    glossary = json.loads((Path(catalog.__file__).parent / "data/glossary.json").read_text())["terms"]
+    assert set(es["glossary"]) == set(glossary)
+    # every recap exercise points at a real exercise, so its title translates
+    for ls in catalog.lessons():
+        if ls.get("recap"):
+            assert all(e["from"] in es["exercises"] for e in ls["exercises"])
 
 
 def test_lick_tab_expands_to_the_notes_you_hear():

@@ -1,5 +1,5 @@
 // Chart editor (plain-text format) with a live preview.
-import { t } from "../lib/i18n.js";
+import { t, tc } from "../lib/i18n.js";
 import { $, api, esc, toast } from "../lib/ui.js";
 import { barsHtml, strumHtml } from "./charts.js";
 
@@ -13,6 +13,40 @@ note: A tip for yourself.
 G | D | Em | C
 G | D | C G | D
 `;
+
+/** Your progress per section: each one moves through five states (a word, not just a color), with a target
+ * tempo and a link to loop it in Practice. The song's mastery is the average, computed on the server. */
+async function renderSections(box, id) {
+  let r;
+  try { r = await api(`/api/charts/${encodeURIComponent(id)}/sections`); } catch { box.hidden = true; return; }
+  if (!r.sections.length) { box.hidden = true; return; }
+  const name = s => tc(`sections.${s.name}`, s.name) + (s.key !== s.name ? s.key.slice(s.name.length) : "");
+  box.innerHTML = `<div class="sec-progress-head"><h2 id="secTitle">${esc(t("sections.title"))}</h2>
+      <span class="mastery"><b>${r.mastery}%</b> ${esc(t("sections.mastery"))}</span></div>
+    <p class="muted small">${esc(t("sections.hint"))}</p>
+    <div class="sec-rows">${r.sections.map(s => `
+      <div class="sec-row" data-key="${esc(s.key)}">
+        <div class="sec-name"><b>${esc(name(s))}</b><small class="muted">${esc(t("sections.bars", { from: s.from, to: s.to }))}</small></div>
+        <div class="seg mini sec-states" role="group" aria-label="${esc(t("sections.state_of", { name: name(s) }))}">${r.states.map(st =>
+          `<button data-st="${st}" class="st-${st}${st === s.state ? " active" : ""}" aria-pressed="${st === s.state}">${esc(t(`sections.${st}`))}</button>`).join("")}</div>
+        <label class="field-inline small">${esc(t("sections.target"))}
+          <input type="number" min="20" max="300" step="1" value="${s.bpm ?? ""}" placeholder="—" data-bpm aria-label="${esc(t("sections.target_of", { name: name(s) }))}"></label>
+        <a class="btn small" href="#/practice?chart=${encodeURIComponent(id)}&from=${s.from}&to=${s.to}">${esc(t("flow.loop_it"))}</a>
+        <small class="err" data-err hidden></small>
+      </div>`).join("")}</div>`;
+  box.querySelectorAll(".sec-row").forEach(row => {
+    const save = async body => {
+      const err = row.querySelector("[data-err]");
+      try {
+        await api(`/api/charts/${encodeURIComponent(id)}/sections`, { json: { key: row.dataset.key, ...body } });
+        renderSections(box, id);
+      } catch (e) { err.textContent = e.code === "bad_bpm" ? t("sections.bad_bpm") : e.message; err.hidden = false; }
+    };
+    row.querySelectorAll("[data-st]").forEach(b => b.onclick = () => save({ state: b.dataset.st }));
+    const bpm = row.querySelector("[data-bpm]");
+    bpm.onchange = () => bpm.value && save({ bpm: +bpm.value });
+  });
+}
 
 export async function mount(el, { segs }) {
   const id = segs[0] && segs[0] !== "new" ? decodeURIComponent(segs[0]) : null;
@@ -36,7 +70,9 @@ export async function mount(el, { segs }) {
           <p>${t("chart.headers_html")}</p></details>
       </div>
       <div class="panel" id="preview"></div>
-    </div>`;
+    </div>
+    ${id ? `<section class="panel sec-progress" id="secProgress" aria-labelledby="secTitle"></section>` : ""}`;
+  if (id) renderSections($("#secProgress", el), id);
   const txt = $("#txt", el), pv = $("#preview", el);
   let timer;
   const validate = async () => {

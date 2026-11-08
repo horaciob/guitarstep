@@ -981,3 +981,40 @@ body.is-setup #main { margin: 0 auto; max-width: 760px; padding-top: 48px; }
 .gl .field-error { color: var(--gl-err); font-weight: 600; margin: 6px 0 0; }
 .gl #cfMode { margin: 0 0 12px; flex-wrap: wrap; }
 .gl .piano { display: block; width: 100%; max-width: 520px; color: var(--text); }
+
+/* ---------- teaching method: steps, meters, guidance, hints, glossary, sections */
+.gl .lesson-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
+.gl .stepper { list-style: none; margin: 0 0 12px; padding: 0; display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; counter-reset: none; }
+.gl .stepper li { display: flex; gap: 8px; align-items: center; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--border); background: var(--gl-panel); min-width: 0; }
+.gl .stepper .st-num { flex: none; width: 26px; height: 26px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 12px; border: 2px solid var(--border); color: var(--muted); }
+.gl .stepper .st-txt { display: grid; min-width: 0; }
+.gl .stepper .st-txt b { font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.gl .stepper .st-txt small { font-size: 11px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.gl .stepper li.done .st-num { border-color: var(--gl-ok); color: var(--gl-ok); }
+.gl .stepper li.cur { border-color: var(--gl-accent); box-shadow: inset 0 0 0 1px var(--gl-accent); }
+.gl .stepper li.cur .st-num { background: var(--gl-accent); border-color: var(--gl-accent); color: var(--gl-accent-ink); }
+@media (max-width: 800px) { .gl .stepper { grid-template-columns: 1fr; } .gl .stepper li:not(.cur) small { display: none; } }
+.gl .meters-row { display: flex; gap: 14px; flex-wrap: wrap; margin: 0 0 14px; }
+.gl .meter-chip { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; }
+.gl .meter-chip .bar { width: 110px; height: 6px; border-radius: 99px; background: var(--border); overflow: hidden; }
+.gl .meter-chip .bar i { display: block; height: 100%; background: var(--gl-ok); }
+.gl .ex-chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 6px; }
+.gl .ex-chips .how-chip { margin: 0; }
+.gl .how-chip.ok { border-color: var(--gl-ok); color: var(--gl-ok); }
+.gl .f-guide { justify-content: center; margin: 10px auto 0; max-width: 420px; }
+.gl .f-hint { min-height: 22px; margin: 0; text-align: center; font-weight: 700; color: var(--gl-info); }
+.gl button.term { border: 0; padding: 0; background: none; color: inherit; font: inherit; cursor: help; text-decoration: underline dotted var(--gl-accent); text-underline-offset: 3px; }
+.gl button.term:hover, .gl button.term:focus-visible { color: var(--gl-accent); }
+.term-dialog .term-def p { margin: 6px 0 12px; line-height: 1.5; }
+.gl .sec-progress { margin-top: 16px; }
+.gl .sec-progress-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.gl .sec-progress-head h2 { margin: 0; }
+.gl .mastery b { font-size: 22px; }
+.gl .sec-rows { display: grid; gap: 8px; margin-top: 10px; }
+.gl .sec-row { display: flex; align-items: center; gap: 10px 14px; flex-wrap: wrap; padding: 8px 10px; border: 1px solid var(--border); border-radius: 10px; background: var(--gl-panel-2); }
+.gl .sec-name { display: grid; min-width: 120px; }
+.gl .sec-states { margin: 0; flex-wrap: wrap; }
+.gl .sec-states button.active.st-ready, .gl .sec-states button.active.st-solid { background: var(--gl-ok); color: #fff; }
+.gl .sec-states button.active.st-unsure { background: var(--gl-warn); color: var(--gl-accent-ink); }
+.gl .sec-row input[type=number] { width: 72px; }
+.gl .sec-states button { white-space: nowrap; }

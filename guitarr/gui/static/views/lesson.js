@@ -4,6 +4,7 @@ import { $, $$, api, bindChordSvg, chordSvg, esc, noteName, pluck, strum, toast,
 import { listen } from "../lib/listen.js";
 import { runAnswers, say } from "../lib/answer.js";
 import { neck } from "../lib/fretboard.js";
+import { linkTerms, loadGlossary, metersHtml, openTerms, stepperHtml } from "../lib/flow.js";
 import { chartGuide, playChart } from "./charts.js";
 
 const ANSWER_KINDS = ["quiz", "pick"], DRAWN_KINDS = ["find_note", "play_interval", "tone_row"];
@@ -72,31 +73,38 @@ function pianoSvg() {
 const shapesHtml = (ex, size = 84) => `<div class="mini-chords ex-shapes">${ex.shapes.map(s =>
   `<div class="mini-chord"><b>${esc(s.name)}</b>${chordSvg(shapeChord(s), { size })}</div>`).join("")}</div>`;
 
-export async function mount(el, { segs }) {
+export async function mount(el, { segs, params = {} }) {
   const id = decodeURIComponent(segs[0] || "");
-  const [course, chordData] = await Promise.all([api("/api/course"), api("/api/chords")]);
+  const [course, chordData, terms] = await Promise.all([api("/api/course"), api("/api/chords"), loadGlossary()]);
   const all = course.levels.flatMap(l => l.lessons.map(ls => ({ ...ls, level: l })));
   const idx = all.findIndex(l => l.id === id);
   if (idx < 0) { el.innerHTML = `<div class="gl-head"><h1>${esc(t("lesson.not_found"))}</h1></div><p><a href="#/course">${esc(t("lesson.back"))}</a></p>`; return; }
   const ls = all[idx], next = all[idx + 1];
+  api("/api/lesson/seen", { json: { lesson: ls.id } }).catch(() => {});   // the "discover" step
   const chords = (ls.chords || []).map(c => chordData.chords.find(x => x.id === c)).filter(Boolean);
   const vid = ls.pinned && youtubeId(ls.pinned);
-  const lt = (k, fb) => tc(`lessons.${ls.id}.${k}`, fb);
+  const levelName = tc(`levels.${ls.level.id}.title`, ls.level.title);
+  const lt = (k, fb) => ls.recap ? (k === "title" ? t("lesson.recap_title", { n: ls.level.number, level: levelName })
+    : k === "theory" ? [t("lesson.recap_theory_1"), t("lesson.recap_theory_2")] : fb) : tc(`lessons.${ls.id}.${k}`, fb);
   const theory = lt("theory", ls.theory), tips = lt("tips", ls.tips || []), tutorials = lt("tutorials", ls.tutorials || []);
   const captions = lt("captions", ls.captions || []);
-  const exTitle = ex => tc(`exercises.${ls.id}/${ex.id}`, ex.title);
+  const exTitle = ex => ex.from ? tc(`exercises.${ex.from}`, ex.title) : tc(`exercises.${ls.id}/${ex.id}`, ex.title);
   const upNext = ls.exercises.find(e => !e.passed);   // the first exercise you haven't passed yet
+  const used = new Set();                              // glossary terms already linked on this page
 
   el.innerHTML = `
     <a class="btn small" href="#/course">← ${esc(t("nav.course"))}</a>
-    <div class="gl-head" style="margin-top:12px"><small class="muted">${esc(t("lesson.meta", { n: ls.level.number, level: tc(`levels.${ls.level.id}.title`, ls.level.title), min: ls.minutes }))}</small>
-      <h1>${esc(lt("title", ls.title))} ${ls.done ? `<span class="pill ok">${esc(t("lesson.complete"))}</span>` : ""}</h1></div>
+    <div class="gl-head lesson-head" style="margin-top:12px"><div><small class="muted">${esc(t("lesson.meta", { n: ls.level.number, level: levelName, min: ls.minutes }))}</small>
+      <h1>${esc(lt("title", ls.title))} ${ls.done ? `<span class="pill ok">${esc(t(ls.tested_out ? "lesson.tested_out" : "lesson.complete"))}</span>` : ""}</h1></div>
+      ${!ls.done && !ls.recap ? `<button class="btn" id="testOut">${esc(t("lesson.testout_button"))}</button>` : ""}</div>
+    ${stepperHtml(ls.flow)}
+    ${metersHtml(ls)}
     <div class="lesson-layout">
       <div class="stack">
-        <div class="panel"><h2>${esc(t("lesson.idea"))}</h2><ul class="theory">${theory.map(x => `<li>${esc(x)}</li>`).join("")}</ul>
+        <div class="panel"><h2>${esc(t("lesson.idea"))}</h2><ul class="theory">${theory.map(x => `<li>${linkTerms(x, terms, used)}</li>`).join("")}</ul>
           ${(ls.figures || []).map((f, i) => `<figure class="lesson-figure" data-fig="${i}"><div class="fig-box"></div>
             ${captions[i] ? `<figcaption class="muted small">${esc(captions[i])}</figcaption>` : ""}</figure>`).join("")}
-          ${tips.length ? `<h3>${esc(t("lesson.tips"))}</h3><ul class="theory">${tips.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : ""}</div>
+          ${tips.length ? `<h3>${esc(t("lesson.tips"))}</h3><ul class="theory">${tips.map(x => `<li>${linkTerms(x, terms, used)}</li>`).join("")}</ul>` : ""}</div>
         <div class="panel"><div class="ex-panel-head"><h2>${esc(t("lesson.exercises"))}</h2>
             <button class="btn primary" id="exContinue">▶ ${esc(upNext ? t("lesson.continue_with", { title: exTitle(upNext) }) : t("lesson.practice_again"))}</button></div>
           <p class="muted small">${t("lesson.exercises_hint_html")}</p>
@@ -106,7 +114,11 @@ export async function mount(el, { segs }) {
                 <div><b>${esc(exTitle(ex))}</b><small class="muted">${esc(exerciseTarget(ex))} · ${esc(t("lesson.pass_with", { min: ex.min }))}${ex.best != null ? ` · ${esc(t("lesson.your_best", { best: Math.round(ex.best) }))}` : ""}</small></div>
                 ${hearable(ex) ? `<button class="btn small" data-act="hear" title="${esc(t(ex.kind === "chart" ? "lesson.demo_hint" : "lesson.hear_hint"))}" aria-label="${esc(t(ex.kind === "chart" ? "lesson.demo_hint" : "lesson.hear_hint"))}">♪</button>` : ""}
                 <button class="btn small primary" data-act="go">${esc(t(ex.how === "answer" ? "lesson.start_answer" : "lesson.listen"))}</button></div>
-              ${ex.how === "answer" ? `<span class="how-chip">${esc(t("lesson.how_answer"))}</span>` : ""}
+              <div class="ex-chips"><span class="how-chip">${esc(t(`flow.${ex.stage}`))}</span>
+                ${ex.how === "answer" ? `<span class="how-chip">${esc(t("lesson.how_answer"))}</span>` : ""}
+                ${ex.fadeable ? [0, 1, 2].map(g => `<span class="how-chip${ex.guidance != null && ex.guidance >= g ? " ok" : ""}">${ex.guidance != null && ex.guidance >= g ? "✓ " : ""}${esc(t(`flow.guide_${g}`))}</span>`).join("") : ""}
+                ${ex.can_vary && ex.passed ? `<button class="btn small" data-act="vary">${ex.varied ? "✓ " : ""}${esc(t("flow.try_vary"))}</button>` : ""}
+                ${ex.kind === "chart" ? `<a class="btn small ghost" data-act="loop" href="#/practice?chart=${encodeURIComponent(ex.chart)}&from=1&to=999">${esc(t("flow.loop_it"))}</a>` : ""}</div>
               ${ex.steps && ex.kind !== "bend" ? `<pre class="tab" aria-label="${esc(t("lesson.tab_label"))}">${esc(tabText(ex.steps))}</pre>` : ""}
               ${ex.shapes ? shapesHtml(ex) : ""}
               ${ex.kind === "chart" ? `<div class="ex-guide"></div>` : ""}
@@ -129,18 +141,22 @@ export async function mount(el, { segs }) {
     <dialog class="ex-focus" aria-labelledby="fTitle"><div class="focus-inner" tabindex="-1">
       <div class="focus-top"><button class="btn small" data-f="back">← ${esc(t("lesson.focus_back"))}</button>
         <small class="muted">${esc(lt("title", ls.title))}</small></div>
-      <div class="focus-head"><h1 id="fTitle"></h1><p class="muted" id="fTarget"></p></div>
+      <div class="focus-head"><h1 id="fTitle"></h1><p class="muted" id="fTarget"></p>
+        <div class="seg mini f-guide" id="fGuide" role="group" aria-label="${esc(t("flow.guide_label"))}" hidden></div></div>
       <div class="focus-body"></div>
       <div class="focus-foot">
+        <p class="f-hint" aria-live="polite"></p>
         <div class="ex-progress"><i></i></div>
         <div class="f-result" hidden></div>
         <div class="ex-msg muted" aria-live="polite"></div>
         <div class="row center"><button class="btn" data-f="hear"></button>
+          <button class="btn" data-f="hint" hidden>💡 ${esc(t("flow.hint"))}</button>
           <button class="btn primary xl" data-f="go"></button>
           <button class="btn" data-f="next" hidden>${esc(t("lesson.focus_next"))} →</button></div>
         <p class="muted small center kbd-hint">${t("lesson.focus_keys_html")}</p>
       </div>
-    </div></dialog>`;
+    </div></dialog>
+    <dialog class="rig-dialog term-dialog" id="termDialog"></dialog>`;
 
   $$(".lesson-figure", el).forEach(fig => {
     const f = ls.figures[+fig.dataset.fig], box = $(".fig-box", fig);
@@ -165,13 +181,26 @@ export async function mount(el, { segs }) {
     const box = $(`.exercise[data-id="${CSS.escape(ex.id)}"] .ex-guide`, el);
     const note = chart.note && tc(`charts.${chart.id}.note`, chart.note);
     guides.set(ex.id, { chart, guide: chartGuide(box, chart, { speed: ex.speed, note }) });
+    const bars = Math.ceil(chart.bars.reduce((s, b) => s + b.beats, 0) / chart.beats_per_bar);
+    const loop = $(`.exercise[data-id="${CSS.escape(ex.id)}"] [data-act=loop]`, el);
+    if (loop) loop.href = `#/practice?chart=${encodeURIComponent(ex.chart)}&from=1&to=${bars}`;
   }));
   $$(".exercise", el).forEach(box => {
     const ex = ls.exercises.find(e => e.id === box.dataset.id);
     const hear = $("[data-act=hear]", box);
     if (hear) hear.onclick = () => ex.kind === "chart" ? toggleDemo(ex, hear, [guides.get(ex.id).guide]) : preview(ex, chordData);
     $("[data-act=go]", box).onclick = () => openFocus(el, segs, ls, ex, chordData, exTitle, true);
+    const vary = $("[data-act=vary]", box);
+    if (vary) vary.onclick = () => openFocus(el, segs, ls, ex, chordData, exTitle, false, { variant: true });
   });
+  const termDlg = $("#termDialog", el);
+  $$(".term", el).forEach(b => b.onclick = () => openTerms(termDlg, terms, [b.dataset.term]));
+  const testOut = $("#testOut", el);
+  if (testOut) testOut.onclick = () => openTestOut(el, segs, ls, chordData, exTitle);
+  if (params.ex) {                                        // a review on the home page links straight to its exercise
+    const ex = ls.exercises.find(e => e.id === params.ex);
+    if (ex) openFocus(el, segs, ls, ex, chordData, exTitle);
+  }
   const dlg = $(".ex-focus", el);
   dlg.addEventListener("cancel", e => { e.preventDefault(); closeFocus(el, segs); });   // Esc
   $("[data-f=back]", dlg).onclick = () => closeFocus(el, segs);
@@ -230,31 +259,55 @@ function metronomeView(box, bpb, bpm) {
   return { setClock(fn) { clock = fn; cancelAnimationFrame(raf); frame(); } };
 }
 
-/** What to play now and next, for exercises without a tempo (notes, chords, licks, bends). */
-function nowView(box) {
+/** What to play now and next, for exercises without a tempo (notes, chords, licks, bends).
+ * hide: no names on screen either (the "no help" level): only where you are. */
+function nowView(box, hide = false) {
   box.innerHTML = `<div class="focus-now"><small class="muted">${esc(t("lesson.focus_now"))}</small>
-    <b class="f-now">–</b><span class="f-then muted"></span><small class="f-step muted"></small></div>`;
+    <b class="f-now">${hide ? "?" : "–"}</b><span class="f-then muted"></span><small class="f-step muted"></small></div>`;
   return {
     setClock() {},
     update(s) {
       const cur = s.lane.findIndex(e => e.current), now = s.lane[cur], then = s.lane[cur + 1];
-      $(".f-now", box).textContent = now ? now.label : "–";
-      $(".f-then", box).textContent = then ? t("lesson.focus_then", { x: then.label }) : "";
+      $(".f-now", box).textContent = hide ? "?" : now ? now.label : "–";
+      $(".f-then", box).textContent = !hide && then ? t("lesson.focus_then", { x: then.label }) : "";
       $(".f-step", box).textContent = t("lesson.focus_step", { k: Math.min(s.k + 1, s.total), total: s.total });
     },
   };
 }
 
-/** Opens an exercise on its own full screen (and starts listening when `start`). */
-async function openFocus(el, segs, ls, ex, chordData, exTitle, start = false) {
+/** Opens an exercise on its own full screen (and starts listening when `start`).
+ * mode.variant: the exercise a 4th higher (another key or position) · mode.testout: the part you play to skip
+ * the lesson (a higher bar). The guidance level hides the tab/diagrams (1) or every name (2). */
+async function openFocus(el, segs, ls, ex, chordData, exTitle, start = false, mode = {}) {
   if (task && focus) return toast(t("lesson.busy"));
   if (task) await task.done.catch(() => {});   // you just closed one: let it finish stopping
   stopDemo();
   if (focus) focus.views.forEach(v => v.setClock(null));
   const dlg = $(".ex-focus", el), body = $(".focus-body", dlg), g = guides.get(ex.id);
-  $("#fTitle", dlg).textContent = exTitle(ex);
-  $("#fTarget", dlg).textContent = `${exerciseTarget(ex)} · ${t("lesson.pass_with", { min: ex.min })}`
-    + (ex.best != null ? ` · ${t("lesson.your_best", { best: Math.round(ex.best) })}` : "");
+  let view = ex, suffix = "";
+  if (mode.variant) {
+    try {
+      const v = await api("/api/exercise/variation", { json: { lesson: ls.id, exercise: ex.id } });
+      view = { ...ex, steps: v.steps ?? ex.steps, shapes: v.shapes ?? ex.shapes };
+      suffix = ` · ${t(`flow.var_${v.label.code}`, v.label)}`;
+    } catch (e) { return toast(e.message); }
+  }
+  // start with the least help you haven't passed yet
+  const guidance = mode.testout ? 0 : focus?.ex === ex && focus.guidance != null ? focus.guidance
+    : ex.fadeable && ex.passed ? Math.min(2, (ex.guidance ?? 0) + 1) : 0;
+  $("#fTitle", dlg).textContent = (mode.testout ? `${t("lesson.testout_title")} · ` : "") + exTitle(ex) + suffix;
+  const need = mode.testout ? Math.max(ex.min, 90) : ex.min;
+  $("#fTarget", dlg).textContent = `${exerciseTarget(view)} · ${t("lesson.pass_with", { min: need })}`
+    + (!mode.variant && ex.best != null ? ` · ${t("lesson.your_best", { best: Math.round(ex.best) })}` : "");
+  const guideBox = $("#fGuide", dlg);
+  guideBox.hidden = !(ex.fadeable && !mode.testout);
+  guideBox.innerHTML = [0, 1, 2].map(lv => `<button data-g="${lv}" class="${lv === guidance ? "active" : ""}" aria-pressed="${lv === guidance}">${esc(t(`flow.guide_${lv}`))}</button>`).join("");
+  $$("button", guideBox).forEach(b => b.onclick = () => {
+    if (task) return;
+    focus.guidance = +b.dataset.g;
+    openFocus(el, segs, ls, ex, chordData, exTitle, false, mode);
+  });
+  $(".f-hint", dlg).textContent = "";
   const views = [];
   let now = null;
   if (g) {
@@ -269,13 +322,15 @@ async function openFocus(el, segs, ls, ex, chordData, exTitle, start = false) {
     now = promptView($(".f-now-box", body), $(".drawn-list", body));
     views.push(now);
   } else {
+    const showTab = guidance === 0 || !ex.fadeable;
     body.innerHTML = `<div class="f-now-box"></div>
-      ${ex.steps && ex.kind !== "bend" ? `<pre class="tab" aria-label="${esc(t("lesson.tab_label"))}">${esc(tabText(ex.steps))}</pre>` : ""}
-      ${ex.shapes ? shapesHtml(ex, 120) : ""}`;
-    now = nowView($(".f-now-box", body));
+      ${showTab && view.steps && ex.kind !== "bend" ? `<pre class="tab" aria-label="${esc(t("lesson.tab_label"))}">${esc(tabText(view.steps))}</pre>` : ""}
+      ${showTab && view.shapes ? shapesHtml(view, 120) : ""}
+      ${!showTab ? `<p class="muted center">${esc(t(`flow.guide_${guidance}_note`))}</p>` : ""}`;
+    now = nowView($(".f-now-box", body), ex.fadeable && guidance === 2);
     views.push(now);
   }
-  focus = { ex, views, now, changed: focus?.changed || false };
+  focus = { ex, view, views, now, changed: focus?.changed || false, guidance, variant: !!mode.variant, testout: !!mode.testout };
   const bar = $(".ex-progress i", dlg), msg = $(".ex-msg", dlg);
   bar.style.width = "0%";
   msg.className = "ex-msg muted";
@@ -288,6 +343,7 @@ async function openFocus(el, segs, ls, ex, chordData, exTitle, start = false) {
   const go = $("[data-f=go]", dlg);
   go.textContent = t(ex.how === "answer" ? "lesson.start_answer" : "lesson.listen");
   go.onclick = () => run(el, segs, ls, ex, chordData, exTitle);
+  $("[data-f=hint]", dlg).hidden = true;
   $(".f-result", dlg).hidden = true;
   if (!dlg.open) dlg.showModal();
   $(".focus-inner", dlg).focus();   // so Space and Enter reach the shortcuts, not the Back button
@@ -358,8 +414,14 @@ function showOutcome(el, segs, ls, ex, chordData, exTitle, rep) {
   msg.className = "ex-msg " + (a.passed ? "ok" : "err");
   msg.textContent = a.passed
     ? t("lesson.passed", { score: Math.round(score) }) + (a.xp ? ` · +${a.xp} XP` : "") + (a.lesson_done ? ` · ${t("lesson.lesson_done")}` : "")
+      + (a.tested_out ? ` · ${t("lesson.tested_out_done")}` : "") + (a.hints ? ` · ${t("flow.with_hints", { count: a.hints })}` : "")
+      + (a.guidance ? ` · ${t(`flow.guide_${a.guidance}`)}` : "")
     : score == null ? t("lesson.not_played") : t("lesson.failed", { score: Math.round(score), need: a.need });
   if (score != null) showResult($(".f-result", dlg), Math.round(score), !!a.passed, a.need ?? ex.min, a.xp);
+  if (a.passed && focus && (a.variant || a.tested_out)) {   // not the plain exercise: no "next", just refresh later
+    focus.changed = true;
+    return;
+  }
   if (a.passed && focus) {
     focus.changed = true;
     ex.passed = true;
@@ -370,6 +432,69 @@ function showOutcome(el, segs, ls, ex, chordData, exTitle, rep) {
       next.onclick = () => openFocus(el, segs, ls, after, chordData, exTitle);
     }
   }
+}
+
+/** "I already know this": answer two questions from each of the lesson's quizzes (85% to pass), then play its
+ * last exercise at 90%. The server decides; passing completes the lesson. */
+async function openTestOut(el, segs, ls, chordData, exTitle) {
+  if (task) return toast(t("lesson.busy"));
+  const dlg = $(".ex-focus", el), body = $(".focus-body", dlg), go = $("[data-f=go]", dlg), msg = $(".ex-msg", dlg), bar = $(".ex-progress i", dlg);
+  $("#fTitle", dlg).textContent = t("lesson.testout_title");
+  $("#fTarget", dlg).textContent = t("lesson.testout_target");
+  $("#fGuide", dlg).hidden = true;
+  $("[data-f=hear]", dlg).hidden = true;
+  $("[data-f=next]", dlg).hidden = true;
+  $("[data-f=hint]", dlg).hidden = true;
+  $(".f-result", dlg).hidden = true;
+  $(".f-hint", dlg).textContent = "";
+  body.innerHTML = `<div class="q-box"><p class="muted center">${esc(t("lesson.testout_intro"))}</p></div>`;
+  msg.className = "ex-msg muted";
+  msg.textContent = "";
+  bar.style.width = "0%";
+  focus = { ex: null, views: [], now: null, changed: focus?.changed || false };
+  const playFinal = finalId => {
+    const fin = ls.exercises.find(e => e.id === finalId);
+    if (!fin) return;
+    msg.className = "ex-msg ok";
+    msg.textContent = t("lesson.testout_now_play", { title: exTitle(fin) });
+    go.textContent = `▶ ${t("lesson.testout_play")}`;
+    go.onclick = () => openFocus(el, segs, ls, fin, chordData, exTitle, false, { testout: true });
+  };
+  go.textContent = t("lesson.testout_start");
+  go.onclick = async () => {
+    let d;
+    try { d = await api("/api/lesson/testout", { json: { lesson: ls.id } }); } catch (e) { return toast(e.message); }
+    if (!d.token) return playFinal(d.final);                 // nothing to answer: straight to playing
+    go.textContent = t("lesson.stop");
+    task = runAnswers(body, { drawn: d, finishUrl: "/api/lesson/testout/finish",
+      onProgress: (k, n) => { bar.style.width = `${Math.round(100 * k / n)}%`; } });
+    go.onclick = () => task && task.stop();
+    try {
+      const rep = await task.done;
+      task = null;
+      if (!rep) { msg.textContent = t("lesson.answer_stopped"); go.textContent = t("lesson.testout_start"); go.onclick = () => openTestOut(el, segs, ls, chordData, exTitle); return; }
+      showResult($(".f-result", dlg), Math.round(rep.summary.score), rep.award.passed, rep.award.need, rep.award.xp);
+      if (!rep.award.passed) {
+        msg.className = "ex-msg err";
+        msg.textContent = t("lesson.testout_failed", { need: rep.award.need });
+        go.textContent = t("lesson.focus_again");
+        go.onclick = () => openTestOut(el, segs, ls, chordData, exTitle);
+      } else if (rep.final) playFinal(rep.final);
+      else {
+        focus.changed = true;
+        msg.className = "ex-msg ok";
+        msg.textContent = t("lesson.tested_out_done") + (rep.award.xp ? ` · +${rep.award.xp} XP` : "");
+        go.textContent = t("lesson.focus_back");
+        go.onclick = () => closeFocus(el, segs);
+      }
+    } catch (e) {
+      task = null;
+      msg.className = "ex-msg err";
+      msg.textContent = e.message;
+    }
+  };
+  if (!dlg.open) dlg.showModal();
+  $(".focus-inner", dlg).focus();
 }
 
 /** Quiz and pick exercises: answer the drawn questions, then the server grades them. */
@@ -420,7 +545,25 @@ async function run(el, segs, ls, ex, chordData, exTitle) {
   msg.className = "ex-msg muted";
   msg.textContent = t(ex.kind === "chart" ? "lesson.wait_count_in" : ex.kind === "bend" ? "lesson.bend_ready" : "lesson.play_when_ready");
   btn.onclick = () => task && task.stop();
-  task = listen({ exercise: { lesson: ls.id, exercise: ex.id }, click: true }, {
+  // hints: each press shows a bit more about the note you're on (string → fret → name); all are counted
+  const hintBtn = $("[data-f=hint]", dlg), hintOut = $(".f-hint", dlg);
+  let hintFor = "", hintLevel = 0;
+  hintOut.textContent = "";
+  hintBtn.hidden = !(focus.view.steps || DRAWN_KINDS.includes(ex.kind) || ex.kind === "notes");
+  hintBtn.onclick = async () => {
+    try {
+      const r = await api("/api/live/hint", { method: "POST" });
+      if (!r.hint) return;
+      const k = JSON.stringify(r.hint);
+      hintLevel = k === hintFor ? Math.min(3, hintLevel + 1) : 1;
+      hintFor = k;
+      const [s, f] = r.hint.tab[0] || [];
+      hintOut.textContent = t("flow.hint_text", { count: r.hints }) + " " + [
+        s != null ? t("flow.hint_string", { s }) : "", hintLevel >= 2 && f != null ? t("flow.hint_fret", { f }) : "",
+        hintLevel >= 3 ? r.hint.label : ""].filter(Boolean).join(" · ");
+    } catch { /* the take just ended */ }
+  };
+  task = listen({ exercise: { lesson: ls.id, exercise: ex.id, guidance: focus.guidance, variant: focus.variant, testout: focus.testout }, click: true }, {
     onState: s => {
       bar.style.width = `${Math.round(100 * Math.min(s.k, s.total) / s.total)}%`;
       if (s.countdown) msg.textContent = t("lesson.count_in", { n: s.countdown });
@@ -440,6 +583,7 @@ async function run(el, segs, ls, ex, chordData, exTitle) {
   } finally {
     views.forEach(v => v.setClock(null));
     task = null;
+    hintBtn.hidden = true;
     $("[data-f=hear]", dlg).disabled = false;
     btn.textContent = t("lesson.focus_again");
     btn.onclick = () => run(el, segs, ls, ex, chordData, exTitle);

@@ -380,6 +380,8 @@ def fit(ch: dict, order: list[str], strings: tuple[int, ...], lo: int = 0, hi: i
         pressed = [f for f in combo if f > 0]
         if pressed and max(pressed) - min(pressed) > span - 1:
             continue
+        if 0 in combo and pressed and max(pressed) > 5:          # an open string only works near the nut
+            continue
         pitches = [fret_pitch(s, f) for s, f in zip(strings, combo)]
         if any(b <= a for a, b in zip(pitches, pitches[1:])):
             continue

@@ -475,17 +475,23 @@ class BendFollower:
 # ---------------------------------------------------------------- tempo mode
 @dataclass
 class Trainer:
-    """Speed trainer: speeds up after a clean pass, slows down after a bad one."""
+    """Speed trainer: speeds up after a clean pass; slows down only after two passes in a row below the
+    target (one slip doesn't cost you the tempo you earned)."""
     step: float = 0.05
     target: float = 90.0
     max_speed: float = 1.0
     min_speed: float = 0.3
+    misses: int = 0
 
     def next_speed(self, speed: float, score: float) -> float:
         if score >= self.target:
             speed += self.step
-        elif score < self.target - 25:
-            speed -= self.step
+            self.misses = 0
+        else:
+            self.misses += 1
+            if self.misses >= 2:
+                speed -= self.step
+                self.misses = 0
         return round(float(np.clip(speed, self.min_speed, self.max_speed)), 3)
 
 

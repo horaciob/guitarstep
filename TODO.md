@@ -117,7 +117,7 @@ Sizes: **S** ≈ an afternoon, **M** ≈ a few days, **L** ≈ a week or more.
 48. **Advanced ear stretch: tone rows** (S, optional). Hear and play 12-note rows that use every pitch
     once, as a chromatic reading and ear challenge.
 
-## D. Teaching method and learning flow
+## D. Teaching method and learning flow — ✅ done
 
 49. **Five-step lesson flow** (M). Discover → understand → guided practice → independent practice →
     vary and apply. A small step indicator in every lesson.

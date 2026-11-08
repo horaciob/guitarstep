@@ -17,7 +17,7 @@ _lock = threading.Lock()
 
 LEVELS = [(0, "First strings"), (150, "Accompanist"), (400, "Strummer"), (800, "Blues player"),
           (1500, "Guitarist")]
-XP = dict(exercise=15, lesson=40, chord=20)
+XP = dict(exercise=15, lesson=40, chord=20, variation=10)
 EVENT_TEXT = {
     "practice": "Practice: {name} {score:.0f}%",
     "take_analysis": "Take analysis: {score:.0f}%",
@@ -25,12 +25,20 @@ EVENT_TEXT = {
     "lesson_completed": "Lesson completed: {lesson}",
     "chord_mastered": "Chord {chord} mastered ({via})",
     "drill": "Chord-change minute {chords}: {changes} changes",
+    "lesson_tested_out": "Lesson tested out: {lesson}",
+    "variation_passed": "Variation passed: {lesson}/{exercise}",
 }
 
 
 def _empty() -> dict:
     return dict(xp=0, days=[], lessons=[], exercises={}, chords={}, drills={}, tutorials={}, events=[],
-                reviews={}, drill_days={}, checked={})
+                reviews={}, drill_days={}, checked={},
+                guidance={},      # exercise → the least help you passed it with (0 full, 1 names only, 2 none)
+                variations={},    # exercise → best score in another key or position
+                hints={},         # exercise → hints you used in your last attempt
+                sections={},      # chart → {section: {state, bpm}}
+                seen=[],          # lessons you've opened (the "discover" step)
+                tested_out=[])    # lessons you skipped by passing their check
 
 
 # ---------------------------------------------------------------- spaced review
@@ -188,14 +196,29 @@ def pin_tutorial(lid: str, url: str | None) -> dict:
         return d["tutorials"]
 
 
-def _record_exercise(d: dict, lid: str, eid: str, score: float | None, need: float, complete: bool = True) -> dict:
-    """Stores an exercise result (best score, review schedule, XP, lesson completion) → what was earned."""
+def _record_exercise(d: dict, lid: str, eid: str, score: float | None, need: float, complete: bool = True,
+                     guidance: int = 0, hints: int = 0, variant: bool = False) -> dict:
+    """Stores an exercise result (best score, review schedule, XP, lesson completion) → what was earned.
+    guidance: how much help was on screen (0 full, 1 names only, 2 none); hints: how many you asked for;
+    variant: the exercise in another key or position (scored on its own, it doesn't change the main score)."""
     from . import catalog
 
     key = f"{lid}/{eid}"
     passed = score is not None and complete and score >= need
+    if variant:
+        out = dict(xp=0, passed=passed, score=score, need=need, variant=True)
+        prev = d["variations"].get(key)
+        if score is not None and (prev is None or score > prev):
+            d["variations"][key] = score
+        if passed and (prev is None or prev < need):
+            _award(d, XP["variation"], "variation_passed", lesson=lid, exercise=eid)
+            out["xp"] = XP["variation"]
+        return out
+    d["hints"][key] = hints
+    if passed and guidance > d["guidance"].get(key, -1):
+        d["guidance"][key] = guidance
     prev = d["exercises"].get(key)
-    out: dict = dict(xp=0, passed=passed, score=score, need=need)
+    out: dict = dict(xp=0, passed=passed, score=score, need=need, guidance=guidance, hints=hints)
     if score is not None and (prev is None or score > prev):
         d["exercises"][key] = score
     if score is not None:
@@ -210,6 +233,69 @@ def _record_exercise(d: dict, lid: str, eid: str, score: float | None, need: flo
         _award(d, XP["lesson"], "lesson_completed", lesson=lid)
         out.update(xp=out["xp"] + XP["lesson"], lesson_done=True)
     return out
+
+
+def _test_out(d: dict, lid: str) -> dict:
+    """You showed you already know a lesson: every exercise counts as passed and the lesson is complete."""
+    from . import catalog
+
+    lesson = catalog.get_lesson(lid)
+    for e in lesson["exercises"]:
+        key = f"{lid}/{e['id']}"
+        if d["exercises"].get(key, -1) < e.get("min", 80):
+            d["exercises"][key] = float(e.get("min", 80))
+    out = dict(tested_out=True)
+    if lid not in d["tested_out"]:
+        d["tested_out"].append(lid)
+    if lid not in d["lessons"]:
+        d["lessons"].append(lid)
+        _award(d, XP["lesson"], "lesson_tested_out", lesson=lid)
+        out.update(xp=XP["lesson"], lesson_done=True)
+    return out
+
+
+def test_out(lid: str) -> dict:
+    """Completes a lesson whose check you passed (used when the check has no part to play)."""
+    with _lock:
+        d = _read()
+        out = _test_out(d, lid)
+        _write(d)
+        return out
+
+
+def mark_seen(lid: str) -> None:
+    with _lock:
+        d = _read()
+        if lid not in d["seen"]:
+            d["seen"].append(lid)
+            _write(d)
+
+
+SECTION_STATES = ("not_started", "learning", "unsure", "solid", "ready")
+
+
+def set_section(chart: str, section: str, state: str | None = None, bpm: float | None = None) -> dict:
+    """A song section's state (one of SECTION_STATES) and target tempo."""
+    if state is not None and state not in SECTION_STATES:
+        raise ValueError("bad_state")
+    if bpm is not None and not 20 <= bpm <= 300:
+        raise ValueError("bad_bpm")
+    with _lock:
+        d = _read()
+        rec = d["sections"].setdefault(chart, {}).setdefault(section, dict(state="not_started", bpm=None))
+        if state is not None:
+            rec["state"] = state
+        if bpm is not None:
+            rec["bpm"] = bpm
+        _write(d)
+        return d["sections"][chart]
+
+
+def section_mastery(states: list[str]) -> int:
+    """0–100: the average of the sections' states (not started 0 … ready 100)."""
+    if not states:
+        return 0
+    return round(sum(SECTION_STATES.index(s) for s in states) / (len(states) * (len(SECTION_STATES) - 1)) * 100)
 
 
 def exercise_answered(lid: str, eid: str, score: float, need: float) -> dict:
@@ -236,7 +322,10 @@ def on_session(ctx: dict | None, report: dict) -> dict:
         out: dict = dict(xp=0)
         if kind == "exercise":
             complete = s.get("judged") == s.get("events")
-            out.update(_record_exercise(d, ctx["lesson"], ctx["exercise"], score, ctx.get("min", 80), complete))
+            out.update(_record_exercise(d, ctx["lesson"], ctx["exercise"], score, ctx.get("min", 80), complete,
+                                        int(ctx.get("guidance", 0)), int(ctx.get("hints", 0)), bool(ctx.get("variant"))))
+            if ctx.get("testout") and out.get("passed"):
+                out.update(_test_out(d, ctx["lesson"]))
         elif kind == "chord":
             ok = s.get("judged", 0) > 0 and (s.get("first_try", 0) > 0 or s.get("fixed", 0) > 0)
             out["passed"] = ok

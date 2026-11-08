@@ -6,7 +6,7 @@ export async function mount(el) {
   const r = await api("/api/course");
   const all = r.levels.flatMap(l => l.lessons);
   const done = all.filter(l => l.done).length;
-  const title = ls => tc(`lessons.${ls.id}.title`, ls.title);
+  const title = (ls, lv) => ls.recap ? t("lesson.recap_title", { n: lv.number, level: tc(`levels.${lv.id}.title`, lv.title) }) : tc(`lessons.${ls.id}.title`, ls.title);
   el.innerHTML = `
     <div class="gl-head"><h1>${esc(t("course.title"))}</h1>
       <p class="muted">${esc(t("course.subtitle", { done, total: all.length }))}</p></div>
@@ -27,7 +27,7 @@ export async function mount(el) {
                           (ls.chords || []).join(", ")].filter(Boolean).join(" · ");
             return `<a class="lesson${ls.done ? " done" : ""}${r.next && r.next.id === ls.id ? " next" : ""}" href="#/lesson/${encodeURIComponent(ls.id)}">
               <span class="state">${ls.done ? "✓" : passed ? `${passed}/${ls.exercises.length}` : "○"}</span>
-              <span><b>${esc(title(ls))}</b><small class="muted">${esc(meta)}</small></span>
+              <span><b>${esc(title(ls, lv))}</b><small class="muted">${esc(meta)}</small></span>
             </a>`;
           }).join("")}
         </div>

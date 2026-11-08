@@ -408,7 +408,129 @@ def chart_from_shapes(shapes: list[dict], times: int) -> dict:
 # ---------------------------------------------------------------- course
 @lru_cache(maxsize=None)
 def course() -> dict:
-    return json.loads((DATA_DIR / "course.json").read_text(encoding="utf-8"))
+    data = json.loads((DATA_DIR / "course.json").read_text(encoding="utf-8"))
+    for lvl in data["levels"]:
+        recap = _recap(lvl)
+        if recap:
+            lvl["lessons"].append(recap)
+    return data
+
+
+RECAP_MIN_LESSONS = 3
+RECAP_MAX = 8
+
+
+def _recap(lvl: dict) -> dict | None:
+    """The last lesson of a level: a mixed review with one exercise from each lesson (a quiz when the lesson has
+    one, so you check you understood; otherwise the last thing you played). Generated, so it never goes stale."""
+    src = [ls for ls in lvl["lessons"] if not ls.get("recap")]
+    if len(src) < RECAP_MIN_LESSONS:
+        return None
+    picks = []
+    for ls in src:
+        exs = ls["exercises"]
+        ex = next((e for e in exs if e["kind"] in ("quiz", "pick")), None) or exs[-1]
+        picks.append({**ex, "id": f"{ls['id']}--{ex['id']}", "from": f"{ls['id']}/{ex['id']}"})
+    if len(picks) > RECAP_MAX:                       # spread the picks over the whole level
+        step = len(picks) / RECAP_MAX
+        picks = [picks[int(i * step)] for i in range(RECAP_MAX)]
+    return dict(id=f"recap-{lvl['id']}", title=f"Level {lvl['number']} recap", minutes=5 + 3 * len(picks), recap=True,
+                theory=[], tips=[], tutorials=[], exercises=picks)
+
+
+# the five steps of a lesson: discover → understand → guided practice → independent practice → vary and apply
+STAGES = ("discover", "understand", "guided", "independent", "apply")
+FADEABLE = ("lick", "scale", "arpeggio", "line", "shape", "voiced", "notes")
+
+
+def exercise_stage(ex: dict) -> str:
+    """Which step of the lesson an exercise belongs to (an explicit "stage" in course.json wins)."""
+    if ex.get("stage") in STAGES:
+        return ex["stage"]
+    if ex["kind"] in ("quiz", "pick"):
+        return "understand"
+    if ex["kind"] == "chart":
+        return "apply"
+    return "guided"
+
+
+def _shift_window(frets, by: int) -> list[int]:
+    lo, hi = frets or [0, 12]
+    if hi + by > 15:
+        by -= 12
+    if lo + by < 0:
+        by += 12
+    return [lo + by, hi + by]
+
+
+def _transpose_symbol(sym: str, interval: str) -> str:
+    from . import theory as th
+
+    c = th.parse_chord(sym)
+    root = th.transpose(c["root"], interval)
+    bass = th.transpose(c["bass"], interval) if c["bass"] else None
+    return th.chord_symbol(_simple(root), c["quality"], _simple(bass) if bass else None)
+
+
+def _simple(note: str) -> str:
+    """Double sharps/flats read badly in a chord symbol: E## → F#, Cbb → Bb."""
+    from . import theory as th
+
+    letter, acc = th.parse_note(note)
+    return th.plain_name(th.pc(note)) if abs(acc) > 1 else note
+
+
+def variation(ex: dict) -> dict | None:
+    """The same exercise a 4th higher (another key, another position), or None when it can't move.
+    Checks that you learned the relationship, not a picture."""
+    from . import theory as th
+
+    k = ex["kind"]
+    try:
+        if k == "scale":
+            key = _simple(th.transpose(ex["key"], "P4"))
+            return {**ex, "key": key, "frets": _shift_window(ex.get("frets"), 5), "_label": dict(code="in_key", key=key)}
+        if k == "arpeggio":
+            ch = _transpose_symbol(ex["chord"], "P4")
+            return {**ex, "chord": ch, "frets": _shift_window(ex.get("frets"), 5), "_label": dict(code="over", chords=ch)}
+        if k in ("line", "voiced") and ex.get("progression"):
+            prog = [_transpose_symbol(s, "P4") for s in ex["progression"]]
+            out = {**ex, "progression": prog, "_label": dict(code="over", chords=" → ".join(prog))}
+            if ex.get("frets"):
+                out["frets"] = _shift_window(ex["frets"], 5)
+            if k == "voiced":
+                out["near"] = (int(ex.get("near", 3)) + 5) % 12
+            return out
+        if k == "shape" and ex.get("chord"):
+            ch = _transpose_symbol(ex["chord"], "P4")
+            return {**ex, "chord": ch, "near": (int(ex.get("near", 3)) + 5) % 12, "_label": dict(code="over", chords=ch)}
+        if k == "lick":
+            frets = [int(f) for f in re.findall(r":(\d+)", ex["tab"])]
+            by = -2 if min(frets) >= 2 else 2
+            return {**ex, "shift": int(ex.get("shift", 0)) + by, "_label": dict(code="moved", frets=by)}
+    except (th.TheoryError, KeyError, ValueError):
+        return None
+    return None
+
+
+def chart_sections(chart: dict) -> list[dict]:
+    """[{name, from, to}] — each section of a chart with its bar numbers (bars counted in beats per bar)."""
+    bpb, acc, out = chart["beats_per_bar"], 0.0, []
+    for b in chart["bars"]:
+        bar = int(acc // bpb) + 1
+        if b.get("section"):
+            if out:
+                out[-1]["to"] = max(out[-1]["from"], bar - 1)
+            out.append(dict(name=b["section"], **{"from": bar, "to": bar}))
+        acc += b["beats"]
+    if out:
+        out[-1]["to"] = max(out[-1]["from"], int((acc - 1e-6) // bpb) + 1)
+    # sections with the same name (A, A) get a number so each one is its own row
+    seen: dict[str, int] = {}
+    for s in out:
+        seen[s["name"]] = seen.get(s["name"], 0) + 1
+        s["key"] = s["name"] if seen[s["name"]] == 1 else f"{s['name']} ({seen[s['name']]})"
+    return out
 
 
 def lessons() -> list[dict]:
@@ -442,11 +564,14 @@ def get_exercise(lid: str, eid: str) -> dict:
     return ex
 
 
-def exercise_setup(lid: str, eid: str):
-    """→ (RefOptions, mode, speed, minimum score) to listen to an exercise."""
+def exercise_setup(lid: str, eid: str, variant: bool = False):
+    """→ (RefOptions, mode, speed, minimum score) to listen to an exercise (or to its variation)."""
     from .reference import RefOptions
 
     ex = get_exercise(lid, eid)
+    if variant:
+        from . import quiz
+        ex = quiz.variant_of(lid, ex)
     kind = ex["kind"]
     if kind == "notes":
         return RefOptions(notes=list(ex["notes"])), "wait", 1.0, ex.get("min", 80)

@@ -78,7 +78,7 @@ def build(today: date | None = None) -> dict:
             if any(x["id"] == lid for x in lessons):
                 ls = next(x for x in lessons if x["id"] == lid)
                 ex = next((e for e in ls["exercises"] if e["id"] == eid), {})
-                add(key, "review_exercise", REVIEW_MIN, f"#/lesson/{lid}", done, "technique", lesson=lid, exercise=eid,
+                add(key, "review_exercise", REVIEW_MIN, f"#/lesson/{lid}?ex={eid}", done, "technique", lesson=lid, exercise=eid,
                     title=ex.get("title", eid))
 
     nxt = next((x for x in lessons if x["id"] not in d["lessons"]), None)

@@ -101,7 +101,9 @@
    "chord_camera": "Acorde {{chord}} (con la cámara)",
    "drill": "Minuto de cambio {{chords}}: {{n}} cambios",
    "take_analysis": "Análisis de toma: {{score}}%",
-   "practice": "Práctica: {{name}} {{score}}%"
+   "practice": "Práctica: {{name}} {{score}}%",
+   "lesson_tested_out": "Lección salteada con la prueba: {{title}}",
+   "variation_passed": "En otra tonalidad: {{title}}"
   },
   "errors": {
    "generic": "Algo salió mal",
@@ -467,7 +469,20 @@
    "answer_stopped": "Frenado. Empezá de nuevo para otra tanda.",
    "piano_label": "Una octava de un teclado de piano",
    "guide_swing": "Swing: las corcheas a contratiempo llegan tarde.",
-   "guide_anticipation": "↓» = el acorde siguiente, una corchea antes."
+   "guide_anticipation": "↓» = el acorde siguiente, una corchea antes.",
+   "recap_title": "Repaso del nivel {{n}}: {{level}}",
+   "recap_theory_1": "Un ejercicio de cada lección de este nivel, mezclados: para comprobar que todo quedó.",
+   "recap_theory_2": "Si alguno cuesta, volvé a su lección: el ejercicio es el mismo.",
+   "testout_button": "¿Ya lo sabés? Salteá la lección",
+   "testout_title": "Saltear esta lección",
+   "testout_target": "85% en las preguntas y después 90% en el último ejercicio",
+   "testout_intro": "Dos preguntas de cada cuestionario de la lección y después tocás su último ejercicio con una exigencia mayor. Si aprobás las dos partes, la lección queda completa.",
+   "testout_start": "▶ Empezar la prueba",
+   "testout_play": "Tocarlo",
+   "testout_now_play": "Preguntas aprobadas. Ahora tocá: {{title}} (se aprueba con 90%).",
+   "testout_failed": "Todavía no: necesitás {{need}}% en las preguntas. Hacer la lección es el camino más rápido.",
+   "tested_out_done": "lección completada con la prueba",
+   "tested_out": "✓ salteada con la prueba"
   },
   "chords": {
    "title": "Acordes",
@@ -1342,6 +1357,55 @@
    "turnaround_3": "¿Cuál es el iii–VI–ii–V en {{key}}?",
    "turnaround_x": "¿Cuál es el I–vi–ii–V en {{key}} con sustitutos tritonales?",
    "row_note": "{{note}}"
+  },
+  "flow": {
+   "label": "Los pasos de esta lección",
+   "discover": "Descubrir",
+   "discover_hint": "mirar y escuchar",
+   "understand": "Entender",
+   "understand_hint": "responder las preguntas",
+   "guided": "Práctica guiada",
+   "guided_hint": "tocar con ayuda",
+   "independent": "Por tu cuenta",
+   "independent_hint": "menos ayuda en pantalla",
+   "apply": "Variar y aplicar",
+   "apply_hint": "cifrados, otra tonalidad",
+   "understood": "Entendido {{done}} de {{total}}",
+   "played": "Tocado {{done}} de {{total}}",
+   "concepts": "Conceptos",
+   "guide_label": "Cuánta ayuda en pantalla",
+   "guide_0": "ayuda completa",
+   "guide_1": "solo nombres",
+   "guide_2": "sin ayuda",
+   "guide_1_note": "Esta vez sin tab ni diagramas: solo el nombre de cada nota o acorde.",
+   "guide_2_note": "Sin ayuda en pantalla: tocalo de memoria y de oído.",
+   "try_vary": "Probalo en otra tonalidad",
+   "var_in_key": "en {{key}}",
+   "var_over": "sobre {{chords}}",
+   "var_moved": "a {{frets}} trastes",
+   "loop_it": "Loopear en Práctica",
+   "hint": "Pista",
+   "hint_text_one": "Pista {{count}}:",
+   "hint_text_other": "Pista {{count}}:",
+   "hint_string": "cuerda {{s}}",
+   "hint_fret": "traste {{f}}",
+   "with_hints_one": "con {{count}} pista",
+   "with_hints_other": "con {{count}} pistas"
+  },
+  "sections": {
+   "title": "Tu progreso por sección",
+   "mastery": "dominio",
+   "hint": "Marcá cada sección a medida que la aprendés, poné un tempo objetivo y loopeá las difíciles.",
+   "bars": "compases {{from}}–{{to}}",
+   "state_of": "Estado de {{name}}",
+   "target": "BPM objetivo",
+   "target_of": "Tempo objetivo de {{name}}",
+   "bad_bpm": "Escribí un tempo entre 20 y 300 BPM.",
+   "not_started": "sin empezar",
+   "learning": "aprendiendo",
+   "unsure": "inseguro",
+   "solid": "firme",
+   "ready": "lista"
   }
  },
  "content": {
@@ -3003,6 +3067,248 @@
    "With substitutes": "Con sustitutos",
    "A": "A",
    "B": "B"
+  },
+  "glossary": {
+   "half_step": {
+    "term": "semitono",
+    "aliases": [
+     "semitonos"
+    ],
+    "text": "La distancia más chica de la música occidental: un traste en la guitarra, una tecla a la siguiente en el piano."
+   },
+   "whole_step": {
+    "term": "tono",
+    "aliases": [
+     "tonos"
+    ],
+    "text": "Dos semitonos: dos trastes."
+   },
+   "interval": {
+    "term": "intervalo",
+    "aliases": [
+     "intervalos"
+    ],
+    "text": "La distancia entre dos notas, contada en semitonos y nombrada por tamaño (3ª, 5ª…) y calidad (mayor, menor, justa)."
+   },
+   "octave": {
+    "term": "octava",
+    "aliases": [
+     "octavas"
+    ],
+    "text": "La misma nota 12 semitonos más arriba o más abajo: suena a la misma nota, más aguda o más grave."
+   },
+   "enharmonic": {
+    "term": "enarmónico",
+    "aliases": [
+     "dos nombres",
+     "enarmónica"
+    ],
+    "text": "Dos nombres para la misma altura, como Do♯ y Re♭. La tonalidad decide cuál es el correcto."
+   },
+   "root": {
+    "term": "fundamental",
+    "aliases": [
+     "fundamentales"
+    ],
+    "text": "La nota sobre la que se arma un acorde o una escala, y que le da el nombre: Do es la fundamental de Do mayor y de Domaj7."
+   },
+   "degree": {
+    "term": "grado",
+    "aliases": [
+     "grados"
+    ],
+    "text": "El lugar de una nota en la tonalidad, contado desde la fundamental: 1, 2, 3… Un ♭ o ♯ indica un semitono más abajo o más arriba que en la escala mayor."
+   },
+   "scale": {
+    "term": "escala",
+    "aliases": [
+     "escalas"
+    ],
+    "text": "Un conjunto de notas en orden, definido por su dibujo de pasos desde la fundamental."
+   },
+   "major_scale": {
+    "term": "escala mayor",
+    "aliases": [],
+    "text": "La escala con los pasos T T S T T T S. Casi toda la armonía se explica desde ella."
+   },
+   "relative_minor": {
+    "term": "relativa menor",
+    "aliases": [
+     "relativa mayor"
+    ],
+    "text": "La tonalidad menor con las mismas notas que una mayor, armada sobre su 6º grado (La menor para Do mayor)."
+   },
+   "pentatonic": {
+    "term": "pentatónica",
+    "aliases": [
+     "pentatónicas"
+    ],
+    "text": "Una escala de cinco notas. La pentatónica menor es 1 ♭3 4 5 ♭7; la mayor es 1 2 3 5 6."
+   },
+   "mode": {
+    "term": "modo",
+    "aliases": [
+     "modos"
+    ],
+    "text": "Las notas de una escala tocadas con otra nota como casa. Cada modo tiene su propio color."
+   },
+   "tab": {
+    "term": "tab",
+    "aliases": [
+     "tablatura"
+    ],
+    "text": "Notación para guitarra con seis líneas para las cuerdas (Mi agudo arriba) y números para los trastes."
+   },
+   "triad": {
+    "term": "tríada",
+    "aliases": [
+     "tríadas"
+    ],
+    "text": "Un acorde de tres notas: fundamental, 3ª y 5ª."
+   },
+   "chord_tone": {
+    "term": "nota del acorde",
+    "aliases": [
+     "notas del acorde"
+    ],
+    "text": "Una nota que pertenece al acorde (fundamental, 3ª, 5ª, 7ª…), a diferencia de una nota de paso."
+   },
+   "inversion": {
+    "term": "inversión",
+    "aliases": [
+     "inversiones"
+    ],
+    "text": "Un acorde con otra nota que no es la fundamental en el bajo. Do/Mi es Do mayor en 1ª inversión."
+   },
+   "slash_chord": {
+    "term": "acorde con barra",
+    "aliases": [
+     "nombres con barra"
+    ],
+    "text": "Un acorde escrito con el bajo después de una barra: Do/Sol es Do con Sol en el bajo."
+   },
+   "seventh_chord": {
+    "term": "acorde de séptima",
+    "aliases": [
+     "acordes de séptima"
+    ],
+    "text": "Una tríada más una 7ª: maj7, 7, m7, m7♭5, dim7…"
+   },
+   "dominant": {
+    "term": "dominante",
+    "aliases": [
+     "dominante 7"
+    ],
+    "text": "El acorde de V de una tonalidad, o cualquier acorde 7 (1 3 5 ♭7). Su tensión quiere resolver."
+   },
+   "extension": {
+    "term": "extensión",
+    "aliases": [
+     "extensiones",
+     "tensión",
+     "tensiones"
+    ],
+    "text": "Notas apiladas arriba de la 7ª: 9, 11, 13 (y sus formas alteradas ♭9, ♯9, ♯11, ♭13)."
+   },
+   "diatonic": {
+    "term": "diatónico",
+    "aliases": [
+     "diatónicos"
+    ],
+    "text": "Hecho solo con notas de la tonalidad. Los acordes diatónicos de Do son Do Rem Mim Fa Sol Lam Si°."
+   },
+   "roman_numeral": {
+    "term": "números romanos",
+    "aliases": [],
+    "text": "Acordes nombrados por su grado en la tonalidad (I, ii, V7…), así una progresión se lee igual en cualquier tonalidad."
+   },
+   "voicing": {
+    "term": "voicing",
+    "aliases": [
+     "voicings"
+    ],
+    "text": "Qué notas de un acorde tocás, en qué orden y en qué cuerdas."
+   },
+   "drop2": {
+    "term": "drop 2",
+    "aliases": [
+     "drop-2"
+    ],
+    "text": "Un voicing de cuatro notas que sale de bajar una octava la segunda nota desde arriba de un acorde cerrado."
+   },
+   "shell": {
+    "term": "shell",
+    "aliases": [
+     "shells"
+    ],
+    "text": "Un voicing de tres notas: fundamental, 3ª y 7ª."
+   },
+   "guide_tones": {
+    "term": "notas guía",
+    "aliases": [
+     "nota guía"
+    ],
+    "text": "La 3ª y la 7ª de un acorde: dicen el tipo de acorde y se mueven suave de un acorde al siguiente."
+   },
+   "voice_leading": {
+    "term": "conducción de voces",
+    "aliases": [],
+    "text": "Mover cada nota de un acorde a la nota más cercana del siguiente."
+   },
+   "ii_v_i": {
+    "term": "ii–V–I",
+    "aliases": [
+     "ii–V"
+    ],
+    "text": "El menor 7 en el 2º grado, el dominante en el 5º y el acorde mayor en el 1º: la progresión más común del jazz."
+   },
+   "turnaround": {
+    "term": "turnaround",
+    "aliases": [
+     "turnarounds"
+    ],
+    "text": "Una progresión corta al final de una forma que lleva de vuelta al principio."
+   },
+   "tritone": {
+    "term": "tritono",
+    "aliases": [],
+    "text": "El intervalo de tres tonos (6 trastes). Divide la octava a la mitad."
+   },
+   "swing": {
+    "term": "swing",
+    "aliases": [],
+    "text": "Tocar los pares de corcheas largo–corto: la segunda de cada par cae tarde."
+   },
+   "comping": {
+    "term": "acompañamiento",
+    "aliases": [
+     "comping"
+    ],
+    "text": "Acompañar con acordes y ritmo detrás de una melodía o un solo."
+   },
+   "approach_note": {
+    "term": "nota de aproximación",
+    "aliases": [
+     "notas de aproximación",
+     "aproximación"
+    ],
+    "text": "Una nota a un paso de distancia que lleva a una nota objetivo."
+   },
+   "enclosure": {
+    "term": "enclosure",
+    "aliases": [
+     "enclosures",
+     "rodeo"
+    ],
+    "text": "Rodear una nota objetivo: la nota de arriba, la de abajo y después el objetivo."
+   },
+   "bpm": {
+    "term": "BPM",
+    "aliases": [
+     "tempo"
+    ],
+    "text": "Pulsos por minuto: qué tan rápido va la música."
+   }
   }
  }
 }
