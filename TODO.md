@@ -20,7 +20,7 @@ Sizes: **S** ≈ an afternoon, **M** ≈ a few days, **L** ≈ a week or more.
 
 ---
 
-## A. Theory foundations (course content)
+## A. Theory foundations (course content) — ✅ done
 
 1. **Parts of the guitar and reading tab** (S). A first lesson on the parts of the guitar, string numbers,
    and how to read tab (lines = strings, numbers = frets). It ends with a short "play what the tab says"
@@ -56,7 +56,7 @@ Sizes: **S** ≈ an afternoon, **M** ≈ a few days, **L** ≈ a week or more.
     the beat.
 17. **The altered scale** (M). The 7th mode of melodic minor over a dominant chord, shown as "♭9 ♯9 3 ♯11 ♭13 ♭7".
 
-## B. Chords and harmony
+## B. Chords and harmony — ✅ done
 
 18. **Build a triad by clicking** (M). Choose the root, 3rd and 5th on the fretboard to build a major or
     minor triad. You get immediate feedback, then play it.
