@@ -103,7 +103,9 @@
    "take_analysis": "Análisis de toma: {{score}}%",
    "practice": "Práctica: {{name}} {{score}}%",
    "lesson_tested_out": "Lección salteada con la prueba: {{title}}",
-   "variation_passed": "En otra tonalidad: {{title}}"
+   "variation_passed": "En otra tonalidad: {{title}}",
+   "rhythm": "Test de ritmo a {{bpm}} BPM: {{within}}% a tiempo",
+   "ear": "Oído ({{kind}}): {{score}}%"
   },
   "errors": {
    "generic": "Algo salió mal",
@@ -614,7 +616,15 @@
    "eighths_off": "no",
    "eighths_straight": "derechas",
    "eighths_light": "swing ligero",
-   "eighths_hard": "swing marcado"
+   "eighths_hard": "swing marcado",
+   "rhythm_tab": "Test de ritmo",
+   "strums_tab": "Rasgueos",
+   "ear_tab": "Oído",
+   "random_tab": "Caja aleatoria",
+   "over_chord": "Sobre un acorde",
+   "over_none": "—",
+   "over_legend": "Relleno = notas del acorde (1 3 5 7), contorno = las otras notas de la escala, nombradas como tensiones (9, 11, 13).",
+   "over_notes": "Notas del acorde: {{tones}} · tensiones: {{tensions}}"
   },
   "camera": {
    "title": "Cámara",
@@ -1115,7 +1125,10 @@
    "again": "Otra vez",
    "tick": "¿Listo?",
    "ticked": "✓ Listo",
-   "all_done": "Todo hecho por hoy. ¡Hasta mañana!"
+   "all_done": "Todo hecho por hoy. ¡Hasta mañana!",
+   "budget": "Tiempo hoy",
+   "budget_auto": "auto",
+   "budget_n": "{{n}} min"
   },
   "reminder": {
    "title": "Recordatorio diario",
@@ -1356,7 +1369,13 @@
    "turnaround_1": "¿Cuál es el I–vi–ii–V en {{key}}?",
    "turnaround_3": "¿Cuál es el iii–VI–ii–V en {{key}}?",
    "turnaround_x": "¿Cuál es el I–vi–ii–V en {{key}} con sustitutos tritonales?",
-   "row_note": "{{note}}"
+   "row_note": "{{note}}",
+   "echo_prompt": "Repetí la frase ({{count}} notas)",
+   "echo_was": "era {{notes}}",
+   "q_7": "dominante 7",
+   "q_maj7": "mayor 7",
+   "q_m7": "menor 7",
+   "q_m7b5": "semidisminuido (m7♭5)"
   },
   "flow": {
    "label": "Los pasos de esta lección",
@@ -1406,6 +1425,85 @@
    "unsure": "inseguro",
    "solid": "firme",
    "ready": "lista"
+  },
+  "metro": {
+   "accents": "Acentos por tiempo",
+   "accents_hint": "Tocá un tiempo: acento (>) → normal → silencio (×).",
+   "subdivision": "Subdivisión",
+   "sub_off": "ninguna",
+   "sub_eighths": "corcheas",
+   "sub_light": "corcheas, swing ligero",
+   "sub_hard": "corcheas, swing marcado",
+   "sub_triplets": "tresillos",
+   "sub_sixteenths": "semicorcheas",
+   "gap": "Compases en silencio",
+   "gap_off": "ninguno",
+   "gap_3_1": "3 compases sí, 1 no",
+   "gap_1_1": "1 compás sí, 1 no",
+   "count_in": "Compás de cuenta",
+   "accent": "acento",
+   "normal": "normal",
+   "silent": "silencio",
+   "beat_n": "Tiempo {{n}}",
+   "counting": "Cuenta: {{n}}…",
+   "silent_bar": "Compás en silencio: seguí el tiempo",
+   "bar_n": "Compás {{n}}"
+  },
+  "rand": {
+   "intro": "Una tonalidad, un acorde, una escala y una posición al azar para calentar. Bloqueá lo que quieras mantener y sorteá el resto.",
+   "roll": "Sortear",
+   "lock": "bloquear",
+   "locked": "bloqueado",
+   "key": "Tonalidad",
+   "chord": "Acorde",
+   "scale": "Escala",
+   "position": "Posición",
+   "keys_hint": "Tocá la escala en esa posición y después arpegiá el acorde en el mismo lugar."
+  },
+  "rhythm": {
+   "intro": "Rasgueá el acorde una vez en cada tiempo. El listener mide cuánto antes o después cae cada rasguido.",
+   "bpm": "BPM",
+   "bars": "Compases",
+   "chord": "Acorde",
+   "strum_n": "Rasguido {{k}} de {{total}}",
+   "result": "{{within}}% dentro de ±30 ms · promedio {{mean}} ms · dispersión {{std}} ms",
+   "histo_label": "Histograma de tiempo: {{within}}% de los rasguidos dentro de 30 milisegundos",
+   "axis": "Milisegundos antes (−) o después (+). La barra del medio es justo en el tiempo.",
+   "records": "Tus más parejos:",
+   "record": "{{bpm}} BPM: dispersión {{std}} ms ({{within}}% a tiempo)"
+  },
+  "ear": {
+   "kind_chord_basic": "Mayor, menor o 7",
+   "kind_chord_quality": "Acordes de séptima",
+   "kind_interval": "Intervalos",
+   "kind_echo": "Eco melódico",
+   "intro_chord_basic": "Escuchá un acorde y nombrá su tipo. Después de responder, ves su forma.",
+   "intro_chord_quality": "Seis tipos de acorde: mayor, menor, 7, maj7, m7 y m7♭5. Después de responder, ves la forma.",
+   "intro_interval": "Escuchá dos notas y nombrá la distancia entre ellas.",
+   "intro_echo": "La app toca una frase corta que inventa en el momento. Repetila con el metrónomo: cuentan las notas y el ritmo.",
+   "result": "{{score}}% · tu mejor: {{best}}%",
+   "echo_new": "Frase nueva",
+   "echo_listen": "Escuchá…",
+   "echo_result": "{{score}}%"
+  },
+  "strum": {
+   "intro": "Patrones con nombre para 4/4, 3/4 y 6/8. Escuchá cada uno, practicalo sobre Sol y Do, o usalo en un cifrado.",
+   "hear": "Escuchar",
+   "use": "Usar en un cifrado",
+   "insert": "Patrón de rasgueo",
+   "result": "{{score}}% en los cambios de acorde"
+  },
+  "stats": {
+   "consistency": "Constancia (12 meses)",
+   "totals": "{{days}} días · {{hours}} h",
+   "consistency_label": "Práctica en {{days}} de los últimos 365 días",
+   "none": "nada",
+   "day_minutes_one": "{{date}}: {{count}} minuto",
+   "day_minutes_other": "{{date}}: {{count}} minutos",
+   "tempo": "Tempo a lo largo del tiempo",
+   "song": "Tema o cifrado",
+   "no_tempo": "Practicá un tema o un cifrado con el listener y tu tempo aparece acá.",
+   "tempo_label": "{{name}}: de {{from}} a {{to}}"
   }
  },
  "content": {
@@ -2913,7 +3011,8 @@
    "jazz-etudes/etude-minor-turn": "“Giro menor” (Sim7♭5 – Mi7♭9 – Lam6)",
    "jazz-etudes/etude-blue-f": "“Fa azul” (Fa7 – Si♭7 – Fa7)",
    "tone-rows/row-low": "Una serie en los trastes graves",
-   "tone-rows/row-mid": "Una serie alrededor del traste 5"
+   "tone-rows/row-mid": "Una serie alrededor del traste 5",
+   "interval-ear/ear-echo": "Repetí una frase corta"
   },
   "charts": {
    "01-em-am": {
@@ -3308,6 +3407,52 @@
      "tempo"
     ],
     "text": "Pulsos por minuto: qué tan rápido va la música."
+   }
+  },
+  "strums": {
+   "quarters": {
+    "name": "Abajo en cada tiempo",
+    "tip": "El patrón más firme que hay. Contá 1 2 3 4 y rasgueá en cada número."
+   },
+   "eighths": {
+    "name": "Corcheas abajo-arriba",
+    "tip": "La mano nunca se detiene: abajo en los números, arriba en el “y”."
+   },
+   "folk": {
+    "name": "Folk",
+    "tip": "Mantené la mano en movimiento en los rasguidos que faltan (el “y” del 2 … el 3): el ritmo queda parejo."
+   },
+   "pop": {
+    "name": "Empuje pop",
+    "tip": "Dos rasguidos hacia abajo y después los de arriba llevan el final del compás hacia adelante."
+   },
+   "rock": {
+    "name": "Corcheas de rock",
+    "tip": "Todo hacia abajo, corto y parejo. Apagá con la palma para un sonido más compacto."
+   },
+   "ballad": {
+    "name": "Balada lenta",
+    "tip": "Un rasguido largo y después un empujón suave al final del compás."
+   },
+   "reggae": {
+    "name": "Golpe a contratiempo",
+    "tip": "Solo el “y” de cada tiempo: rasguidos cortos hacia arriba y después aflojá para que el acorde se corte."
+   },
+   "charleston": {
+    "name": "Charleston",
+    "tip": "El tiempo 1 y el “y” del 2. El espacio es parte del patrón."
+   },
+   "waltz": {
+    "name": "Vals",
+    "tip": "Tres tiempos por compás: apoyate un poco en el primero."
+   },
+   "waltz_ups": {
+    "name": "Vals con arriba",
+    "tip": "El tiempo 1 solo y después abajo-arriba en el 2 y el 3."
+   },
+   "six_eight": {
+    "name": "Vaivén en seis por ocho",
+    "tip": "Dos pulsos grandes por compás, cada uno dividido en tres. Sentilo como 1-2-3 4-5-6."
    }
   }
  }

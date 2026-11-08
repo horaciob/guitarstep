@@ -1332,6 +1332,21 @@
        ],
        "count": 4,
        "min": 80
+      },
+      {
+       "id": "ear-echo",
+       "kind": "echo",
+       "title": "Echo a short phrase",
+       "key": "A",
+       "scale": "minor_pentatonic",
+       "frets": [
+        5,
+        8
+       ],
+       "bpm": 72,
+       "max_notes": 4,
+       "count": 1,
+       "min": 75
       }
      ]
     },

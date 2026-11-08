@@ -568,3 +568,53 @@ def test_chart_sections_progress(app_page):
     expect(app_page.locator(".mastery")).to_contain_text("25%")
     expect(app_page.locator(".sec-row").nth(2).locator('[data-st="ready"]')).to_have_attribute("aria-pressed", "true")
     expect(app_page.locator(".sec-row").nth(2).locator("a")).to_have_attribute("href", re.compile("from=17&to=24"))
+
+
+def test_practice_tools_render_and_respond(app_page):
+    onboarded(app_page)
+    go(app_page, "tools?tab=metronome")
+    dot = app_page.locator("#dots .dot").nth(1)
+    dot.click()                                                            # normal → silent
+    expect(dot).to_have_attribute("aria-label", re.compile("silent"))
+    expect(app_page.locator("#subs option")).to_have_count(6)
+    go(app_page, "tools?tab=random")
+    key = app_page.locator(".rand-field").first
+    key.locator("[data-lock]").click()
+    expect(app_page.locator(".rand-field").first).to_have_class(re.compile("locked"))
+    locked = app_page.locator(".rand-field").first.locator("b").inner_text()
+    for _ in range(3):
+        app_page.locator("#roll").click()
+    expect(app_page.locator(".rand-field").first.locator("b")).to_have_text(locked)   # the locked field stays
+    expect(app_page.locator("#randNeck svg.fb")).to_be_visible()
+    go(app_page, "tools?tab=rhythm")
+    expect(app_page.locator("#rGo")).to_be_visible()
+    go(app_page, "tools?tab=strums")
+    expect(app_page.locator(".strum-card")).to_have_count(11)
+    expect(app_page.locator(".strum-card", has_text="Waltz").first).to_contain_text("3/4")
+    go(app_page, "tools?tab=ear&ear=chord_quality")
+    app_page.locator("#earGo").click()
+    expect(app_page.locator(".q-choice")).to_have_count(6)
+    app_page.keyboard.press("1")
+    expect(app_page.locator(".q-reveal svg.chord-svg")).to_be_visible()     # the shape of what you heard
+    go(app_page, "tools?tab=fretboard")
+    app_page.locator("#root").select_option("D")
+    app_page.locator("#scale").select_option("dorian")
+    app_page.locator("#over").select_option("m7")
+    app_page.locator("#labels").select_option("degree")
+    expect(app_page.locator("#fbNotes")).to_contain_text("E (9)")
+    expect(app_page.locator("#fbNotes")).to_contain_text("B (13)")
+    expect(app_page.locator("#fbNeck .fb-dot.mark").first).to_be_visible()
+
+
+def test_stats_and_time_budget(app_page):
+    onboarded(app_page)
+    go(app_page, "plan")
+    expect(app_page.locator("svg.heatmap rect")).to_have_count(365)
+    expect(app_page.locator(".hm-legend")).to_contain_text("60+ min")
+    go(app_page, "home")
+    app_page.locator('[data-budget="30"]').click()
+    expect(app_page.locator('[data-budget="30"]')).to_have_attribute("aria-pressed", "true")
+    expect(app_page.locator(".today-plan")).to_contain_text("0:30")
+    go(app_page, "chart/new?strum=D.D.D.&time=3/4")
+    expect(app_page.locator("#txt")).to_have_value(re.compile(r"strum: D\.D\.D\.\n"))
+    expect(app_page.locator("#txt")).to_have_value(re.compile(r"time: 3/4"))

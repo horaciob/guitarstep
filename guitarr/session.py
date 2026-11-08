@@ -282,6 +282,7 @@ class LiveSession:
             missed=sum(e.status == "missed" for e in judged), extras=extras,
             timing_mean_ms=round(1000 * float(np.mean(dts)), 1) if dts else None,
             timing_std_ms=round(1000 * float(np.std(dts)), 1) if dts else None,
+            timing_ms=[round(1000 * x) for x in dts[:2000]] if f.mode == "tempo" else [],   # early (−) / late (+)
             tuning_cents=None if tun is None else round(tun, 1),
             score=None, played_s=active_seconds(self.note_times),
         )

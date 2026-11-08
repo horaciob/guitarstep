@@ -111,6 +111,31 @@ def ref_options(body: dict) -> tuple[RefOptions, dict]:
             if mode == "bend":
                 ctx["hold"] = float(catalog.get_exercise(lid, eid).get("hold", 1.0))
             return opts, ctx
+        if body.get("rhythm"):                        # strum on every beat; the listener measures each strum's timing
+            r = body["rhythm"]
+            bpm = max(40.0, min(200.0, _float(r.get("bpm")) or 80.0))
+            bars = max(2, min(16, _int(r.get("bars")) or 4))
+            chord = r.get("chord") or "Em"
+            if catalog.get_chord(chord) is None:
+                fail(400, "bad_chord", "Unknown chord")
+            frets = catalog.get_chord(chord)["frets"]
+            chart = dict(id="rhythm", title="rhythm", bpm=bpm, beats_per_bar=4, capo=0,
+                         bars=[dict(chord=chord, beats=1, frets=frets) for _ in range(bars * 4)])
+            return RefOptions(chart=chart), dict(type="rhythm", mode="tempo", bpm=bpm, bars=bars)
+        if body.get("echo"):                          # the phrase drawn in the tools (melodic echo)
+            from .. import quiz
+            ex = quiz.TOOLS_ECHO
+            return RefOptions(timed=quiz.drawn_timed("__tools__", ex), bpm=float(ex["bpm"])), dict(type="echo", mode="tempo")
+        if body.get("strum"):                         # a strumming pattern over two chords, graded on the changes
+            pat = next((p for p in _strums() if p["id"] == body["strum"].get("pattern")), None)
+            chords = [c for c in (body["strum"].get("chords") or ["G", "C"]) if catalog.get_chord(c)][:4]
+            if not pat or len(chords) < 2:
+                fail(400, "bad_strum", "Pick a pattern and two chords")
+            bpb = int(pat["time"].split("/")[0])
+            chart = dict(id=f"strum-{pat['id']}", title=pat["name"], bpm=_float(body["strum"].get("bpm")) or 80, beats_per_bar=bpb,
+                         capo=0, strum=pat["strum"], bars=[dict(chord=c, beats=bpb, frets=catalog.get_chord(c)["frets"])
+                                                            for _ in range(2) for c in chords])
+            return RefOptions(chart=chart), dict(type="practice", chart=True)
         if body.get("drill"):
             chords = list(body["drill"]["chords"])[:2]
             return RefOptions(chart=catalog.chart_alternating(chords, 60)), dict(
@@ -368,6 +393,83 @@ def chart_sections_set(cid: str, body: dict):
     return chart_sections_get(cid)
 
 
+def _strums() -> list[dict]:
+    return json.loads((catalog.DATA_DIR / "strums.json").read_text(encoding="utf-8"))["patterns"]
+
+
+@app.get("/api/strums")
+def strums():
+    return dict(patterns=_strums())
+
+
+# ---------------------------------------------------------------- ear training (tools, not tied to a lesson)
+EAR_KINDS = {"chord_quality": dict(quiz="hear_quality", qualities=["maj", "min", "7", "maj7", "m7", "m7b5"]),
+             "chord_basic": dict(quiz="hear_quality", qualities=["maj", "min", "7"]),
+             "interval": dict(quiz="interval_ear", intervals=["m3", "M3", "P4", "P5", "m6", "M6", "m7", "P8"])}
+
+
+@app.post("/api/ear/draw")
+def ear_draw(body: dict):
+    from .. import quiz
+
+    kind = body.get("kind")
+    if kind == "echo":
+        d = quiz.draw("__tools__", quiz.TOOLS_ECHO, 75)
+        return d
+    if kind not in EAR_KINDS:
+        fail(400, "bad_kind", "Unknown ear-training kind")
+    return quiz.draw("__tools__", dict(id=f"ear-{kind}", kind="quiz", count=int(body.get("count") or 10), **EAR_KINDS[kind]), 80)
+
+
+@app.post("/api/ear/finish")
+def ear_finish(body: dict):
+    from .. import quiz
+
+    try:
+        r = quiz.finish(str(body.get("token", "")))
+    except quiz.QuizError as e:
+        fail(400, "quiz_expired", str(e))
+    kind = r["exercise"].removeprefix("ear-")
+    award = progress.ear_result(kind, r["score"])
+    return dict(summary=dict(score=r["score"]), award=dict(award, passed=r["score"] >= 80, need=80))
+
+
+# ---------------------------------------------------------------- stats: consistency and tempo over time
+@app.get("/api/stats")
+def stats():
+    """Minutes per day for the last 12 months (rounded to the minute) and, per song or chart practiced with the
+    listener, the tempo reached in each session."""
+    from datetime import date, timedelta
+
+    days = plan.get_days()
+    today = date.today()
+    start = today - timedelta(days=364)
+    grid = []
+    for k in range(365):
+        dd = start + timedelta(days=k)
+        secs = sum(days.get(dd.isoformat(), {}).values())
+        grid.append(dict(date=dd.isoformat(), minutes=round(secs / 60)))
+    tempo = []
+    for song in history.songs():
+        pts = []
+        chart_bpm = None
+        if (song.get("path") or "").startswith("chart:"):
+            try:
+                chart_bpm = catalog.get_chart(song["path"][6:])["bpm"]
+            except catalog.CatalogError:
+                chart_bpm = None
+        for s in history.load_sessions(song["id"]):
+            bpm, sp = s.get("bpm") or chart_bpm, s.get("final_speed") or s.get("speed")
+            score = (s.get("summary") or {}).get("score")
+            if sp:
+                pts.append(dict(date=(s.get("date") or "")[:10], speed=round(float(sp) * 100), bpm=round(float(bpm) * float(sp)) if bpm else None,
+                                score=score))
+        if len(pts) >= 1:
+            tempo.append(dict(id=song["id"], name=song["name"], points=pts[-60:]))
+    return dict(days=grid, tempo=tempo, totals=dict(minutes=sum(g["minutes"] for g in grid),
+                                                     active_days=sum(g["minutes"] > 0 for g in grid)))
+
+
 @app.get("/api/glossary")
 def glossary():
     return json.loads((catalog.DATA_DIR / "glossary.json").read_text(encoding="utf-8"))
@@ -543,6 +645,17 @@ def set_config(body: dict):
 # ---------------------------------------------------------------- today's practice
 @app.get("/api/today")
 def api_today():
+    return routine.build()
+
+
+@app.post("/api/today/budget")
+def api_today_budget(body: dict):
+    """How much time you have today (15, 30, 60 or 120 minutes, or none): the plan is rebuilt to fit."""
+    m = body.get("minutes")
+    try:
+        progress.set_budget(None if m in (None, "", 0) else int(m))
+    except (ValueError, TypeError):
+        fail(400, "bad_budget", "Pick 15, 30, 60 or 120 minutes")
     return routine.build()
 
 

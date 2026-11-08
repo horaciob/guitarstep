@@ -58,7 +58,7 @@ def test_test_out_needs_the_questions_first_then_completes_the_lesson():
     assert fin["award"]["passed"] and fin["final"] == "play-m3-4-6" and quiz.testout_ready("intervals")
     # a lesson with nothing to play is done as soon as its questions pass
     d = c.post("/api/lesson/testout", json=dict(lesson="interval-ear")).json()
-    assert d["final"] == "ear-play"
+    assert d["final"] == "ear-echo"
     with progress._lock:
         dd = progress._read()
         out = progress._test_out(dd, "interval-ear")

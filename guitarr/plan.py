@@ -468,3 +468,9 @@ def view(d: dict | None = None, now: float | None = None) -> dict:
 
 def get() -> dict:
     return view()
+
+
+def get_days() -> dict:
+    """{day: {category: seconds}} for every day with practice (for the consistency map)."""
+    with _lock:
+        return {k: dict(v) for k, v in _read()["days"].items()}

@@ -1018,3 +1018,52 @@ body.is-setup #main { margin: 0 auto; max-width: 760px; padding-top: 48px; }
 .gl .sec-states button.active.st-unsure { background: var(--gl-warn); color: var(--gl-accent-ink); }
 .gl .sec-row input[type=number] { width: 72px; }
 .gl .sec-states button { white-space: nowrap; }
+
+/* ---------- practice tools: metronome accents, random box, rhythm test, strums, stats, budget */
+.gl .metro-dots.accents { gap: 10px; flex-wrap: wrap; }
+.gl .metro-dots .dot { width: 46px; height: 46px; border-radius: 50%; border: 2px solid var(--border); background: var(--gl-panel-2); color: var(--text); cursor: pointer; display: grid; place-items: center; line-height: 1; padding: 0; }
+.gl .metro-dots .dot b { font-size: 15px; } .gl .metro-dots .dot small { font-size: 11px; font-weight: 800; }
+.gl .metro-dots .dot.a2 { border-color: var(--gl-accent); }
+.gl .metro-dots .dot.a0 { border-style: dashed; color: var(--muted); }
+.gl .metro-dots .dot.on { background: var(--gl-info); color: #fff; transform: scale(1.1); }
+.gl .metro-dots .dot.a2.on { background: var(--gl-accent); color: var(--gl-accent-ink); }
+.gl .rand-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; margin: 12px 0; }
+.gl .rand-field { display: grid; gap: 4px; padding: 12px; border-radius: 12px; border: 1px solid var(--border); background: var(--gl-panel-2); }
+.gl .rand-field b { font-size: 22px; } .gl .rand-field.locked { border-color: var(--gl-accent); }
+.gl .rand-field .btn { justify-self: start; }
+.gl .histo { display: flex; align-items: flex-end; gap: 6px; height: 180px; margin: 14px auto 4px; max-width: 640px; }
+.gl .h-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; gap: 4px; }
+.gl .h-col i { display: block; width: 100%; min-height: 2px; border-radius: 4px 4px 0 0; background: var(--gl-warn); }
+.gl .h-col.center i { background: var(--gl-ok); }
+.gl .h-col small { font-size: 10px; color: var(--muted); white-space: nowrap; }
+.gl .h-n { font-weight: 800; font-size: 13px; }
+.gl .strum-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; margin-top: 10px; }
+.gl .strum-card { display: grid; gap: 8px; padding: 12px; border-radius: 12px; border: 1px solid var(--border); background: var(--gl-panel-2); }
+.gl .strum-card header { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.gl .strum-card p { margin: 0; }
+.gl .strum-pick { display: flex; margin-bottom: 8px; }
+.gl .q-reveal { display: flex; justify-content: center; }
+.gl .stats-panel { margin-top: 16px; }
+.gl .hm-wrap { overflow-x: auto; margin-top: 10px; }
+.gl svg.heatmap { min-width: 760px; width: 100%; display: block; }
+.hm { fill: var(--gl-panel-2); stroke: var(--border); stroke-width: 1; }
+.hm.l1 { fill: color-mix(in srgb, var(--gl-ok) 30%, var(--gl-panel-2)); }
+.hm.l2 { fill: color-mix(in srgb, var(--gl-ok) 55%, var(--gl-panel-2)); }
+.hm.l3 { fill: color-mix(in srgb, var(--gl-ok) 80%, var(--gl-panel-2)); }
+.hm.l4 { fill: var(--gl-ok); }
+.gl .hm-legend { display: flex; gap: 14px; flex-wrap: wrap; margin: 8px 0 0; }
+.gl .hm-legend span { display: inline-flex; gap: 6px; align-items: center; }
+.gl .hm-legend i { display: inline-block; width: 12px; height: 12px; border-radius: 2px; border: 1px solid var(--border); }
+.gl .hm-legend i.l1 { background: color-mix(in srgb, var(--gl-ok) 30%, var(--gl-panel-2)); }
+.gl .hm-legend i.l2 { background: color-mix(in srgb, var(--gl-ok) 55%, var(--gl-panel-2)); }
+.gl .hm-legend i.l3 { background: color-mix(in srgb, var(--gl-ok) 80%, var(--gl-panel-2)); }
+.gl .hm-legend i.l4 { background: var(--gl-ok); }
+.gl .tempo-chart { width: 100%; max-width: 720px; display: block; margin-top: 10px; color: var(--text); }
+.tempo-chart .axis { stroke: var(--border); }
+.tempo-chart .tline { fill: none; stroke: var(--gl-accent); stroke-width: 2.5; }
+.tempo-chart .tdot { fill: var(--gl-accent); }
+.tempo-chart .tlabel { font-size: 12px; font-weight: 700; fill: currentColor; }
+.tempo-chart .tlabel.muted { fill: var(--muted); font-weight: 500; }
+.gl .budget-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 6px 0 10px; }
+.gl .budget-row .seg { margin: 0; }
+.gl .seg.tabs { flex-wrap: wrap; max-width: 100%; } .gl .seg.tabs button { white-space: nowrap; flex: 0 1 auto; }

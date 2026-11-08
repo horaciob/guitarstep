@@ -1,0 +1,26 @@
+{
+ "patterns": [
+  {"id": "quarters", "name": "Down on every beat", "time": "4/4", "strum": "D.D.D.D.", "level": 1,
+   "tip": "The steadiest pattern there is. Count 1 2 3 4 and strum on each number."},
+  {"id": "eighths", "name": "Down-up eighths", "time": "4/4", "strum": "DUDUDUDU", "level": 1,
+   "tip": "The hand never stops: down on the numbers, up on the “and”."},
+  {"id": "folk", "name": "Folk", "time": "4/4", "strum": "D.DU.UDU", "level": 2,
+   "tip": "Keep the hand moving on the missing strums (2 “and” … 3): the rhythm stays even."},
+  {"id": "pop", "name": "Pop push", "time": "4/4", "strum": "D.D.UUDU", "level": 2,
+   "tip": "Two down strums, then the ups carry the end of the bar forward."},
+  {"id": "rock", "name": "Rock eighths", "time": "4/4", "strum": "DDDDDDDD", "level": 2,
+   "tip": "All downstrokes, short and even. Mute with the palm for a tighter sound."},
+  {"id": "ballad", "name": "Slow ballad", "time": "4/4", "strum": "D...D.DU", "level": 1,
+   "tip": "One long strum, then a light push at the end of the bar."},
+  {"id": "reggae", "name": "Offbeat chop", "time": "4/4", "strum": ".U.U.U.U", "level": 3,
+   "tip": "Only the “and” of each beat: short upstrokes, then lift the pressure so the chord stops."},
+  {"id": "charleston", "name": "Charleston", "time": "4/4", "strum": "D..D....", "level": 3,
+   "tip": "Beat 1 and the “and” of 2. The space is part of the pattern."},
+  {"id": "waltz", "name": "Waltz", "time": "3/4", "strum": "D.D.D.", "level": 1,
+   "tip": "Three beats per bar: lean a little on the first one."},
+  {"id": "waltz_ups", "name": "Waltz with ups", "time": "3/4", "strum": "D.DUDU", "level": 2,
+   "tip": "Beat 1 alone, then down-up on 2 and 3."},
+  {"id": "six_eight", "name": "Six-eight sway", "time": "6/8", "strum": "D..D..", "level": 2,
+   "tip": "Two big pulses per bar, each split in three. Feel it as 1-2-3 4-5-6."}
+ ]
+}

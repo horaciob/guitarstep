@@ -28,8 +28,12 @@ function stepTitle(s) {
 
 function todayHtml(r) {
   const fmt = m => `${Math.floor(m / 60)}:${String(m % 60).padStart(2, "0")}`;
+  const budgets = r.budgets || [15, 30, 60, 120];
   return `<div class="row-between"><h2>${esc(t("today.title"))}</h2>
       <span class="muted small">${esc(t("today.summary", { done: r.done, total: r.steps.length, minutes: fmt(r.minutes), goal: fmt(r.goal) }))}</span></div>
+    <div class="budget-row"><span class="small muted">${esc(t("today.budget"))}</span>
+      <div class="seg mini" role="group" aria-label="${esc(t("today.budget"))}">${[null, ...budgets].map(b =>
+        `<button data-budget="${b ?? ""}" class="${(r.budget ?? null) === b ? "active" : ""}" aria-pressed="${(r.budget ?? null) === b}">${esc(b ? t("today.budget_n", { n: b }) : t("today.budget_auto"))}</button>`).join("")}</div></div>
     <ol class="today-steps">${r.steps.map(s => `<li class="${s.done ? "done" : ""}">
       <span class="tick" aria-hidden="true">${s.done ? "✓" : ""}</span>
       <span class="what"><b>${esc(stepTitle(s))}</b><small class="muted">${esc(t(`today.why_${s.kind}`))} · ${s.minutes} min</small></span>
@@ -39,6 +43,13 @@ function todayHtml(r) {
 }
 
 function bindToday(el) {
+  $$("[data-budget]", el).forEach(b => b.onclick = async () => {
+    try {
+      const r = await api("/api/today/budget", { json: { minutes: b.dataset.budget ? +b.dataset.budget : null } });
+      $("#todayPlan", el).innerHTML = todayHtml(r);
+      bindToday(el);
+    } catch (e) { toast(e.message); }
+  });
   $$("[data-tick]", el).forEach(b => b.onclick = async () => {
     try {
       const r = await api("/api/today/check", { json: { step: b.dataset.tick, done: b.getAttribute("aria-pressed") !== "true" } });

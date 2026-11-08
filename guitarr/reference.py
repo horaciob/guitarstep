@@ -48,6 +48,7 @@ class RefOptions:
     chart: dict | None = None       # chord chart instead of a file
     notes: list[int] | None = None  # MIDI note sequence (course exercises)
     tab: list[dict] | None = None   # tab steps: string, fret, pitch, glide_from (licks, bends)
+    timed: list[dict] | None = None  # notes with rhythm: {pitch, start, beats} in beats (melodic echo), at `bpm`
 
     @property
     def tx(self) -> dict:
@@ -393,6 +394,18 @@ def load_note_sequence(pitches: list[int], bpm: float = 60) -> Reference:
     return Reference(notes, Grid.from_bpm(bpm, 0.0, 4, len(notes) * beat + 10), name="exercise", path="exercise")
 
 
+def load_timed_sequence(items: list[dict], bpm: float = 80) -> Reference:
+    """Single notes with their own rhythm (start and length in beats), to be played in tempo mode."""
+    beat = 60 / bpm
+    notes = [Note(float(it["start"]) * beat, (float(it["start"]) + float(it["beats"]) * 0.9) * beat, int(it["pitch"]), 0.8)
+             for it in items]
+    if not notes:
+        raise ReferenceError("The exercise has no notes.")
+    assign_tab(notes)
+    end = max(n.end for n in notes)
+    return Reference(notes, Grid.from_bpm(bpm, 0.0, 4, end + 10), name="echo", path="echo")
+
+
 # ---------------------------------------------------------------- listings / main entry point
 def load_tab_sequence(steps: list[dict], bpm: float = 60) -> Reference:
     """Tab steps, one per beat (wait or bend mode). A bend or slide keeps the fret you pick
@@ -429,6 +442,8 @@ def list_tracks(path: Path) -> list[dict]:
 def load_reference(opts: RefOptions, log: Log = print) -> Reference:
     if opts.chart is not None:
         return _slice(load_chart(opts.chart), opts, log)
+    if opts.timed is not None:
+        return load_timed_sequence(opts.timed, opts.bpm or 80)
     if opts.notes is not None:
         return load_note_sequence(opts.notes)
     if opts.tab is not None:

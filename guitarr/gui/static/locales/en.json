@@ -103,7 +103,9 @@
    "take_analysis": "Take analysis: {{score}}%",
    "practice": "Practice: {{name}} {{score}}%",
    "lesson_tested_out": "Lesson tested out: {{title}}",
-   "variation_passed": "In another key: {{title}}"
+   "variation_passed": "In another key: {{title}}",
+   "rhythm": "Rhythm test at {{bpm}} BPM: {{within}}% on time",
+   "ear": "Ear training ({{kind}}): {{score}}%"
   },
   "errors": {
    "generic": "Something went wrong",
@@ -614,7 +616,15 @@
    "eighths_off": "off",
    "eighths_straight": "straight",
    "eighths_light": "light swing",
-   "eighths_hard": "hard swing"
+   "eighths_hard": "hard swing",
+   "rhythm_tab": "Rhythm test",
+   "strums_tab": "Strumming",
+   "ear_tab": "Ear training",
+   "random_tab": "Random box",
+   "over_chord": "Over a chord",
+   "over_none": "—",
+   "over_legend": "Filled = chord tones (1 3 5 7), outlined = the scale's other notes, named as tensions (9, 11, 13).",
+   "over_notes": "Chord tones: {{tones}} · tensions: {{tensions}}"
   },
   "camera": {
    "title": "Camera",
@@ -1115,7 +1125,10 @@
    "again": "Again",
    "tick": "Done?",
    "ticked": "✓ Done",
-   "all_done": "All done for today. See you tomorrow!"
+   "all_done": "All done for today. See you tomorrow!",
+   "budget": "Time today",
+   "budget_auto": "auto",
+   "budget_n": "{{n}} min"
   },
   "reminder": {
    "title": "Daily reminder",
@@ -1356,7 +1369,13 @@
    "turnaround_1": "Which is the I–vi–ii–V in {{key}}?",
    "turnaround_3": "Which is the iii–VI–ii–V in {{key}}?",
    "turnaround_x": "Which is the I–vi–ii–V in {{key}} with tritone substitutes?",
-   "row_note": "{{note}}"
+   "row_note": "{{note}}",
+   "echo_prompt": "Echo the phrase ({{count}} notes)",
+   "echo_was": "it was {{notes}}",
+   "q_7": "dominant 7",
+   "q_maj7": "major 7",
+   "q_m7": "minor 7",
+   "q_m7b5": "half-diminished (m7♭5)"
   },
   "flow": {
    "label": "The steps of this lesson",
@@ -1406,6 +1425,85 @@
    "unsure": "unsure",
    "solid": "solid",
    "ready": "ready"
+  },
+  "metro": {
+   "accents": "Accents per beat",
+   "accents_hint": "Click a beat: accent (>) → normal → silent (×).",
+   "subdivision": "Subdivision",
+   "sub_off": "none",
+   "sub_eighths": "eighths",
+   "sub_light": "eighths, light swing",
+   "sub_hard": "eighths, hard swing",
+   "sub_triplets": "triplets",
+   "sub_sixteenths": "sixteenths",
+   "gap": "Silent bars",
+   "gap_off": "none",
+   "gap_3_1": "3 bars on, 1 off",
+   "gap_1_1": "1 bar on, 1 off",
+   "count_in": "Count-in bar",
+   "accent": "accent",
+   "normal": "normal",
+   "silent": "silent",
+   "beat_n": "Beat {{n}}",
+   "counting": "Count-in: {{n}}…",
+   "silent_bar": "Silent bar: keep the time going",
+   "bar_n": "Bar {{n}}"
+  },
+  "rand": {
+   "intro": "A random key, chord, scale and position for warm-ups. Lock what you want to keep and roll the rest.",
+   "roll": "Roll",
+   "lock": "lock",
+   "locked": "locked",
+   "key": "Key",
+   "chord": "Chord",
+   "scale": "Scale",
+   "position": "Position",
+   "keys_hint": "Play the scale in that position, then arpeggiate the chord in the same place."
+  },
+  "rhythm": {
+   "intro": "Strum the chord once on every beat. The listener measures how early or late each strum is.",
+   "bpm": "BPM",
+   "bars": "Bars",
+   "chord": "Chord",
+   "strum_n": "Strum {{k}} of {{total}}",
+   "result": "{{within}}% within ±30 ms · average {{mean}} ms · spread {{std}} ms",
+   "histo_label": "Timing histogram: {{within}}% of strums within 30 milliseconds",
+   "axis": "Milliseconds early (−) or late (+). The middle bar is right on the beat.",
+   "records": "Your steadiest:",
+   "record": "{{bpm}} BPM: spread {{std}} ms ({{within}}% on time)"
+  },
+  "ear": {
+   "kind_chord_basic": "Major, minor or 7",
+   "kind_chord_quality": "Seventh chords",
+   "kind_interval": "Intervals",
+   "kind_echo": "Melodic echo",
+   "intro_chord_basic": "Hear a chord and name its type. After you answer, you see its shape.",
+   "intro_chord_quality": "Six chord types: major, minor, 7, maj7, m7 and m7♭5. After you answer, you see the shape.",
+   "intro_interval": "Hear two notes and name the distance between them.",
+   "intro_echo": "The app plays a short phrase it makes up on the spot. Play it back on the metronome: notes and rhythm count.",
+   "result": "{{score}}% · your best: {{best}}%",
+   "echo_new": "New phrase",
+   "echo_listen": "Listen…",
+   "echo_result": "{{score}}%"
+  },
+  "strum": {
+   "intro": "Named patterns for 4/4, 3/4 and 6/8. Hear each one, practice it over G and C, or use it in a chart.",
+   "hear": "Hear it",
+   "use": "Use in a chart",
+   "insert": "Strumming pattern",
+   "result": "{{score}}% on the chord changes"
+  },
+  "stats": {
+   "consistency": "Consistency (12 months)",
+   "totals": "{{days}} days · {{hours}} h",
+   "consistency_label": "Practice on {{days}} of the last 365 days",
+   "none": "none",
+   "day_minutes_one": "{{date}}: {{count}} minute",
+   "day_minutes_other": "{{date}}: {{count}} minutes",
+   "tempo": "Tempo over time",
+   "song": "Song or chart",
+   "no_tempo": "Practice a song or chart with the listener and your tempo shows up here.",
+   "tempo_label": "{{name}}: from {{from}} to {{to}}"
   }
  },
  "content": {}

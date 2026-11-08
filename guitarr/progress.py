@@ -26,6 +26,8 @@ EVENT_TEXT = {
     "chord_mastered": "Chord {chord} mastered ({via})",
     "drill": "Chord-change minute {chords}: {changes} changes",
     "lesson_tested_out": "Lesson tested out: {lesson}",
+    "rhythm": "Rhythm test at {bpm} BPM: {within}% on time",
+    "ear": "Ear training ({kind}): {score:.0f}%",
     "variation_passed": "Variation passed: {lesson}/{exercise}",
 }
 
@@ -38,7 +40,54 @@ def _empty() -> dict:
                 hints={},         # exercise → hints you used in your last attempt
                 sections={},      # chart → {section: {state, bpm}}
                 seen=[],          # lessons you've opened (the "discover" step)
-                tested_out=[])    # lessons you skipped by passing their check
+                tested_out=[],    # lessons you skipped by passing their check
+                rhythm={},        # rhythm test → best (steadiest) result per tempo
+                ear={},           # ear trainer → best score per kind
+                budget=None)      # minutes you chose for today's plan (15, 30, 60, 120)
+
+
+# rhythm test: how early (−) or late (+) each strum was, in bins with the count in each
+RHYTHM_EDGES = (-100, -60, -30, -10, 10, 30, 60, 100)
+
+
+def rhythm_stats(ms: list[int]) -> dict:
+    """{n, mean, std, within (% inside ±30 ms), bins: [{lo, hi, count}]} from per-strum timing errors."""
+    if not ms:
+        return dict(n=0, mean=None, std=None, within=None, bins=[])
+    edges = [None, *RHYTHM_EDGES, None]
+    bins = [dict(lo=a, hi=b, count=sum(1 for x in ms if (a is None or x >= a) and (b is None or x < b)))
+            for a, b in zip(edges, edges[1:])]
+    n = len(ms)
+    mean = sum(ms) / n
+    std = (sum((x - mean) ** 2 for x in ms) / n) ** 0.5
+    return dict(n=n, mean=round(mean), std=round(std), within=round(100 * sum(abs(x) <= 30 for x in ms) / n), bins=bins)
+
+
+def ear_result(kind: str, score: float) -> dict:
+    """An ear-training round from the tools (not tied to a lesson): best score per kind, a little XP."""
+    with _lock:
+        d = _read()
+        prev = d["ear"].get(kind, {}).get("best")
+        d["ear"][kind] = dict(best=max(score, prev or 0), last=score, day=date.today().isoformat())
+        out = dict(score=score, best=d["ear"][kind]["best"], record=prev is not None and score > prev, xp=0)
+        if score >= 80:
+            _award(d, 5, "ear", kind=kind, score=score)
+            out["xp"] = 5
+        _write(d)
+        return out
+
+
+BUDGETS = (15, 30, 60, 120)
+
+
+def set_budget(minutes: int | None) -> int | None:
+    if minutes is not None and minutes not in BUDGETS:
+        raise ValueError("bad_budget")
+    with _lock:
+        d = _read()
+        d["budget"] = minutes
+        _write(d)
+        return minutes
 
 
 # ---------------------------------------------------------------- spaced review
@@ -326,6 +375,25 @@ def on_session(ctx: dict | None, report: dict) -> dict:
                                         int(ctx.get("guidance", 0)), int(ctx.get("hints", 0)), bool(ctx.get("variant"))))
             if ctx.get("testout") and out.get("passed"):
                 out.update(_test_out(d, ctx["lesson"]))
+        elif kind == "rhythm":
+            st = rhythm_stats(s.get("timing_ms") or [])
+            out["rhythm"] = st
+            if st["n"]:
+                key = str(int(ctx.get("bpm", 0)))
+                best = d["rhythm"].get(key)
+                if best is None or st["std"] < best["std"]:
+                    d["rhythm"][key] = dict(std=st["std"], within=st["within"], day=date.today().isoformat())
+                    out["record"] = best is not None
+                _award(d, 5, "rhythm", bpm=ctx.get("bpm"), within=st["within"])
+                out["xp"] = 5
+        elif kind == "echo":
+            if score is not None:
+                prev = d["ear"].get("echo", {}).get("best")
+                d["ear"]["echo"] = dict(best=max(score, prev or 0), last=score, day=date.today().isoformat())
+                out.update(passed=score >= 75, score=score, need=75)
+                if score >= 75:
+                    _award(d, 5, "ear", kind="echo", score=score)
+                    out["xp"] = 5
         elif kind == "chord":
             ok = s.get("judged", 0) > 0 and (s.get("first_try", 0) > 0 or s.get("fixed", 0) > 0)
             out["passed"] = ok

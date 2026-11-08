@@ -128,7 +128,39 @@ def build(today: date | None = None) -> dict:
     add(f"drill:{pk}", "drill", DRILL_MIN, f"#/tools?tab=drill&pair={pk}", d["drill_days"].get(pk) == t,
         "technique", chords=pair)
 
+    budget = d.get("budget")
+    if budget:
+        steps = fit_budget(steps, budget)
     goal = plan.get()["today"]["goal"]
     total = sum(s["minutes"] for s in steps)
-    return dict(date=t, goal=goal, minutes=total, done=sum(s["done"] for s in steps), steps=steps,
-                generated=datetime.now().isoformat(timespec="seconds"))
+    return dict(date=t, goal=goal, minutes=total, done=sum(s["done"] for s in steps), steps=steps, budget=budget,
+                budgets=list(progress.BUDGETS), generated=datetime.now().isoformat(timespec="seconds"))
+
+
+# what grows when there's time left over, and how much of the extra each one takes
+GROW = {"lesson": 0.4, "chart": 0.35, "bars": 0.15, "drill": 0.1}
+SHRINKABLE = {"lesson", "chart", "bars"}
+
+
+def fit_budget(steps: list[dict], budget: int) -> list[dict]:
+    """Fits the plan in `budget` minutes. Steps keep their order of priority (tune up, reviews, the lesson,
+    weak bars, a chart, the chord-change minute): what doesn't fit is left out (or shortened, if at least 3
+    minutes are left), and time left over goes to the lesson, the chart, the bars and the drill."""
+    out, used = [], 0
+    for s in steps:
+        left = budget - used
+        if s["minutes"] <= left:
+            out.append(dict(s))
+            used += s["minutes"]
+        elif s["kind"] in SHRINKABLE and left >= 3:
+            out.append(dict(s, minutes=left))
+            used += left
+    extra = budget - used
+    growers = [s for s in out if s["kind"] in GROW]
+    if extra > 0 and growers:
+        weight = sum(GROW[s["kind"]] for s in growers)
+        for s in growers:
+            s["minutes"] += int(extra * GROW[s["kind"]] / weight)
+        rest = budget - sum(s["minutes"] for s in out)
+        growers[0]["minutes"] += rest                  # rounding leftovers go to the first one
+    return out

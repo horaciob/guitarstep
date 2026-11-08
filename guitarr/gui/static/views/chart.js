@@ -48,18 +48,30 @@ async function renderSections(box, id) {
   });
 }
 
-export async function mount(el, { segs }) {
+/** Sets (or adds) a header line in the chart text: `strum: …`, `time: …`. */
+function setHeader(text, key, value) {
+  const re = new RegExp(`^${key}\\s*:.*$`, "m");
+  return re.test(text) ? text.replace(re, `${key}: ${value}`) : `${key}: ${value}\n${text}`;
+}
+
+export async function mount(el, { segs, params = {} }) {
   const id = segs[0] && segs[0] !== "new" ? decodeURIComponent(segs[0]) : null;
   let text = TEMPLATE, mine = false;
   if (id) {
     const c = await api(`/api/charts/${encodeURIComponent(id)}`);
     text = c.text; mine = c.mine;
+  } else if (params.strum) {                         // "use in a chart" from the strumming library
+    text = setHeader(setHeader(text, "strum", params.strum), "time", params.time || "4/4");
   }
+  let patterns = [];
+  try { patterns = (await api("/api/strums")).patterns; } catch { /* the editor works without it */ }
   el.innerHTML = `
     <div class="gl-head"><h1>${esc(t(id ? (mine ? "chart.edit_title" : "chart.duplicate_title") : "chart.new_title"))}</h1>
       <p class="muted">${t("chart.help_html")}</p></div>
     <div class="editor">
       <div class="panel">
+        ${patterns.length ? `<label class="field-inline small strum-pick">${esc(t("strum.insert"))}
+          <select id="strumPick"><option value="">—</option>${patterns.map(p => `<option value="${esc(p.id)}">${esc(tc(`strums.${p.id}.name`, p.name))} · ${esc(p.time)}</option>`).join("")}</select></label>` : ""}
         <textarea id="txt" spellcheck="false" rows="18" aria-label="${esc(t("chart.text_label"))}">${esc(text)}</textarea>
         <div class="row" style="margin-top:12px">
           <button class="btn primary" id="save">${esc(t("common.save"))}</button>
@@ -75,6 +87,14 @@ export async function mount(el, { segs }) {
   if (id) renderSections($("#secProgress", el), id);
   const txt = $("#txt", el), pv = $("#preview", el);
   let timer;
+  const pickS = $("#strumPick", el);
+  if (pickS) pickS.onchange = () => {
+    const p = patterns.find(x => x.id === pickS.value);
+    if (!p) return;
+    txt.value = setHeader(setHeader(txt.value, "strum", p.strum), "time", p.time);
+    pickS.value = "";
+    validate();
+  };
   const validate = async () => {
     const r = await api("/api/charts/validate", { json: { text: txt.value } });
     if (!r.chart) { pv.innerHTML = `<p class="err">⚠️ ${esc(r.error)}</p>`; return r; }

@@ -34,13 +34,13 @@ function play(item) {
  * onProgress(done, total) after each answer; resolves with the server's {summary, award} when finished,
  * or null if stopped. Returns { done, stop }.
  */
-export function runAnswers(box, { lesson, exercise, onProgress, drawn = null, finishUrl = "/api/exercise/finish" }) {
+export function runAnswers(box, { lesson, exercise, onProgress, drawn = null, finishUrl = "/api/exercise/finish", onReveal = null }) {
   let stopped = false, finishNow = null;
   const done = (async () => {
     const d = drawn || await api("/api/exercise/draw", { json: { lesson, exercise } });
     const n = d.items.length;
     for (let i = 0; i < n && !stopped; i++) {
-      await ask(box, d.token, d.items[i], i, n, () => stopped, f => { finishNow = f; });
+      await ask(box, d.token, d.items[i], i, n, () => stopped, f => { finishNow = f; }, onReveal);
       onProgress && onProgress(i + 1, n);
     }
     if (stopped) return null;
@@ -49,7 +49,7 @@ export function runAnswers(box, { lesson, exercise, onProgress, drawn = null, fi
   return { done, stop() { stopped = true; finishNow && finishNow(); } };
 }
 
-function ask(box, token, item, i, n, isStopped, setCancel) {
+function ask(box, token, item, i, n, isStopped, setCancel, onReveal) {
   return new Promise(resolve => {
     setCancel(resolve);
     const head = `<p class="q-count muted small">${esc(t("quiz.question_n", { n: i + 1, total: n }))}</p>
@@ -105,6 +105,7 @@ function ask(box, token, item, i, n, isStopped, setCancel) {
         });
         const right = box.querySelector(`.q-choice[data-id="${CSS.escape(r.answer)}"]`);
         feedback(box, r.correct, r.correct ? t("quiz.right") : t("quiz.wrong_was", { answer: right ? right.textContent.replace(/^\d\s*/, "").trim() : "" }));
+        if (r.reveal && onReveal) box.querySelector(".q-feedback").insertAdjacentHTML("afterend", `<div class="q-reveal">${onReveal(r.reveal)}</div>`);
         showNext(box, next);
       };
       box.querySelectorAll(".q-choice").forEach(b => b.onclick = () => choose(b));

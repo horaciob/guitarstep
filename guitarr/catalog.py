@@ -592,6 +592,9 @@ def exercise_setup(lid: str, eid: str, variant: bool = False):
     if kind in ("find_note", "play_interval", "tone_row"):
         from . import quiz
         return RefOptions(notes=quiz.drawn_notes(lid, ex)), "wait", 1.0, ex.get("min", 80)
+    if kind == "echo":                                  # pitches and rhythm: played on the metronome
+        from . import quiz
+        return RefOptions(timed=quiz.drawn_timed(lid, ex), bpm=float(ex.get("bpm", 80))), "tempo", 1.0, ex.get("min", 75)
     raise CatalogError(f"Unknown exercise kind: {kind}")
 
 

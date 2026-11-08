@@ -7,7 +7,7 @@ import { neck } from "../lib/fretboard.js";
 import { linkTerms, loadGlossary, metersHtml, openTerms, stepperHtml } from "../lib/flow.js";
 import { chartGuide, playChart } from "./charts.js";
 
-const ANSWER_KINDS = ["quiz", "pick"], DRAWN_KINDS = ["find_note", "play_interval", "tone_row"];
+const ANSWER_KINDS = ["quiz", "pick"], DRAWN_KINDS = ["find_note", "play_interval", "tone_row", "echo"];
 const hearable = ex => !ANSWER_KINDS.includes(ex.kind) && !DRAWN_KINDS.includes(ex.kind);
 const shapeChord = s => ({ id: s.name, frets: s.frets });
 
@@ -530,8 +530,20 @@ async function run(el, segs, ls, ex, chordData, exTitle) {
   if (ANSWER_KINDS.includes(ex.kind)) return runAnswer(el, segs, ls, ex, chordData, exTitle);
   const g = guides.get(ex.id), dlg = $(".ex-focus", el), views = focus.views, now = focus.now;
   if (DRAWN_KINDS.includes(ex.kind)) {          // a fresh set of targets every time
-    try { now.setItems((await api("/api/exercise/draw", { json: { lesson: ls.id, exercise: ex.id } })).items); }
+    let d;
+    try { d = await api("/api/exercise/draw", { json: { lesson: ls.id, exercise: ex.id } }); }
     catch (e) { return toast(e.message); }
+    now.setItems(d.items);
+    if (d.phrase) {                               // melodic echo: hear the phrase first, then play it back
+      const goBtn = $("[data-f=go]", dlg), m = $(".ex-msg", dlg);
+      goBtn.disabled = true;
+      m.className = "ex-msg muted";
+      m.textContent = t("ear.echo_listen");
+      d.phrase.forEach(n => pluck(n.pitch, n.start * 60 / d.bpm, 0.4));
+      const len = d.phrase.reduce((a, n) => Math.max(a, n.start + n.beats), 0) * 60 / d.bpm;
+      await new Promise(r => setTimeout(r, len * 1000 + 600));
+      goBtn.disabled = false;
+    }
   }
   let pos = null, at = 0;
   const rate = g ? g.chart.bpm * ex.speed / 60 : 0;

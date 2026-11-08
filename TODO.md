@@ -143,7 +143,7 @@ Sizes: **S** ≈ an afternoon, **M** ≈ a few days, **L** ≈ a week or more.
 60. **Hints with levels** (S). In practice, a hint first shows the string, then the fret, then the note.
     How many hints you used is recorded with the result.
 
-## E. Practice tools
+## E. Practice tools — ✅ done
 
 61. **Random practice box** (S). Random key, chord, scale or position, with a "lock" on any field. For
     warm-ups and drills.

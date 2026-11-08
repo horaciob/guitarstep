@@ -1,6 +1,6 @@
 // Practice plan: daily minutes per category, time counted while you play, a timer for the
 // rest, the week at a glance and a streak of days that met their goal.
-import { t } from "../lib/i18n.js";
+import { lang, t } from "../lib/i18n.js";
 import { $, $$, api, esc, toast } from "../lib/ui.js";
 import { icon } from "../lib/icons.js";
 import { catName, fmtClock, fmtDay, fmtHM, ring, weekStrip } from "../lib/plan.js";
@@ -10,10 +10,71 @@ let root = null, data = null, fetchedAt = 0, tick = 0, editing = null;
 export async function mount(el) {
   root = el;
   editing = null;
-  el.innerHTML = `<div class="gl-head"><h1>${esc(t("plan.title"))}</h1><p class="muted">${esc(t("plan.subtitle"))}</p></div><div id="planBody"></div>`;
+  el.innerHTML = `<div class="gl-head"><h1>${esc(t("plan.title"))}</h1><p class="muted">${esc(t("plan.subtitle"))}</p></div><div id="planBody"></div>
+    <div id="planStats"></div>`;
   await load();
+  renderStats($("#planStats", el));
   tick = setInterval(liveTick, 1000);
   window.addEventListener("guitarr:plan", onExternal);
+}
+
+// ------------------------------------------------------------------ consistency map and tempo over time
+const LEVELS = [0, 1, 15, 30, 60];            // minutes: none, a little, 15+, 30+, 60+ (written in the legend)
+const levelOf = m => LEVELS.findLastIndex(x => m >= x && (x > 0 || m === 0));
+
+async function renderStats(box) {
+  let s;
+  try { s = await api("/api/stats"); } catch { return; }
+  if (!box.isConnected) return;
+  const days = s.days, first = new Date(days[0].date + "T00:00:00");
+  const offset = (first.getDay() + 6) % 7;                 // weeks start on Monday
+  const cell = 13, gap = 3, weeks = Math.ceil((days.length + offset) / 7);
+  const fmt = d => new Date(d + "T00:00:00").toLocaleDateString(lang(), { day: "numeric", month: "short", year: "numeric" });
+  const cells = days.map((d, i) => {
+    const k = i + offset, x = Math.floor(k / 7) * (cell + gap), y = (k % 7) * (cell + gap);
+    return `<rect class="hm l${levelOf(d.minutes)}" x="${x}" y="${y}" width="${cell}" height="${cell}" rx="2"><title>${esc(t("stats.day_minutes", { date: fmt(d.date), count: d.minutes }))}</title></rect>`;
+  }).join("");
+  box.innerHTML = `
+    <section class="panel stats-panel" aria-labelledby="hmTitle">
+      <div class="sec-progress-head"><h2 id="hmTitle">${esc(t("stats.consistency"))}</h2>
+        <span class="muted small">${esc(t("stats.totals", { days: s.totals.active_days, hours: (s.totals.minutes / 60).toFixed(1) }))}</span></div>
+      <div class="hm-wrap"><svg class="heatmap" viewBox="0 0 ${weeks * (cell + gap)} ${7 * (cell + gap)}" role="img" aria-label="${esc(t("stats.consistency_label", { days: s.totals.active_days }))}">${cells}</svg></div>
+      <p class="hm-legend small muted">${LEVELS.map((m, i) => `<span><i class="hm l${i}"></i> ${esc(i === 0 ? t("stats.none") : i === LEVELS.length - 1 ? `${m}+ min` : `${m}–${LEVELS[i + 1] - 1} min`)}</span>`).join("")}</p>
+    </section>
+    <section class="panel stats-panel" aria-labelledby="tcTitle">
+      <h2 id="tcTitle">${esc(t("stats.tempo"))}</h2>
+      ${s.tempo.length ? `<label class="field-inline small">${esc(t("stats.song"))}
+        <select id="tcSong">${s.tempo.map((x, i) => `<option value="${i}">${esc(x.name)}</option>`).join("")}</select></label>
+        <div id="tcChart"></div>` : `<p class="muted">${esc(t("stats.no_tempo"))}</p>`}
+    </section>`;
+  const sel = $("#tcSong", box);
+  if (sel) {
+    const draw = () => { $("#tcChart", box).innerHTML = tempoChart(s.tempo[+sel.value]); };
+    sel.onchange = draw;
+    draw();
+  }
+}
+
+/** Speed (or BPM, when the song's tempo is known) per session, as a line with every point labeled. */
+function tempoChart(song) {
+  const pts = song.points, useBpm = pts.every(p => p.bpm);
+  const val = p => useBpm ? p.bpm : p.speed;
+  const W = 640, H = 200, pad = 34;
+  const lo = Math.min(...pts.map(val)), hi = Math.max(...pts.map(val));
+  const span = Math.max(1, hi - lo);
+  const x = i => pts.length === 1 ? W / 2 : pad + (i * (W - 2 * pad)) / (pts.length - 1);
+  const y = v => H - pad - ((v - lo) / span) * (H - 2 * pad);
+  const line = pts.map((p, i) => `${i ? "L" : "M"}${x(i).toFixed(1)} ${y(val(p)).toFixed(1)}`).join(" ");
+  const unit = useBpm ? " BPM" : "%";
+  return `<svg class="tempo-chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(t("stats.tempo_label", { name: song.name, from: val(pts[0]) + unit, to: val(pts[pts.length - 1]) + unit }))}">
+    <line class="axis" x1="${pad}" y1="${H - pad}" x2="${W - pad}" y2="${H - pad}"/>
+    <path class="tline" d="${line}"/>
+    ${pts.map((p, i) => `<circle class="tdot" cx="${x(i)}" cy="${y(val(p))}" r="4"><title>${esc(`${p.date}: ${val(p)}${unit}${p.score != null ? ` · ${Math.round(p.score)}%` : ""}`)}</title></circle>`).join("")}
+    <text x="${x(0)}" y="${y(val(pts[0])) - 10}" text-anchor="middle" class="tlabel">${val(pts[0])}${unit}</text>
+    ${pts.length > 1 ? `<text x="${x(pts.length - 1)}" y="${y(val(pts[pts.length - 1])) - 10}" text-anchor="middle" class="tlabel">${val(pts[pts.length - 1])}${unit}</text>` : ""}
+    <text x="${pad}" y="${H - 10}" class="tlabel muted">${esc(pts[0].date)}</text>
+    <text x="${W - pad}" y="${H - 10}" text-anchor="end" class="tlabel muted">${esc(pts[pts.length - 1].date)}</text>
+  </svg>`;
 }
 
 export function unmount() {

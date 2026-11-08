@@ -1,20 +1,20 @@
-// Tools: metronome (tap tempo), chord-change minute (counted by ear), fretboard explorer and chord finder.
+// Tools: metronome, rhythm test, strumming library, chord-change minute, ear training, random practice box,
+// fretboard explorer and chord finder (the practice tools live in practice_tools.js).
 import { msgIsError, msgText, t, tc } from "../lib/i18n.js";
-import { $, $$, api, audioCtx, chordSvg, click, esc, instrument, NOTE_NAMES, strum, toast } from "../lib/ui.js";
+import { $, $$, api, chordSvg, esc, instrument, NOTE_NAMES, strum, toast } from "../lib/ui.js";
 import { neck } from "../lib/fretboard.js";
 import { listen } from "../lib/listen.js";
+import { earTrainer, metronome, randomBox, rhythmTest, stopAll, strumLibrary } from "./practice_tools.js";
 
-let metro = null, drill = null, countdownTimer = null;
+let drill = null, countdownTimer = null;
 
 export async function mount(el, { params }) {
   const tab = params.tab || "metronome";
   el.innerHTML = `
     <div class="gl-head"><h1>${esc(t("tools.title"))}</h1></div>
     <div class="seg tabs" id="tabs">
-      <button data-tab="metronome">${esc(t("tools.metronome"))}</button>
-      <button data-tab="drill">${esc(t("tools.drill"))}</button>
-      <button data-tab="fretboard">${esc(t("tools.fretboard"))}</button>
-      <button data-tab="finder">${esc(t("tools.finder"))}</button>
+      ${["metronome", "rhythm", "strums", "drill", "ear", "random", "fretboard", "finder"].map(k =>
+        `<button data-tab="${k}">${esc(t(`tools.${k === "rhythm" ? "rhythm_tab" : k === "strums" ? "strums_tab" : k === "ear" ? "ear_tab" : k === "random" ? "random_tab" : k}`))}</button>`).join("")}
     </div>
     <div id="tool"></div>`;
   $$("#tabs button", el).forEach(b => {
@@ -25,84 +25,18 @@ export async function mount(el, { params }) {
   if (tab === "drill") await chordChangeMinute(box, (params.pair || "").split("-"));
   else if (tab === "fretboard") await fretboard(box);
   else if (tab === "finder") finder(box, params);
+  else if (tab === "random") await randomBox(box);
+  else if (tab === "rhythm") await rhythmTest(box);
+  else if (tab === "ear") await earTrainer(box, params);
+  else if (tab === "strums") await strumLibrary(box);
   else metronome(box);
 }
 
 export function unmount() {
-  if (metro) metro.stop();
-  metro = null;
+  stopAll();
   if (drill) drill.stop();
   drill = null;
   clearInterval(countdownTimer);
-}
-
-// ------------------------------------------------------------------ metronome
-function metronome(box) {
-  let bpm = 90, beats = 4, taps = [];
-  box.innerHTML = `
-    <div class="panel metro">
-      <div class="metro-bpm"><button class="btn" data-d="-5">−5</button><button class="btn" data-d="-1">−1</button>
-        <div><b id="bpm">${bpm}</b><small class="muted">bpm</small></div>
-        <button class="btn" data-d="1">+1</button><button class="btn" data-d="5">+5</button></div>
-      <input type="range" id="bpmR" min="40" max="240" value="${bpm}" aria-label="${esc(t("tools.tempo"))}">
-      <div class="metro-dots" id="dots"></div>
-      <div class="row center">
-        <div class="seg" id="sig">${[2, 3, 4, 6].map(n => `<button data-n="${n}">${n}/${n === 6 ? 8 : 4}</button>`).join("")}</div>
-        <label class="field-inline small">${esc(t("tools.eighths"))}
-          <select id="eighths">${["off", "straight", "light", "hard"].map(k => `<option value="${k}">${esc(t(`tools.eighths_${k}`))}</option>`).join("")}</select></label>
-        <button class="btn" id="tap">${esc(t("tools.tap"))}</button>
-        <button class="btn primary" id="play">${esc(t("tools.start"))}</button>
-      </div>
-      <p class="muted small center">${esc(t("tools.tap_hint"))}</p>
-    </div>`;
-  const setBpm = v => { bpm = Math.max(40, Math.min(240, Math.round(v))); $("#bpm", box).textContent = bpm; $("#bpmR", box).value = bpm; };
-  const drawDots = (on = -1) => { $("#dots", box).innerHTML = Array.from({ length: beats }, (_, i) => `<i class="${i === on ? "on" : ""}${i === 0 ? " first" : ""}"></i>`).join(""); };
-  const setSig = n => { beats = n; $$("#sig button", box).forEach(b => b.classList.toggle("active", +b.dataset.n === n)); drawDots(); };
-  setSig(4);
-  $$("[data-d]", box).forEach(b => b.onclick = () => setBpm(bpm + +b.dataset.d));
-  $("#bpmR", box).oninput = e => setBpm(+e.target.value);
-  $$("#sig button", box).forEach(b => b.onclick = () => setSig(+b.dataset.n));
-  const tap = () => {
-    const now = performance.now();
-    taps = taps.filter(x => now - x < 3000).concat(now);
-    if (taps.length >= 3) {
-      const d = taps.slice(1).map((x, i) => x - taps[i]);
-      setBpm(60000 / (d.reduce((a, b) => a + b) / d.length));
-    }
-  };
-  $("#tap", box).onclick = tap;
-  const onKey = e => { if (e.code === "Space" && document.body.contains(box)) { e.preventDefault(); tap(); } };
-  document.addEventListener("keydown", onKey);
-
-  // lookahead scheduler (the Web Audio clock is precise; setInterval isn't)
-  metro = {
-    running: false, next: 0, n: 0, timer: null,
-    start() {
-      const ac = audioCtx();
-      this.running = true; this.next = ac.currentTime + 0.1; this.n = 0;
-      this.timer = setInterval(() => {
-        while (this.next < ac.currentTime + 0.12) {
-          const beat = this.n % beats, len = 60 / bpm * (beats === 6 ? 0.5 : 1);
-          click(this.next, beat === 0);
-          // the offbeat eighth, softer: halfway (straight) or later in the beat (swing)
-          const off = { straight: 0.5, light: 0.6, hard: 0.67 }[$("#eighths", box).value];
-          if (off && beats !== 6) click(this.next + len * off, false, 0.45);
-          setTimeout(() => drawDots(beat), Math.max(0, (this.next - ac.currentTime) * 1000));
-          this.next += len;
-          this.n++;
-        }
-      }, 25);
-      $("#play", box).textContent = t("tools.stop");
-    },
-    stop() {
-      clearInterval(this.timer); this.running = false; drawDots();
-      document.removeEventListener("keydown", onKey);
-      const p = $("#play", box); if (p) p.textContent = t("tools.start");
-    },
-  };
-  $("#play", box).onclick = () => {
-    if (metro.running) { metro.stop(); document.addEventListener("keydown", onKey); } else metro.start();
-  };
 }
 
 // ------------------------------------------------------------------ chord-change minute
@@ -176,6 +110,9 @@ const WINDOWS = [[0, 15], [0, 4], [2, 5], [4, 8], [7, 10], [9, 13], [12, 15]];
 const SUFFIX = { maj: "", min: "m", "7": "7", maj7: "maj7", m7: "m7", m7b5: "m7b5", dim7: "dim7", "6": "6", m6: "m6",
   sus2: "sus2", sus4: "sus4", "9": "9", maj9: "maj9", m9: "m9", "13": "13", "7b9": "7b9", "7#9": "7#9" };
 
+// a scale note that isn't in the chord, named by its distance from the chord's root
+const TENSION = { 0: "1", 1: "b9", 2: "9", 3: "#9", 4: "3", 5: "11", 6: "#11", 7: "5", 8: "b13", 9: "13", 10: "b7", 11: "7" };
+
 async function fretboard(box) {
   const { scales } = await api("/api/theory/scale?key=C&name=major");
   box.innerHTML = `
@@ -191,7 +128,10 @@ async function fretboard(box) {
           <option value="note">${esc(t("tools.labels_notes"))}</option><option value="degree">${esc(t("tools.labels_degrees"))}</option><option value="none">${esc(t("tools.labels_none"))}</option></select></label>
         <label class="field"><span>${esc(t("tools.window"))}</span><select id="window">${WINDOWS.map(([lo, hi], i) =>
           `<option value="${i}">${esc(i ? t("tools.window_n", { lo, hi }) : t("tools.window_all"))}</option>`).join("")}</select></label>
+        <label class="field"><span>${esc(t("tools.over_chord"))}</span><select id="over">
+          <option value="">${esc(t("tools.over_none"))}</option>${CHORD_TONES.map(q => `<option value="${q}">${esc(t("tools.chord_of", { q: SUFFIX[q] || t("quiz.q_maj") }))}</option>`).join("")}</select></label>
       </div>
+      <p class="muted small" id="fbLegend" hidden>${esc(t("tools.over_legend"))}</p>
       <div id="fbNeck"></div>
       <p class="muted small" id="fbNotes"></p>
       <p class="muted small">${esc(t("tools.fretboard_hint"))}</p>
@@ -205,20 +145,36 @@ async function fretboard(box) {
       else if (what.startsWith("chord:")) tones = (await api(`/api/theory/chord?symbol=${encodeURIComponent(key + SUFFIX[what.slice(6)])}`)).tones;
       else tones = (await api(`/api/theory/scale?key=${encodeURIComponent(key)}&name=${what}`)).notes;
     } catch (e) { toast(e.message); return; }
+    // over a chord: chord tones are filled and labeled as chord degrees; the scale's other notes are tensions
+    const over = $("#over", box).value;
+    let chordTones = null;
+    if (over) {
+      try { chordTones = (await api(`/api/theory/chord?symbol=${encodeURIComponent(key + SUFFIX[over])}`)).tones; }
+      catch (e) { toast(e.message); return; }
+    }
+    $("#fbLegend", box).hidden = !chordTones;
     const rootPc = tones[0].pc, byPc = new Map(tones.map(x => [x.pc, x]));
+    const chordPc = chordTones && new Map(chordTones.map(x => [x.pc, x]));
+    const tension = pc => TENSION[((pc - KEY_PC[key]) % 12 + 12) % 12];
     const marks = [];
     instrument.strings.forEach((open, i) => {
       for (let f = lo; f <= hi; f++) {
-        const p = open + f, tn = byPc.get(p % 12);
-        if (!tn) continue;
-        const text = labels === "none" ? "" : labels === "degree" ? tn.degree : tn.note || NOTE_NAMES[p % 12];
-        marks.push({ string: i + 1, fret: f, text, kind: p % 12 === rootPc ? "root" : "tone" });
+        const p = open + f, pc = p % 12, tn = byPc.get(pc);
+        if (!tn && !(chordPc && chordPc.get(pc))) continue;
+        const ct = chordPc && chordPc.get(pc);
+        const deg = chordPc ? (ct ? ct.degree : tension(pc)) : tn.degree;
+        const text = labels === "none" ? "" : labels === "degree" ? deg : (ct || tn).note || NOTE_NAMES[pc];
+        const kind = chordPc ? (ct ? (ct.degree === "1" ? "root" : "tone") : "mark") : pc === rootPc ? "root" : "tone";
+        marks.push({ string: i + 1, fret: f, text, kind });
       }
     });
     neck($("#fbNeck", box), { lo, hi, marks, label: t("tools.fretboard") });
-    $("#fbNotes", box).textContent = what === "all" ? "" : tones.map(x => `${x.note} (${x.degree})`).join(" · ");
+    $("#fbNotes", box).textContent = what === "all" ? "" : chordPc
+      ? t("tools.over_notes", { tones: chordTones.map(x => `${x.note} (${x.degree})`).join(" "),
+          tensions: tones.filter(x => !chordPc.has(x.pc)).map(x => `${x.note} (${tension(x.pc)})`).join(" ") || "—" })
+      : tones.map(x => `${x.note} (${x.degree})`).join(" · ");
   };
-  ["#root", "#scale", "#labels", "#window"].forEach(q => $(q, box).onchange = draw);
+  ["#root", "#scale", "#labels", "#window", "#over"].forEach(q => $(q, box).onchange = draw);
   draw();
 }
 

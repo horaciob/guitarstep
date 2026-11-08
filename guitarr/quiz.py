@@ -139,8 +139,14 @@ def q_hear_quality(rng, ex):
     if ex.get("as_scale"):
         name = "major" if q == "maj" else "natural_minor"
         pitches = [root + th.INTERVALS[iv][1] for iv in th.SCALES[name]] + [root + 12]
-    ch, ans = _choices(rng, q, kinds, n=len(kinds), label=lambda x: L("quality", q=x))
-    return _q(L("hear_scale" if ex.get("as_scale") else "hear_quality"), ch, ans, play=pitches, melodic=bool(ex.get("as_scale")))
+    ch, ans = _choices(rng, q, kinds, n=min(len(kinds), 6), label=lambda x: L("quality", q=x))
+    extra = {}
+    if not ex.get("as_scale"):                          # after you answer, the shape of what you heard
+        sym = th.chord_symbol(th.plain_name(root), q)
+        kind = "triad" if len(th.CHORDS[q][1]) == 3 else "drop2"
+        v = min(th.voicings(sym, kind), key=lambda v: (abs(v["position"] - 4), v["position"]))
+        extra["reveal"] = dict(name=sym, frets=v["frets"])
+    return _q(L("hear_scale" if ex.get("as_scale") else "hear_quality"), ch, ans, play=pitches, melodic=bool(ex.get("as_scale")), **extra)
 
 
 def q_mode_color(rng, ex):
@@ -362,6 +368,36 @@ def _check_pick(item: dict, answer) -> bool:
     return pcs == set(item["want"])                      # every chord tone at least once, nothing else
 
 
+# ---------------------------------------------------------------- melodic echo
+ECHO_RHYTHMS = [[1, 1, 2], [1, 0.5, 0.5, 2], [0.5, 0.5, 1, 2], [1, 1, 1, 1], [0.5, 0.5, 0.5, 0.5, 2], [1, 0.5, 0.5, 1, 1],
+                [1.5, 0.5, 2], [0.5, 0.5, 1, 1, 1]]
+
+
+def echo_phrase(rng, ex) -> dict:
+    """A short phrase made up on the spot: a few notes of a scale in a fret window, stepping mostly by scale
+    degree, with one of a handful of simple rhythms. It always ends on the root."""
+    key, name = ex.get("key", "A"), ex.get("scale", "minor_pentatonic")
+    lo, hi = ex.get("frets", [5, 8])
+    pcs = {s["pc"] for s in th.scale(key, name)}
+    ok = sorted(p for p in th._playable(lo, hi) if p % 12 in pcs)
+    pool = [r for r in ECHO_RHYTHMS if len(r) <= int(ex.get("max_notes", 5))] or ECHO_RHYTHMS[:1]
+    rhythm = rng.choice(pool)
+    roots = [i for i, p in enumerate(ok) if p % 12 == th.pc(key)]
+    i = rng.choice(roots)
+    path = [i]
+    for _ in range(len(rhythm) - 2):
+        i = max(0, min(len(ok) - 1, i + rng.choice([-2, -1, -1, 1, 1, 2])))
+        path.append(i)
+    path.append(min(roots, key=lambda r: abs(r - path[-1])))         # home at the end
+    t, phrase = 0.0, []
+    for k, beats in zip(path, rhythm):
+        phrase.append(dict(pitch=ok[k], start=t, beats=beats))
+        t += beats
+    names = " ".join(th.plain_name(p["pitch"]) for p in phrase)
+    return dict(prompt=L("echo_prompt", count=len(phrase)), notes=[p["pitch"] for p in phrase], timed=phrase,
+                reveal=L("echo_was", notes=names))
+
+
 # ---------------------------------------------------------------- notes to play (graded by the listener)
 def play_items(rng, ex) -> list[dict]:
     n = int(ex.get("count", 5))
@@ -383,6 +419,8 @@ def play_items(rng, ex) -> list[dict]:
             frets = [f for f in range(lo, hi + 1) if th.fret_pitch(s, f) % 12 == th.pc(note)]
             out.append(dict(prompt=L("find_note", note=note, string=s), notes=[th.fret_pitch(s, frets[0])],
                             reveal=L("found_at", string=s, fret=frets[0])))
+    elif ex["kind"] == "echo":
+        out.append(echo_phrase(rng, ex))
     elif ex["kind"] == "tone_row":
         lo, hi = ex.get("frets", [0, 12])
         row = list(range(12))
@@ -422,11 +460,15 @@ def draw(lid: str, ex: dict, need: float, seed: int | None = None) -> dict:
         items = [QUIZ[types[i % len(types)]](rng, ex) for i in range(n)]
     elif kind == "pick":
         items = [pick_item(rng, ex) for _ in range(n)]
-    elif kind in ("find_note", "play_interval", "tone_row"):
+    elif kind in PLAY_KINDS:
         items = play_items(rng, ex)
+        timed = [n for it in items for n in it.get("timed", [])]
         with _lock:
-            _latest[(lid, ex["id"])] = dict(notes=[p for it in items for p in it["notes"]], items=items)
-        return dict(kind=kind, items=[dict(prompt=it["prompt"], reveal=it["reveal"], notes=len(it["notes"])) for it in items])
+            _latest[(lid, ex["id"])] = dict(notes=[p for it in items for p in it["notes"]], items=items, timed=timed)
+        out = dict(kind=kind, items=[dict(prompt=it["prompt"], reveal=it["reveal"], notes=len(it["notes"])) for it in items])
+        if timed:                                         # the phrase the app plays for you to echo
+            out.update(phrase=timed, bpm=float(ex.get("bpm", 80)))
+        return out
     else:
         raise QuizError(f"Exercise kind '{kind}' isn't drawn")
     token = secrets.token_urlsafe(12)
@@ -451,7 +493,7 @@ def check(token: str, index: int, answer) -> dict:
         d["answers"].setdefault(index, ok)
         if it["type"] == "pick":
             return dict(correct=ok, answer=it["expected"] if it["mode"] == "all" else it["want"], mode=it["mode"])
-        return dict(correct=ok, answer=it["answer"])
+        return dict(correct=ok, answer=it["answer"], **({"reveal": it["reveal"]} if it.get("reveal") else {}))
 
 
 def finish(token: str) -> dict:
@@ -529,6 +571,18 @@ def testout_answered(lid: str, score: float) -> bool:
 def testout_ready(lid: str) -> bool:
     with _lock:
         return _testout_ok.get(lid, False)
+
+
+PLAY_KINDS = ("find_note", "play_interval", "tone_row", "echo")
+# the echo of the tools: A minor pentatonic around fret 5, at 80 BPM
+TOOLS_ECHO = dict(id="echo", kind="echo", key="A", scale="minor_pentatonic", frets=[5, 8], bpm=80, count=1)
+
+
+def drawn_timed(lid: str, ex: dict) -> list[dict]:
+    """The rhythm of the latest echo phrase (drawing one if the UI didn't)."""
+    drawn_notes(lid, ex)
+    with _lock:
+        return list(_latest[(lid, ex["id"])]["timed"])
 
 
 def drawn_notes(lid: str, ex: dict) -> list[int]:
