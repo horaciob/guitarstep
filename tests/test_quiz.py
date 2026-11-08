@@ -110,3 +110,23 @@ def test_theory_endpoints():
     course = c.get("/api/course").json()
     fig = next(ls for lv in course["levels"] for ls in lv["lessons"] if ls["id"] == "degree-map")["figures"][0]
     assert fig["type"] == "fretboard" and any(m["kind"] == "root" and m["text"] == "1" for m in fig["marks"])
+
+
+def test_jazz_charts_swing_and_voicing_headers():
+    from guitarr.reference import load_reference, RefOptions
+    c = catalog.parse_chart("title: t\nbpm: 60\nswing: light\nvoicing: drop2\nstrum: D.D.D..^\nDm7 | G7 | Cmaj7 | C#m7b5\n")
+    assert c["swing"] == 0.6 and not c["missing"] and all(b["frets"] for b in c["bars"])
+    with pytest.raises(catalog.CatalogError):
+        catalog.parse_chart("swing: wobbly\nC | G\n")
+    half = catalog.parse_chart("bpm: 60\nswing: hard\nC G | C\n")
+    assert half["swing"] == 0.67
+    off = dict(title="t", bpm=60, beats_per_bar=4, swing=0.6,
+               bars=[dict(chord="C", beats=0.5, frets=[-1, 3, 2, 0, 1, 0]), dict(chord="G", beats=3.5, frets=[3, 2, 0, 0, 0, 3])])
+    ref = load_reference(RefOptions(chart=off), log=lambda m: None)
+    assert min(n.start for n in ref.notes if n.label == "G") == pytest.approx(0.6)   # the offbeat chord swings late
+
+
+def test_tone_rows_use_all_twelve_notes():
+    ex = dict(id="r", kind="tone_row", frets=[0, 5], count=12)
+    quiz.draw("l", ex, 75, seed=7)
+    assert sorted(p % 12 for p in quiz.drawn_notes("l", ex)) == list(range(12))

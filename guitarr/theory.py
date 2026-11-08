@@ -252,6 +252,19 @@ def roman(i: int, quality: str) -> str:
                 "9": "9", "m9": "9", "mmaj7": "(maj7)"}.get(quality, "")
 
 
+def tritone_sub(symbol: str) -> str:
+    """The dominant a tritone away (G7 → Db7): same 3rd and 7th, swapped."""
+    c = parse_chord(symbol)
+    return chord_symbol(transpose(c["root"], "d5"), c["quality"] if c["quality"] in ("7", "9", "13", "7b9", "7#9", "7#11", "7b13") else "7")
+
+
+# the scale a jazz player hears over each chord type (for eighth-note lines)
+CHORD_SCALE = {"maj7": "major", "maj": "major", "6": "major", "maj9": "major", "7": "mixolydian", "9": "mixolydian",
+               "13": "mixolydian", "7b9": "half_whole", "7#9": "altered", "7#11": "lydian", "7b13": "altered",
+               "m7": "dorian", "min": "dorian", "m9": "dorian", "m6": "melodic_minor", "m11": "dorian",
+               "m7b5": "locrian", "dim7": "whole_half", "dim": "whole_half", "mmaj7": "melodic_minor"}
+
+
 # ---------------------------------------------------------------- guitar positions
 def fret_pitch(string: int, fret: int) -> int:
     return OPEN[6 - string] + fret
@@ -346,7 +359,9 @@ def voice_orders(ch: dict, kind: str) -> list[list[str]]:
         return [d[k:] + d[:k] for k in range(3)]
     if kind == "shell":
         return [[degs[0], degs[3], degs[1]], [degs[0], degs[1], degs[3]]]   # 1-7-3 and 1-3-7
-    four = degs[:4]
+    # four-note voicings: a seventh chord as written; with a 9th (or more), leave out the root (3 5 7 9),
+    # as jazz guitarists do, so the color tone is in the chord
+    four = degs[1:5] if len(degs) >= 5 else degs[:4]
     closes = [four[k:] + four[:k] for k in range(4)]                         # close position, low → high
     if kind == "drop2":
         return [[c[2], c[0], c[1], c[3]] for c in closes]
@@ -456,6 +471,102 @@ def guide_line(progression: list[str], lo: int = 1, hi: int = 10, per_chord: int
             last = best[2]
         run += picked
     return run
+
+
+# ---------------------------------------------------------------- jazz lines
+JAZZ_STYLES = ("arpeggio", "approach", "enclosure", "eighths", "walking")
+
+
+def _place(pitches: list[int], lo: int, hi: int, strings=(6, 5, 4, 3, 2, 1)) -> list[tuple[int, int, int]]:
+    """Puts each pitch on a string inside the fret window, staying on (or near) the string of the last note."""
+    out, prev = [], None
+    for p in pitches:
+        cands = [(s, p - OPEN[6 - s]) for s in strings if lo <= p - OPEN[6 - s] <= hi]
+        if not cands:
+            raise TheoryError(f"{plain_name(p)} doesn't fit between frets {lo} and {hi}")
+        s, f = min(cands, key=lambda c: ((abs(c[0] - prev) if prev else -c[0]), c[1]))
+        out.append((s, f, p))
+        prev = s
+    return out
+
+
+def _playable(lo: int, hi: int, strings=(6, 5, 4, 3, 2, 1)) -> set[int]:
+    return {OPEN[6 - s] + f for s in strings for f in range(lo, hi + 1)}
+
+
+def _near(pcs, ref: int, ok: set[int], above: bool | None = None) -> int:
+    """The playable pitch with one of these pitch classes nearest to ref (optionally only above/below it)."""
+    cands = [p for p in ok if p % 12 in pcs and (above is None or (p > ref if above else p < ref))]
+    if not cands:
+        raise TheoryError("No playable note in that direction")
+    return min(cands, key=lambda p: (abs(p - ref), p))
+
+
+def jazz_line(progression: list[str], style: str, lo: int, hi: int, start: str = "3", direction: str = "up") -> list[tuple[int, int, int]]:
+    """Generated practice lines over a progression, kept inside a fret window:
+    - arpeggio: four chord tones per chord, starting on the tone nearest the last note.
+    - approach: a chromatic note below (or the scale step above, every other chord) into a chord tone.
+    - enclosure: scale step above, half step below, then the target chord tone.
+    - eighths: eight notes of the chord's scale from a chord tone (start: 1, 3 or 7).
+    - walking: a bass line, four quarter notes per chord ending with a half-step approach to the next root.
+    """
+    if style not in JAZZ_STYLES:
+        raise TheoryError(f"Unknown line style: {style}")
+    chords = [chord(s) for s in progression]
+    strings = (6, 5, 4) if style == "walking" else (6, 5, 4, 3, 2, 1)
+    ok = _playable(lo, hi, strings)
+    top, bottom = max(ok), min(ok)
+    pitches: list[int] = []
+    up = direction != "down"
+    for i, ch in enumerate(chords):
+        tones = [t["pc"] for t in ch["tones"][:4]]
+        target_pc = tone(ch, start)["pc"] if style != "walking" else tones[0]
+        ref = pitches[-1] if pitches else (bottom + 4 if up else top - 4)
+        if style == "walking":
+            root = _near({tones[0]}, ref, ok)
+            third, fifth = tone(ch, "3")["pc"], tone(ch, "5")["pc"]
+            a = _near({third}, root, ok, above=True) if root + 4 <= top else _near({third}, root, ok, above=False)
+            b = _near({fifth}, a, ok)
+            nxt = chords[(i + 1) % len(chords)]["tones"][0]["pc"]
+            next_root = _near({nxt}, b, ok)
+            app = next_root - 1 if next_root - 1 in ok and next_root - 1 != b else next_root + 1
+            pitches += [root, a, b, app]
+            continue
+        if style == "arpeggio":
+            first = _near({target_pc} if not pitches else set(tones), ref, ok)
+            go_up = up if not pitches else first + 12 <= top
+            seq, p = [first], first
+            for _ in range(3):
+                p = _near(set(tones), p, ok, above=go_up)
+                seq.append(p)
+            pitches += seq
+            continue
+        sc = {s["pc"] for s in scale(ch["root"], CHORD_SCALE.get(ch["quality"], "major"))}
+        target = _near({target_pc}, ref, ok)
+        if target + 1 > top or target - 1 < bottom:                        # keep room around the target
+            target = _near({target_pc}, (top + bottom) // 2, ok)
+        step_above = _near(sc, target, ok, above=True)
+        if style == "approach":
+            lead = target - 1 if i % 2 == 0 else step_above
+            go_up = target + 8 <= top
+            seq, p = [lead, target], target
+            for _ in range(2):
+                p = _near(set(tones), p, ok, above=go_up)
+                seq.append(p)
+            pitches += seq
+        elif style == "enclosure":
+            go_up = target + 8 <= top
+            pitches += [step_above, target - 1, target, _near(set(tones), target, ok, above=go_up)]
+        else:                                                                # eighths
+            go_up = up if target + 12 <= top else False
+            if not go_up and target - 12 < bottom:
+                go_up = True
+            seq, p = [target], target
+            while len(seq) < 8:
+                p = _near(sc, p, ok, above=go_up)
+                seq.append(p)
+            pitches += seq
+    return _place(pitches, lo, hi, strings)
 
 
 def guide_tones(progression: list[str], strings: tuple[int, int] = (4, 3), lo: int = 1, hi: int = 12) -> list[dict]:

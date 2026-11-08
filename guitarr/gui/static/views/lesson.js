@@ -6,7 +6,7 @@ import { runAnswers, say } from "../lib/answer.js";
 import { neck } from "../lib/fretboard.js";
 import { chartGuide, playChart } from "./charts.js";
 
-const ANSWER_KINDS = ["quiz", "pick"], DRAWN_KINDS = ["find_note", "play_interval"];
+const ANSWER_KINDS = ["quiz", "pick"], DRAWN_KINDS = ["find_note", "play_interval", "tone_row"];
 const hearable = ex => !ANSWER_KINDS.includes(ex.kind) && !DRAWN_KINDS.includes(ex.kind);
 const shapeChord = s => ({ id: s.name, frets: s.frets });
 

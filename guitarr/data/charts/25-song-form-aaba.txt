@@ -1,0 +1,20 @@
+title: A 32-bar song form (AABA)
+level: 8
+bpm: 120
+swing: light
+voicing: drop2
+strum: D.D.D.D.
+note: Four sections of eight bars: A, A again, a contrasting B (the bridge) and A to finish. Feel where each section starts.
+
+[A]
+Cmaj7 Am7 | Dm7 G7 | Em7 A7 | Dm7 G7
+Cmaj7 C7 | Fmaj7 Bb7 | Em7 A7 | Dm7 G7
+[A]
+Cmaj7 Am7 | Dm7 G7 | Em7 A7 | Dm7 G7
+Cmaj7 C7 | Fmaj7 Bb7 | Dm7 G7 | Cmaj7
+[B]
+Fmaj7 | Fm6 | Em7 | A7
+Dm7 | G7 | Em7 A7 | Dm7 G7
+[A]
+Cmaj7 Am7 | Dm7 G7 | Em7 A7 | Dm7 G7
+Cmaj7 C7 | Fmaj7 Bb7 | Dm7 G7 | Cmaj7

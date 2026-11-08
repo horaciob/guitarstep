@@ -764,6 +764,8 @@ def live_start(body: dict):
             simulate=sim, fast=bool(body.get("fast")) and sim is not None,
             backing=bool(body.get("backing")) and chart, hold=ctx.get("hold", 1.0),
             hum_hz=None if sim else a.get("hum_hz"),
+            # swing is felt, not measured: a swung chart gets a wider timing window
+            timing_tol=0.09 if chart and (ropts.chart or {}).get("swing") else 0.06,
         )
         try:
             sess = LiveSession(ref, opts)

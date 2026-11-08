@@ -265,7 +265,53 @@ def q_voice_lead(rng, ex):
     return _q(L("voice_lead", a=a, b=b, note=seventh), ch, ans)
 
 
-QUIZ = {f.__name__[2:]: f for f in [q_interval_frets, q_interval_ear, q_enharmonic, q_half_step, q_tab_read, q_open_string,
+def q_tritone_sub(rng, ex):
+    root = rng.choice(["G", "C", "D", "A", "E", "F", "Bb"])
+    sym = root + "7"
+    right = th.tritone_sub(sym)
+    pool = [th.transpose(root, iv) + "7" for iv in ("P5", "P4", "M2", "m3", "M6")]
+    ch, ans = _choices(rng, right, pool)
+    return _q(L("tritone_sub", chord=sym), ch, ans)
+
+
+def q_shared_tones(rng, ex):
+    root = rng.choice(["G", "C", "D", "A", "F"])
+    a = th.chord(root + "7")
+    n = {t["degree"]: t["note"] for t in a["tones"]}
+    right = f"{n['3']} {n['b7']}"
+    ch, ans = _choices(rng, right, [f"{n['1']} {n['5']}", f"{n['1']} {n['3']}", f"{n['5']} {n['b7']}"])
+    return _q(L("shared_tones", a=a["symbol"], b=th.tritone_sub(a["symbol"])), ch, ans)
+
+
+def _ii_v_i(key, minor):
+    if minor:
+        return f"{th.transpose(key, 'M2')}m7b5 – {th.transpose(key, 'P5')}7b9 – {key}m6"
+    return f"{th.transpose(key, 'M2')}m7 – {th.transpose(key, 'P5')}7 – {key}maj7"
+
+
+def q_ii_v_i(rng, ex):
+    minor = rng.random() < 0.5 if ex.get("mode") == "both" else ex.get("mode") == "minor"
+    key = rng.choice(ex.get("keys", ["C", "F", "G", "Bb", "D", "Eb", "A"]))
+    right = _ii_v_i(key, minor)
+    pool = [_ii_v_i(key, not minor), _ii_v_i(th.transpose(key, "P5"), minor), _ii_v_i(th.transpose(key, "P4"), minor),
+            _ii_v_i(th.transpose(key, "M2"), minor)]
+    ch, ans = _choices(rng, right, pool)
+    return _q(L("ii_v_i_minor" if minor else "ii_v_i_major", key=key + ("m" if minor else "")), ch, ans)
+
+
+def q_turnaround(rng, ex):
+    key = rng.choice(["C", "F", "G", "Bb", "D"])
+    I, ii, iii, V = key + "maj7", th.transpose(key, "M2") + "m7", th.transpose(key, "M3") + "m7", th.transpose(key, "P5") + "7"
+    vi, VI = th.transpose(key, "M6") + "m7", th.transpose(key, "M6") + "7"
+    forms = {"1": f"{I} – {vi} – {ii} – {V}", "3": f"{iii} – {VI} – {ii} – {V}",
+             "x": f"{I} – {th.transpose(key, 'm3')}7 – {ii} – {th.tritone_sub(V)}"}
+    which = rng.choice(["1", "3", "x"])
+    pool = list(forms.values()) + [f"{I} – {ii} – {vi} – {V}", f"{ii} – {V} – {I} – {vi}"]
+    ch, ans = _choices(rng, forms[which], pool)
+    return _q(L(f"turnaround_{which}", key=key), ch, ans)
+
+
+QUIZ = {f.__name__[2:]: f for f in [q_tritone_sub, q_shared_tones, q_ii_v_i, q_turnaround,q_interval_frets, q_interval_ear, q_enharmonic, q_half_step, q_tab_read, q_open_string,
                                      q_scale_degree, q_relative_minor, q_hear_quality, q_mode_color, q_chord_tones,
                                      q_chord_formula, q_inversion, q_roman, q_pentatonic, q_symmetric, q_bebop, q_altered,
                                      q_guide_tones, q_drop, q_extension, q_voice_lead]}
@@ -337,6 +383,18 @@ def play_items(rng, ex) -> list[dict]:
             frets = [f for f in range(lo, hi + 1) if th.fret_pitch(s, f) % 12 == th.pc(note)]
             out.append(dict(prompt=L("find_note", note=note, string=s), notes=[th.fret_pitch(s, frets[0])],
                             reveal=L("found_at", string=s, fret=frets[0])))
+    elif ex["kind"] == "tone_row":
+        lo, hi = ex.get("frets", [0, 12])
+        row = list(range(12))
+        rng.shuffle(row)
+        ok = th._playable(lo, hi)
+        prev = min(ok) + 7
+        pitches = []
+        for pc in row:
+            prev = th._near({pc}, prev, ok)
+            pitches.append(prev)
+        for s, f, p in th._place(pitches, lo, hi):
+            out.append(dict(prompt=L("row_note", note=th.plain_name(p)), notes=[p], reveal=L("found_at", string=s, fret=f)))
     else:
         pool = ex.get("intervals", ["M3", "P5", "P8"])
         while len(out) < n:
@@ -364,7 +422,7 @@ def draw(lid: str, ex: dict, need: float, seed: int | None = None) -> dict:
         items = [QUIZ[types[i % len(types)]](rng, ex) for i in range(n)]
     elif kind == "pick":
         items = [pick_item(rng, ex) for _ in range(n)]
-    elif kind in ("find_note", "play_interval"):
+    elif kind in ("find_note", "play_interval", "tone_row"):
         items = play_items(rng, ex)
         with _lock:
             _latest[(lid, ex["id"])] = dict(notes=[p for it in items for p in it["notes"]], items=items)

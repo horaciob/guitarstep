@@ -108,3 +108,29 @@ def test_voice_leading_moves_little():
     assert all(m <= 4 for m in moves), moves
     gt = th.guide_tones(["Dm7", "G7", "Cmaj7"])
     assert [g["order"] for g in gt][0] != [g["order"] for g in gt][1]   # the voices swap places
+
+
+def test_jazz_lines_target_chord_tones():
+    prog = ["Dm7", "G7", "Cmaj7", "A7"]
+    for style in th.JAZZ_STYLES:
+        lo, hi = (0, 5) if style == "walking" else (5, 9)
+        run = th.jazz_line(prog, style, lo, hi, "3")
+        assert all(lo <= f <= hi for _, f, _ in run), style
+        assert len(run) == (32 if style == "eighths" else 16), style
+    enc = th.jazz_line(prog, "enclosure", 5, 9, "3")
+    for k, sym in enumerate(prog):                       # above, half step below, then the 3rd
+        above, below, target = (p for _, _, p in enc[4 * k:4 * k + 3])
+        assert target % 12 == th.tone(th.chord(sym), "3")["pc"] and below == target - 1 and above > target
+    walk = th.jazz_line(prog, "walking", 0, 5)
+    roots = [th.chord(s)["tones"][0]["pc"] for s in prog]
+    assert [walk[4 * k][2] % 12 for k in range(4)] == roots          # beat 1 is the root
+    for k in range(4):                                                # beat 4 is a half step from the next root
+        nxt = walk[(4 * k + 4) % 16][2]
+        assert abs(walk[4 * k + 3][2] - nxt) == 1
+
+
+def test_tritone_sub_and_rootless_voicings():
+    assert th.tritone_sub("G7") == "Db7" and th.tritone_sub("C7") == "Gb7"
+    v = th.voicings("E7b9", "drop2")[0]
+    pcs = {p % 12 for p in th.shape_pitches(v["frets"])}
+    assert 5 in pcs and 4 not in pcs                     # the b9 (F) is there; the root (E) is left out

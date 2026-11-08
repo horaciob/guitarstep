@@ -3330,6 +3330,839 @@
      ]
     }
    ]
+  },
+  {
+   "id": "n14",
+   "number": 14,
+   "title": "Jazz foundations",
+   "subtitle": "ii–V–I in every key, minor ii–V–i, turnarounds, tritone subs, the jazz blues, song form and comping.",
+   "lessons": [
+    {
+     "id": "jazz-ii-v-i",
+     "title": "The major ii–V–I",
+     "minutes": 20,
+     "theory": [
+      "ii–V–I is the most common move in jazz: a minor 7 on the 2nd degree, a dominant 7 on the 5th, and home on the major 7.",
+      "In C that's Dm7 – G7 – Cmaj7. The bass goes up a 4th each time, and the guide tones fall by a half step.",
+      "Jazz moves through keys all the time, so the goal is to play it in all twelve without thinking."
+     ],
+     "tips": [
+      "Learn it in C and F first, then add one key a day. The three charts cover all twelve."
+     ],
+     "tutorials": [
+      "ii V I jazz guitar beginner",
+      "ii V I in all 12 keys guitar"
+     ],
+     "exercises": [
+      {
+       "id": "ii-v-i-quiz",
+       "kind": "quiz",
+       "title": "Which is the ii–V–I?",
+       "quiz": "ii_v_i",
+       "mode": "major",
+       "count": 6,
+       "min": 80
+      },
+      {
+       "id": "ii-v-i-c-shells",
+       "kind": "voiced",
+       "title": "ii–V–I in C with shells",
+       "progression": [
+        "Dm7",
+        "G7",
+        "Cmaj7"
+       ],
+       "voicing": "shell",
+       "near": 3,
+       "times": 2,
+       "min": 75
+      },
+      {
+       "id": "keys-1",
+       "kind": "chart",
+       "title": "C, F, B♭, E♭ at 70%",
+       "chart": "19-jazz-ii-v-i-1",
+       "speed": 0.7,
+       "min": 80
+      },
+      {
+       "id": "keys-2",
+       "kind": "chart",
+       "title": "A♭, D♭, G♭, B at 70%",
+       "chart": "20-jazz-ii-v-i-2",
+       "speed": 0.7,
+       "min": 80
+      },
+      {
+       "id": "keys-3",
+       "kind": "chart",
+       "title": "E, A, D, G at 70%",
+       "chart": "21-jazz-ii-v-i-3",
+       "speed": 0.7,
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "minor-ii-v-i-jazz",
+     "title": "The minor ii–V–i",
+     "minutes": 18,
+     "theory": [
+      "In a minor key the ii is half-diminished (m7♭5), the V is a dominant with a ♭9 and the i is minor: Bm7♭5 – E7♭9 – Am6 in A minor.",
+      "The ♭9 of E7 is F, a note of A minor: that's what makes the V sound like it belongs to the minor key.",
+      "On the i, m6 is the classic jazz choice; m(maj7) and m7 work too."
+     ],
+     "tips": [
+      "Listen for the F in E7♭9 falling to E: it's the sound of the minor ii–V–i."
+     ],
+     "tutorials": [
+      "minor ii V i jazz guitar",
+      "half diminished chord jazz guitar"
+     ],
+     "exercises": [
+      {
+       "id": "minor-quiz",
+       "kind": "quiz",
+       "title": "Which is the minor ii–V–i?",
+       "quiz": "ii_v_i",
+       "mode": "minor",
+       "count": 6,
+       "min": 80
+      },
+      {
+       "id": "minor-drop2",
+       "kind": "voiced",
+       "title": "A minor with drop-2",
+       "progression": [
+        "Bm7b5",
+        "E7b9",
+        "Am6"
+       ],
+       "voicing": "drop2",
+       "near": 5,
+       "times": 2,
+       "min": 75
+      },
+      {
+       "id": "minor-shells",
+       "kind": "voiced",
+       "title": "D minor with shells",
+       "progression": [
+        "Em7b5",
+        "A7",
+        "Dm7"
+       ],
+       "voicing": "shell",
+       "near": 4,
+       "times": 2,
+       "min": 75
+      },
+      {
+       "id": "minor-chart",
+       "kind": "chart",
+       "title": "Three minor keys at 75%",
+       "chart": "22-minor-ii-v-i",
+       "speed": 0.75,
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "turnarounds",
+     "title": "Turnarounds",
+     "minutes": 15,
+     "theory": [
+      "A turnaround is a short loop that brings you back to the top: two bars that lead to the I.",
+      "I–vi–ii–V is the basic one. iii–VI–ii–V starts away from home and makes the VI dominant (A7 in C) to pull toward ii.",
+      "Each chord can be replaced by one that shares its job: that's how one turnaround becomes many."
+     ],
+     "tips": [
+      "Loop each turnaround for a minute before you move on: they're meant to be repeated."
+     ],
+     "tutorials": [
+      "jazz turnarounds guitar",
+      "I vi ii V turnaround guitar"
+     ],
+     "exercises": [
+      {
+       "id": "turnaround-quiz",
+       "kind": "quiz",
+       "title": "Name the turnaround",
+       "quiz": "turnaround",
+       "count": 6,
+       "min": 80
+      },
+      {
+       "id": "i-vi-ii-v",
+       "kind": "voiced",
+       "title": "I–vi–ii–V in C",
+       "progression": [
+        "Cmaj7",
+        "Am7",
+        "Dm7",
+        "G7"
+       ],
+       "voicing": "drop2",
+       "near": 5,
+       "times": 2,
+       "min": 75
+      },
+      {
+       "id": "iii-vi-ii-v",
+       "kind": "voiced",
+       "title": "iii–VI–ii–V in C",
+       "progression": [
+        "Em7",
+        "A7",
+        "Dm7",
+        "G7"
+       ],
+       "voicing": "drop2",
+       "near": 5,
+       "times": 2,
+       "min": 75
+      },
+      {
+       "id": "turnaround-chart",
+       "kind": "chart",
+       "title": "All three, in a row",
+       "chart": "24-turnarounds",
+       "speed": 0.8,
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "tritone-sub",
+     "title": "Tritone substitution",
+     "minutes": 15,
+     "theory": [
+      "G7 and D♭7 share their guide tones: G7 has B and F, D♭7 has F and C♭ (the same pitch as B).",
+      "So D♭7 can stand in for G7: Dm7 – D♭7 – Cmaj7. The bass now slides down by half steps.",
+      "Any dominant can be replaced by the one a tritone (6 frets) away."
+     ],
+     "tips": [
+      "Play the guide tones of G7, then of D♭7: the same two frets, a different bass under them."
+     ],
+     "tutorials": [
+      "tritone substitution explained guitar",
+      "tritone sub jazz guitar"
+     ],
+     "exercises": [
+      {
+       "id": "sub-quiz",
+       "kind": "quiz",
+       "title": "Find the substitute",
+       "quiz": [
+        "tritone_sub",
+        "shared_tones"
+       ],
+       "count": 6,
+       "min": 80
+      },
+      {
+       "id": "sub-guide",
+       "kind": "voiced",
+       "title": "Guide tones: G7 and D♭7",
+       "progression": [
+        "Dm7",
+        "G7",
+        "Dm7",
+        "Db7",
+        "Cmaj7"
+       ],
+       "voicing": "guide",
+       "times": 1,
+       "min": 75
+      },
+      {
+       "id": "sub-shells",
+       "kind": "voiced",
+       "title": "Dm7 – D♭7 – Cmaj7 with shells",
+       "progression": [
+        "Dm7",
+        "Db7",
+        "Cmaj7"
+       ],
+       "voicing": "shell",
+       "near": 3,
+       "times": 2,
+       "min": 75
+      }
+     ]
+    },
+    {
+     "id": "jazz-blues",
+     "title": "Jazz blues in F",
+     "minutes": 20,
+     "theory": [
+      "The jazz blues keeps the 12-bar form of the blues and adds ii–V moves that point at the next chord.",
+      "Bar 4 is a ii–V into B♭7, bar 8 is D7 (a secondary dominant) setting up Gm7, and bars 11–12 turn around to the top.",
+      "Every chord is a dominant or part of a ii–V, so the shell shapes you know cover the whole tune."
+     ],
+     "tips": [
+      "Play it once with shells only, then once with the etude in the last lesson of the next level."
+     ],
+     "tutorials": [
+      "jazz blues in F guitar chords",
+      "jazz blues comping guitar"
+     ],
+     "exercises": [
+      {
+       "id": "blues-first-bars",
+       "kind": "voiced",
+       "title": "Bars 1–4 with shells",
+       "progression": [
+        "F7",
+        "Bb7",
+        "F7",
+        "Cm7",
+        "F7"
+       ],
+       "voicing": "shell",
+       "near": 1,
+       "times": 2,
+       "min": 75
+      },
+      {
+       "id": "blues-slow",
+       "kind": "chart",
+       "title": "The whole form at 70%",
+       "chart": "23-jazz-blues-f",
+       "speed": 0.7,
+       "min": 80
+      },
+      {
+       "id": "blues-full",
+       "kind": "chart",
+       "title": "The whole form at full speed",
+       "chart": "23-jazz-blues-f",
+       "speed": 1.0,
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "song-form",
+     "title": "The 32-bar song form",
+     "minutes": 18,
+     "theory": [
+      "Many jazz tunes have 32 bars in four sections of eight: A A B A. The A is the main idea and the B (the bridge) is the contrast.",
+      "Our A uses I–vi–ii–V loops; our bridge moves to the IV chord and works its way back with ii–Vs.",
+      "Knowing the form is how you keep your place: count bars in groups of eight, and feel where the bridge begins."
+     ],
+     "tips": [
+      "Before you play, say the form out loud: “A, A, bridge, A.”"
+     ],
+     "tutorials": [
+      "32 bar AABA form jazz",
+      "how to count jazz form"
+     ],
+     "exercises": [
+      {
+       "id": "bridge-shells",
+       "kind": "voiced",
+       "title": "The bridge with shells",
+       "progression": [
+        "Fmaj7",
+        "Fm6",
+        "Em7",
+        "A7",
+        "Dm7",
+        "G7"
+       ],
+       "voicing": "shell",
+       "near": 1,
+       "times": 1,
+       "min": 75
+      },
+      {
+       "id": "form-slow",
+       "kind": "chart",
+       "title": "The whole form at 70%",
+       "chart": "25-song-form-aaba",
+       "speed": 0.7,
+       "min": 80
+      },
+      {
+       "id": "form-full",
+       "kind": "chart",
+       "title": "At full speed",
+       "chart": "25-song-form-aaba",
+       "speed": 1.0,
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "comping",
+     "title": "Comping rhythms",
+     "minutes": 20,
+     "theory": [
+      "Comping is accompanying: chords played in rhythm behind a melody or a solo.",
+      "Four to the bar is steady and even. The Charleston figure hits beat 1 and the “and” of 2.",
+      "An anticipation plays the next chord an eighth early, on the “and” of 4, which pushes the music forward.",
+      "Space is part of comping too: one held chord per bar leaves room for the soloist."
+     ],
+     "tips": [
+      "Keep the chords short (lift the pressure right after the strum) so the rhythm is clear."
+     ],
+     "tutorials": [
+      "jazz comping rhythms guitar",
+      "charleston rhythm jazz guitar"
+     ],
+     "exercises": [
+      {
+       "id": "comp-four",
+       "kind": "chart",
+       "title": "Four to the bar",
+       "chart": "26-comp-four",
+       "speed": 0.8,
+       "min": 80
+      },
+      {
+       "id": "comp-charleston",
+       "kind": "chart",
+       "title": "The Charleston",
+       "chart": "27-comp-charleston",
+       "speed": 0.8,
+       "min": 80
+      },
+      {
+       "id": "comp-anticipation",
+       "kind": "chart",
+       "title": "Anticipations",
+       "chart": "28-comp-anticipation",
+       "speed": 0.8,
+       "min": 80
+      },
+      {
+       "id": "comp-space",
+       "kind": "chart",
+       "title": "Leave space",
+       "chart": "29-comp-space",
+       "speed": 0.8,
+       "min": 80
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "n15",
+   "number": 15,
+   "title": "Jazz language",
+   "subtitle": "Swing, walking bass, arpeggios, approach notes, enclosures, eighth-note lines and etudes.",
+   "lessons": [
+    {
+     "id": "swing-feel",
+     "title": "Swing feel",
+     "minutes": 12,
+     "theory": [
+      "Swing plays pairs of eighth notes long–short instead of even: the second one of each pair lands late.",
+      "Light swing puts it at about 60% of the beat; hard swing at about two thirds, like a triplet with the first two notes tied.",
+      "In this app a chart can be straight, light or hard: playback swings the offbeats, and the listener allows a wider timing window."
+     ],
+     "tips": [
+      "Turn on swung eighths in the metronome (Tools) and say “doo-ba doo-ba” along with it."
+     ],
+     "tutorials": [
+      "how to swing eighth notes guitar",
+      "swing feel explained"
+     ],
+     "exercises": [
+      {
+       "id": "light-swing",
+       "kind": "chart",
+       "title": "Light swing, four to the bar",
+       "chart": "26-comp-four",
+       "speed": 1.0,
+       "min": 80
+      },
+      {
+       "id": "hard-swing",
+       "kind": "chart",
+       "title": "Hard swing with upstrokes",
+       "chart": "30-swing-hard",
+       "speed": 0.8,
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "walking-bass",
+     "title": "Walking bass on guitar",
+     "minutes": 18,
+     "theory": [
+      "A walking bass plays one note per beat. Beat 1 is the root of the chord, so everyone hears the harmony.",
+      "Beats 2 and 3 are chord tones (or scale notes) that move away from the root.",
+      "Beat 4 is an approach: a half step below or above the next root, so the line walks into it."
+     ],
+     "tips": [
+      "Play with your thumb or a light pick stroke, and let each note last its full beat."
+     ],
+     "tutorials": [
+      "walking bass on guitar for beginners",
+      "jazz walking bass lines guitar"
+     ],
+     "exercises": [
+      {
+       "id": "walk-ii-v-i",
+       "kind": "line",
+       "title": "Walk through ii–V–I–VI",
+       "style": "walking",
+       "progression": [
+        "Dm7",
+        "G7",
+        "Cmaj7",
+        "A7"
+       ],
+       "frets": [
+        0,
+        5
+       ],
+       "min": 80
+      },
+      {
+       "id": "walk-blues",
+       "kind": "line",
+       "title": "Walk the first bars of the F blues",
+       "style": "walking",
+       "progression": [
+        "F7",
+        "Bb7",
+        "F7",
+        "C7"
+       ],
+       "frets": [
+        0,
+        6
+       ],
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "arpeggios-changes",
+     "title": "Arpeggios over the changes",
+     "minutes": 15,
+     "theory": [
+      "Playing the arpeggio of each chord as it goes by is the clearest way to make a line follow the harmony.",
+      "Stay in one position and start each new arpeggio on the chord tone closest to where you are.",
+      "Four notes per chord, one per beat: the changes become audible even with no one comping."
+     ],
+     "tips": [
+      "Say the chord name at each change. If you lose your place, stop on a root and start again."
+     ],
+     "tutorials": [
+      "arpeggios over chord changes guitar",
+      "playing through ii V I arpeggios"
+     ],
+     "exercises": [
+      {
+       "id": "arp-ii-v-i",
+       "kind": "line",
+       "title": "ii–V–I–VI at fret 5",
+       "style": "arpeggio",
+       "progression": [
+        "Dm7",
+        "G7",
+        "Cmaj7",
+        "A7"
+       ],
+       "frets": [
+        5,
+        9
+       ],
+       "start": "1",
+       "min": 80
+      },
+      {
+       "id": "arp-turnaround",
+       "kind": "line",
+       "title": "iii–VI–ii–V at fret 7",
+       "style": "arpeggio",
+       "progression": [
+        "Em7",
+        "A7",
+        "Dm7",
+        "G7"
+       ],
+       "frets": [
+        7,
+        10
+       ],
+       "start": "1",
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "approach-notes",
+     "title": "Approach notes",
+     "minutes": 15,
+     "theory": [
+      "An approach note leads into a chord tone from one step away: a half step below (chromatic) or the scale note above (diatonic).",
+      "Put the approach on the offbeat and the chord tone on the beat: the target sounds strong and the line sounds intentional.",
+      "Aim for 3rds and 7ths: they're the notes that say which chord it is."
+     ],
+     "tips": [
+      "Exaggerate the target: play it a little louder than the approach."
+     ],
+     "tutorials": [
+      "chromatic approach notes jazz guitar",
+      "approach tones jazz improvisation"
+     ],
+     "exercises": [
+      {
+       "id": "approach-3rds",
+       "kind": "line",
+       "title": "Into the 3rds of ii–V–I–VI",
+       "style": "approach",
+       "progression": [
+        "Dm7",
+        "G7",
+        "Cmaj7",
+        "A7"
+       ],
+       "frets": [
+        5,
+        9
+       ],
+       "start": "3",
+       "min": 80
+      },
+      {
+       "id": "approach-7ths",
+       "kind": "line",
+       "title": "Into the 7ths",
+       "style": "approach",
+       "progression": [
+        "Dm7",
+        "G7",
+        "Cmaj7",
+        "A7"
+       ],
+       "frets": [
+        5,
+        9
+       ],
+       "start": "7",
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "enclosures",
+     "title": "Enclosures",
+     "minutes": 15,
+     "theory": [
+      "An enclosure surrounds the target: the scale note above, the half step below, then the target.",
+      "It delays the chord tone by two notes, which builds a little tension before it lands.",
+      "Enclose the 3rd of each chord first, then the 7th, then the root."
+     ],
+     "tips": [
+      "Practice one enclosure on one chord until it's automatic, then link the chords."
+     ],
+     "tutorials": [
+      "enclosures jazz guitar lesson",
+      "bebop enclosures explained"
+     ],
+     "exercises": [
+      {
+       "id": "enclose-3",
+       "kind": "line",
+       "title": "Enclose the 3rds",
+       "style": "enclosure",
+       "progression": [
+        "Dm7",
+        "G7",
+        "Cmaj7",
+        "A7"
+       ],
+       "frets": [
+        5,
+        9
+       ],
+       "start": "3",
+       "min": 80
+      },
+      {
+       "id": "enclose-7",
+       "kind": "line",
+       "title": "Enclose the 7ths",
+       "style": "enclosure",
+       "progression": [
+        "Dm7",
+        "G7",
+        "Cmaj7",
+        "A7"
+       ],
+       "frets": [
+        5,
+        9
+       ],
+       "start": "7",
+       "min": 80
+      },
+      {
+       "id": "enclose-1",
+       "kind": "line",
+       "title": "Enclose the roots",
+       "style": "enclosure",
+       "progression": [
+        "Em7",
+        "A7",
+        "Dm7",
+        "G7"
+       ],
+       "frets": [
+        5,
+        9
+       ],
+       "start": "1",
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "eighth-lines",
+     "title": "Eighth-note lines from a chord tone",
+     "minutes": 20,
+     "theory": [
+      "Start on a chord tone on beat 1 and run eight notes of the chord's scale: Dorian over m7, Mixolydian over 7, major over maj7.",
+      "Starting on the 3rd or the 7th makes the line sound like the chord right away.",
+      "When a run would leave the position, turn around: the line changes direction but keeps going."
+     ],
+     "tips": [
+      "Start at 60 BPM with swung eighths. Evenness first, then speed."
+     ],
+     "tutorials": [
+      "jazz eighth note lines guitar",
+      "how to play through changes with scales"
+     ],
+     "exercises": [
+      {
+       "id": "eighths-3",
+       "kind": "line",
+       "title": "From the 3rd, ii–V–I–VI",
+       "style": "eighths",
+       "progression": [
+        "Dm7",
+        "G7",
+        "Cmaj7",
+        "A7"
+       ],
+       "frets": [
+        5,
+        9
+       ],
+       "start": "3",
+       "min": 80
+      },
+      {
+       "id": "eighths-7",
+       "kind": "line",
+       "title": "From the 7th, going down",
+       "style": "eighths",
+       "progression": [
+        "Dm7",
+        "G7",
+        "Cmaj7",
+        "A7"
+       ],
+       "frets": [
+        7,
+        11
+       ],
+       "start": "7",
+       "direction": "down",
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "jazz-etudes",
+     "title": "Three short etudes",
+     "minutes": 25,
+     "theory": [
+      "An etude is a short piece that puts several ideas together. These three were written for this course.",
+      "“Small steps” walks through a ii–V–I with arpeggio shapes and a 7th that falls to the next 3rd.",
+      "“Minor turn” uses the ♭9 of the V chord in a minor ii–V–i, and “Blue F” mixes chord tones with the blue note over the F blues."
+     ],
+     "tips": [
+      "Learn each etude by ear and by tab, then play it over its chart."
+     ],
+     "tutorials": [
+      "jazz guitar etudes for beginners",
+      "how to practice jazz etudes"
+     ],
+     "exercises": [
+      {
+       "id": "etude-small-steps",
+       "kind": "lick",
+       "title": "“Small steps” (Dm7 – G7 – Cmaj7)",
+       "tab": "4:7 3:5 3:7 2:6 1:7 1:5 2:8 2:6 2:5 3:5 4:5 2:5~",
+       "min": 80
+      },
+      {
+       "id": "etude-minor-turn",
+       "kind": "lick",
+       "title": "“Minor turn” (Bm7♭5 – E7♭9 – Am6)",
+       "tab": "4:7 3:7 2:6 1:7 2:6 2:5 3:7 4:6 4:7 3:5 2:5 1:5~",
+       "min": 80
+      },
+      {
+       "id": "etude-blue-f",
+       "kind": "lick",
+       "title": "“Blue F” (F7 – B♭7 – F7)",
+       "tab": "5:8 4:7 3:5 3:8 4:6 3:7 2:6 1:6 1:5 2:6 3:8 3:5 4:7 4:6 5:8~",
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "tone-rows",
+     "title": "Ear stretch: tone rows",
+     "minutes": 10,
+     "theory": [
+      "A tone row uses all twelve notes once each, in any order. No note is home, so you can't lean on a key.",
+      "Reading and playing rows stretches your ear and your knowledge of the neck at the same time.",
+      "This one is optional: a challenge for when the rest of the level feels easy."
+     ],
+     "tips": [
+      "Sing each note before you play it. If you can't sing it, play it and sing it back."
+     ],
+     "tutorials": [
+      "twelve tone row explained",
+      "chromatic ear training guitar"
+     ],
+     "exercises": [
+      {
+       "id": "row-low",
+       "kind": "tone_row",
+       "title": "A row in the low frets",
+       "frets": [
+        0,
+        5
+       ],
+       "count": 12,
+       "min": 75
+      },
+      {
+       "id": "row-mid",
+       "kind": "tone_row",
+       "title": "A row around fret 5",
+       "frets": [
+        4,
+        9
+       ],
+       "count": 12,
+       "min": 75
+      }
+     ]
+    }
+   ]
   }
  ]
 }

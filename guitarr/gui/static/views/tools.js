@@ -48,6 +48,8 @@ function metronome(box) {
       <div class="metro-dots" id="dots"></div>
       <div class="row center">
         <div class="seg" id="sig">${[2, 3, 4, 6].map(n => `<button data-n="${n}">${n}/${n === 6 ? 8 : 4}</button>`).join("")}</div>
+        <label class="field-inline small">${esc(t("tools.eighths"))}
+          <select id="eighths">${["off", "straight", "light", "hard"].map(k => `<option value="${k}">${esc(t(`tools.eighths_${k}`))}</option>`).join("")}</select></label>
         <button class="btn" id="tap">${esc(t("tools.tap"))}</button>
         <button class="btn primary" id="play">${esc(t("tools.start"))}</button>
       </div>
@@ -80,10 +82,13 @@ function metronome(box) {
       this.running = true; this.next = ac.currentTime + 0.1; this.n = 0;
       this.timer = setInterval(() => {
         while (this.next < ac.currentTime + 0.12) {
-          const beat = this.n % beats;
+          const beat = this.n % beats, len = 60 / bpm * (beats === 6 ? 0.5 : 1);
           click(this.next, beat === 0);
+          // the offbeat eighth, softer: halfway (straight) or later in the beat (swing)
+          const off = { straight: 0.5, light: 0.6, hard: 0.67 }[$("#eighths", box).value];
+          if (off && beats !== 6) click(this.next + len * off, false, 0.45);
           setTimeout(() => drawDots(beat), Math.max(0, (this.next - ac.currentTime) * 1000));
-          this.next += 60 / bpm * (beats === 6 ? 0.5 : 1);
+          this.next += len;
           this.n++;
         }
       }, 25);

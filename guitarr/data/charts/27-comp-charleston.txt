@@ -1,0 +1,11 @@
+title: Comping: the Charleston figure
+level: 8
+bpm: 110
+swing: light
+voicing: drop2
+strum: D..D....
+note: Two hits per bar: on beat 1 and on the “and” of 2. Leave the rest of the bar empty.
+
+[Loop]
+Dm7 | G7 | Cmaj7 | A7
+Dm7 | G7 | Cmaj7 | Cmaj7

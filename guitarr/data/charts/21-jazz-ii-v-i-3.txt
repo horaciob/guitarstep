@@ -1,0 +1,16 @@
+title: Major ii–V–I in E, A, D and G
+level: 8
+bpm: 100
+swing: light
+voicing: shell
+strum: D.D.D.D.
+note: The last four keys: with the other two charts you've played ii–V–I in all twelve.
+
+[Key of E]
+F#m7 | B7 | Emaj7 | Emaj7
+[Key of A]
+Bm7 | E7 | Amaj7 | Amaj7
+[Key of D]
+Em7 | A7 | Dmaj7 | Dmaj7
+[Key of G]
+Am7 | D7 | Gmaj7 | Gmaj7

@@ -1,0 +1,14 @@
+title: Minor ii–V–i in A, D and G minor
+level: 8
+bpm: 96
+swing: light
+voicing: drop2
+strum: D.D.D.D.
+note: Drop-2 voicings. The V7♭9 is played without its root, so the ♭9 is in the chord.
+
+[A minor]
+Bm7b5 | E7b9 | Am6 | Am6
+[D minor]
+Em7b5 | A7b9 | Dm6 | Dm6
+[G minor]
+Am7b5 | D7b9 | Gm6 | Gm6

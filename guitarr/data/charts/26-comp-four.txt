@@ -1,0 +1,11 @@
+title: Comping: four to the bar
+level: 8
+bpm: 110
+swing: light
+voicing: drop2
+strum: D.D.D.D.
+note: One short, even strum on every beat. Lift the pressure right after each one so the chords don't ring into each other.
+
+[Loop]
+Dm7 | G7 | Cmaj7 | A7
+Dm7 | G7 | Cmaj7 | Cmaj7

@@ -362,15 +362,18 @@ def load_chart(chart: dict) -> Reference:
     except (KeyError, TypeError, ValueError) as e:
         raise ReferenceError(f"Invalid chart: {e}") from e
     beat = 60 / bpm
+    swing = float(chart.get("swing") or 0.0)            # 0.6 = the offbeat eighth sits at 60% of the beat
     t = 0.0
     notes: list[Note] = []
     for b in bars:
         dur = float(b.get("beats") or bpb) * beat
         frets = b.get("frets") or []
+        frac = (t / beat) % 1
+        start = t + (swing - 0.5) * beat if swing and abs(frac - 0.5) < 1e-6 else t   # a chord on an offbeat swings too
         for i, f in enumerate(frets[:6]):
             if f is None or f < 0:
                 continue
-            notes.append(Note(t, t + dur * 0.95, OPEN_STRINGS[i] + capo + int(f), 0.8, 6 - i, int(f), b.get("chord")))
+            notes.append(Note(start, t + dur * 0.95, OPEN_STRINGS[i] + capo + int(f), 0.8, 6 - i, int(f), b.get("chord")))
         t += dur
     if not notes:
         raise ReferenceError("The chart has no chords with a known fingering.")

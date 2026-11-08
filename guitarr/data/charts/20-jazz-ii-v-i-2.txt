@@ -1,0 +1,16 @@
+title: Major ii–V–I in A♭, D♭, G♭ and B
+level: 8
+bpm: 100
+swing: light
+voicing: shell
+strum: D.D.D.D.
+note: The same shapes in the flat keys and B. Say the numeral of each chord as you play it.
+
+[Key of Ab]
+Bbm7 | Eb7 | Abmaj7 | Abmaj7
+[Key of Db]
+Ebm7 | Ab7 | Dbmaj7 | Dbmaj7
+[Key of Gb]
+Abm7 | Db7 | Gbmaj7 | Gbmaj7
+[Key of B]
+C#m7 | F#7 | Bmaj7 | Bmaj7

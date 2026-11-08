@@ -1,0 +1,11 @@
+title: Comping: leave space
+level: 8
+bpm: 104
+swing: light
+voicing: shell
+strum: D_______
+note: One chord per bar, held. Space lets the soloist breathe.
+
+[Loop]
+Dm7 | G7 | Cmaj7 | A7
+Dm7 | G7 | Cmaj7 | Cmaj7

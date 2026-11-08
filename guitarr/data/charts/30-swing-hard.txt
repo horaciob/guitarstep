@@ -1,0 +1,11 @@
+title: Hard swing
+level: 8
+bpm: 120
+swing: hard
+voicing: shell
+strum: D.DUD.DU
+note: Hard swing: the upstrokes land late, on the last third of the beat (long–short).
+
+[Loop]
+Cmaj7 | Am7 | Dm7 | G7
+Cmaj7 | Am7 | Dm7 | G7

@@ -465,7 +465,9 @@
    "answer_intro_quiz": "{{count}} preguntas, nuevas cada vez. Respondé con un clic o con las teclas numéricas.",
    "answer_intro_pick": "{{count}} rondas: marcá las notas en el mástil. Cada nota que tocás suena.",
    "answer_stopped": "Frenado. Empezá de nuevo para otra tanda.",
-   "piano_label": "Una octava de un teclado de piano"
+   "piano_label": "Una octava de un teclado de piano",
+   "guide_swing": "Swing: las corcheas a contratiempo llegan tarde.",
+   "guide_anticipation": "↓» = el acorde siguiente, una corchea antes."
   },
   "chords": {
    "title": "Acordes",
@@ -519,7 +521,7 @@
    "deleted": "Cifrado borrado",
    "saved": "Guardado: {{title}}",
    "headers": "Encabezados posibles",
-   "headers_html": "<code>title</code>, <code>bpm</code>, <code>time</code> (4/4, 3/4, 6/8), <code>capo</code>, <code>strum</code> (D abajo, U arriba, . nada; una casilla por corchea), <code>level</code>, <code>note</code>. Las secciones van entre corchetes: <code>[Estribillo]</code>. (Los encabezados del formato van en inglés.)",
+   "headers_html": "<code>title</code>, <code>bpm</code>, <code>time</code> (4/4, 3/4, 6/8), <code>capo</code>, <code>strum</code> (D abajo, U arriba, . nada, _ sostener, ^ el acorde siguiente antes de tiempo; una casilla por corchea), <code>swing</code> (light, medium, hard), <code>voicing</code> (shell, drop2, drop3, triad: arma cualquier acorde, como <code>C#m7b5</code>), <code>level</code>, <code>note</code>. Las secciones van entre corchetes: <code>[Estribillo]</code>. Un <code>#</code> después de un espacio empieza un comentario. (Los encabezados del formato van en inglés.)",
    "unknown_html": "No conozco: {{chords}} — mirá los nombres en <a href=\"#/chords\">Acordes</a>."
   },
   "tools": {
@@ -592,7 +594,12 @@
    "cf_voice": "Armar voicings",
    "cf_play_all": "Tocar la progresión",
    "cf_bad_progression": "Escribí de 2 a 16 acordes, separados por espacios (por ejemplo: Dm7 G7 Cmaj7).",
-   "cf_bad_chord": "Uno de esos acordes no lo conozco, o no tiene voicing de este tipo. Revisá cómo está escrito (Bb, F#m7, Cmaj7…)."
+   "cf_bad_chord": "Uno de esos acordes no lo conozco, o no tiene voicing de este tipo. Revisá cómo está escrito (Bb, F#m7, Cmaj7…).",
+   "eighths": "Corcheas",
+   "eighths_off": "no",
+   "eighths_straight": "derechas",
+   "eighths_light": "swing ligero",
+   "eighths_hard": "swing marcado"
   },
   "camera": {
    "title": "Cámara",
@@ -1326,7 +1333,15 @@
    "q_dim": "disminuido",
    "q_aug": "aumentado",
    "q_sus2": "sus2",
-   "q_sus4": "sus4"
+   "q_sus4": "sus4",
+   "tritone_sub": "¿Cuál es el sustituto tritonal de {{chord}}?",
+   "shared_tones": "¿Qué dos notas comparten {{a}} y {{b}}?",
+   "ii_v_i_major": "¿Cuál es el ii–V–I en {{key}}?",
+   "ii_v_i_minor": "¿Cuál es el ii–V–i en {{key}}?",
+   "turnaround_1": "¿Cuál es el I–vi–ii–V en {{key}}?",
+   "turnaround_3": "¿Cuál es el iii–VI–ii–V en {{key}}?",
+   "turnaround_x": "¿Cuál es el I–vi–ii–V en {{key}} con sustitutos tritonales?",
+   "row_note": "{{note}}"
   }
  },
  "content": {
@@ -1548,6 +1563,14 @@
    "n13": {
     "title": "Voicings",
     "subtitle": "Shells, drop-2, drop-3, conducción de voces y notas guía: los acordes como los tocan los guitarristas de jazz."
+   },
+   "n14": {
+    "title": "Bases del jazz",
+    "subtitle": "ii–V–I en todas las tonalidades, ii–V–i menor, turnarounds, sustitución tritonal, el blues de jazz, la forma y el acompañamiento."
+   },
+   "n15": {
+    "title": "El lenguaje del jazz",
+    "subtitle": "Swing, walking bass, arpegios, notas de aproximación, enclosures, líneas de corcheas y estudios."
    }
   },
   "lessons": {
@@ -2394,6 +2417,232 @@
      "líneas de notas guía guitarra jazz",
      "terceras y séptimas improvisación jazz"
     ]
+   },
+   "jazz-ii-v-i": {
+    "title": "El ii–V–I mayor",
+    "theory": [
+     "El ii–V–I es el movimiento más común del jazz: un menor 7 en el 2º grado, un dominante 7 en el 5º y la llegada a casa en el maj7.",
+     "En Do es Rem7 – Sol7 – Domaj7. El bajo sube una 4ª cada vez y las notas guía bajan un semitono.",
+     "El jazz cambia de tonalidad todo el tiempo, así que la meta es tocarlo en las doce sin pensar."
+    ],
+    "tips": [
+     "Aprendelo primero en Do y en Fa, y después sumá una tonalidad por día. Los tres cifrados cubren las doce."
+    ],
+    "tutorials": [
+     "ii V I guitarra jazz principiantes",
+     "ii V I en las 12 tonalidades guitarra"
+    ]
+   },
+   "minor-ii-v-i-jazz": {
+    "title": "El ii–V–i menor",
+    "theory": [
+     "En una tonalidad menor el ii es semidisminuido (m7♭5), el V es un dominante con ♭9 y el i es menor: Sim7♭5 – Mi7♭9 – Lam6 en La menor.",
+     "La ♭9 de Mi7 es Fa, una nota de La menor: eso hace que el V suene parte de la tonalidad menor.",
+     "En el i, el m6 es la elección clásica del jazz; también funcionan m(maj7) y m7."
+    ],
+    "tips": [
+     "Escuchá cómo el Fa de Mi7♭9 baja a Mi: es el sonido del ii–V–i menor."
+    ],
+    "tutorials": [
+     "ii V i menor guitarra jazz",
+     "acorde semidisminuido guitarra jazz"
+    ]
+   },
+   "turnarounds": {
+    "title": "Turnarounds",
+    "theory": [
+     "Un turnaround es una vuelta corta que te devuelve al principio: dos compases que llevan al I.",
+     "I–vi–ii–V es el básico. iii–VI–ii–V empieza lejos de casa y vuelve dominante al VI (La7 en Do) para que tire hacia el ii.",
+     "Cada acorde se puede reemplazar por otro que cumpla la misma función: así un turnaround se vuelve muchos."
+    ],
+    "tips": [
+     "Repetí cada turnaround durante un minuto antes de seguir: están hechos para repetirse."
+    ],
+    "tutorials": [
+     "turnarounds jazz guitarra",
+     "turnaround I vi ii V guitarra"
+    ]
+   },
+   "tritone-sub": {
+    "title": "Sustitución tritonal",
+    "theory": [
+     "Sol7 y Re♭7 comparten sus notas guía: Sol7 tiene Si y Fa, Re♭7 tiene Fa y Do♭ (la misma altura que Si).",
+     "Entonces Re♭7 puede reemplazar a Sol7: Rem7 – Re♭7 – Domaj7. Ahora el bajo baja por semitonos.",
+     "Cualquier dominante se puede reemplazar por el que está a un tritono (6 trastes)."
+    ],
+    "tips": [
+     "Tocá las notas guía de Sol7 y después las de Re♭7: los mismos dos trastes, con otro bajo debajo."
+    ],
+    "tutorials": [
+     "sustitución tritonal explicada guitarra",
+     "sustituto tritonal jazz guitarra"
+    ]
+   },
+   "jazz-blues": {
+    "title": "Blues de jazz en Fa",
+    "theory": [
+     "El blues de jazz mantiene la forma de 12 compases del blues y le suma movimientos ii–V que apuntan al acorde siguiente.",
+     "El compás 4 es un ii–V hacia Si♭7, el 8 es Re7 (un dominante secundario) que prepara Solm7, y los compases 11–12 vuelven al principio.",
+     "Cada acorde es un dominante o parte de un ii–V, así que las formas shell que conocés cubren todo el tema."
+    ],
+    "tips": [
+     "Tocalo una vez solo con shells y otra con el estudio de la última lección del nivel siguiente."
+    ],
+    "tutorials": [
+     "blues de jazz en Fa acordes guitarra",
+     "acompañamiento blues de jazz guitarra"
+    ]
+   },
+   "song-form": {
+    "title": "La forma de canción de 32 compases",
+    "theory": [
+     "Muchos temas de jazz tienen 32 compases en cuatro secciones de ocho: A A B A. La A es la idea principal y la B (el puente) es el contraste.",
+     "Nuestra A usa vueltas I–vi–ii–V; nuestro puente va al acorde de IV y vuelve con ii–Vs.",
+     "Conocer la forma es lo que te mantiene ubicado: contá compases de a ocho y sentí dónde empieza el puente."
+    ],
+    "tips": [
+     "Antes de tocar, decí la forma en voz alta: “A, A, puente, A”."
+    ],
+    "tutorials": [
+     "forma AABA 32 compases jazz",
+     "cómo contar la forma en jazz"
+    ]
+   },
+   "comping": {
+    "title": "Ritmos de acompañamiento",
+    "theory": [
+     "Acompañar (comping) es tocar los acordes con ritmo detrás de una melodía o de un solo.",
+     "Cuatro por compás es firme y parejo. La figura Charleston golpea en el tiempo 1 y en el “y” del 2.",
+     "Una anticipación toca el acorde siguiente una corchea antes, en el “y” del 4, y empuja la música hacia adelante.",
+     "El espacio también es parte del acompañamiento: un acorde sostenido por compás le deja lugar al solista."
+    ],
+    "tips": [
+     "Mantené los acordes cortos (aflojá la presión justo después del rasguido) para que el ritmo se entienda."
+    ],
+    "tutorials": [
+     "ritmos de acompañamiento jazz guitarra",
+     "ritmo charleston jazz guitarra"
+    ]
+   },
+   "swing-feel": {
+    "title": "El swing",
+    "theory": [
+     "El swing toca los pares de corcheas largo–corto en vez de parejos: la segunda de cada par cae tarde.",
+     "El swing ligero la pone cerca del 60% del tiempo; el marcado, cerca de dos tercios, como un tresillo con las dos primeras notas ligadas.",
+     "En esta app un cifrado puede ser derecho, ligero o marcado: la reproducción hace swing en los contratiempos y el listener acepta un margen de tiempo más amplio."
+    ],
+    "tips": [
+     "Activá las corcheas con swing en el metrónomo (Herramientas) y decí “du-ba du-ba” junto con él."
+    ],
+    "tutorials": [
+     "cómo hacer swing en corcheas guitarra",
+     "el swing explicado"
+    ]
+   },
+   "walking-bass": {
+    "title": "Walking bass en la guitarra",
+    "theory": [
+     "Un walking bass toca una nota por tiempo. El tiempo 1 es la fundamental del acorde, para que todos escuchen la armonía.",
+     "Los tiempos 2 y 3 son notas del acorde (o de la escala) que se alejan de la fundamental.",
+     "El tiempo 4 es una aproximación: un semitono abajo o arriba de la fundamental siguiente, para que la línea camine hacia ella."
+    ],
+    "tips": [
+     "Tocá con el pulgar o con una púa suave, y dejá que cada nota dure su tiempo completo."
+    ],
+    "tutorials": [
+     "walking bass en guitarra principiantes",
+     "líneas de walking bass jazz guitarra"
+    ]
+   },
+   "arpeggios-changes": {
+    "title": "Arpegios sobre los cambios",
+    "theory": [
+     "Tocar el arpegio de cada acorde mientras pasa es la forma más clara de que una línea siga a la armonía.",
+     "Quedate en una posición y empezá cada arpegio nuevo en la nota del acorde más cercana a donde estás.",
+     "Cuatro notas por acorde, una por tiempo: los cambios se escuchan aunque nadie acompañe."
+    ],
+    "tips": [
+     "Decí el nombre del acorde en cada cambio. Si te perdés, pará en una fundamental y empezá de nuevo."
+    ],
+    "tutorials": [
+     "arpegios sobre cambios de acordes guitarra",
+     "arpegios sobre ii V I"
+    ]
+   },
+   "approach-notes": {
+    "title": "Notas de aproximación",
+    "theory": [
+     "Una nota de aproximación llega a una nota del acorde desde un paso de distancia: un semitono abajo (cromática) o la nota de la escala de arriba (diatónica).",
+     "Poné la aproximación en el contratiempo y la nota del acorde en el tiempo: el objetivo suena firme y la línea suena intencional.",
+     "Apuntá a las 3ªs y las 7ªs: son las notas que dicen qué acorde es."
+    ],
+    "tips": [
+     "Exagerá el objetivo: tocalo un poco más fuerte que la aproximación."
+    ],
+    "tutorials": [
+     "notas de aproximación cromáticas jazz guitarra",
+     "tonos de aproximación improvisación jazz"
+    ]
+   },
+   "enclosures": {
+    "title": "Enclosures (rodeos)",
+    "theory": [
+     "Un enclosure rodea al objetivo: la nota de la escala de arriba, el semitono de abajo y después el objetivo.",
+     "Demora la nota del acorde dos notas, y eso arma un poco de tensión antes de que llegue.",
+     "Rodeá primero la 3ª de cada acorde, después la 7ª y después la fundamental."
+    ],
+    "tips": [
+     "Practicá un enclosure sobre un acorde hasta que sea automático y después uní los acordes."
+    ],
+    "tutorials": [
+     "clase enclosures guitarra jazz",
+     "enclosures bebop explicados"
+    ]
+   },
+   "eighth-lines": {
+    "title": "Líneas de corcheas desde una nota del acorde",
+    "theory": [
+     "Empezá en una nota del acorde en el tiempo 1 y corré ocho notas de la escala del acorde: dórica sobre m7, mixolidia sobre 7, mayor sobre maj7.",
+     "Empezar en la 3ª o en la 7ª hace que la línea suene al acorde desde el principio.",
+     "Cuando una carrera se saldría de la posición, girá: la línea cambia de dirección pero sigue."
+    ],
+    "tips": [
+     "Empezá a 60 BPM con corcheas con swing. Primero parejo, después rápido."
+    ],
+    "tutorials": [
+     "líneas de corcheas jazz guitarra",
+     "cómo tocar sobre los cambios con escalas"
+    ]
+   },
+   "jazz-etudes": {
+    "title": "Tres estudios cortos",
+    "theory": [
+     "Un estudio es una pieza corta que junta varias ideas. Estos tres fueron escritos para este curso.",
+     "“Pasos cortos” recorre un ii–V–I con formas de arpegio y una 7ª que cae en la 3ª siguiente.",
+     "“Giro menor” usa la ♭9 del acorde de V en un ii–V–i menor, y “Fa azul” mezcla notas del acorde con la blue note sobre el blues en Fa."
+    ],
+    "tips": [
+     "Aprendé cada estudio de oído y con la tab, y después tocalo sobre su cifrado."
+    ],
+    "tutorials": [
+     "estudios de guitarra jazz principiantes",
+     "cómo practicar estudios de jazz"
+    ]
+   },
+   "tone-rows": {
+    "title": "Estirar el oído: series de doce notas",
+    "theory": [
+     "Una serie usa las doce notas una vez cada una, en cualquier orden. Ninguna nota es casa, así que no te podés apoyar en una tonalidad.",
+     "Leer y tocar series estira tu oído y tu conocimiento del mástil al mismo tiempo.",
+     "Esta es opcional: un desafío para cuando el resto del nivel te resulte fácil."
+    ],
+    "tips": [
+     "Cantá cada nota antes de tocarla. Si no la podés cantar, tocala y cantala después."
+    ],
+    "tutorials": [
+     "serie dodecafónica explicada",
+     "entrenamiento auditivo cromático guitarra"
+    ]
    }
   },
   "exercises": {
@@ -2556,7 +2805,51 @@
    "guide-tones/guide-quiz": "Nombrá las notas guía",
    "guide-tones/guide-pairs": "3ªs y 7ªs en ii–V–I",
    "guide-tones/guide-line-c": "Una línea de notas guía en Do",
-   "guide-tones/guide-line-d": "Una línea de notas guía en Re"
+   "guide-tones/guide-line-d": "Una línea de notas guía en Re",
+   "jazz-ii-v-i/ii-v-i-quiz": "¿Cuál es el ii–V–I?",
+   "jazz-ii-v-i/ii-v-i-c-shells": "ii–V–I en Do con shells",
+   "jazz-ii-v-i/keys-1": "Do, Fa, Si♭, Mi♭ al 70%",
+   "jazz-ii-v-i/keys-2": "La♭, Re♭, Sol♭, Si al 70%",
+   "jazz-ii-v-i/keys-3": "Mi, La, Re, Sol al 70%",
+   "minor-ii-v-i-jazz/minor-quiz": "¿Cuál es el ii–V–i menor?",
+   "minor-ii-v-i-jazz/minor-drop2": "La menor con drop-2",
+   "minor-ii-v-i-jazz/minor-shells": "Re menor con shells",
+   "minor-ii-v-i-jazz/minor-chart": "Tres tonalidades menores al 75%",
+   "turnarounds/turnaround-quiz": "Nombrá el turnaround",
+   "turnarounds/i-vi-ii-v": "I–vi–ii–V en Do",
+   "turnarounds/iii-vi-ii-v": "iii–VI–ii–V en Do",
+   "turnarounds/turnaround-chart": "Los tres seguidos",
+   "tritone-sub/sub-quiz": "Encontrá el sustituto",
+   "tritone-sub/sub-guide": "Notas guía: Sol7 y Re♭7",
+   "tritone-sub/sub-shells": "Rem7 – Re♭7 – Domaj7 con shells",
+   "jazz-blues/blues-first-bars": "Compases 1–4 con shells",
+   "jazz-blues/blues-slow": "La forma completa al 70%",
+   "jazz-blues/blues-full": "La forma completa a velocidad normal",
+   "song-form/bridge-shells": "El puente con shells",
+   "song-form/form-slow": "La forma completa al 70%",
+   "song-form/form-full": "A velocidad normal",
+   "comping/comp-four": "Cuatro por compás",
+   "comping/comp-charleston": "La Charleston",
+   "comping/comp-anticipation": "Anticipaciones",
+   "comping/comp-space": "Dejar espacio",
+   "swing-feel/light-swing": "Swing ligero, cuatro por compás",
+   "swing-feel/hard-swing": "Swing marcado con rasguidos hacia arriba",
+   "walking-bass/walk-ii-v-i": "Caminar sobre ii–V–I–VI",
+   "walking-bass/walk-blues": "Caminar los primeros compases del blues en Fa",
+   "arpeggios-changes/arp-ii-v-i": "ii–V–I–VI en el traste 5",
+   "arpeggios-changes/arp-turnaround": "iii–VI–ii–V en el traste 7",
+   "approach-notes/approach-3rds": "Hacia las 3ªs de ii–V–I–VI",
+   "approach-notes/approach-7ths": "Hacia las 7ªs",
+   "enclosures/enclose-3": "Rodear las 3ªs",
+   "enclosures/enclose-7": "Rodear las 7ªs",
+   "enclosures/enclose-1": "Rodear las fundamentales",
+   "eighth-lines/eighths-3": "Desde la 3ª, ii–V–I–VI",
+   "eighth-lines/eighths-7": "Desde la 7ª, bajando",
+   "jazz-etudes/etude-small-steps": "“Pasos cortos” (Rem7 – Sol7 – Domaj7)",
+   "jazz-etudes/etude-minor-turn": "“Giro menor” (Sim7♭5 – Mi7♭9 – Lam6)",
+   "jazz-etudes/etude-blue-f": "“Fa azul” (Fa7 – Si♭7 – Fa7)",
+   "tone-rows/row-low": "Una serie en los trastes graves",
+   "tone-rows/row-mid": "Una serie alrededor del traste 5"
   },
   "charts": {
    "01-em-am": {
@@ -2630,6 +2923,54 @@
    "18-comfortably-numb": {
     "title": "Comfortably Numb",
     "note": "Cifrado simplificado en afinación estándar. La estrofa está en Si menor y el estribillo sube a Re mayor. Los solos son de guitarra líder y no están en este cifrado."
+   },
+   "19-jazz-ii-v-i-1": {
+    "title": "Major ii–V–I en Do, Fa, Si♭ y Mi♭",
+    "note": "Voicings shell, cuatro por compás. Cada tonalidad tiene dos compases de ii–V y dos de I; la siguiente empieza una 4ª arriba."
+   },
+   "20-jazz-ii-v-i-2": {
+    "title": "Major ii–V–I en La♭, Re♭, Sol♭ y Si",
+    "note": "Las mismas formas en las tonalidades con bemoles y en Si. Decí el número romano de cada acorde mientras lo tocás."
+   },
+   "21-jazz-ii-v-i-3": {
+    "title": "Major ii–V–I en Mi, La, Re y Sol",
+    "note": "Las últimas cuatro tonalidades: con los otros dos cifrados tocaste ii–V–I en las doce."
+   },
+   "22-minor-ii-v-i": {
+    "title": "Minor ii–V–i en La, Re y Sol menor",
+    "note": "Voicings drop-2. El V7♭9 va sin fundamental, así la ♭9 queda en el acorde."
+   },
+   "23-jazz-blues-f": {
+    "title": "Blues de jazz en Fa",
+    "note": "Doce compases: la forma de blues con movimientos ii–V agregados. El compás 6 pasa por un disminuido y el 8 prepara el ii–V de vuelta a casa."
+   },
+   "24-turnarounds": {
+    "title": "Tres turnarounds en Do",
+    "note": "Dos compases cada uno: I–vi–ii–V, después iii–VI–ii–V y después la misma idea con sustitutos tritonales."
+   },
+   "25-song-form-aaba": {
+    "title": "Una forma de canción de 32 compases (AABA)",
+    "note": "Cuatro secciones de ocho compases: A, A otra vez, una B que contrasta (el puente) y A para terminar. Sentí dónde empieza cada sección."
+   },
+   "26-comp-four": {
+    "title": "Acompañamiento: cuatro por compás",
+    "note": "Un rasguido corto y parejo en cada tiempo. Aflojá la presión justo después de cada uno para que los acordes no se pisen."
+   },
+   "27-comp-charleston": {
+    "title": "Acompañamiento: la figura Charleston",
+    "note": "Dos golpes por compás: en el tiempo 1 y en el “y” del 2. Dejá vacío el resto del compás."
+   },
+   "28-comp-anticipation": {
+    "title": "Acompañamiento: anticipaciones",
+    "note": "El último rasguido de cada compás (↓») toca el acorde siguiente antes de tiempo, en el “y” del 4."
+   },
+   "29-comp-space": {
+    "title": "Acompañamiento: dejar espacio",
+    "note": "Un acorde por compás, sostenido. El espacio deja respirar al solista."
+   },
+   "30-swing-hard": {
+    "title": "Swing marcado",
+    "note": "Swing marcado: los rasguidos hacia arriba caen tarde, en el último tercio del tiempo (largo–corto)."
    }
   },
   "sections": {
@@ -2641,7 +2982,27 @@
    "Chorus 2": "Vuelta 2",
    "Chorus 3": "Vuelta 3",
    "Eight bars": "Ocho compases",
-   "Chorus": "Estribillo"
+   "Chorus": "Estribillo",
+   "Key of C": "Tonalidad de Do",
+   "Key of F": "Tonalidad de Fa",
+   "Key of Bb": "Tonalidad de Si♭",
+   "Key of Eb": "Tonalidad de Mi♭",
+   "Key of Ab": "Tonalidad de La♭",
+   "Key of Db": "Tonalidad de Re♭",
+   "Key of Gb": "Tonalidad de Sol♭",
+   "Key of B": "Tonalidad de Si",
+   "Key of E": "Tonalidad de Mi",
+   "Key of A": "Tonalidad de La",
+   "Key of D": "Tonalidad de Re",
+   "Key of G": "Tonalidad de Sol",
+   "A minor": "La menor",
+   "D minor": "Re menor",
+   "G minor": "Sol menor",
+   "I–vi–ii–V": "I–vi–ii–V",
+   "iii–VI–ii–V": "iii–VI–ii–V",
+   "With substitutes": "Con sustitutos",
+   "A": "A",
+   "B": "B"
   }
  }
 }

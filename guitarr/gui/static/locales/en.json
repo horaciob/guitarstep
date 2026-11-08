@@ -465,7 +465,9 @@
    "answer_intro_quiz": "{{count}} questions, new every time. Answer with a click or the number keys.",
    "answer_intro_pick": "{{count}} rounds: select the notes on the neck. It plays each one you click.",
    "answer_stopped": "Stopped. Start again for a new set.",
-   "piano_label": "One octave of a piano keyboard"
+   "piano_label": "One octave of a piano keyboard",
+   "guide_swing": "Swing: the offbeat eighths come late.",
+   "guide_anticipation": "↓» = the next chord, an eighth early."
   },
   "chords": {
    "title": "Chords",
@@ -519,7 +521,7 @@
    "deleted": "Chart deleted",
    "saved": "Saved: {{title}}",
    "headers": "Possible headers",
-   "headers_html": "<code>title</code>, <code>bpm</code>, <code>time</code> (4/4, 3/4, 6/8), <code>capo</code>, <code>strum</code> (D down, U up, . rest; one slot per eighth note), <code>level</code>, <code>note</code>. Sections go in brackets: <code>[Chorus]</code>.",
+   "headers_html": "<code>title</code>, <code>bpm</code>, <code>time</code> (4/4, 3/4, 6/8), <code>capo</code>, <code>strum</code> (D down, U up, . rest, _ hold, ^ the next chord early; one slot per eighth note), <code>swing</code> (light, medium, hard), <code>voicing</code> (shell, drop2, drop3, triad: voices any chord symbol, like <code>C#m7b5</code>), <code>level</code>, <code>note</code>. Sections go in brackets: <code>[Chorus]</code>. A <code>#</code> after a space starts a comment.",
    "unknown_html": "Unknown chords: {{chords}} — check the names in <a href=\"#/chords\">Chords</a>."
   },
   "tools": {
@@ -592,7 +594,12 @@
    "cf_voice": "Voice it",
    "cf_play_all": "Play the progression",
    "cf_bad_progression": "Write 2 to 16 chords, separated by spaces (for example: Dm7 G7 Cmaj7).",
-   "cf_bad_chord": "One of those chords isn't one I know, or it has no voicing of this kind. Check the spelling (Bb, F#m7, Cmaj7…)."
+   "cf_bad_chord": "One of those chords isn't one I know, or it has no voicing of this kind. Check the spelling (Bb, F#m7, Cmaj7…).",
+   "eighths": "Eighths",
+   "eighths_off": "off",
+   "eighths_straight": "straight",
+   "eighths_light": "light swing",
+   "eighths_hard": "hard swing"
   },
   "camera": {
    "title": "Camera",
@@ -1326,7 +1333,15 @@
    "q_dim": "diminished",
    "q_aug": "augmented",
    "q_sus2": "sus2",
-   "q_sus4": "sus4"
+   "q_sus4": "sus4",
+   "tritone_sub": "What's the tritone substitute of {{chord}}?",
+   "shared_tones": "Which two notes do {{a}} and {{b}} share?",
+   "ii_v_i_major": "Which is the ii–V–I in {{key}}?",
+   "ii_v_i_minor": "Which is the ii–V–i in {{key}}?",
+   "turnaround_1": "Which is the I–vi–ii–V in {{key}}?",
+   "turnaround_3": "Which is the iii–VI–ii–V in {{key}}?",
+   "turnaround_x": "Which is the I–vi–ii–V in {{key}} with tritone substitutes?",
+   "row_note": "{{note}}"
   }
  },
  "content": {}

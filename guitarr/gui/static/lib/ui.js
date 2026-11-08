@@ -165,11 +165,11 @@ export function strum(ch, { down = true, gap = 0.018, capo = 0, when = 0 } = {})
   (down ? idx : idx.reverse()).forEach((i, k) => pluck(OPEN[i] + capo + ch.frets[i], when + k * gap, 0.22));
 }
 
-export function click(when, accent = false) {
+export function click(when, accent = false, level = 1) {
   const ac = audioCtx(), o = ac.createOscillator(), g = ac.createGain();
-  o.frequency.value = accent ? 1600 : 1000;
+  o.frequency.value = accent ? 1600 : level < 1 ? 800 : 1000;
   g.gain.setValueAtTime(0.0001, when);
-  g.gain.exponentialRampToValueAtTime(accent ? 0.5 : 0.3, when + 0.002);
+  g.gain.exponentialRampToValueAtTime((accent ? 0.5 : 0.3) * level, when + 0.002);
   g.gain.exponentialRampToValueAtTime(0.0001, when + 0.05);
   o.connect(g).connect(ac.destination);
   o.start(when);

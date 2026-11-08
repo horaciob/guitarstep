@@ -87,7 +87,7 @@ Sizes: **S** ≈ an afternoon, **M** ≈ a few days, **L** ≈ a week or more.
 33. **Guide-tone lines** (M). 3rds and 7ths through a ii–V–I as a two-note line, played alone and then over
     a backing.
 
-## C. Jazz curriculum (new levels)
+## C. Jazz curriculum (new levels) — ✅ done
 
 34. **Level "Jazz foundations": the major ii–V–I** (M). Shell voicings in 12 keys, a chart per key, and
     graded changes.

@@ -5,9 +5,11 @@ import { $, $$, api, audioCtx, click, esc, strum } from "../lib/ui.js";
 export function strumHtml(pattern) {
   if (!pattern) return "";
   const counts = ["1", "&", "2", "&", "3", "&", "4", "&", "5", "&", "6", "&"];
-  return `<div class="strum" title="${esc(t("charts.strum_hint"))}">` + [...pattern].map((c, i) =>
-    `<span class="${c === "D" ? "d" : c === "U" ? "u" : "r"}"><b>${c === "D" ? "↓" : c === "U" ? "↑" : "·"}</b><small>${counts[i] || ""}</small></span>`
-  ).join("") + `</div>`;
+  const sym = { D: ["d", "↓"], U: ["u", "↑"], "^": ["a", "↓»"], "_": ["r", "‿"] };
+  return `<div class="strum" title="${esc(t("charts.strum_hint"))}">` + [...pattern].map((c, i) => {
+    const [cls, mark] = sym[c] || ["r", "·"];
+    return `<span class="${cls}"><b>${mark}</b><small>${counts[i] || ""}</small></span>`;
+  }).join("") + `</div>`;
 }
 
 export function barsHtml(chart) {
@@ -30,6 +32,8 @@ export function barsHtml(chart) {
 }
 
 const starts = chart => { let acc = 0; return chart.bars.map(b => (acc += b.beats) - b.beats); };
+/** With swing, an offbeat eighth (x.5 beats) comes later: at x + ratio. */
+const swung = (chart, beat) => chart.swing && Math.abs(beat % 1 - 0.5) < 1e-6 ? Math.floor(beat) + chart.swing : beat;
 const totalBeats = chart => chart.bars.reduce((s, b) => s + b.beats, 0);
 
 /** A play-along guide for a chart: the current and next chord, the strum pattern and the bars, with a
@@ -42,7 +46,7 @@ export function chartGuide(box, chart, { speed = 1, note = "" } = {}) {
     <div class="guide-now"><b class="g-chord">${esc(chart.bars[0]?.chord || "–")}</b>
       <span><span class="g-next"></span><small class="g-pos muted"></small></span></div>
     ${strumHtml(pat)}${barsHtml(chart)}
-    <p class="muted small">${esc(t("lesson.guide_tempo", { bpm: Math.round(chart.bpm * speed), pct: Math.round(speed * 100) }))}</p>`;
+    <p class="muted small">${esc(t("lesson.guide_tempo", { bpm: Math.round(chart.bpm * speed), pct: Math.round(speed * 100) }))}${chart.swing ? ` ${esc(t("lesson.guide_swing"))}` : ""}${(chart.strum || "").includes("^") ? ` ${esc(t("lesson.guide_anticipation"))}` : ""}</p>`;
   const slots = $$(".strum span", box), cells = $$(".bar-cell span[data-i]", box);
   const chordEl = $(".g-chord", box), nextEl = $(".g-next", box), posEl = $(".g-pos", box);
   let clock = null, raf = 0, shown = "";
@@ -85,8 +89,10 @@ export function playChart(chart, { speed = 1 } = {}) {
   for (let b = -bpb; b < total; b++) evs.push({ beat: b, click: true, accent: ((b % bpb) + bpb) % bpb === 0 });
   const slot = bpb / pat.length;
   for (let s = 0; s * slot < total - 1e-6; s++) {
-    const c = pat[s % pat.length], beat = s * slot, bar = chart.bars[st.findLastIndex(x => x <= beat + 1e-6)];
-    if ((c === "D" || c === "U") && bar?.frets) evs.push({ beat, frets: bar.frets, down: c === "D" });
+    const c = pat[s % pat.length], beat = swung(chart, s * slot), at = s * slot;
+    // "^" anticipates: it strums the chord of the next slot's bar
+    const bar = chart.bars[st.findLastIndex(x => x <= (c === "^" ? at + slot : at) + 1e-6)];
+    if ((c === "D" || c === "U" || c === "^") && bar?.frets) evs.push({ beat, frets: bar.frets, down: c !== "U" });
   }
   evs.sort((a, b) => a.beat - b.beat);
   let next = 0, timer = 0, finish;

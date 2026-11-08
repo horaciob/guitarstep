@@ -1,0 +1,12 @@
+title: Jazz blues in F
+level: 8
+bpm: 110
+swing: light
+voicing: shell
+strum: D.D.D.D.
+note: Twelve bars: the blues form with ii–V moves added. Bar 6 passes through a diminished chord, bar 8 sets up the ii–V back home.
+
+[Twelve bars]
+F7 | Bb7 | F7 | Cm7 F7
+Bb7 | Bdim7 | F7 | D7
+Gm7 | C7 | F7 D7 | Gm7 C7

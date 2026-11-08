@@ -19,7 +19,9 @@ Chart format (plain text):
     bpm: 90
     time: 4/4            # optional (4/4)
     capo: 2              # optional
-    strum: D.DU.UDU      # optional: D down, U up, . rest (one slot per eighth note)
+    strum: D.DU.UDU      # optional: D down, U up, . rest, _ hold (tie), ^ next chord early (anticipation)
+    swing: light         # optional: light, medium, hard or a ratio 0.5–0.75 (offbeat eighths come later)
+    voicing: shell       # optional: shell, drop2, drop3 or triad voices every chord (any chord symbol)
     level: 2             # optional
     note: a tip          # optional
 
@@ -38,7 +40,7 @@ from . import config
 
 DATA_DIR = Path(__file__).parent / "data"
 OPEN_STRINGS = [40, 45, 50, 55, 59, 64]  # 6th ... 1st
-HEADER_KEYS = {"title", "artist", "level", "bpm", "time", "capo", "strum", "note"}
+HEADER_KEYS = {"title", "artist", "level", "bpm", "time", "capo", "strum", "note", "voicing", "swing"}
 
 
 class CatalogError(Exception):
@@ -85,7 +87,8 @@ def parse_chart(text: str, cid: str = "chart") -> dict:
     prev = None
     unknown: list[str] = []
     for ln, raw in enumerate(text.splitlines(), start=1):
-        line = raw.split("#", 1)[0].strip()
+        # "#" starts a comment at the beginning of a line or after a space; inside a chord (C#m7) it's a sharp
+        line = "" if raw.lstrip().startswith("#") else re.split(r"\s#(?:\s|$)", raw, maxsplit=1)[0].strip()
         if not line:
             continue
         m = re.match(r"^([a-z]+)\s*:\s*(.*)$", line, re.I)
@@ -126,9 +129,58 @@ def parse_chart(text: str, cid: str = "chart") -> dict:
         raise CatalogError(f"Invalid header: {e}") from e
     if not 20 <= bpm <= 300:
         raise CatalogError("bpm must be between 20 and 300")
+    voicing = meta.get("voicing", "").lower()
+    if voicing:
+        unknown = _voice_chart(bars, voicing)
     return dict(id=cid, title=meta.get("title") or cid, artist=meta.get("artist"), bpm=bpm,
                 beats_per_bar=_beats_per_bar(meta.get("time", "4/4"), 0), capo=capo, level=level,
-                strum=meta.get("strum", ""), note=meta.get("note", ""), bars=bars, missing=unknown)
+                strum=meta.get("strum", ""), note=meta.get("note", ""), bars=bars, missing=unknown,
+                swing=_swing(meta.get("swing", "")), voicing=voicing or None)
+
+
+SWING = {"": 0.0, "straight": 0.0, "off": 0.0, "light": 0.6, "medium": 0.64, "hard": 0.67}
+
+
+def _swing(v: str) -> float:
+    """Where the offbeat eighth falls inside the beat: 0 = straight (0.5), light 0.6, hard 0.67 (triplet feel)."""
+    v = v.strip().lower()
+    if v in SWING:
+        return SWING[v]
+    try:
+        r = float(v)
+    except ValueError as e:
+        raise CatalogError(f"swing: write light, medium, hard or a number between 0.5 and 0.75 (not '{v}')") from e
+    if not 0.5 <= r <= 0.75:
+        raise CatalogError("swing must be between 0.5 and 0.75")
+    return 0.0 if r == 0.5 else r
+
+
+def _voice_chart(bars: list[dict], voicing: str) -> list[str]:
+    """`voicing: shell|drop2|drop3|triad` voices every chord with the theory engine, each one close to the last
+    (so jazz charts don't depend on the chord dictionary). Returns the chords it couldn't voice."""
+    from . import theory as th
+
+    names = [b["chord"] for b in bars if b["chord"]]
+    seq = [n for i, n in enumerate(names) if i == 0 or n != names[i - 1]]
+    bad = []
+    for n in dict.fromkeys(seq):
+        try:
+            th.voicings(n, voicing)
+        except (th.TheoryError, KeyError):
+            bad.append(n)
+    if bad:
+        return bad
+    shapes = th.voice_lead(seq, voicing, "smooth", start=3)
+    it = iter(shapes)
+    cur, last = None, None
+    for b in bars:
+        if not b["chord"]:
+            continue
+        if b["chord"] != last:
+            cur = next(it)["frets"]
+            last = b["chord"]
+        b["frets"] = cur
+    return []
 
 
 def _beats_per_bar(sig: str, ln: int) -> int:
@@ -303,7 +355,10 @@ def _run(ex: dict) -> list[tuple[int, int, int]]:
                                  int(ex.get("nps", 0)), int(ex.get("octaves", 1)))
         if ex["kind"] == "arpeggio":
             return th.arpeggio_path(ex["chord"], lo, hi, ex.get("direction", "up"), int(ex.get("octaves", 1)))
-        return th.guide_line(ex["progression"], lo, hi, int(ex.get("per_chord", 1)))
+        style = ex.get("style", "guide")
+        if style == "guide":
+            return th.guide_line(ex["progression"], lo, hi, int(ex.get("per_chord", 1)))
+        return th.jazz_line(ex["progression"], style, lo, hi, str(ex.get("start", "3")), ex.get("direction", "up"))
     except (th.TheoryError, StopIteration) as e:
         raise CatalogError(f"Can't build {ex['kind']} '{ex.get('id')}': {e}") from e
 
@@ -409,7 +464,7 @@ def exercise_setup(lid: str, eid: str):
         return RefOptions(tab=exercise_steps(ex)), "wait", 1.0, ex.get("min", 80)
     if kind in SHAPE_KINDS:
         return RefOptions(chart=chart_from_shapes(exercise_shapes(ex), int(ex.get("times", 2)))), "wait", 1.0, ex.get("min", 75)
-    if kind in ("find_note", "play_interval"):
+    if kind in ("find_note", "play_interval", "tone_row"):
         from . import quiz
         return RefOptions(notes=quiz.drawn_notes(lid, ex)), "wait", 1.0, ex.get("min", 80)
     raise CatalogError(f"Unknown exercise kind: {kind}")

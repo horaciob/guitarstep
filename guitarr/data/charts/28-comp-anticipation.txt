@@ -1,0 +1,11 @@
+title: Comping: anticipations
+level: 8
+bpm: 104
+swing: light
+voicing: drop2
+strum: D.D.D..^
+note: The last strum of each bar (↓») plays the next chord early, on the “and” of 4.
+
+[Loop]
+Dm7 | G7 | Cmaj7 | A7
+Dm7 | G7 | Cmaj7 | Cmaj7
