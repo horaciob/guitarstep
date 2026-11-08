@@ -219,7 +219,7 @@ def api_course():
                         passed=p["exercises"].get(f"{x['id']}/{e['id']}", -1) >= e.get("min", 80),
                         **({"steps": catalog.exercise_steps(e)} if e["kind"] in ("lick", "bend") else {}))
                    for e in x["exercises"]]
-            ls.append(dict(x, exercises=exs, done=x["id"] in p["lessons"], pinned=p["tutorials"].get(x["id"])))
+            ls.append(dict(x, exercises=exs, chords=catalog.lesson_chords(x), done=x["id"] in p["lessons"], pinned=p["tutorials"].get(x["id"])))
         levels.append(dict(lvl, lessons=ls))
     nxt = next((x for lv in levels for x in lv["lessons"] if not x["done"]), None)
     return dict(levels=levels, next=nxt and dict(id=nxt["id"], title=nxt["title"]))

@@ -296,6 +296,19 @@ def lessons() -> list[dict]:
     return [ls for lvl in course()["levels"] for ls in lvl["lessons"]]
 
 
+def lesson_chords(ls: dict) -> list[str]:
+    """The lesson's own chords, then every chord its exercises use (charts included), each once."""
+    out = list(ls.get("chords") or [])
+    for ex in ls["exercises"]:
+        if ex["kind"] == "chord":
+            out.append(ex["chord"])
+        elif ex["kind"] == "change":
+            out += ex["chords"]
+        elif ex["kind"] == "chart":
+            out += [b["chord"] for b in get_chart(ex["chart"])["bars"] if b["chord"]]
+    return [c for c in dict.fromkeys(out) if get_chord(c)]
+
+
 def get_lesson(lid: str) -> dict:
     ls = next((x for x in lessons() if x["id"] == lid), None)
     if ls is None:

@@ -47,6 +47,19 @@ def test_lessons_reference_existing_material():
             assert ref.notes and mode in ("wait", "tempo", "bend") and 0 < need <= 100
 
 
+def test_lesson_chords_include_every_chord_the_exercises_use():
+    ls = catalog.get_lesson("g-c")
+    chords = catalog.lesson_chords(ls)
+    assert chords[:2] == ["G", "C"]                       # the lesson's own chords first
+    assert {"D", "Em"} <= set(chords)                     # from its pop-in-G chart
+    assert len(chords) == len(set(chords))
+    for x in catalog.lessons():
+        used = catalog.lesson_chords(x)
+        for ex in x["exercises"]:
+            if ex["kind"] == "change":
+                assert set(ex["chords"]) <= set(used), x["id"]
+
+
 def test_spanish_translations_cover_all_content():
     import json
     from pathlib import Path
