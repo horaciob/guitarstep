@@ -389,7 +389,9 @@
    "finished": "¡Terminaste la ruta! 🎉 Seguí con los cifrados.",
    "minutes": "{{n}} min",
    "n_exercises_one": "{{count}} ejercicio",
-   "n_exercises_other": "{{count}} ejercicios"
+   "n_exercises_other": "{{count}} ejercicios",
+   "level_progress": "{{done}} de {{total}} lecciones",
+   "level_done": "✓ nivel completo"
   },
   "lesson": {
    "not_found": "No existe esa lección.",
@@ -444,7 +446,12 @@
    "focus_step": "{{k}} de {{total}}",
    "metro_bpm": "BPM",
    "metro_beat": "tiempo",
-   "metro_count_in": "cuenta"
+   "metro_count_in": "cuenta",
+   "continue_with": "Seguir: {{title}}",
+   "practice_again": "Practicar de nuevo",
+   "focus_keys_html": "<kbd>Espacio</kbd> empezar / parar · <kbd>Enter</kbd> siguiente ejercicio · <kbd>Esc</kbd> volver",
+   "result_passed": "¡aprobado!",
+   "result_need": "necesitás {{need}}%"
   },
   "chords": {
    "title": "Acordes",

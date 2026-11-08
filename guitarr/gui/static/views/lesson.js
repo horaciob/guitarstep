@@ -50,6 +50,7 @@ export async function mount(el, { segs }) {
   const lt = (k, fb) => tc(`lessons.${ls.id}.${k}`, fb);
   const theory = lt("theory", ls.theory), tips = lt("tips", ls.tips || []), tutorials = lt("tutorials", ls.tutorials || []);
   const exTitle = ex => tc(`exercises.${ls.id}/${ex.id}`, ex.title);
+  const upNext = ls.exercises.find(e => !e.passed);   // the first exercise you haven't passed yet
 
   el.innerHTML = `
     <a class="btn small" href="#/course">← ${esc(t("nav.course"))}</a>
@@ -59,7 +60,9 @@ export async function mount(el, { segs }) {
       <div class="stack">
         <div class="panel"><h2>${esc(t("lesson.idea"))}</h2><ul class="theory">${theory.map(x => `<li>${esc(x)}</li>`).join("")}</ul>
           ${tips.length ? `<h3>${esc(t("lesson.tips"))}</h3><ul class="theory">${tips.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : ""}</div>
-        <div class="panel"><h2>${esc(t("lesson.exercises"))}</h2><p class="muted small">${t("lesson.exercises_hint_html")}</p>
+        <div class="panel"><div class="ex-panel-head"><h2>${esc(t("lesson.exercises"))}</h2>
+            <button class="btn primary" id="exContinue">▶ ${esc(upNext ? t("lesson.continue_with", { title: exTitle(upNext) }) : t("lesson.practice_again"))}</button></div>
+          <p class="muted small">${t("lesson.exercises_hint_html")}</p>
           <div class="exercises">${ls.exercises.map(ex => `
             <div class="exercise${ex.passed ? " passed" : ""}" data-id="${esc(ex.id)}">
               <div class="ex-head"><span class="state">${ex.passed ? "✓" : "○"}</span>
@@ -84,17 +87,19 @@ export async function mount(el, { segs }) {
         ${next ? `<a class="callout" href="#/lesson/${encodeURIComponent(next.id)}"><span>${t("lesson.next_html", { title: esc(tc(`lessons.${next.id}.title`, next.title)), interpolation: { escapeValue: false } })}</span><span>→</span></a>` : ""}
       </div>
     </div>
-    <dialog class="ex-focus" aria-labelledby="fTitle"><div class="focus-inner">
+    <dialog class="ex-focus" aria-labelledby="fTitle"><div class="focus-inner" tabindex="-1">
       <div class="focus-top"><button class="btn small" data-f="back">← ${esc(t("lesson.focus_back"))}</button>
         <small class="muted">${esc(lt("title", ls.title))}</small></div>
       <div class="focus-head"><h1 id="fTitle"></h1><p class="muted" id="fTarget"></p></div>
       <div class="focus-body"></div>
       <div class="focus-foot">
         <div class="ex-progress"><i></i></div>
+        <div class="f-result" hidden></div>
         <div class="ex-msg muted" aria-live="polite"></div>
         <div class="row center"><button class="btn" data-f="hear"></button>
           <button class="btn primary xl" data-f="go"></button>
           <button class="btn" data-f="next" hidden>${esc(t("lesson.focus_next"))} →</button></div>
+        <p class="muted small center kbd-hint">${t("lesson.focus_keys_html")}</p>
       </div>
     </div></dialog>`;
 
@@ -123,6 +128,14 @@ export async function mount(el, { segs }) {
   const dlg = $(".ex-focus", el);
   dlg.addEventListener("cancel", e => { e.preventDefault(); closeFocus(el, segs); });   // Esc
   $("[data-f=back]", dlg).onclick = () => closeFocus(el, segs);
+  // keys while the exercise is on screen: Space starts/stops, Enter goes to the next exercise
+  dlg.addEventListener("keydown", e => {
+    if (e.target.closest("button, input, a, .knob")) return;   // a focused control handles its own keys
+    const next = $("[data-f=next]", dlg);
+    if (e.key === " ") { e.preventDefault(); $("[data-f=go]", dlg).click(); }
+    else if (e.key === "Enter" && !next.hidden) { e.preventDefault(); next.click(); }
+  });
+  $("#exContinue", el).onclick = () => openFocus(el, segs, ls, upNext || ls.exercises[0], chordData, exTitle);
 }
 
 /** Chart exercises: plays the chart at the exercise's speed while the views (guide, metronome) follow it. */
@@ -219,7 +232,9 @@ async function openFocus(el, segs, ls, ex, chordData, exTitle, start = false) {
   const go = $("[data-f=go]", dlg);
   go.textContent = t("lesson.listen");
   go.onclick = () => run(el, segs, ls, ex, chordData, exTitle);
+  $(".f-result", dlg).hidden = true;
   if (!dlg.open) dlg.showModal();
+  $(".focus-inner", dlg).focus();   // so Space and Enter reach the shortcuts, not the Back button
   if (start) run(el, segs, ls, ex, chordData, exTitle);
 }
 
@@ -258,6 +273,7 @@ async function run(el, segs, ls, ex, chordData, exTitle) {
   if (g) views.forEach(v => v.setClock(() => pos == null ? null : pos + (performance.now() - at) / 1000 * rate));
   const bar = $(".ex-progress i", dlg), msg = $(".ex-msg", dlg), btn = $("[data-f=go]", dlg), next = $("[data-f=next]", dlg);
   next.hidden = true;
+  $(".f-result", dlg).hidden = true;
   $("[data-f=hear]", dlg).disabled = true;
   btn.textContent = t("lesson.stop");
   msg.className = "ex-msg muted";
@@ -281,6 +297,7 @@ async function run(el, segs, ls, ex, chordData, exTitle) {
     msg.textContent = a.passed
       ? t("lesson.passed", { score: Math.round(score) }) + (a.xp ? ` · +${a.xp} XP` : "") + (a.lesson_done ? ` · ${t("lesson.lesson_done")}` : "")
       : score == null ? t("lesson.not_played") : t("lesson.failed", { score: Math.round(score), need: a.need });
+    if (score != null) showResult($(".f-result", dlg), Math.round(score), !!a.passed, a.need ?? ex.min, a.xp);
     if (a.passed && focus) {
       focus.changed = true;
       ex.passed = true;
@@ -300,7 +317,23 @@ async function run(el, segs, ls, ex, chordData, exTitle) {
     $("[data-f=hear]", dlg).disabled = false;
     btn.textContent = t("lesson.focus_again");
     btn.onclick = () => run(el, segs, ls, ex, chordData, exTitle);
+    if (dlg.open) $(".focus-inner", dlg).focus();   // Space = again, Enter = next
   }
+}
+
+/** The score as a ring with the number inside, a mark at the passing score, and the XP you earned. */
+function showResult(box, score, passed, need, xp) {
+  const r = 52, len = 2 * Math.PI * r, at = a => `rotate(${a * 3.6 - 90} 60 60)`;
+  box.className = `f-result ${passed ? "ok" : "err"}`;
+  box.innerHTML = `
+    <svg viewBox="0 0 120 120" width="132" height="132" aria-hidden="true">
+      <circle class="r-track" cx="60" cy="60" r="${r}"/>
+      <circle class="r-val" cx="60" cy="60" r="${r}" stroke-dasharray="${len}" stroke-dashoffset="${len}" transform="${at(0)}" style="--to:${(len * (1 - Math.min(score, 100) / 100)).toFixed(1)}"/>
+      <line class="r-need" x1="60" y1="2" x2="60" y2="16" transform="rotate(${need * 3.6} 60 60)"/>
+    </svg>
+    <div class="r-text"><b>${score}%</b><small>${esc(passed ? t("lesson.result_passed") : t("lesson.result_need", { need }))}</small></div>
+    ${passed && xp ? `<span class="r-xp">+${xp} XP</span>` : ""}`;
+  box.hidden = false;
 }
 
 export function unmount() {

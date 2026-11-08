@@ -262,12 +262,14 @@ def test_chart_exercise_shows_a_guide_and_plays_a_demo(app_page):
     expect(guide.locator(".bar-cell span.on")).to_have_count(0)
 
 
-def _fake_listener(page):
-    """Answers /api/live/* in the browser, so no microphone or metronome output is ever opened."""
+def _fake_listener(page, report=None):
+    """Answers /api/live/* in the browser, so no microphone or metronome output is ever opened.
+    `report` is what the take ends with once stopped (by default: nothing played)."""
     import json
     import time
 
     live = {}
+    report = report or {"award": {"passed": False, "need": 80}, "summary": {"score": None}}
 
     def handle(route):
         url = route.request.url
@@ -280,7 +282,7 @@ def _fake_listener(page):
         elif "t0" not in live:                                      # polled before anything started
             body = {"active": False, "state": None, "report": None}
         elif live.get("stopped"):
-            body = {"active": False, "state": None, "report": {"award": {"passed": False, "need": 80}, "summary": {"score": None}}}
+            body = {"active": False, "state": None, "report": report}
         else:
             beat = (time.monotonic() - live["t0"]) * 49 / 60 - 4       # 4-beat count-in at 49 BPM
             body = {"active": True, "report": None, "state": {"k": 0, "total": 8, "pos": beat, "lane": [], "last": None,
@@ -313,6 +315,35 @@ def test_exercise_opens_on_its_own_screen_with_a_big_metronome(app_page):
     app_page.keyboard.press("Escape")
     expect(focus).to_be_hidden()
     expect(app_page.locator(".exercise").first).to_be_visible()
+
+
+def test_lesson_continue_keys_and_result_ring(app_page):
+    onboarded(app_page)
+    _fake_listener(app_page, {"award": {"passed": True, "need": 75, "xp": 20}, "summary": {"score": 91}})
+    go(app_page, "lesson/first-change")
+    cont = app_page.locator("#exContinue")
+    expect(cont).to_contain_text("Continue: Strum Am four times")
+    cont.click()
+    focus = app_page.locator("dialog.ex-focus")
+    expect(focus.locator("#fTitle")).to_have_text("Strum Am four times")
+    expect(focus.locator("[data-f=go]")).to_contain_text("Listen to me")      # opened, not started
+    app_page.keyboard.press(" ")                                              # start
+    expect(focus.locator("[data-f=go]")).to_contain_text("Stop")
+    app_page.keyboard.press(" ")                                              # stop → the take is graded
+    ring = focus.locator(".f-result")
+    expect(ring).to_be_visible()
+    expect(ring).to_contain_text("91%")
+    expect(ring).to_contain_text("passed!")
+    expect(ring).to_contain_text("+20 XP")
+    app_page.keyboard.press("Enter")                                          # next exercise
+    expect(focus.locator("#fTitle")).to_contain_text("Em → Am")
+    expect(ring).to_be_hidden()
+
+
+def test_course_shows_progress_per_level(app_page):
+    onboarded(app_page)
+    go(app_page, "course")
+    expect(app_page.locator(".level").first.locator(".lvl-prog")).to_contain_text("0 of 3 lessons")
 
 
 def test_tuning_and_left_handed(app_page):

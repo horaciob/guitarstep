@@ -389,7 +389,9 @@
    "finished": "You finished the course! 🎉 Keep going with the charts.",
    "minutes": "{{n}} min",
    "n_exercises_one": "{{count}} exercise",
-   "n_exercises_other": "{{count}} exercises"
+   "n_exercises_other": "{{count}} exercises",
+   "level_progress": "{{done}} of {{total}} lessons",
+   "level_done": "✓ level complete"
   },
   "lesson": {
    "not_found": "That lesson doesn't exist.",
@@ -444,7 +446,12 @@
    "focus_step": "{{k}} of {{total}}",
    "metro_bpm": "BPM",
    "metro_beat": "beat",
-   "metro_count_in": "count-in"
+   "metro_count_in": "count-in",
+   "continue_with": "Continue: {{title}}",
+   "practice_again": "Practice again",
+   "focus_keys_html": "<kbd>Space</kbd> start / stop · <kbd>Enter</kbd> next exercise · <kbd>Esc</kbd> back",
+   "result_passed": "passed!",
+   "result_need": "you need {{need}}%"
   },
   "chords": {
    "title": "Chords",

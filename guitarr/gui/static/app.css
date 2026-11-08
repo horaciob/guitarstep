@@ -895,3 +895,34 @@ body.is-setup #main { margin: 0 auto; max-width: 760px; padding-top: 48px; }
   .gl .speaker { width: calc(var(--sp) * 5.4px); }
 }
 @media (prefers-reduced-motion: reduce) { .gl .quick, .gl .cab-mic { transition: none; } }
+
+/* ---------- course: progress per level */
+.gl .level-head { display: flex; align-items: center; justify-content: space-between; gap: 8px 16px; flex-wrap: wrap; }
+.gl .level-head h2 { margin: 0 0 2px; }
+.gl .lvl-prog { display: flex; align-items: center; gap: 10px; color: var(--muted); }
+.gl .lvl-prog .bar { width: 120px; height: 6px; border-radius: 99px; background: var(--border); overflow: hidden; }
+.gl .lvl-prog .bar i { display: block; height: 100%; background: var(--gl-accent); }
+.gl .level.complete .lvl-num { background: var(--gl-ok); color: #fff; }
+.gl .level.complete .lvl-prog { color: var(--gl-ok); font-weight: 600; }
+.gl .level.complete .lvl-prog .bar i { background: var(--gl-ok); }
+
+/* ---------- lesson: continue button and the result ring on the exercise screen */
+.gl .ex-panel-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.gl .ex-panel-head h2 { margin: 0; }
+.gl .ex-panel-head .btn { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gl .focus-inner:focus { outline: none; }
+.gl .f-result { position: relative; display: flex; align-items: center; justify-content: center; gap: 18px; }
+.gl .f-result[hidden] { display: none; }
+.gl .f-result svg { flex: none; }
+.gl .f-result .r-track { fill: none; stroke: var(--border); stroke-width: 10; }
+.gl .f-result .r-val { fill: none; stroke-width: 10; stroke-linecap: round; animation: ring-fill .9s cubic-bezier(.2,.8,.2,1) forwards; }
+.gl .f-result.ok .r-val { stroke: var(--gl-ok); } .gl .f-result.err .r-val { stroke: var(--gl-warn); }
+.gl .f-result .r-need { stroke: var(--text); stroke-width: 3; stroke-linecap: round; }
+.gl .f-result .r-text { position: absolute; left: 50%; width: 132px; margin-left: -66px; display: grid; justify-items: center; text-align: center; }
+.gl .f-result .r-text b { font-size: 34px; line-height: 1; font-variant-numeric: tabular-nums; }
+.gl .f-result .r-text small { font-size: 12px; font-weight: 700; color: var(--muted); }
+.gl .f-result.ok .r-text small { color: var(--gl-ok); }
+.gl .f-result .r-xp { position: absolute; left: calc(50% + 80px); font-weight: 800; font-size: 18px; color: var(--gl-accent-ink); background: var(--gl-accent); padding: 6px 12px; border-radius: 99px; animation: xp-pop .5s .6s both cubic-bezier(.3,1.6,.5,1); }
+@keyframes ring-fill { to { stroke-dashoffset: var(--to); } }
+@keyframes xp-pop { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .gl .f-result .r-val { animation-duration: .01s; } .gl .f-result .r-xp { animation: none; } }
