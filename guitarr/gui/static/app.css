@@ -748,3 +748,150 @@ body.is-setup #main { margin: 0 auto; max-width: 760px; padding-top: 48px; }
 .gl .strings div.miss { border-style: dashed; color: var(--muted); }
 .gl .sg-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px 18px; margin: 10px 0; }
 .gl .sg-facts dt { font-size: 12px; color: var(--muted); } .gl .sg-facts dd { margin: 2px 0 0; font-size: 16px; font-weight: 600; }
+
+/* ---------- tone rig: hardware look (original designs, generic names). The gear always draws on its own
+   dark or light finish, so it looks the same in both themes; on/off is a lit LED plus the word ON/OFF. */
+.knob-skirt { fill: none; stroke: none; }
+.knob-head { fill: currentColor; }
+
+/* knobs on a stompbox: black caps with a white line */
+.knob.knob-pedal .knob-track { stroke: color-mix(in srgb, var(--ink, #222) 22%, transparent); }
+.knob.knob-pedal .knob-val { stroke: var(--ink, #222); opacity: .85; }
+.knob.knob-pedal .knob-skirt { fill: #0d0e10; stroke: rgba(255,255,255,.12); }
+.knob.knob-pedal .knob-cap { fill: #1d1f24; stroke: #000; }
+.knob.knob-pedal .knob-ptr { stroke: #f4f1ea; stroke-width: 3; }
+.knob.knob-pedal .knob-v, .knob.knob-pedal .knob-l { color: var(--ink, inherit); }
+
+/* pointer knobs on an amp panel */
+.knob.knob-chicken { color: var(--knob-ink, #f2ead6); }
+.knob.knob-chicken .knob-track { stroke: color-mix(in srgb, var(--panel-ink, #222) 25%, transparent); }
+.knob.knob-chicken .knob-val { stroke: var(--panel-ink, #222); opacity: .7; }
+.knob.knob-chicken .knob-skirt { fill: color-mix(in srgb, var(--panel-ink, #222) 20%, transparent); stroke: none; }
+.knob.knob-chicken .knob-cap { fill: var(--knob-cap, #121212); stroke: rgba(0,0,0,.6); }
+.knob.knob-chicken .knob-ptr { stroke: var(--knob-cap, #121212); }
+.knob.knob-chicken .knob-head { fill: var(--knob-cap, #121212); stroke: rgba(255,255,255,.25); stroke-width: .8; }
+.gl .amp .knob-v, .gl .amp .knob-l { color: var(--panel-ink, inherit); }
+.gl .amp .knob.knob-pedal .knob-cap { fill: var(--knob-cap, #1d1f24); }
+.gl .amp .knob.knob-pedal .knob-ptr { stroke: var(--knob-ink, #f4f1ea); }
+.gl .amp .knob.knob-pedal .knob-track { stroke: color-mix(in srgb, var(--panel-ink, #222) 25%, transparent); }
+.gl .amp .knob.knob-pedal .knob-val { stroke: var(--panel-ink, #222); }
+
+/* the pedalboard */
+.gl .board { align-items: center; gap: 0; padding: 18px 14px; border: 0; border-radius: 12px;
+  background: repeating-linear-gradient(45deg, rgba(255,255,255,.035) 0 2px, transparent 2px 6px), linear-gradient(#24262c, #16171b);
+  box-shadow: inset 0 2px 0 rgba(255,255,255,.06), inset 0 -6px 0 rgba(0,0,0,.35), 0 10px 24px rgba(0,0,0,.25); row-gap: 14px; }
+.gl .board.drop { outline: 2px dashed var(--gl-accent); outline-offset: 3px; }
+.gl .jack { font: 700 10px/1 ui-monospace, Menlo, monospace; letter-spacing: .08em; text-transform: uppercase; color: #c9ccd4;
+  background: #0d0e11; border: 1px solid #3a3d46; border-radius: 99px; padding: 6px 9px; }
+.gl .cable { width: 26px; height: 6px; border-radius: 3px; background: linear-gradient(#2c2f36, #111215); box-shadow: 0 1px 0 rgba(255,255,255,.08); position: relative; flex: none; }
+.gl .cable::after { content: ""; position: absolute; right: -2px; top: -3px; border: 6px solid transparent; border-left-color: #6b7080; border-right: 0; }
+.gl .board { align-items: flex-end; }
+.gl .board .jack, .gl .board .cable { align-self: center; }
+.gl .board .pedal.add { margin-left: 14px; min-height: 230px; width: 150px; color: #aab0bd; border-color: #4a4e58; background: rgba(255,255,255,.03); }
+.gl .board .pedal.add:hover { color: #fff; border-color: var(--gl-accent); }
+
+/* a stompbox */
+.gl .pedal.stomp { width: 168px; min-height: 250px; padding: 10px 12px 14px; gap: 8px; border: 0; border-radius: 14px; color: var(--ink);
+  background:
+    radial-gradient(circle at 9px 9px, #c9ccd1 0 2.5px, #6d717a 3px, transparent 3.5px),
+    radial-gradient(circle at calc(100% - 9px) 9px, #c9ccd1 0 2.5px, #6d717a 3px, transparent 3.5px),
+    radial-gradient(circle at 9px calc(100% - 9px), #c9ccd1 0 2.5px, #6d717a 3px, transparent 3.5px),
+    radial-gradient(circle at calc(100% - 9px) calc(100% - 9px), #c9ccd1 0 2.5px, #6d717a 3px, transparent 3.5px),
+    linear-gradient(160deg, color-mix(in srgb, var(--pc) 70%, white) 0%, var(--pc) 32%, color-mix(in srgb, var(--pc) 72%, black) 100%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.35), inset 0 -3px 0 rgba(0,0,0,.3), 0 6px 0 #0b0c0e, 0 12px 18px rgba(0,0,0,.45); }
+.gl .pedal.stomp:not(.on) { background-color: transparent; filter: saturate(.55) brightness(.82); }
+.gl .pedal.stomp .pedal-top { cursor: grab; }
+.gl .pedal.stomp .pedal-tools { opacity: .55; transition: opacity .15s; }
+.gl .pedal.stomp:hover .pedal-tools, .gl .pedal.stomp:focus-within .pedal-tools { opacity: 1; }
+.gl .pedal.stomp .ib { color: var(--ink); width: 20px; height: 20px; }
+.gl .pedal.stomp .ib:hover:not(:disabled) { background: color-mix(in srgb, var(--ink) 15%, transparent); color: var(--ink); }
+.gl .stomp-led { display: inline-flex; align-items: center; gap: 5px; font: 800 10px/1 ui-monospace, Menlo, monospace; letter-spacing: .06em; }
+.gl .stomp-led .led { width: 11px; height: 11px; border-radius: 50%; background: #4a1414; box-shadow: inset 0 1px 2px rgba(0,0,0,.6), 0 0 0 2px rgba(0,0,0,.35); }
+.gl .pedal.stomp.on .stomp-led .led { background: radial-gradient(circle at 40% 35%, #ffb3b3, #ff2b2b 60%); box-shadow: 0 0 10px #ff3b3b, 0 0 0 2px rgba(0,0,0,.35); }
+.gl .pedal.stomp .pedal-knobs { gap: 2px 4px; }
+.gl .pedal.stomp .pedal-knobs .knob { min-width: 46px; }
+.gl .pedal.stomp .seg.mini { background: rgba(0,0,0,.28); border-color: rgba(0,0,0,.35); }
+.gl .pedal.stomp .seg.mini button { color: var(--ink); }
+.gl .pedal.stomp .seg.mini button.active { background: #f4f1ea; color: #16181d; }
+.gl .stomp-plate { margin-top: auto; text-align: center; padding: 6px 4px; border-radius: 6px; background: rgba(0,0,0,.18); box-shadow: inset 0 1px 2px rgba(0,0,0,.35); }
+.gl .stomp-plate b { font: 900 15px/1.1 "Inter", system-ui, sans-serif; letter-spacing: .06em; text-transform: uppercase; }
+.gl .pedal.stomp .footswitch { width: 54px; height: 54px; margin: 2px auto 0; padding: 0; border: 3px solid #2a2c31;
+  background: radial-gradient(circle at 38% 32%, #ffffff 0 8%, #d6d9de 22%, #8b9099 62%, #5d626b 100%);
+  box-shadow: 0 0 0 4px #9ea3ab, 0 0 0 6px #3b3e45, 0 4px 6px rgba(0,0,0,.5); }
+.gl .pedal.stomp .footswitch:active { transform: translateY(2px) scale(.97); }
+.gl .pedal.stomp .footswitch:focus-visible { outline: 3px solid var(--gl-accent); outline-offset: 6px; }
+
+/* amp: head with tolex, logo, control panel and a pilot light; each archetype has its own finish */
+.gl .amp { --tolex: #151515; --tolex-img: none; --pipe: #d8d2c4; --front: #262626; --front-img: none; --logo: #e9e3d3;
+  --logo-font: "Snell Roundhand", "Brush Script MT", "Segoe Script", cursive; --panel: linear-gradient(#cfd3d8, #9ea4ac);
+  --panel-ink: #1a1a1a; --knob-cap: #121212; --knob-ink: #f2ead6; --jewel: #ff3b30;
+  position: relative; border-radius: 16px; padding: 22px 16px 16px; background: var(--tolex-img), var(--tolex);
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,.04), inset 0 -8px 0 rgba(0,0,0,.35), 0 14px 28px rgba(0,0,0,.4); }
+.gl .amp-handle { position: absolute; top: -10px; left: 50%; width: 120px; height: 18px; margin-left: -60px; border-radius: 10px 10px 4px 4px; background: linear-gradient(#2b2b2b, #0e0e0e); box-shadow: 0 2px 0 rgba(255,255,255,.08) inset; }
+.gl .amp-front { height: 86px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  background: var(--front-img), var(--front); box-shadow: inset 0 0 0 3px var(--pipe), inset 0 0 0 5px rgba(0,0,0,.4); }
+.gl .amp-logo { font: 700 clamp(26px, 4vw, 40px)/1 var(--logo-font); color: var(--logo); text-shadow: 0 2px 0 rgba(0,0,0,.45); padding: 0 12px; text-align: center; }
+.gl .amp-panel { position: relative; margin-top: 12px; border-radius: 8px; padding: 10px 14px 12px 64px; background: var(--panel); color: var(--panel-ink);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.45), inset 0 -2px 0 rgba(0,0,0,.25); }
+.gl .amp-panel .knobs { margin-top: 0; justify-content: space-around; gap: 6px; }
+.gl .amp-jewel { position: absolute; left: 18px; top: 22px; width: 24px; height: 24px; border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, color-mix(in srgb, var(--jewel) 30%, #000), #200 70%); box-shadow: 0 0 0 4px #b9bcc2, 0 0 0 6px #4a4d55; }
+.gl .amp.on .amp-jewel { background: radial-gradient(circle at 40% 35%, #fff 0 10%, var(--jewel) 45%, color-mix(in srgb, var(--jewel) 60%, #000) 100%); box-shadow: 0 0 0 4px #b9bcc2, 0 0 0 6px #4a4d55, 0 0 18px var(--jewel); }
+.gl .amp-state { position: absolute; left: 12px; top: 56px; width: 36px; text-align: center; font: 800 10px/1 ui-monospace, Menlo, monospace; letter-spacing: .06em; }
+.gl .amp:not(.on) { filter: saturate(.5) brightness(.8); }
+.gl .skin-clean { --tolex: #121212; --front: #3d4a55; --front-img: repeating-linear-gradient(90deg, rgba(255,255,255,.18) 0 1px, transparent 1px 3px); --pipe: #cfd6dc; --logo: #f1f4f6; --panel: linear-gradient(#e3e7ea, #aab2b9); --jewel: #ff4436; }
+.gl .skin-jazz { --tolex: #1a1a1a; --front: #2b2b2b; --front-img: repeating-linear-gradient(0deg, rgba(255,255,255,.06) 0 1px, transparent 1px 3px); --pipe: #6b6b6b; --logo: #d9d9d9; --logo-font: "Inter", system-ui, sans-serif; --panel: linear-gradient(#2e2f33, #191a1d); --panel-ink: #e6e6e6; --knob-cap: #e6e2d6; --knob-ink: #111; --jewel: #4aa3ff; }
+.gl .skin-tweed { --tolex: #c8a76a; --tolex-img: repeating-linear-gradient(45deg, rgba(90,60,20,.35) 0 3px, transparent 3px 7px), repeating-linear-gradient(-45deg, rgba(255,240,200,.25) 0 2px, transparent 2px 6px);
+  --front: #6b2a24; --front-img: repeating-linear-gradient(90deg, rgba(0,0,0,.25) 0 2px, transparent 2px 4px); --pipe: #2d1d10; --logo: #f3e3bf; --panel: linear-gradient(#d9dbdd, #9fa3a8); --knob-cap: #6b4a2b; --jewel: #ff9a2e; }
+.gl .skin-chime { --tolex: #2a1d14; --front: #7a2e2a; --front-img: repeating-linear-gradient(45deg, rgba(240,200,150,.35) 0 2px, transparent 2px 12px), repeating-linear-gradient(-45deg, rgba(240,200,150,.35) 0 2px, transparent 2px 12px);
+  --pipe: #e7d7b7; --logo: #f3e7cf; --panel: linear-gradient(#c98a4b, #8f5a2a); --panel-ink: #24160a; --knob-cap: #f0e6d0; --jewel: #ff5a3c; }
+.gl .skin-crunch { --tolex: #111; --tolex-img: radial-gradient(rgba(255,255,255,.05) 1px, transparent 1.5px) 0 0 / 4px 4px; --front: #1b1b1b; --front-img: repeating-linear-gradient(90deg, rgba(212,175,90,.22) 0 1px, transparent 1px 3px);
+  --pipe: #f1ead8; --logo: #f3e9cf; --panel: linear-gradient(#e5c675, #b58e3a); --panel-ink: #1d1505; --knob-cap: #141414; --jewel: #ff3b30; }
+.gl .skin-high_gain { --tolex: #0c0c0d; --front: #141516; --front-img: repeating-linear-gradient(45deg, rgba(255,255,255,.06) 0 4px, transparent 4px 8px), repeating-linear-gradient(-45deg, rgba(255,255,255,.06) 0 4px, transparent 4px 8px);
+  --pipe: #9b1c1c; --logo: #e8e8e8; --logo-font: "Impact", "Arial Black", system-ui, sans-serif; --panel: linear-gradient(#3a3c40, #1c1d20); --panel-ink: #f0f0f0; --knob-cap: #0b0b0b; --knob-ink: #ff4d4d; --jewel: #ff2020; }
+.gl .skin-lead { --tolex: #2b1420; --front: #1e1e1e; --front-img: repeating-linear-gradient(90deg, rgba(255,255,255,.1) 0 1px, transparent 1px 3px); --pipe: #c9a227; --logo: #f2e3b0; --panel: linear-gradient(#1d1d1f, #0e0e10); --panel-ink: #f2e3b0; --knob-cap: #efe6cf; --jewel: #9b5cff; }
+.gl .skin-acoustic { --tolex: #6b4426; --tolex-img: repeating-linear-gradient(90deg, rgba(0,0,0,.12) 0 2px, transparent 2px 9px); --front: #3a2a1d; --pipe: #e8d4b0; --logo: #f2e6d0;
+  --logo-font: "Georgia", serif; --panel: linear-gradient(#efe4cf, #cdbb98); --panel-ink: #2b1d10; --knob-cap: #3a2a1d; --jewel: #3bd16f; }
+.gl .skin-bass { --tolex: #161616; --front: #22262b; --front-img: radial-gradient(rgba(255,255,255,.12) 1.2px, transparent 1.6px) 0 0 / 6px 6px; --pipe: #8fa3b5; --logo: #e1e8ee;
+  --logo-font: "Arial Black", system-ui, sans-serif; --panel: linear-gradient(#b8c4cf, #7d8b98); --jewel: #2f9bff; }
+
+/* amp thumbnails in the picker and the quick sounds */
+.gl .amp-thumb { display: block; width: 56px; height: 34px; border-radius: 5px; padding: 4px; margin-bottom: 6px;
+  background: var(--tolex-img, none), var(--tolex, #151515); box-shadow: 0 2px 4px rgba(0,0,0,.35); }
+.gl .amp-thumb i { display: block; height: 100%; border-radius: 2px; box-shadow: inset 0 0 0 1px var(--pipe, #d8d2c4);
+  background: var(--panel, linear-gradient(#cfd3d8, #9ea4ac)) bottom / 100% 34% no-repeat, var(--front-img, none), var(--front, #262626); }
+.gl .amp-pick { flex-basis: 180px; }
+
+/* cabinet */
+.gl .cab-visual { display: flex; justify-content: center; margin: 4px 0 16px; }
+.gl .cab-grille { --sp: 12; display: grid; gap: 10px; padding: 14px; border-radius: 12px; background:
+    repeating-linear-gradient(45deg, rgba(255,255,255,.07) 0 1px, transparent 1px 4px), repeating-linear-gradient(-45deg, rgba(255,255,255,.07) 0 1px, transparent 1px 4px), #1e1f22;
+  box-shadow: inset 0 0 0 3px #d8d2c4, inset 0 0 0 5px rgba(0,0,0,.4), 0 0 0 10px #141414, 0 12px 24px rgba(0,0,0,.4); }
+.gl .cab-grille.n2 { grid-template-columns: 1fr 1fr; } .gl .cab-grille.n4 { grid-template-columns: 1fr 1fr; }
+.gl .speaker { position: relative; width: calc(var(--sp) * 7.2px); aspect-ratio: 1; border-radius: 50%;
+  background: radial-gradient(circle, #3b3d42 0 12%, #121315 13% 15%, #26282c 16% 62%, #0d0e10 63% 66%, #2b2d31 67% 100%); box-shadow: inset 0 0 0 2px rgba(255,255,255,.05); }
+.gl .cab-mic { --x: 0%; --s: 1; position: absolute; left: calc(50% + var(--x)); top: 50%; width: 30px; height: 30px; margin: -15px 0 0 -15px; border-radius: 50%;
+  transform: scale(var(--s)); transition: left .1s, transform .1s; background: radial-gradient(circle at 40% 35%, #f2f2f2, #8e939b 60%, #44474e); box-shadow: 0 0 0 3px var(--gl-accent), 0 4px 10px rgba(0,0,0,.6); }
+.gl .cab-mic i { position: absolute; inset: 7px; border-radius: 50%; background: repeating-radial-gradient(#2a2c31 0 1px, #6e737c 1px 2px); }
+.gl .cab-di { display: inline-flex; align-items: center; justify-content: center; width: 120px; height: 70px; border-radius: 10px; font: 900 22px/1 ui-monospace, Menlo, monospace; letter-spacing: .1em; color: #e9e3d3; background: linear-gradient(#3b3e45, #1b1c20); box-shadow: 0 8px 18px rgba(0,0,0,.35); }
+.gl .cab-visual.off { filter: saturate(.4) brightness(.7); }
+
+/* quick sounds */
+.gl .rig-quick { margin: 0 0 14px; }
+.gl .rig-quick h2.sub { margin-top: 4px; }
+.gl .quick-row { display: flex; gap: 10px; overflow-x: auto; padding: 2px 2px 8px; scrollbar-width: thin; }
+.gl .quick { flex: 0 0 150px; text-align: left; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 10px; border-radius: 12px; border: 1px solid var(--border); background: var(--gl-panel); color: var(--text); cursor: pointer; transition: transform .12s, border-color .12s; }
+.gl .quick:hover { transform: translateY(-2px); border-color: var(--muted); }
+.gl .quick.on { border-color: var(--gl-accent); box-shadow: inset 0 0 0 1px var(--gl-accent); }
+.gl .quick b { font-size: 13px; } .gl .quick small { color: var(--muted); font-size: 11px; line-height: 1.3; }
+.gl .quick-on { margin-top: 4px; font-size: 11px; font-weight: 700; color: var(--gl-accent); }
+@media (max-width: 700px) {
+  .gl .board { justify-content: center; gap: 12px; }
+  .gl .board .cable { display: none; }
+  .gl .board .jack { flex-basis: 100%; text-align: center; }
+  .gl .pedal.stomp, .gl .board .pedal.add { width: calc(50% - 6px); min-width: 0; margin-left: 0; }
+  .gl .amp-panel { padding-left: 14px; padding-top: 56px; }
+  .gl .amp-jewel { top: 14px; } .gl .amp-state { top: 20px; left: 48px; width: auto; }
+  .gl .speaker { width: calc(var(--sp) * 5.4px); }
+}
+@media (prefers-reduced-motion: reduce) { .gl .quick, .gl .cab-mic { transition: none; } }

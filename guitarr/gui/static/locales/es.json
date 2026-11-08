@@ -912,7 +912,16 @@
    "rec_stop": "Parar",
    "rec_download": "Descargar .wav ({{s}} s)",
    "rec_save": "Guardar en mis tomas",
-   "rec_saved": "Guardada: {{name}}"
+   "rec_saved": "Guardada: {{name}}",
+   "led_on": "ON",
+   "led_off": "OFF",
+   "jack_guitar": "Guitarra",
+   "jack_amp": "Ampli",
+   "jack_out": "Salida",
+   "quick_title": "Sonidos rápidos",
+   "quick_fx_one": "{{count}} efecto",
+   "quick_fx_other": "{{count}} efectos",
+   "quick_active": "activo"
   },
   "plan": {
    "title": "Plan de práctica",

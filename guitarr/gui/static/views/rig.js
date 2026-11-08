@@ -32,6 +32,7 @@ export async function mount(el) {
     <div class="gl-head head-row"><div><h1>${esc(t("rig.title"))}</h1><p class="muted">${esc(t("rig.subtitle"))}</p></div></div>
     <div class="rig-bar panel" id="rigBar"></div>
     <div class="rig-hp callout" id="rigHp" hidden></div>
+    <section class="rig-quick" id="rigQuick" aria-labelledby="quickTitle"></section>
     <div class="panel rig-source" id="rigSource"></div>
     <div class="panel rig-tools" id="rigTools"></div>
     <nav class="flow" id="rigFlow" aria-label="${esc(t("rig.flow"))}"></nav>
@@ -77,7 +78,23 @@ export function unmount() {
 }
 
 function renderAll() {
-  renderBar(); renderSource(); renderTools(); renderFlow(); renderGuitar(); renderBoard("pedals"); renderAmp(); renderCab(); renderBoard("post"); renderLooper();
+  renderBar(); renderQuick(); renderSource(); renderTools(); renderFlow(); renderGuitar(); renderBoard("pedals"); renderAmp(); renderCab(); renderBoard("post"); renderLooper();
+}
+
+// ------------------------------------------------------------------ quick sounds: the factory presets, one click each
+function renderQuick() {
+  const box = $("#rigQuick", root);
+  if (!box) return;
+  const cur = rig.preset && rig.preset.kind === "factory" ? rig.preset.id : "";
+  box.innerHTML = `<h2 id="quickTitle" class="sub">${esc(t("rig.quick_title"))}</h2>
+    <div class="quick-row">${Object.keys(FACTORY).map(id => {
+      const s = factory(id), n = [...s.pedals, ...s.post].filter(e => e.on).length;
+      return `<button class="quick${id === cur ? " on" : ""}" data-id="${id}" aria-pressed="${id === cur}">${ampThumb(s.amp.type)}
+        <b>${esc(t(`rig.preset.${id}`))}</b>
+        <small>${esc(t(`rig.amp_${s.amp.type}`))} · ${esc(t("rig.quick_fx", { count: n }))}</small>
+        ${id === cur ? `<span class="quick-on">✓ ${esc(t("rig.quick_active"))}</span>` : ""}</button>`;
+    }).join("")}</div>`;
+  $$(".quick", box).forEach(b => b.onclick = () => loadPreset(`factory:${b.dataset.id}`));
 }
 
 // ------------------------------------------------------------------ top bar: power, presets, levels
@@ -350,7 +367,10 @@ function renderBoard(where) {
   const sec = $(`#sec-${where}`, root), list = rig.state[where];
   sec.innerHTML = `<div class="sec-head"><h2>${icon(where === "pedals" ? "tools" : "sparkle")} ${esc(t(where === "pedals" ? "rig.sec_pedals" : "rig.sec_post"))}</h2>
       <p class="muted small">${esc(t(where === "pedals" ? "rig.pedals_hint" : "rig.post_hint"))}</p></div>
-    <div class="board" data-where="${where}">${list.map(e => `<div class="pedal-slot" data-uid="${esc(e.uid)}"></div>`).join("")}
+    <div class="board" data-where="${where}">
+      <span class="jack" aria-hidden="true">${esc(t(where === "pedals" ? "rig.jack_guitar" : "rig.jack_amp"))}</span><span class="cable" aria-hidden="true"></span>
+      ${list.map(e => `<div class="pedal-slot" data-uid="${esc(e.uid)}"></div><span class="cable" aria-hidden="true"></span>`).join("")}
+      <span class="jack" aria-hidden="true">${esc(t(where === "pedals" ? "rig.jack_amp" : "rig.jack_out"))}</span>
       <button class="pedal add" data-add="${where}">${icon("sparkle", 22)}<b>${esc(t("rig.add_effect"))}</b></button></div>`;
   list.forEach(e => $(`.pedal-slot[data-uid="${e.uid}"]`, sec).replaceWith(pedal(e, where)));
   $(`[data-add=${where}]`, sec).onclick = () => openCatalog(where);
@@ -372,24 +392,33 @@ function renderBoard(where) {
   });
 }
 
+/** Dark or light print for a pedal's enclosure color (so labels stay readable on any finish). */
+function inkFor(hex) {
+  const n = parseInt(hex.slice(1), 16), [r, g, b] = [n >> 16, (n >> 8) & 255, n & 255].map(v => (v / 255) ** 2.2);
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b > 0.25 ? "#16181d" : "#f4f1ea";
+}
+
 function pedal(e, where) {
   const def = EFFECTS[e.type], list = rig.state[where], i = list.indexOf(e);
   const el = document.createElement("div");
-  el.className = "pedal" + (e.on ? " on" : "");
+  el.className = "pedal stomp" + (e.on ? " on" : "");
   el.dataset.uid = e.uid;
   el.draggable = true;
   el.style.setProperty("--pc", def.color);
+  el.style.setProperty("--ink", inkFor(def.color));
   el.innerHTML = `
-    <div class="pedal-top"><b title="${esc(t(`rig.fx_${e.type}_desc`))}">${esc(t(`rig.fx_${e.type}`))}</b>
+    <div class="pedal-top">
       <span class="pedal-tools">
         <button class="ib" data-act="left" ${i === 0 ? "disabled" : ""} title="${esc(t("rig.move_left"))}" aria-label="${esc(t("rig.move_left"))}">‹</button>
         <button class="ib" data-act="right" ${i === list.length - 1 ? "disabled" : ""} title="${esc(t("rig.move_right"))}" aria-label="${esc(t("rig.move_right"))}">›</button>
         <button class="ib" data-act="swap" title="${esc(t(where === "pedals" ? "rig.to_post" : "rig.to_pedals"))}" aria-label="${esc(t(where === "pedals" ? "rig.to_post" : "rig.to_pedals"))}">⇄</button>
         <button class="ib" data-act="remove" title="${esc(t("rig.remove"))}" aria-label="${esc(t("rig.remove"))}">✕</button>
-      </span></div>
+      </span>
+      <span class="stomp-led"><span class="led"></span><small>${esc(t(e.on ? "rig.led_on" : "rig.led_off"))}</small></span></div>
     <div class="pedal-knobs"></div>
     <div class="pedal-choices"></div>
-    <button class="footswitch" aria-pressed="${e.on}" title="${esc(t("rig.footswitch"))}"><span class="led"></span></button>`;
+    <div class="stomp-plate"><b title="${esc(t(`rig.fx_${e.type}_desc`))}">${esc(t(`rig.fx_${e.type}`))}</b></div>
+    <button class="footswitch" aria-pressed="${e.on}" title="${esc(t("rig.footswitch"))}" aria-label="${esc(t("rig.footswitch"))} · ${esc(t(`rig.fx_${e.type}`))}"></button>`;
   const knobs = $(".pedal-knobs", el), choices = $(".pedal-choices", el);
   for (const p of def.params) {
     if (p.type === "choice") {
@@ -404,13 +433,18 @@ function pedal(e, where) {
       });
       choices.append(seg);
     } else {
-      const k = knob({ label: paramLabel(p.id), min: p.min, max: p.max, step: p.step, value: e.params[p.id], def: p.def, size: 46,
+      const k = knob({ label: paramLabel(p.id), min: p.min, max: p.max, step: p.step, value: e.params[p.id], def: p.def, size: 46, skin: "pedal",
         format: v => fmt(p.unit, v), onInput: v => rig.setEffectParam(e.uid, p.id, v) });
       knobsByTarget.set(`${e.uid}:${p.id}`, k);
       knobs.append(k);
     }
   }
-  $(".footswitch", el).onclick = () => { rig.toggleEffect(e.uid); el.classList.toggle("on", e.on); $(".footswitch", el).setAttribute("aria-pressed", e.on); };
+  $(".footswitch", el).onclick = () => {
+    rig.toggleEffect(e.uid);
+    el.classList.toggle("on", e.on);
+    $(".footswitch", el).setAttribute("aria-pressed", e.on);
+    $(".stomp-led small", el).textContent = t(e.on ? "rig.led_on" : "rig.led_off");
+  };
   $$(".ib", el).forEach(b => b.onclick = () => {
     const act = b.dataset.act, idx = rig.state[where].indexOf(e);
     if (act === "left") rig.moveEffect(e.uid, where, idx - 1);
@@ -447,8 +481,16 @@ function renderAmp() {
   sec.innerHTML = `<div class="sec-head"><h2>${icon("practice")} ${esc(t("rig.sec_amp"))}</h2>
       <label class="check"><input type="checkbox" id="ampOn" ${a.on ? "checked" : ""}> ${esc(t("rig.amp_on"))}</label></div>
     <div class="pick-row" id="ampTypes">${Object.keys(AMPS).map(id =>
-      `<button class="pick${id === a.type ? " on" : ""}" data-id="${id}"><b>${esc(t(`rig.amp_${id}`))}</b><small>${esc(t(`rig.amp_${id}_desc`))}</small></button>`).join("")}</div>
-    <div class="amp-face${a.on ? "" : " off"}"><div class="amp-name">${esc(t(`rig.amp_${a.type}`))}</div><div class="knobs" id="ampKnobs"></div></div>`;
+      `<button class="pick amp-pick${id === a.type ? " on" : ""}" data-id="${id}" aria-pressed="${id === a.type}">${ampThumb(id)}
+        <b>${esc(t(`rig.amp_${id}`))}</b><small>${esc(t(`rig.amp_${id}_desc`))}</small></button>`).join("")}</div>
+    <div class="amp skin-${a.type}${a.on ? " on" : ""}">
+      <div class="amp-handle" aria-hidden="true"></div>
+      <div class="amp-front"><span class="amp-logo">${esc(t(`rig.amp_${a.type}`))}</span></div>
+      <div class="amp-panel">
+        <span class="amp-jewel" aria-hidden="true"></span><small class="amp-state">${esc(t(a.on ? "rig.led_on" : "rig.led_off"))}</small>
+        <div class="knobs" id="ampKnobs"></div>
+      </div>
+    </div>`;
   $$("#ampTypes .pick", sec).forEach(b => b.onclick = () => {
     if (b.dataset.id === a.type) return;
     rig.setAmp({ type: b.dataset.id, params: { ...defaultsOf(b.dataset.id) } });
@@ -458,9 +500,12 @@ function renderAmp() {
   const box = $("#ampKnobs", sec);
   for (const p of AMP_KNOBS) {
     box.append(knob({ label: t(`rig.amp_knob_${p.id}`), min: p.min, max: p.max, step: p.step, value: a.params[p.id], def: defaultsOf(a.type)[p.id], size: 58,
-      format: v => (+v).toFixed(1), onInput: v => rig.setAmpParam(p.id, v) }));
+      skin: CHICKEN_AMPS.has(a.type) ? "chicken" : "pedal", format: v => (+v).toFixed(1), onInput: v => rig.setAmpParam(p.id, v) }));
   }
 }
+// amps whose panel uses pointer ("chicken-head") knobs; the rest use round caps
+const CHICKEN_AMPS = new Set(["tweed", "chime", "crunch", "lead"]);
+const ampThumb = id => `<span class="amp-thumb skin-${id}" aria-hidden="true"><i></i></span>`;
 const defaultsOf = type => Object.fromEntries(AMP_KNOBS.map(p => [p.id, (AMPS[type].defaults || {})[p.id] ?? p.def]));
 
 // ------------------------------------------------------------------ cabinet and microphone
@@ -474,6 +519,7 @@ async function renderCab() {
     <div class="panel">
       <div class="pick-row" id="cabTypes">${Object.keys(CABS).map(id =>
         `<button class="pick${id === c.type && !usingIR ? " on" : ""}" data-id="${id}"><b>${esc(t(`rig.cab_${id}`))}</b><small>${esc(t(`rig.cab_${id}_desc`))}</small></button>`).join("")}</div>
+      ${cabVisual(usingIR ? "ir" : c.type, c.on, usingIR ? c.ir : "")}
       <div class="cab-row">
         <div><h3>${esc(t("rig.mic"))}</h3>${usingIR ? `<p class="muted small">${esc(t("rig.ir_replaces_mic"))}</p>` : `<div class="seg mic-seg" id="micTypes">${Object.keys(MICS).map(id =>
           `<button data-id="${id}" class="${id === m.type ? "active" : ""}" title="${esc(t(`rig.mic_${id}_desc`))}">${esc(t(`rig.mic_${id}`))}</button>`).join("")}</div>`}
@@ -492,7 +538,8 @@ async function renderCab() {
   $$("#micTypes button", sec).forEach(b => b.onclick = () => { rig.setMic({ type: b.dataset.id }); renderCab(); });
   if (!usingIR) {
     const box = $("#micKnobs", sec);
-    const k = (id, def, f) => box.append(knob({ label: t(`rig.mic_${id}_knob`), min: 0, max: 1, step: 0.01, value: m[id], def, size: 48, format: f, onInput: v => rig.setMic({ [id]: v }) }));
+    const k = (id, def, f) => box.append(knob({ label: t(`rig.mic_${id}_knob`), min: 0, max: 1, step: 0.01, value: m[id], def, size: 48, format: f,
+      onInput: v => { rig.setMic({ [id]: v }); placeMic(sec); } }));
     k("position", 0.3, v => v < 0.33 ? t("rig.center") : v > 0.66 ? t("rig.edge") : t("rig.off_axis"));
     k("distance", 0.2, v => `${Math.round(1 + v * 59)} cm`);
     k("room", 0.1, v => `${Math.round(v * 100)}%`);
@@ -509,6 +556,29 @@ async function renderCab() {
   };
   const clr = $("#irClear", sec);
   if (clr) clr.onclick = () => { rig.clearIR(); renderCab(); };
+  placeMic(sec);
+}
+
+// speakers per cabinet: [count, size in inches]
+const SPEAKERS = { c1x12_open: [1, 12], c2x12_open: [2, 12], c4x12_closed: [4, 12], c1x10: [1, 10], c2x10: [2, 10], c1x15: [1, 15], c4x10_bass: [4, 10] };
+
+/** A drawn cabinet: grille cloth with its speakers, and the mic in front of the first one. */
+function cabVisual(type, on, ir) {
+  const [count, inch] = SPEAKERS[type] || [0, 0];
+  const body = type === "direct" ? `<span class="cab-di">DI</span>`
+    : type === "ir" ? `<span class="cab-di" title="${esc(ir)}">IR</span>`
+    : `<div class="cab-grille n${count}" style="--sp:${inch}">${Array.from({ length: count }, (_, i) =>
+        `<span class="speaker">${i === 0 ? `<span class="cab-mic"><i></i></span>` : ""}</span>`).join("")}</div>`;
+  return `<div class="cab-visual${on ? "" : " off"}${count ? "" : " plain"}" aria-hidden="true">${body}</div>`;
+}
+
+/** Moves the drawn mic: position goes from the center to the edge of the cone, distance makes it smaller. */
+function placeMic(sec) {
+  const mic = $(".cab-mic", sec);
+  if (!mic) return;
+  const m = rig.state.mic;
+  mic.style.setProperty("--x", `${(m.position * 42).toFixed(1)}%`);
+  mic.style.setProperty("--s", (1.15 - m.distance * 0.6).toFixed(2));
 }
 
 // ------------------------------------------------------------------ recorder

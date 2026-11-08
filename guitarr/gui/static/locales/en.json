@@ -912,7 +912,16 @@
    "rec_stop": "Stop",
    "rec_download": "Download .wav ({{s}} s)",
    "rec_save": "Save to my takes",
-   "rec_saved": "Saved: {{name}}"
+   "rec_saved": "Saved: {{name}}",
+   "led_on": "ON",
+   "led_off": "OFF",
+   "jack_guitar": "Guitar",
+   "jack_amp": "Amp",
+   "jack_out": "Out",
+   "quick_title": "Quick sounds",
+   "quick_fx_one": "{{count}} effect",
+   "quick_fx_other": "{{count}} effects",
+   "quick_active": "active"
   },
   "plan": {
    "title": "Practice plan",

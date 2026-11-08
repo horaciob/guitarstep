@@ -65,6 +65,29 @@ def test_plan_validation_categories_and_timer(app_page):
     expect(app_page.locator("#timerPillName")).to_contain_text("paused")
 
 
+def test_rig_hardware_look_quick_sounds_and_mic(app_page):
+    onboarded(app_page)
+    go(app_page, "rig")                            # the rig stays off: nothing is played
+    app_page.locator('#rigQuick .quick[data-id="sixties_fuzz"]').click()
+    expect(app_page.locator('#rigQuick .quick[data-id="sixties_fuzz"]')).to_contain_text("active")
+    expect(app_page.locator("#sec-amp .amp")).to_have_class(re.compile("skin-chime"))
+    fuzz = app_page.locator("#sec-pedals .pedal.stomp", has_text="Fuzz")
+    expect(fuzz.locator(".stomp-led small")).to_have_text("ON")
+    fuzz.locator(".footswitch").click()
+    expect(fuzz.locator(".stomp-led small")).to_have_text("OFF")
+    expect(fuzz).not_to_have_class(re.compile(r"\bon\b"))
+    app_page.locator('#ampTypes .pick[data-id="high_gain"]').click()
+    expect(app_page.locator("#sec-amp .amp")).to_have_class(re.compile("skin-high_gain"))
+    app_page.locator('#cabTypes .pick[data-id="c4x12_closed"]').click()
+    expect(app_page.locator("#sec-cab .speaker")).to_have_count(4)
+    mic = app_page.locator("#sec-cab .cab-mic")
+    before = mic.evaluate("m => m.style.getPropertyValue('--x')")
+    app_page.locator('#micKnobs .knob[aria-label="Position"]').focus()
+    app_page.keyboard.press("End")
+    expect(mic).to_have_attribute("style", re.compile(r"--x: 42"))
+    assert before != "42.0%"
+
+
 def test_rig_effects_and_presets(app_page):
     onboarded(app_page)
     go(app_page, "rig")

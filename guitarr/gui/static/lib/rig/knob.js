@@ -12,12 +12,13 @@ function arc(cx, cy, r, a0, a1) {
 }
 
 /**
- * knob({ label, min, max, step, value, def, format(v), onInput(v), size, color })
+ * knob({ label, min, max, step, value, def, format(v), onInput(v), size, color, skin })
+ * skin: "" (flat), "pedal" (a stompbox knob) or "chicken" (an amp's pointer knob); colors come from CSS.
  * Returns the element; el.setValue(v) updates it without firing onInput.
  */
-export function knob({ label, min, max, step = (max - min) / 100, value, def = value, format = v => v, onInput, size = 54, color = null }) {
+export function knob({ label, min, max, step = (max - min) / 100, value, def = value, format = v => v, onInput, size = 54, color = null, skin = "" }) {
   const el = document.createElement("div");
-  el.className = "knob";
+  el.className = "knob" + (skin ? ` knob-${skin}` : "");
   el.tabIndex = 0;
   el.setAttribute("role", "slider");
   el.setAttribute("aria-label", label);
@@ -27,11 +28,15 @@ export function knob({ label, min, max, step = (max - min) / 100, value, def = v
   el.innerHTML = `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" aria-hidden="true">
       <path class="knob-track" d="${arc(c, c, r, START, START + ARC)}"/>
       <path class="knob-val" d="" ${color ? `style="stroke:${color}"` : ""}/>
+      <circle class="knob-skirt" cx="${c}" cy="${c}" r="${r - 4}"/>
       <circle class="knob-cap" cx="${c}" cy="${c}" r="${r - 6}"/>
-      <line class="knob-ptr" x1="${c}" y1="${c}" x2="${c}" y2="${c - r + 9}"/>
+      <g class="knob-rot">
+        ${skin === "chicken" ? `<path class="knob-head" d="M${c - 4} ${c + 6} L${c} ${c - r + 4} L${c + 4} ${c + 6} Z"/>` : ""}
+        <line class="knob-ptr" x1="${c}" y1="${c}" x2="${c}" y2="${c - r + 9}"/>
+      </g>
     </svg><b class="knob-v"></b><span class="knob-l"></span>`;
   el.querySelector(".knob-l").textContent = label;
-  const valPath = el.querySelector(".knob-val"), ptr = el.querySelector(".knob-ptr"), out = el.querySelector(".knob-v");
+  const valPath = el.querySelector(".knob-val"), ptr = el.querySelector(".knob-rot"), out = el.querySelector(".knob-v");
   let v = value;
   const snap = x => {
     const s = Math.round((x - min) / step) * step + min;
