@@ -2,7 +2,13 @@
 import { lang, msgIsError, msgText, t, tc } from "../lib/i18n.js";
 import { $, $$, api, bindChordSvg, chordSvg, esc, noteName, pluck, strum, toast, youtubeId, youtubeSearch } from "../lib/ui.js";
 import { listen } from "../lib/listen.js";
+import { runAnswers, say } from "../lib/answer.js";
+import { neck } from "../lib/fretboard.js";
 import { chartGuide, playChart } from "./charts.js";
+
+const ANSWER_KINDS = ["quiz", "pick"], DRAWN_KINDS = ["find_note", "play_interval"];
+const hearable = ex => !ANSWER_KINDS.includes(ex.kind) && !DRAWN_KINDS.includes(ex.kind);
+const shapeChord = s => ({ id: s.name, frets: s.frets });
 
 let task = null, demo = null;
 let focus = null;   // the exercise open on its own full screen: { ex, views, changed }
@@ -35,8 +41,36 @@ function exerciseTarget(ex) {
   if (ex.kind === "chord") return `${ex.chord} × ${ex.times}`;
   if (ex.kind === "change") return `${ex.chords.join(" ↔ ")} × ${ex.times}`;
   if (ex.kind === "chart") return t("lesson.chart_at", { pct: Math.round(ex.speed * 100) });
+  if (ex.kind === "scale") return t("lesson.t_scale", { key: ex.key, scale: t(`quiz.scale_${ex.scale}`), lo: (ex.frets || [0])[0], hi: (ex.frets || [0, 12])[1] });
+  if (ex.kind === "arpeggio") return t("lesson.t_arpeggio", { chord: ex.chord });
+  if (ex.kind === "line") return ex.progression.join(" → ");
+  if (ex.kind === "shape" || ex.kind === "voiced") return `${ex.shapes.map(s => s.name).join(" → ")} × ${ex.times ?? 2}`;
+  if (ex.kind === "quiz") return t("lesson.t_quiz", { count: ex.count ?? 6 });
+  if (ex.kind === "pick") return t("lesson.t_pick", { count: ex.count ?? 6 });
+  if (DRAWN_KINDS.includes(ex.kind)) return t("lesson.t_drawn", { count: ex.count ?? 5 });
   return "";
 }
+
+/** One octave of a piano keyboard: white keys named, black keys with both names (C♯ = D♭). Each key plays. */
+function pianoSvg() {
+  const whites = ["C", "D", "E", "F", "G", "A", "B"], blacks = { 0: "C♯ D♭", 1: "D♯ E♭", 3: "F♯ G♭", 4: "G♯ A♭", 5: "A♯ B♭" };
+  const W = 70, H = 210, midi = [60, 62, 64, 65, 67, 69, 71], bmidi = { 0: 61, 1: 63, 3: 66, 4: 68, 5: 70 };
+  let s = `<svg class="piano" viewBox="0 0 ${W * 7 + 2} ${H + 2}" role="img" aria-label="${esc(t("lesson.piano_label"))}">`;
+  whites.forEach((n, i) => s += `<g class="pk" data-p="${midi[i]}"><rect x="${1 + i * W}" y="1" width="${W}" height="${H}" rx="4" fill="#f6f4ee" stroke="#333"/>
+    <text x="${1 + i * W + W / 2}" y="${H - 14}" text-anchor="middle" font-size="18" font-weight="700" fill="#222">${n}</text></g>`);
+  Object.entries(blacks).forEach(([i, n]) => {
+    const x = 1 + (+i + 1) * W - 22;
+    const [a, b] = n.split(" ");
+    s += `<g class="pk" data-p="${bmidi[i]}"><rect x="${x}" y="1" width="44" height="${H * 0.6}" rx="3" fill="#1d1d1f" stroke="#000"/>
+      <text x="${x + 22}" y="${H * 0.6 - 30}" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">${a}</text>
+      <text x="${x + 22}" y="${H * 0.6 - 14}" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">${b}</text></g>`;
+  });
+  return s + `</svg>`;
+}
+
+/** Small chord diagrams for shape exercises. */
+const shapesHtml = (ex, size = 84) => `<div class="mini-chords ex-shapes">${ex.shapes.map(s =>
+  `<div class="mini-chord"><b>${esc(s.name)}</b>${chordSvg(shapeChord(s), { size })}</div>`).join("")}</div>`;
 
 export async function mount(el, { segs }) {
   const id = decodeURIComponent(segs[0] || "");
@@ -49,6 +83,7 @@ export async function mount(el, { segs }) {
   const vid = ls.pinned && youtubeId(ls.pinned);
   const lt = (k, fb) => tc(`lessons.${ls.id}.${k}`, fb);
   const theory = lt("theory", ls.theory), tips = lt("tips", ls.tips || []), tutorials = lt("tutorials", ls.tutorials || []);
+  const captions = lt("captions", ls.captions || []);
   const exTitle = ex => tc(`exercises.${ls.id}/${ex.id}`, ex.title);
   const upNext = ls.exercises.find(e => !e.passed);   // the first exercise you haven't passed yet
 
@@ -59,6 +94,8 @@ export async function mount(el, { segs }) {
     <div class="lesson-layout">
       <div class="stack">
         <div class="panel"><h2>${esc(t("lesson.idea"))}</h2><ul class="theory">${theory.map(x => `<li>${esc(x)}</li>`).join("")}</ul>
+          ${(ls.figures || []).map((f, i) => `<figure class="lesson-figure" data-fig="${i}"><div class="fig-box"></div>
+            ${captions[i] ? `<figcaption class="muted small">${esc(captions[i])}</figcaption>` : ""}</figure>`).join("")}
           ${tips.length ? `<h3>${esc(t("lesson.tips"))}</h3><ul class="theory">${tips.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : ""}</div>
         <div class="panel"><div class="ex-panel-head"><h2>${esc(t("lesson.exercises"))}</h2>
             <button class="btn primary" id="exContinue">▶ ${esc(upNext ? t("lesson.continue_with", { title: exTitle(upNext) }) : t("lesson.practice_again"))}</button></div>
@@ -67,9 +104,11 @@ export async function mount(el, { segs }) {
             <div class="exercise${ex.passed ? " passed" : ""}" data-id="${esc(ex.id)}">
               <div class="ex-head"><span class="state">${ex.passed ? "✓" : "○"}</span>
                 <div><b>${esc(exTitle(ex))}</b><small class="muted">${esc(exerciseTarget(ex))} · ${esc(t("lesson.pass_with", { min: ex.min }))}${ex.best != null ? ` · ${esc(t("lesson.your_best", { best: Math.round(ex.best) }))}` : ""}</small></div>
-                <button class="btn small" data-act="hear" title="${esc(t(ex.kind === "chart" ? "lesson.demo_hint" : "lesson.hear_hint"))}">♪</button>
-                <button class="btn small primary" data-act="go">${esc(t("lesson.listen"))}</button></div>
-              ${ex.kind === "lick" ? `<pre class="tab" aria-label="${esc(t("lesson.tab_label"))}">${esc(tabText(ex.steps))}</pre>` : ""}
+                ${hearable(ex) ? `<button class="btn small" data-act="hear" title="${esc(t(ex.kind === "chart" ? "lesson.demo_hint" : "lesson.hear_hint"))}" aria-label="${esc(t(ex.kind === "chart" ? "lesson.demo_hint" : "lesson.hear_hint"))}">♪</button>` : ""}
+                <button class="btn small primary" data-act="go">${esc(t(ex.how === "answer" ? "lesson.start_answer" : "lesson.listen"))}</button></div>
+              ${ex.how === "answer" ? `<span class="how-chip">${esc(t("lesson.how_answer"))}</span>` : ""}
+              ${ex.steps && ex.kind !== "bend" ? `<pre class="tab" aria-label="${esc(t("lesson.tab_label"))}">${esc(tabText(ex.steps))}</pre>` : ""}
+              ${ex.shapes ? shapesHtml(ex) : ""}
               ${ex.kind === "chart" ? `<div class="ex-guide"></div>` : ""}
             </div>`).join("")}</div></div>
       </div>
@@ -103,7 +142,15 @@ export async function mount(el, { segs }) {
       </div>
     </div></dialog>`;
 
-  $$(".mini-chord", el).forEach(m => bindChordSvg(m, chords.find(c => c.id === m.dataset.id)));
+  $$(".lesson-figure", el).forEach(fig => {
+    const f = ls.figures[+fig.dataset.fig], box = $(".fig-box", fig);
+    if (f.type === "keyboard") {
+      box.innerHTML = pianoSvg();
+      $$(".pk", box).forEach(k => k.addEventListener("click", () => pluck(+k.dataset.p)));
+    }
+    else if (f.type === "fretboard") neck(box, { lo: f.lo, hi: f.hi, marks: f.marks, label: captions[+fig.dataset.fig] || "" });
+  });
+  $$(".mini-chord[data-id]", el).forEach(m => bindChordSvg(m, chords.find(c => c.id === m.dataset.id)));
   $$("[data-strum]", el).forEach(b => b.onclick = () => strum(chords.find(c => c.id === b.dataset.strum)));
   $("#pinBtn", el).onclick = async () => {
     try {
@@ -122,7 +169,7 @@ export async function mount(el, { segs }) {
   $$(".exercise", el).forEach(box => {
     const ex = ls.exercises.find(e => e.id === box.dataset.id);
     const hear = $("[data-act=hear]", box);
-    hear.onclick = () => ex.kind === "chart" ? toggleDemo(ex, hear, [guides.get(ex.id).guide]) : preview(ex, chordData);
+    if (hear) hear.onclick = () => ex.kind === "chart" ? toggleDemo(ex, hear, [guides.get(ex.id).guide]) : preview(ex, chordData);
     $("[data-act=go]", box).onclick = () => openFocus(el, segs, ls, ex, chordData, exTitle, true);
   });
   const dlg = $(".ex-focus", el);
@@ -130,7 +177,7 @@ export async function mount(el, { segs }) {
   $("[data-f=back]", dlg).onclick = () => closeFocus(el, segs);
   // keys while the exercise is on screen: Space starts/stops, Enter goes to the next exercise
   dlg.addEventListener("keydown", e => {
-    if (e.target.closest("button, input, a, .knob")) return;   // a focused control handles its own keys
+    if (e.target.closest("button, input, a, .knob, .quiz, .fb-pos")) return;   // a focused control (or a question) handles its own keys
     const next = $("[data-f=next]", dlg);
     if (e.key === " ") { e.preventDefault(); $("[data-f=go]", dlg).click(); }
     else if (e.key === "Enter" && !next.hidden) { e.preventDefault(); next.click(); }
@@ -215,8 +262,16 @@ async function openFocus(el, segs, ls, ex, chordData, exTitle, start = false) {
     views.push(metronomeView($(".f-metro-box", body), g.chart.beats_per_bar, Math.round(g.chart.bpm * ex.speed)));
     const note = g.chart.note && tc(`charts.${g.chart.id}.note`, g.chart.note);
     views.push(chartGuide($(".focus-guide", body), g.chart, { speed: ex.speed, note }));
+  } else if (ANSWER_KINDS.includes(ex.kind)) {
+    body.innerHTML = `<div class="q-box"><p class="muted center">${esc(t(ex.kind === "pick" ? "lesson.answer_intro_pick" : "lesson.answer_intro_quiz", { count: ex.count ?? 6 }))}</p></div>`;
+  } else if (DRAWN_KINDS.includes(ex.kind)) {
+    body.innerHTML = `<div class="f-now-box"></div><ol class="drawn-list"></ol>`;
+    now = promptView($(".f-now-box", body), $(".drawn-list", body));
+    views.push(now);
   } else {
-    body.innerHTML = `<div class="f-now-box"></div>${ex.kind === "lick" ? `<pre class="tab" aria-label="${esc(t("lesson.tab_label"))}">${esc(tabText(ex.steps))}</pre>` : ""}`;
+    body.innerHTML = `<div class="f-now-box"></div>
+      ${ex.steps && ex.kind !== "bend" ? `<pre class="tab" aria-label="${esc(t("lesson.tab_label"))}">${esc(tabText(ex.steps))}</pre>` : ""}
+      ${ex.shapes ? shapesHtml(ex, 120) : ""}`;
     now = nowView($(".f-now-box", body));
     views.push(now);
   }
@@ -227,10 +282,11 @@ async function openFocus(el, segs, ls, ex, chordData, exTitle, start = false) {
   msg.textContent = "";
   const hear = $("[data-f=hear]", dlg), labels = [`♪ ${t(g ? "lesson.focus_demo" : "lesson.focus_hear")}`, `■ ${t("lesson.demo_stop")}`];
   hear.textContent = labels[0];
+  hear.hidden = !hearable(ex);
   hear.onclick = () => g ? toggleDemo(ex, hear, views, labels) : preview(ex, chordData);
   $("[data-f=next]", dlg).hidden = true;
   const go = $("[data-f=go]", dlg);
-  go.textContent = t("lesson.listen");
+  go.textContent = t(ex.how === "answer" ? "lesson.start_answer" : "lesson.listen");
   go.onclick = () => run(el, segs, ls, ex, chordData, exTitle);
   $(".f-result", dlg).hidden = true;
   if (!dlg.open) dlg.showModal();
@@ -260,13 +316,98 @@ function preview(ex, chordData) {
   else if (ex.kind === "bend") { pluck(ex.steps[0].glide_from, 0); pluck(ex.steps[0].pitch, 0.6); }
   else if (ex.kind === "chord") strum(ch(ex.chord));
   else if (ex.kind === "change") ex.chords.forEach((c, k) => setTimeout(() => strum(ch(c)), k * 900));
+  else if (ex.steps) ex.steps.forEach((s, k) => pluck(s.pitch, k * 0.3));
+  else if (ex.shapes) ex.shapes.forEach((s, k) => setTimeout(() => strum(shapeChord(s)), k * 900));
   else toast(t("lesson.open_chart"));
+}
+
+/** For drawn exercises: what to play now, in big type, and the whole list (answers revealed at the end). */
+function promptView(box, list) {
+  let items = [], ends = [];
+  box.innerHTML = `<div class="focus-now"><small class="muted">${esc(t("lesson.focus_now"))}</small>
+    <b class="f-now f-prompt">–</b><small class="f-step muted"></small></div>`;
+  const render = (cur, reveal) => {
+    list.innerHTML = items.map((it, i) => `<li class="${i === cur ? "cur" : i < cur ? "done" : ""}">${esc(say(it.prompt))}${reveal ? ` <span class="muted">· ${esc(say(it.reveal))}</span>` : ""}</li>`).join("");
+  };
+  return {
+    setClock() {},
+    setItems(its) {
+      items = its;
+      let acc = 0;
+      ends = its.map(it => (acc += it.notes));
+      $(".f-prompt", box).textContent = items.length ? say(items[0].prompt) : "–";
+      $(".f-step", box).textContent = t("lesson.focus_step", { k: 1, total: items.length });
+      render(0, false);
+    },
+    update(s) {
+      const i = Math.min(ends.findIndex(e => s.k < e), items.length - 1);
+      const cur = i < 0 ? items.length - 1 : i;
+      $(".f-prompt", box).textContent = items[cur] ? say(items[cur].prompt) : "–";
+      $(".f-step", box).textContent = t("lesson.focus_step", { k: cur + 1, total: items.length });
+      render(cur, false);
+    },
+    reveal() { render(-1, true); },
+  };
+}
+
+/** Shows how a take or a quiz went: message, result ring, and the next exercise when you passed. */
+function showOutcome(el, segs, ls, ex, chordData, exTitle, rep) {
+  const dlg = $(".ex-focus", el), msg = $(".ex-msg", dlg), next = $("[data-f=next]", dlg);
+  const a = rep.award || {};
+  const score = rep.summary.score;
+  msg.className = "ex-msg " + (a.passed ? "ok" : "err");
+  msg.textContent = a.passed
+    ? t("lesson.passed", { score: Math.round(score) }) + (a.xp ? ` · +${a.xp} XP` : "") + (a.lesson_done ? ` · ${t("lesson.lesson_done")}` : "")
+    : score == null ? t("lesson.not_played") : t("lesson.failed", { score: Math.round(score), need: a.need });
+  if (score != null) showResult($(".f-result", dlg), Math.round(score), !!a.passed, a.need ?? ex.min, a.xp);
+  if (a.passed && focus) {
+    focus.changed = true;
+    ex.passed = true;
+    if (ex.best == null || score > ex.best) ex.best = score;
+    const after = ls.exercises[ls.exercises.indexOf(ex) + 1];
+    if (after) {
+      next.hidden = false;
+      next.onclick = () => openFocus(el, segs, ls, after, chordData, exTitle);
+    }
+  }
+}
+
+/** Quiz and pick exercises: answer the drawn questions, then the server grades them. */
+async function runAnswer(el, segs, ls, ex, chordData, exTitle) {
+  const dlg = $(".ex-focus", el), bar = $(".ex-progress i", dlg), msg = $(".ex-msg", dlg), btn = $("[data-f=go]", dlg);
+  $("[data-f=next]", dlg).hidden = true;
+  $(".f-result", dlg).hidden = true;
+  bar.style.width = "0%";
+  msg.className = "ex-msg muted";
+  msg.textContent = "";
+  btn.textContent = t("lesson.stop");
+  task = runAnswers($(".focus-body", dlg), { lesson: ls.id, exercise: ex.id,
+    onProgress: (k, n) => { bar.style.width = `${Math.round(100 * k / n)}%`; } });
+  btn.onclick = () => task && task.stop();
+  try {
+    const rep = await task.done;
+    if (rep) showOutcome(el, segs, ls, ex, chordData, exTitle, rep);
+    else msg.textContent = t("lesson.answer_stopped");
+  } catch (e) {
+    msg.className = "ex-msg err";
+    msg.textContent = e.message;
+  } finally {
+    task = null;
+    btn.textContent = t("lesson.focus_again");
+    btn.onclick = () => run(el, segs, ls, ex, chordData, exTitle);
+    if (dlg.open) $(".focus-inner", dlg).focus();
+  }
 }
 
 async function run(el, segs, ls, ex, chordData, exTitle) {
   if (task) return toast(t("lesson.busy"));
   stopDemo();   // the microphone would hear it
+  if (ANSWER_KINDS.includes(ex.kind)) return runAnswer(el, segs, ls, ex, chordData, exTitle);
   const g = guides.get(ex.id), dlg = $(".ex-focus", el), views = focus.views, now = focus.now;
+  if (DRAWN_KINDS.includes(ex.kind)) {          // a fresh set of targets every time
+    try { now.setItems((await api("/api/exercise/draw", { json: { lesson: ls.id, exercise: ex.id } })).items); }
+    catch (e) { return toast(e.message); }
+  }
   let pos = null, at = 0;
   const rate = g ? g.chart.bpm * ex.speed / 60 : 0;
   // between state polls the playhead runs on its own at the exercise's tempo
@@ -291,23 +432,8 @@ async function run(el, segs, ls, ex, chordData, exTitle) {
   });
   try {
     const rep = await task.done;
-    const a = rep.award || {};
-    const score = rep.summary.score;
-    msg.className = "ex-msg " + (a.passed ? "ok" : "err");
-    msg.textContent = a.passed
-      ? t("lesson.passed", { score: Math.round(score) }) + (a.xp ? ` · +${a.xp} XP` : "") + (a.lesson_done ? ` · ${t("lesson.lesson_done")}` : "")
-      : score == null ? t("lesson.not_played") : t("lesson.failed", { score: Math.round(score), need: a.need });
-    if (score != null) showResult($(".f-result", dlg), Math.round(score), !!a.passed, a.need ?? ex.min, a.xp);
-    if (a.passed && focus) {
-      focus.changed = true;
-      ex.passed = true;
-      if (ex.best == null || score > ex.best) ex.best = score;
-      const after = ls.exercises[ls.exercises.indexOf(ex) + 1];
-      if (after) {
-        next.hidden = false;
-        next.onclick = () => openFocus(el, segs, ls, after, chordData, exTitle);
-      }
-    }
+    showOutcome(el, segs, ls, ex, chordData, exTitle, rep);
+    if (now && now.reveal) now.reveal();
   } catch (e) {
     msg.className = "ex-msg err";
     msg.textContent = e.message;

@@ -208,6 +208,27 @@ def api_chart_delete(cid: str):
     return dict(ok=True)
 
 
+def _figure(f: dict) -> dict:
+    """A lesson figure. Fretboards get their marks from the theory engine: every scale or chord tone in the
+    fret window, labeled with its degree or its (spelled) note name."""
+    from .. import theory as th
+
+    if f.get("type") != "fretboard":
+        return f
+    lo, hi = f.get("frets", [0, 12])
+    tones = th.chord(f["chord"])["tones"] if f.get("chord") else th.scale(f["key"], f["scale"])
+    by_pc = {t["pc"]: t for t in tones}
+    strings = tuple(f.get("strings", (6, 5, 4, 3, 2, 1)))
+    if f.get("path"):                                  # just one playable run (e.g. one octave in one position)
+        pos = th.scale_path(f["key"], f["scale"], lo, hi, string=f.get("string"))
+    else:
+        pos = th.positions(set(by_pc), lo, hi, strings)
+    label = "note" if f.get("labels") == "notes" else "degree"
+    marks = [dict(string=s, fret=fr, text=by_pc[p % 12][label], kind="root" if by_pc[p % 12]["degree"] == "1" else "tone")
+             for s, fr, p in pos]
+    return dict(type="fretboard", lo=lo, hi=hi, marks=marks)
+
+
 def _exercise_extras(e: dict) -> dict:
     """What the UI needs to draw an exercise: tab steps (licks, bends, runs) or chord shapes."""
     out = {}
@@ -315,7 +336,7 @@ def api_course():
                         passed=p["exercises"].get(f"{x['id']}/{e['id']}", -1) >= e.get("min", 80),
                         how="answer" if e["kind"] in ("quiz", "pick") else "play", **_exercise_extras(e))
                    for e in x["exercises"]]
-            ls.append(dict(x, exercises=exs, chords=catalog.lesson_chords(x), done=x["id"] in p["lessons"], pinned=p["tutorials"].get(x["id"])))
+            ls.append(dict(x, exercises=exs, chords=catalog.lesson_chords(x), figures=[_figure(f) for f in x.get("figures", [])], done=x["id"] in p["lessons"], pinned=p["tutorials"].get(x["id"])))
         levels.append(dict(lvl, lessons=ls))
     nxt = next((x for lv in levels for x in lv["lessons"] if not x["done"]), None)
     return dict(levels=levels, next=nxt and dict(id=nxt["id"], title=nxt["title"]))

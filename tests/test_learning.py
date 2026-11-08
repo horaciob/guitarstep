@@ -42,6 +42,12 @@ def test_lessons_reference_existing_material():
         for c in ls.get("chords", []):
             assert catalog.get_chord(c), (ls["id"], c)
         for ex in ls["exercises"]:
+            if ex["kind"] in ("quiz", "pick"):                       # answered, not played: they must draw
+                from guitarr import quiz
+                d = quiz.draw(ls["id"], ex, ex.get("min", 80), seed=0)
+                assert d["items"] and 0 < ex.get("min", 80) <= 100
+                quiz.finish(d["token"])
+                continue
             opts, mode, speed, need = catalog.exercise_setup(ls["id"], ex["id"])
             ref = load_reference(opts, log=lambda m: None)
             assert ref.notes and mode in ("wait", "tempo", "bend") and 0 < need <= 100
@@ -350,7 +356,8 @@ def test_lesson_exercise_over_api():
     assert r.status_code == 200 and r.json()["context"]["type"] == "exercise"
     rep = _wait_report(c)
     assert rep["award"]["passed"] and rep["award"]["lesson_done"]
-    assert c.get("/api/course").json()["levels"][0]["lessons"][1]["done"]
+    lessons = [ls for lv in c.get("/api/course").json()["levels"] for ls in lv["lessons"]]
+    assert next(ls for ls in lessons if ls["id"] == "e-minor")["done"]
 
 
 def test_chord_change_minute_over_api():

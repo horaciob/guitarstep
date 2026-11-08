@@ -451,7 +451,20 @@
    "practice_again": "Practicar de nuevo",
    "focus_keys_html": "<kbd>Espacio</kbd> empezar / parar · <kbd>Enter</kbd> siguiente ejercicio · <kbd>Esc</kbd> volver",
    "result_passed": "¡aprobado!",
-   "result_need": "necesitás {{need}}%"
+   "result_need": "necesitás {{need}}%",
+   "t_scale": "{{key}} {{scale}}, trastes {{lo}}–{{hi}}",
+   "t_arpeggio": "arpegio de {{chord}}",
+   "t_quiz_one": "{{count}} pregunta",
+   "t_quiz_other": "{{count}} preguntas",
+   "t_pick_one": "{{count}} ronda en el mástil",
+   "t_pick_other": "{{count}} rondas en el mástil",
+   "t_drawn_one": "{{count}} consigna, nueva cada vez",
+   "t_drawn_other": "{{count}} consignas, nuevas cada vez",
+   "start_answer": "▶ Empezar",
+   "how_answer": "🧠 se aprueba respondiendo",
+   "answer_intro_quiz": "{{count}} preguntas, nuevas cada vez. Respondé con un clic o con las teclas numéricas.",
+   "answer_intro_pick": "{{count}} rondas: marcá las notas en el mástil. Cada nota que tocás suena.",
+   "answer_stopped": "Frenado. Empezá de nuevo para otra tanda."
   },
   "chords": {
    "title": "Acordes",
@@ -1176,6 +1189,105 @@
    "short_clipping": "satura",
    "short_limited": "aplastado",
    "short_no_signal": "sin señal"
+  },
+  "quiz": {
+   "question_n": "Pregunta {{n}} de {{total}}",
+   "play_again": "Escuchar de nuevo",
+   "next": "Siguiente pregunta",
+   "see_result": "Ver el resultado",
+   "choices": "Respuestas",
+   "right": "¡Bien!",
+   "wrong_was": "No: era {{answer}}.",
+   "check": "Comprobar",
+   "clear": "Borrar",
+   "pick_all_hint": "Marcá cada posición y después Comprobar.",
+   "pick_tones_hint": "Marcá al menos una de cada nota que necesitás y después Comprobar.",
+   "wrong_pick_all": "No del todo: ✓ = bien, ? = te faltó, ✕ = no va.",
+   "wrong_pick_tones": "No del todo: necesitás todas las notas del acorde, y ninguna otra.",
+   "interval_frets": "En una cuerda, del traste {{a}} al traste {{b}}: ¿qué intervalo es?",
+   "interval_ear": "¿Qué intervalo escuchaste?",
+   "enharmonic": "¿Qué nota suena igual que {{note}}?",
+   "half_step": "¿Qué nota está un semitono (1 traste) arriba de {{note}}?",
+   "whole_step": "¿Qué nota está un tono (2 trastes) arriba de {{note}}?",
+   "tab_read": "¿Dónde te dice esta tab que toques?",
+   "string_fret": "cuerda {{string}}, traste {{fret}}",
+   "open_string": "¿Qué nota da la cuerda {{string}} al aire?",
+   "scale_degree": "En {{key}} {{scale}}, ¿qué nota es el grado {{degree}}?",
+   "relative_minor": "¿Cuál es la relativa menor de {{key}} mayor?",
+   "relative_major": "¿Cuál es la relativa mayor de {{key}}?",
+   "hear_quality": "¿Mayor o menor?",
+   "hear_scale": "¿Esa escala era mayor o menor?",
+   "mode_color": "¿Qué grado le da su color al modo {{mode}}?",
+   "chord_tones": "¿Qué notas forman {{chord}}?",
+   "chord_formula": "¿Cuál es la fórmula de {{chord}}?",
+   "inversion": "{{chord}} con {{bass}} en el bajo. ¿Cómo se llama?",
+   "inv_0": "estado fundamental ({{name}})",
+   "inv_1": "1ª inversión ({{name}})",
+   "inv_2": "2ª inversión ({{name}})",
+   "roman": "En {{key}} {{scale}}, ¿qué acorde es el {{roman}}?",
+   "roman_reverse": "En {{key}} {{scale}}, ¿qué grado es {{chord}}?",
+   "pentatonic": "La pentatónica menor de {{key}} tiene las mismas notas que ¿qué pentatónica mayor?",
+   "symmetric": "La escala {{scale}} repite su dibujo cada…",
+   "n_frets_one": "{{count}} traste",
+   "n_frets_other": "{{count}} trastes",
+   "bebop_added": "¿Qué nota le agrega la bebop dominante de {{key}} a la mixolidia de {{key}}?",
+   "altered_tones": "Sobre {{chord}}, ¿qué tensiones te da la escala alterada?",
+   "guide_tones": "¿Cuáles son las dos notas guía de {{chord}}?",
+   "drop_voice": "Para pasar de un voicing cerrado a un drop-{{n}}, ¿qué voz baja una octava?",
+   "voice_top": "la voz de arriba",
+   "voice_second": "la 2ª desde arriba",
+   "voice_third": "la 3ª desde arriba",
+   "voice_bottom": "la voz de abajo",
+   "extension": "En un acorde de {{root}}, ¿qué nota es la {{ext}}?",
+   "voice_lead": "De {{a}} a {{b}}: la 7ª de {{a}} ({{note}}) se mueve por grado a ¿qué nota de {{b}}?",
+   "pick_note": "Marcá cada {{note}} entre los trastes {{lo}} y {{hi}}.",
+   "pick_degree": "Marcá cada grado {{degree}} de {{key}} mayor entre los trastes {{lo}} y {{hi}}.",
+   "pick_chord": "Armá {{chord}}: marcá su fundamental, 3ª y 5ª entre los trastes {{lo}} y {{hi}}.",
+   "pick_scale": "Marcá cada nota de {{key}} {{scale}} entre los trastes {{lo}} y {{hi}}.",
+   "find_note": "{{note}} en la cuerda {{string}}",
+   "found_at": "cuerda {{string}}, traste {{fret}}",
+   "play_interval": "{{root}} (cuerda {{string}}, traste {{fret}}) y después una {{iv}} arriba",
+   "interval_is": "{{root}} + {{iv}} = {{note}}",
+   "scale_major": "mayor",
+   "scale_natural_minor": "menor natural",
+   "scale_harmonic_minor": "menor armónica",
+   "scale_melodic_minor": "menor melódica",
+   "scale_dorian": "dórica",
+   "scale_phrygian": "frigia",
+   "scale_lydian": "lidia",
+   "scale_mixolydian": "mixolidia",
+   "scale_locrian": "locria",
+   "scale_major_pentatonic": "pentatónica mayor",
+   "scale_minor_pentatonic": "pentatónica menor",
+   "scale_blues": "de blues",
+   "scale_whole_tone": "de tonos enteros",
+   "scale_half_whole": "disminuida semitono-tono",
+   "scale_whole_half": "disminuida tono-semitono",
+   "scale_dominant_bebop": "bebop dominante",
+   "scale_major_bebop": "bebop mayor",
+   "scale_altered": "alterada",
+   "iv_P1": "unísono",
+   "iv_m2": "2ª menor",
+   "iv_M2": "2ª mayor",
+   "iv_A2": "2ª aumentada",
+   "iv_m3": "3ª menor",
+   "iv_M3": "3ª mayor",
+   "iv_P4": "4ª justa",
+   "iv_A4": "tritono",
+   "iv_d5": "5ª disminuida",
+   "iv_P5": "5ª justa",
+   "iv_A5": "5ª aumentada",
+   "iv_m6": "6ª menor",
+   "iv_M6": "6ª mayor",
+   "iv_m7": "7ª menor",
+   "iv_M7": "7ª mayor",
+   "iv_P8": "octava",
+   "q_maj": "mayor",
+   "q_min": "menor",
+   "q_dim": "disminuido",
+   "q_aug": "aumentado",
+   "q_sus2": "sus2",
+   "q_sus4": "sus4"
   }
  },
  "content": {
@@ -1373,6 +1485,30 @@
    "n7": {
     "title": "Canciones",
     "subtitle": "Canciones reales: sus acordes, su forma, las técnicas que usan y el cifrado a tu ritmo."
+   },
+   "n8": {
+    "title": "Leer el mástil",
+    "subtitle": "Semitonos, intervalos de oído y por trastes, encontrar notas y pensar en grados."
+   },
+   "n9": {
+    "title": "Escalas",
+    "subtitle": "Armar escalas desde sus pasos, escribirlas en todas las tonalidades y tocarlas en todo el mástil."
+   },
+   "n10": {
+    "title": "Colores de escala",
+    "subtitle": "Modos, escalas simétricas, bebop y alterada: los colores del rock y el jazz."
+   },
+   "n11": {
+    "title": "Armar acordes",
+    "subtitle": "Tríadas, inversiones, acordes sus y de sexta, la familia de las séptimas y las extensiones."
+   },
+   "n12": {
+    "title": "Armonía",
+    "subtitle": "Los acordes que viven en una tonalidad, escritos con números romanos, en mayor y menor."
+   },
+   "n13": {
+    "title": "Voicings",
+    "subtitle": "Shells, drop-2, drop-3, conducción de voces y notas guía: los acordes como los tocan los guitarristas de jazz."
    }
   },
   "lessons": {
@@ -1692,6 +1828,533 @@
      "comfortably numb solo clase",
      "cómo hacer bends afinados guitarra"
     ]
+   },
+   "reading-tab": {
+    "title": "Las partes de la guitarra y cómo leer tab",
+    "theory": [
+     "El clavijero tiene las clavijas, el mástil tiene los trastes y el cuerpo tiene el puente (y, en una eléctrica, los micrófonos).",
+     "Los trastes se cuentan desde la cejuela: el traste 1 es el más cercano al clavijero. En la tab, 0 es la cuerda al aire.",
+     "La tab dibuja las seis cuerdas como líneas, con la más fina (1ª cuerda, Mi agudo) arriba. Un número sobre una línea te dice qué traste pisar.",
+     "La tab se lee de izquierda a derecha, como un texto. Los números apilados en la misma columna se tocan juntos."
+    ],
+    "tips": [
+     "Decí la cuerda y el traste en voz alta antes de tocar cada número: así leer se vuelve automático más rápido."
+    ],
+    "tutorials": [
+     "cómo leer tablatura guitarra principiantes",
+     "partes de la guitarra explicadas"
+    ]
+   },
+   "sharps-flats": {
+    "title": "Sostenidos, bemoles y semitonos",
+    "theory": [
+     "En un piano, pasar de una tecla a la siguiente (blanca o negra) es un semitono. En una guitarra, un traste es un semitono.",
+     "Entre la mayoría de las notas naturales hay una tecla negra. Solo Mi–Fa y Si–Do están a un semitono, sin nada en el medio.",
+     "Una tecla negra tiene dos nombres: Do♯ (Do subido) es la misma altura que Re♭ (Re bajado). Qué nombre usás depende de la tonalidad.",
+     "Dos trastes son un tono: Do a Re, Mi a Fa♯, Si a Do♯."
+    ],
+    "tips": [
+     "Tocá una nota natural, después la misma un traste más arriba, y nombrala de las dos maneras: Fa, Fa♯ = Sol♭."
+    ],
+    "tutorials": [
+     "sostenidos y bemoles explicados guitarra",
+     "tonos y semitonos guitarra"
+    ],
+    "captions": [
+     "Una octava de piano: tocá una tecla para escucharla. Las negras llevan los dos nombres.",
+     "Las notas naturales en la 6ª y la 5ª cuerda. Los trastes vacíos entre ellas son los sostenidos y bemoles."
+    ]
+   },
+   "intervals": {
+    "title": "Intervalos: contar trastes",
+    "theory": [
+     "Un intervalo es la distancia entre dos notas, contada en semitonos, que en la guitarra son trastes.",
+     "Los que más vas a usar: 3ª menor = 3 trastes, 3ª mayor = 4, 4ª justa = 5, 5ª justa = 7, octava = 12.",
+     "Entre cuerdas la cuenta sigue funcionando: la cuerda siguiente empieza 5 trastes más arriba (4 entre la Sol y la Si).",
+     "Cada intervalo tiene su sonido: la 3ª mayor es brillante, la 3ª menor más oscura, la 5ª abierta y hueca."
+    ],
+    "tips": [
+     "Tarareá las dos notas después de tocarlas. Unir el sonido con la forma es lo que hace que los intervalos queden."
+    ],
+    "tutorials": [
+     "intervalos guitarra explicados",
+     "intervalos en el mástil"
+    ],
+    "captions": [
+     "La mayor en una cuerda, con el número de grado. La distancia de 1 a cada número es un intervalo."
+    ]
+   },
+   "interval-ear": {
+    "title": "Escuchar intervalos",
+    "theory": [
+     "El entrenamiento auditivo une un sonido con un nombre. Empezá con pocos intervalos que suenen muy distintos y después sumá los más parecidos.",
+     "Cantá las dos notas después de escucharlas. Si lo podés cantar, lo podés encontrar en el mástil.",
+     "Nombrar lo que escuchás y tocarlo son dos habilidades distintas, así que acá son dos ejercicios separados."
+    ],
+    "tips": [
+     "No adivines rápido: repetí el par, cantalo y comparalo con intervalos que ya conocés."
+    ],
+    "tutorials": [
+     "entrenamiento auditivo intervalos guitarra",
+     "cómo reconocer intervalos de oído"
+    ]
+   },
+   "find-note": {
+    "title": "Encontrá la nota",
+    "theory": [
+     "Aprendé primero las notas naturales de la 6ª y la 5ª cuerda: ahí viven las fundamentales de casi todas las formas de acorde.",
+     "Usá las marcas del mástil como referencia. En la 6ª cuerda, los trastes 3, 5, 7, 9 y 12 son Sol, La, Si, Do♯ y Mi.",
+     "La forma de octava encuentra la misma nota más arriba: dos cuerdas y dos trastes hacia arriba (tres trastes si cruzás la cuerda Si)."
+    ],
+    "tips": [
+     "Practicá en tandas cortas: cinco notas y descanso. Primero precisión, después velocidad."
+    ],
+    "tutorials": [
+     "aprender las notas del mástil guitarra",
+     "formas de octava guitarra"
+    ],
+    "captions": [
+     "Notas naturales en la 6ª y la 5ª cuerda."
+    ]
+   },
+   "degree-map": {
+    "title": "Los grados: un mapa que se mueve con la tonalidad",
+    "theory": [
+     "Un grado nombra una nota por su lugar en la tonalidad: 1 es la fundamental, 3 la tercera, 5 la quinta. En Sol la 3ª es Si; en La es Do♯.",
+     "Las formas por grado no cambian cuando cambia la tonalidad: mové la fundamental y todos los grados se mueven con ella.",
+     "Aprendé dónde quedan el 1, el 3 y el 5 alrededor de una fundamental. Eso es cada acorde mayor, en cada tonalidad."
+    ],
+    "tips": [
+     "Decí grados, no letras, mientras practicás una forma: “1, 3, 5” sirve en cualquier tonalidad."
+    ],
+    "tutorials": [
+     "grados de la escala en la guitarra",
+     "aprender el mástil con intervalos"
+    ],
+    "captions": [
+     "Sol mayor alrededor del traste 2, con el número de grado. Subilo dos trastes y es La mayor."
+    ]
+   },
+   "major-scale": {
+    "title": "Armar la escala mayor",
+    "theory": [
+     "La escala mayor es un dibujo de pasos: tono, tono, semitono, tono, tono, tono, semitono (T T S T T T S).",
+     "Empezá en cualquier nota y seguí el dibujo. Desde Do salen Do Re Mi Fa Sol La Si Do, sin sostenidos ni bemoles.",
+     "Cada nota es un grado, del 1 al 7. Los semitonos siempre caen entre 3–4 y 7–1."
+    ],
+    "tips": [
+     "Tocala primero en una sola cuerda: vas a ver los pasos como distancias de trastes (2 2 1 2 2 2 1)."
+    ],
+    "tutorials": [
+     "fórmula escala mayor guitarra",
+     "cómo armar la escala mayor"
+    ],
+    "captions": [
+     "Do mayor en una cuerda: los trastes entre vecinas son 2 2 1 2 2 2 1."
+    ]
+   },
+   "spelling": {
+    "title": "La escala mayor en las 12 tonalidades",
+    "theory": [
+     "Una escala mayor usa cada letra de la A a la G una sola vez. Por eso Fa♯ mayor tiene Mi♯, no Fa, y Sol♭ mayor tiene Do♭, no Si.",
+     "Las tonalidades con sostenidos suben de a quintas: Sol (1♯), Re (2), La (3), Mi (4), Si (5), Fa♯ (6).",
+     "Las tonalidades con bemoles van al revés: Fa (1♭), Si♭ (2), Mi♭ (3), La♭ (4), Re♭ (5), Sol♭ (6).",
+     "La forma en la guitarra no se fija en los nombres: la misma digitación sirve en todas las tonalidades. Escribir bien importa cuando leés, escribís y hablás de música."
+    ],
+    "tips": [
+     "Escribí primero las letras de la escala (una de cada una) y después agregá los sostenidos o bemoles que pide el dibujo."
+    ],
+    "tutorials": [
+     "círculo de quintas explicado guitarra",
+     "armaduras de clave para guitarristas"
+    ]
+   },
+   "natural-minor": {
+    "title": "La menor natural y la relativa menor",
+    "theory": [
+     "La escala menor natural es la escala mayor empezada en su 6º grado: La menor tiene las mismas notas que Do mayor.",
+     "Mismas notas, otra casa. La menor suena triste o seria porque todo vuelve a La.",
+     "Desde su propia fundamental, la fórmula es 1 2 ♭3 4 5 ♭6 ♭7.",
+     "Cada tonalidad mayor tiene una relativa menor una 3ª menor abajo de su fundamental: Sol → Mi menor, Fa → Re menor."
+    ],
+    "tips": [
+     "Tocá Do mayor y después las mismas notas empezando y terminando en La. Escuchá cómo cambia la casa."
+    ],
+    "tutorials": [
+     "relativa menor explicada",
+     "escala menor natural guitarra"
+    ],
+    "captions": [
+     "La menor natural alrededor del traste 5, con el número de grado."
+    ]
+   },
+   "positions": {
+    "title": "Las posiciones de la escala mayor en el mástil",
+    "theory": [
+     "Una posición ocupa cuatro o cinco trastes, un dedo por traste. Cinco posiciones se unen para cubrir todo el mástil.",
+     "Cada posición empieza en un grado distinto de la 6ª cuerda, y el final de una es el comienzo de la siguiente.",
+     "Aprendelas de a una, diciendo la fundamental en voz alta. Después uní dos vecinas."
+    ],
+    "tips": [
+     "Quedate en una posición durante toda una sesión antes de sumar la siguiente."
+    ],
+    "tutorials": [
+     "cinco posiciones escala mayor guitarra",
+     "unir posiciones de escala guitarra"
+    ],
+    "captions": [
+     "Sol mayor, posición que empieza en el traste 2.",
+     "Sol mayor, la posición siguiente (trastes 4–8)."
+    ]
+   },
+   "three-nps": {
+    "title": "Tres notas por cuerda",
+    "theory": [
+     "Los dibujos de tres notas por cuerda ponen exactamente tres notas de la escala en cada cuerda.",
+     "Estiran más la mano, pero hacen que la púa alternada sea pareja: abajo-arriba-abajo, arriba-abajo-arriba.",
+     "Cada dibujo cubre unas dos octavas y se mueve en diagonal hacia arriba del mástil."
+    ],
+    "tips": [
+     "Empezá lento con púa alternada estricta. La velocidad sale de la parejura, no del esfuerzo."
+    ],
+    "tutorials": [
+     "escalas tres notas por cuerda",
+     "ejercicio púa alternada escala"
+    ]
+   },
+   "pentatonic-relation": {
+    "title": "Pentatónica mayor y menor: una forma, dos casas",
+    "theory": [
+     "La pentatónica menor tiene cinco notas: 1 ♭3 4 5 ♭7. La pentatónica mayor tiene 1 2 3 5 6.",
+     "La pentatónica menor de La y la pentatónica mayor de Do comparten las mismas cinco notas: la caja que ya conocés es las dos.",
+     "Lo que cambia es la nota de casa. Sobre La menor apuntá a La; sobre Do mayor apuntá a Do."
+    ],
+    "tips": [
+     "Tocá la caja sobre un acorde de Do y después sobre uno de Lam, y terminá cada frase en su fundamental."
+    ],
+    "tutorials": [
+     "pentatónica mayor vs menor guitarra",
+     "pentatónicas relativas"
+    ],
+    "captions": [
+     "Pentatónica menor de La en el traste 5, por grado.",
+     "Las mismas notas como pentatónica mayor de Do: solo se movió el 1."
+    ]
+   },
+   "minor-colors": {
+    "title": "Menor armónica y menor melódica",
+    "theory": [
+     "La menor armónica sube la 7ª de la menor natural: 1 2 ♭3 4 5 ♭6 7. Esa 7ª subida tira fuerte hacia la fundamental.",
+     "También hace mayor al acorde de V: Mi7 en La menor. Por eso se llama armónica.",
+     "La menor melódica sube también la 6ª: 1 2 ♭3 4 5 6 7. El jazz la usa igual subiendo y bajando."
+    ],
+    "tips": [
+     "Escuchá el salto entre ♭6 y 7 en la menor armónica: esa distancia le da su sonido exótico."
+    ],
+    "tutorials": [
+     "escala menor armónica guitarra",
+     "escala menor melódica jazz guitarra"
+    ],
+    "captions": [
+     "La menor armónica, por grado."
+    ]
+   },
+   "modes-bright": {
+    "title": "Modos brillantes: lidio y mixolidio",
+    "theory": [
+     "Un modo usa las notas de la escala mayor con otra casa. Compará cada modo con la escala mayor sobre la misma fundamental.",
+     "El lidio es mayor con ♯4: flotante y soñador.",
+     "El mixolidio es mayor con ♭7: blusero, rockero, el sonido de un acorde dominante.",
+     "Tocá un modo sobre su fundamental sostenida como bordón, y apoyate en la nota de color."
+    ],
+    "tips": [
+     "Dejá sonar una cuerda al aire como bordón (Sol o Re) e improvisá lento con el modo encima."
+    ],
+    "tutorials": [
+     "modo lidio guitarra",
+     "modo mixolidio guitarra"
+    ],
+    "captions": [
+     "Sol mixolidio en el traste 2: el b7 es lo que lo diferencia de Sol mayor."
+    ]
+   },
+   "modes-dark": {
+    "title": "Modos oscuros: dórico, frigio y locrio",
+    "theory": [
+     "El dórico es menor natural con 6ª natural: menor, pero más luminoso. Se escucha en el funk, el jazz y muchos solos de rock.",
+     "El frigio es menor natural con ♭2: oscuro y tenso, con sabor español.",
+     "El locrio tiene ♭2 y ♭5: inestable. El jazz lo usa sobre acordes m7♭5."
+    ],
+    "tips": [
+     "Sobre un bordón menor, alterná la menor natural y el dórico: la 6ª es la única nota que cambia."
+    ],
+    "tutorials": [
+     "modo dórico guitarra",
+     "modo frigio guitarra"
+    ],
+    "captions": [
+     "Re dórico, por grado: una escala menor con 6ª natural."
+    ]
+   },
+   "symmetric": {
+    "title": "Escalas de tonos enteros y disminuidas",
+    "theory": [
+     "Tonos enteros: seis notas, todas a un tono. Ninguna nota suena a casa, así que flota.",
+     "Las escalas disminuidas alternan semitonos y tonos, con ocho notas. La semitono-tono va con acordes dominantes 7♭9; la tono-semitono, con acordes disminuidos.",
+     "Las dos son simétricas: el dibujo se repite cada 2 trastes (tonos enteros) o cada 3 trastes (disminuidas), así que una forma sirve en todos lados."
+    ],
+    "tips": [
+     "Aprendé una digitación, después movela según su distancia de repetición y escuchá que es la misma escala."
+    ],
+    "tutorials": [
+     "escala de tonos enteros guitarra",
+     "escala disminuida guitarra jazz"
+    ]
+   },
+   "bebop": {
+    "title": "Escalas bebop",
+    "theory": [
+     "Una escala bebop le agrega una nota de paso a una escala de siete notas, y quedan ocho.",
+     "La bebop dominante le agrega la 7ª natural al mixolidio. Con ocho notas, una carrera de corcheas que empieza en una nota del acorde sobre el tiempo mantiene las notas del acorde en los tiempos.",
+     "La bebop mayor le agrega una ♭6 a la escala mayor, por la misma razón."
+    ],
+    "tips": [
+     "Empezá la carrera en la fundamental en el tiempo 1 y bajá: escuchá cómo las notas del acorde caen en los tiempos."
+    ],
+    "tutorials": [
+     "escala bebop guitarra",
+     "líneas con escala bebop dominante"
+    ]
+   },
+   "altered": {
+    "title": "La escala alterada",
+    "theory": [
+     "La escala alterada es el 7º modo de la menor melódica. Sobre un acorde dominante te da todas las tensiones juntas: ♭9, ♯9, ♯11 y ♭13.",
+     "Sobre Sol7 son Sol La♭ La♯ Si Do♯ Mi♭ Fa: la fundamental, la 3ª y la ♭7 se quedan; la 5ª y la 9ª están todas alteradas.",
+     "Usala en un V7 justo antes de resolver: máxima tensión justo antes del alivio."
+    ],
+    "tips": [
+     "Resolvé cada frase alterada en una nota del acorde siguiente, a un semitono si podés."
+    ],
+    "tutorials": [
+     "escala alterada guitarra",
+     "dominante alterado jazz guitarra"
+    ]
+   },
+   "build-triads": {
+    "title": "Armar una tríada",
+    "theory": [
+     "Una tríada apila dos terceras: fundamental, 3ª y 5ª. La mayor es una 3ª mayor más una 3ª menor; la menor es una 3ª menor más una 3ª mayor.",
+     "La 3ª decide si es mayor o menor: bajala un traste y Do se vuelve Dom.",
+     "Cualquier grupo de tres cuerdas puede tener una tríada, mientras encuentres las tres notas."
+    ],
+    "tips": [
+     "Antes de tocar una forma, señalá su fundamental, su 3ª y su 5ª."
+    ],
+    "tutorials": [
+     "cómo se arman las tríadas guitarra",
+     "tríadas mayores y menores explicadas"
+    ],
+    "captions": [
+     "Las notas de Do hasta el traste 5, con el número de grado."
+    ]
+   },
+   "triad-inversions": {
+    "title": "Inversiones de tríadas por grupo de cuerdas",
+    "theory": [
+     "Una inversión pone otra nota del acorde en el bajo: estado fundamental (1 3 5), 1ª inversión (3 5 1), 2ª inversión (5 1 3).",
+     "En un grupo de tres cuerdas vecinas, las tres inversiones se siguen una a otra hacia arriba del mástil.",
+     "Los nombres con barra dicen qué hay en el bajo: Do/Mi es Do con Mi en el bajo."
+    ],
+    "tips": [
+     "Aprendé un grupo de cuerdas completo antes del siguiente: primero las agudas, después las del medio."
+    ],
+    "tutorials": [
+     "inversiones de tríadas guitarra",
+     "tríadas por grupos de cuerdas"
+    ]
+   },
+   "inversion-bass": {
+    "title": "Inversiones para bajos que caminan",
+    "theory": [
+     "Las inversiones dejan que el bajo se mueva por grado en vez de saltar.",
+     "Do – Mim – Fa – Sol tiene un bajo que salta. Do – Mim/Si – Fa/La – Sol lo hace bajar caminando: Do, Si, La, Sol.",
+     "Escuchá el bajo como una melodía propia: es lo que une los acordes."
+    ],
+    "tips": [
+     "Tocá primero solo los bajos y después los acordes completos."
+    ],
+    "tutorials": [
+     "acordes con barra bajo descendente guitarra",
+     "inversiones línea de bajo guitarra"
+    ]
+   },
+   "sus-sixth": {
+    "title": "Acordes sus y de sexta",
+    "theory": [
+     "Un acorde sus cambia la 3ª por la 2ª (sus2) o por la 4ª (sus4). Sin 3ª no es ni mayor ni menor: abierto, esperando.",
+     "Un sus4 suele resolver en el acorde mayor: Resus4 → Re.",
+     "Un acorde de sexta le agrega la 6ª a una tríada (Do6 = Do Mi Sol La). Es dulce y estable, una alternativa a la maj7."
+    ],
+    "tips": [
+     "Dejá apretados los dedos que no se mueven cuando pasás del sus al mayor."
+    ],
+    "tutorials": [
+     "acordes sus2 y sus4 explicados",
+     "acordes de sexta guitarra"
+    ]
+   },
+   "seventh-family": {
+    "title": "La familia de los acordes de séptima",
+    "theory": [
+     "Poné una tercera más arriba de una tríada y tenés un acorde de séptima. Cinco tipos cubren casi todo el jazz.",
+     "maj7 (1 3 5 7) es exuberante. 7 (1 3 5 ♭7) es el dominante: quiere resolver. m7 (1 ♭3 5 ♭7) es suave.",
+     "m7♭5 (1 ♭3 ♭5 ♭7) es el acorde de ii de una tonalidad menor. dim7 (1 ♭3 ♭5 ♭♭7) es simétrico y tenso.",
+     "m(maj7) (1 ♭3 5 7) es el oscuro, de película."
+    ],
+    "tips": [
+     "Tocá la misma fundamental en los cinco tipos y escuchá qué hace cada cambio de una sola nota."
+    ],
+    "tutorials": [
+     "acordes de séptima explicados guitarra",
+     "maj7 dominante 7 menor 7 guitarra"
+    ]
+   },
+   "extensions": {
+    "title": "Extensiones y dominantes alterados",
+    "theory": [
+     "Seguí apilando terceras más allá de la 7ª y aparecen la 9ª, la 11ª y la 13ª: la 2ª, la 4ª y la 6ª una octava arriba.",
+     "En un acorde dominante, la 9ª, la 11ª y la 13ª se pueden alterar: ♭9, ♯9, ♯11, ♭13. Las alteraciones suman tensión antes de que el acorde resuelva.",
+     "En la guitarra casi nunca tocás todas las notas. Quedate con la 3ª y la 7ª, agregá el color y sacá la 5ª (y muchas veces la fundamental)."
+    ],
+    "tips": [
+     "Escuchá cada color contra el acorde de 7 solo: Do7, después Do9, después Do7♯9."
+    ],
+    "tutorials": [
+     "extensiones de acordes explicadas guitarra",
+     "acordes dominantes alterados guitarra"
+    ]
+   },
+   "diatonic-triads": {
+    "title": "Los acordes de una tonalidad",
+    "theory": [
+     "Armá una tríada sobre cada grado de la escala mayor, usando solo notas de la escala: salen I ii iii IV V vi vii°.",
+     "Los números romanos en mayúscula son mayores, en minúscula son menores, y ° es disminuido. El dibujo es el mismo en todas las tonalidades.",
+     "En Do: Do Rem Mim Fa Sol Lam Si°. En Sol: Sol Lam Sim Do Re Mim Fa♯°.",
+     "Los números te dejan llevar una canción a cualquier tonalidad en tu cabeza: I–V–vi–IV es la misma progresión en todos lados."
+    ],
+    "tips": [
+     "Decí el número romano mientras tocás cada acorde de una canción que conozcas."
+    ],
+    "tutorials": [
+     "acordes diatónicos explicados guitarra",
+     "números romanos progresiones de acordes"
+    ]
+   },
+   "diatonic-sevenths": {
+    "title": "Séptimas y novenas en una tonalidad",
+    "theory": [
+     "Apilá una tercera más y cada grado tiene un acorde de séptima: Imaj7 ii7 iii7 IVmaj7 V7 vi7 viiø7.",
+     "Una tonalidad mayor tiene un solo dominante 7: el V7. Es el acorde que te lleva a casa.",
+     "Agregá la 9ª donde la escala lo permite: Imaj9, ii9, IVmaj9, V9 y vi9 funcionan. En iii y vii la 9ª sería ♭9, así que suelen quedarse en séptimas."
+    ],
+    "tips": [
+     "Tocá los siete acordes en orden y después solo ii–V–I: escuchá cuánto quiere volver a casa el V7."
+    ],
+    "tutorials": [
+     "acordes de séptima diatónicos guitarra",
+     "armonizar la escala mayor en séptimas"
+    ]
+   },
+   "minor-key-chords": {
+    "title": "Acordes de séptima en tonalidades menores",
+    "theory": [
+     "La menor natural te da i7, iiø7, IIImaj7, iv7, v7, VImaj7 y VII7. Su acorde de v es menor (Mim7 en La menor), así que no tira fuerte hacia casa.",
+     "La menor armónica sube la 7ª, y ahora el V es un dominante 7 (Mi7 en La menor) que tira fuerte hacia el i.",
+     "La mayoría de las canciones en menor mezclan las dos: la menor natural para el color y el V7 de la armónica para la cadencia."
+    ],
+    "tips": [
+     "Tocá Lam – Mim – Lam y después Lam – Mi7 – Lam, y compará cómo se siente el final."
+    ],
+    "tutorials": [
+     "acordes de tonalidad menor explicados",
+     "acordes de la menor armónica guitarra"
+    ]
+   },
+   "shells": {
+    "title": "Voicings shell",
+    "theory": [
+     "Un shell tiene tres notas: fundamental, 3ª y 7ª. Alcanza para decir exactamente qué acorde es.",
+     "Dos formas cubren todo: fundamental en la 6ª cuerda (1–7–3) y fundamental en la 5ª cuerda (1–3–7).",
+     "Alternarlas deja la mano en un solo lugar: Rem7 (fundamental en la 5ª) → Sol7 (fundamental en la 6ª) → Domaj7 (fundamental en la 5ª)."
+    ],
+    "tips": [
+     "Apagá las cuerdas que no usás con el costado de los dedos: un shell tiene que sonar como tres notas limpias."
+    ],
+    "tutorials": [
+     "voicings shell guitarra jazz",
+     "acordes de jazz para principiantes"
+    ]
+   },
+   "drop2": {
+    "title": "Voicings drop-2",
+    "theory": [
+     "Empezá con un acorde cerrado de cuatro notas y bajá una octava la segunda voz desde arriba: eso es drop 2.",
+     "Abre el acorde para que entre en cuatro cuerdas vecinas: las cuatro agudas (1–4) o las cuatro del medio (2–5).",
+     "Cada acorde tiene cuatro inversiones drop-2 en cada grupo de cuerdas, una por cada nota del acorde en el bajo."
+    ],
+    "tips": [
+     "Aprendé las cuatro inversiones de un acorde en un grupo de cuerdas y después llevá la misma idea a otros tipos de acorde."
+    ],
+    "tutorials": [
+     "voicings drop 2 guitarra",
+     "acordes drop 2 guitarra jazz"
+    ]
+   },
+   "drop3": {
+    "title": "Voicings drop-3",
+    "theory": [
+     "Si bajás la tercera voz desde arriba tenés drop 3: un sonido más abierto, con el bajo en la 6ª o la 5ª cuerda y una cuerda salteada.",
+     "Las formas drop-3 son los acordes clásicos de acompañamiento de big band: una nota grave y tres notas en las cuerdas del medio."
+    ],
+    "tips": [
+     "Apagá la cuerda salteada con el dedo que toca el bajo."
+    ],
+    "tutorials": [
+     "voicings drop 3 guitarra",
+     "acordes de acompañamiento big band guitarra"
+    ]
+   },
+   "voice-leading": {
+    "title": "Conducción de voces",
+    "theory": [
+     "Conducir las voces es mover cada nota de un acorde a la nota más cercana del acorde siguiente.",
+     "Las notas en común se quedan y el resto se mueve un semitono o un tono. La progresión suena suave aunque los acordes cambien mucho.",
+     "Elegí la inversión siguiente por su nota de arriba (la melodía) o por su bajo, y dejá que las otras voces busquen las notas más cercanas.",
+     "Probalo en el buscador de acordes: escribís una progresión y elige los voicings por vos."
+    ],
+    "tips": [
+     "Sostené las notas que se repiten entre dos acordes: si un dedo no necesita moverse, no lo muevas."
+    ],
+    "tutorials": [
+     "conducción de voces acordes guitarra",
+     "cambios de acordes suaves guitarra jazz"
+    ]
+   },
+   "guide-tones": {
+    "title": "Líneas de notas guía",
+    "theory": [
+     "Las notas guía de un acorde son su 3ª y su 7ª: distinguen mayor de menor, y dominante de maj7.",
+     "En un ii–V–I se mueven un semitono o se quedan: la 7ª de un acorde cae en la 3ª del siguiente.",
+     "Tocá solo esas dos notas por acorde y después una línea simple que pase por ellas. Es el esqueleto de un solo de jazz."
+    ],
+    "tips": [
+     "Cantá la línea de notas guía mientras alguien (o la app) toca los acordes."
+    ],
+    "tutorials": [
+     "líneas de notas guía guitarra jazz",
+     "terceras y séptimas improvisación jazz"
+    ]
    }
   },
   "exercises": {
@@ -1754,7 +2417,107 @@
    "comfortably-numb/pent-b": "Pentatónica de Si menor en el traste 7, bajando y subiendo",
    "comfortably-numb/bend-phrase": "Bend, soltar y responder con vibrato",
    "comfortably-numb/cn-chart-slow": "El cifrado completo al 70%",
-   "comfortably-numb/cn-chart": "El cifrado completo a velocidad normal"
+   "comfortably-numb/cn-chart": "El cifrado completo a velocidad normal",
+   "reading-tab/strings-tab-quiz": "Cuerdas y tab",
+   "reading-tab/play-the-tab": "Tocá lo que dice la tab",
+   "sharps-flats/steps-quiz": "Semitonos, tonos y dos nombres",
+   "sharps-flats/naturals-pick": "Encontrá las notas naturales en el mástil",
+   "sharps-flats/naturals-play": "Tocá la nota en la cuerda",
+   "intervals/interval-frets-quiz": "Nombrá el intervalo por sus trastes",
+   "intervals/play-3-5-8": "Tocá una 3ª, una 5ª o una octava",
+   "intervals/play-m3-4-6": "Tocá una 3ª menor, una 4ª o una 6ª",
+   "interval-ear/ear-3-5-8": "¿Tercera, quinta u octava?",
+   "interval-ear/ear-thirds-fourths": "Terceras, cuartas y quintas",
+   "interval-ear/ear-play": "Ahora tocalos",
+   "find-note/find-pick": "Marcalas todas en las cuerdas graves",
+   "find-note/find-6": "En la 6ª cuerda",
+   "find-note/find-5": "En la 5ª cuerda",
+   "find-note/find-mixed": "6ª, 5ª y 4ª cuerda",
+   "degree-map/roots-pick": "Encontrá cada fundamental",
+   "degree-map/thirds-pick": "Encontrá cada 3ª",
+   "degree-map/degree-quiz": "¿Qué nota es ese grado?",
+   "major-scale/c-one-string": "Do mayor en una cuerda",
+   "major-scale/g-position": "Sol mayor en una posición",
+   "major-scale/major-degree-quiz": "Grados de la escala mayor",
+   "spelling/spelling-quiz": "Escribí bien la escala",
+   "spelling/a-major": "La mayor",
+   "spelling/eb-major": "Mi♭ mayor",
+   "natural-minor/relative-quiz": "Relativa menor y mayor",
+   "natural-minor/which-one": "¿Mayor o menor? (de oído)",
+   "natural-minor/a-minor": "La menor natural",
+   "positions/position-pick": "Marcá la escala en una posición",
+   "positions/position-1": "Posición en el traste 2, ida y vuelta",
+   "positions/position-2": "La posición siguiente (trastes 4–8)",
+   "positions/position-3": "Más arriba (trastes 7–10)",
+   "three-nps/g-3nps": "Sol mayor, tres notas por cuerda",
+   "three-nps/g-3nps-back": "Subir y bajar",
+   "three-nps/a-minor-3nps": "La menor, tres notas por cuerda",
+   "pentatonic-relation/penta-quiz": "¿Qué pentatónica mayor es?",
+   "pentatonic-relation/c-major-penta": "Pentatónica mayor de Do",
+   "pentatonic-relation/penta-pick": "Marcá la caja de la pentatónica menor",
+   "minor-colors/a-harmonic": "La menor armónica",
+   "minor-colors/a-melodic": "La menor melódica",
+   "minor-colors/minor-quiz": "Grados de las escalas menores",
+   "modes-bright/bright-quiz": "¿Qué nota le da el color?",
+   "modes-bright/g-mixolydian": "Sol mixolidio",
+   "modes-bright/f-lydian": "Fa lidio",
+   "modes-dark/dark-quiz": "¿Qué nota le da el color?",
+   "modes-dark/d-dorian": "Re dórico",
+   "modes-dark/e-phrygian": "Mi frigio",
+   "modes-dark/dark-degrees": "Grados del dórico y el frigio",
+   "symmetric/symmetric-quiz": "¿Cada cuánto se repite?",
+   "symmetric/c-whole-tone": "Do tonos enteros",
+   "symmetric/g-half-whole": "Sol disminuida semitono-tono",
+   "bebop/bebop-quiz": "¿Qué nota agrega?",
+   "bebop/g-dom-bebop": "Sol bebop dominante",
+   "bebop/c-major-bebop": "Do bebop mayor",
+   "altered/altered-quiz": "¿Qué agrega?",
+   "altered/tensions-quiz": "Nombrá la tensión",
+   "altered/g-altered": "Sol alterada",
+   "build-triads/triad-pick": "Armá la tríada en el mástil",
+   "build-triads/triad-tones": "¿Qué notas lo forman?",
+   "build-triads/triad-ear": "¿Mayor o menor? (de oído)",
+   "triad-inversions/c-top": "Do en las tres cuerdas agudas",
+   "triad-inversions/g-middle": "Sol en las cuerdas 2–4",
+   "triad-inversions/inversion-quiz": "Nombrá la inversión",
+   "inversion-bass/walk-down": "Un bajo que baja caminando",
+   "inversion-bass/slash-quiz": "¿Qué inversión es?",
+   "sus-sixth/dsus-d": "Resus4 → Re",
+   "sus-sixth/a-sus": "Lasus2 → La → Lasus4 → La",
+   "sus-sixth/sus-quiz": "¿Qué notas lo forman?",
+   "sus-sixth/c6-shape": "Do6 en las cuatro cuerdas agudas",
+   "seventh-family/formula-quiz": "¿Qué fórmula es?",
+   "seventh-family/sevenths-tones": "¿Qué notas lo forman?",
+   "seventh-family/c-family": "Domaj7, Do7, Dom7, Dom7♭5",
+   "extensions/extension-quiz": "¿Qué nota es la tensión?",
+   "extensions/extension-formula": "Fórmulas con tensiones",
+   "extensions/c-colors": "Do9, Do7♯9, Do7♭9, Do13",
+   "diatonic-triads/roman-quiz": "Acordes y números romanos",
+   "diatonic-triads/c-scale-chords": "Todos los acordes de Do, en las cuerdas agudas",
+   "diatonic-sevenths/sevenths-roman": "Acordes de séptima y números romanos",
+   "diatonic-sevenths/c-sevenths": "Todos los acordes de séptima de Do",
+   "diatonic-sevenths/ninths-roman": "Con novenas",
+   "minor-key-chords/harmonic-roman": "Acordes de la menor armónica",
+   "minor-key-chords/natural-roman": "Acordes de la menor natural",
+   "minor-key-chords/am-e7": "i → V7 en La menor",
+   "shells/cmaj7-shell": "Shell de Domaj7, fundamental en la 5ª",
+   "shells/ii-v-i-shells": "ii–V–I en Do con shells",
+   "shells/ii-v-i-g": "ii–V–I en Sol con shells",
+   "shells/shell-quiz": "¿Cuáles son las notas guía?",
+   "drop2/drop2-quiz": "¿Qué voz baja?",
+   "drop2/cmaj7-drop2": "Domaj7 en las cuatro cuerdas agudas",
+   "drop2/drop2-top": "ii–V–I, cuatro cuerdas agudas",
+   "drop2/drop2-middle": "ii–V–I, cuatro cuerdas del medio",
+   "drop3/drop3-quiz": "¿Qué voz baja?",
+   "drop3/g7-drop3": "Sol7, bajo en la 6ª cuerda",
+   "drop3/drop3-ii-v-i": "ii–V–I con drop-3",
+   "voice-leading/lead-quiz": "¿Adónde va la 7ª?",
+   "voice-leading/lead-drop2": "I–vi–ii–V, con voces conducidas",
+   "voice-leading/lead-triads": "Do–Lam–Fa–Sol, la nota de arriba cerca",
+   "guide-tones/guide-quiz": "Nombrá las notas guía",
+   "guide-tones/guide-pairs": "3ªs y 7ªs en ii–V–I",
+   "guide-tones/guide-line-c": "Una línea de notas guía en Do",
+   "guide-tones/guide-line-d": "Una línea de notas guía en Re"
   },
   "charts": {
    "01-em-am": {

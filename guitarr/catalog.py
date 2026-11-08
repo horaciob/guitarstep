@@ -318,11 +318,20 @@ def exercise_shapes(ex: dict) -> list[dict] | None:
         if ex.get("shapes"):                                   # written out by hand
             return [dict(name=s["name"], frets=list(s["frets"])) for s in ex["shapes"]]
         if ex["kind"] == "shape":
-            vs = [v for v in th.voicings(ex["chord"], ex["voicing"]) if v["strings"] == ex.get("strings", v["strings"])
-                  and v["inversion"] == int(ex.get("inversion", v["inversion"]))]
             near = int(ex.get("near", 3))
-            v = min(vs, key=lambda v: (abs(v["position"] - near), v["position"]))
-            return [dict(name=ex["chord"], frets=v["frets"])]
+            all_v = th.voicings(ex["chord"], ex["voicing"])
+            out = []
+            for inv in ex.get("inversions", [ex.get("inversion")]):
+                vs = [v for v in all_v if v["strings"] == ex.get("strings", v["strings"]) and (inv is None or v["inversion"] == int(inv))]
+                if not vs:
+                    raise th.TheoryError(f"no {ex['voicing']} of {ex['chord']} on {ex.get('strings')}")
+                v = min(vs, key=lambda v: (abs(v["position"] - near), v["position"]))
+                name = ex["chord"]
+                if ex.get("inversions") and v["inversion"]:          # several inversions: name each by its bass
+                    c = th.chord(ex["chord"])
+                    name += "/" + th.tone(c, v["order"][0])["note"]
+                out.append(dict(name=name, frets=v["frets"]))
+            return out
         prog = ex["progression"]
         if ex["voicing"] == "guide":
             shapes = th.guide_tones(prog, tuple(ex.get("strings", (4, 3))))

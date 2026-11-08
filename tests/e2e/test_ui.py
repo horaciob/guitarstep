@@ -343,7 +343,58 @@ def test_lesson_continue_keys_and_result_ring(app_page):
 def test_course_shows_progress_per_level(app_page):
     onboarded(app_page)
     go(app_page, "course")
-    expect(app_page.locator(".level").first.locator(".lvl-prog")).to_contain_text("0 of 3 lessons")
+    expect(app_page.locator(".level").first.locator(".lvl-prog")).to_contain_text("0 of 4 lessons")
+
+
+def test_quiz_exercise_is_answered_and_graded_on_the_server(app_page):
+    onboarded(app_page)
+    go(app_page, "lesson/intervals")
+    box = app_page.locator('.exercise[data-id="interval-frets-quiz"]')
+    expect(box).to_contain_text("you pass it by answering")
+    box.locator("[data-act=go]").click()
+    focus = app_page.locator("dialog.ex-focus")
+    for i in range(6):
+        expect(focus.locator(".q-count")).to_have_text(f"Question {i + 1} of 6")
+        expect(focus.locator(".q-prompt")).to_contain_text("which interval is it?")
+        app_page.keyboard.press("1")                                         # answer with the number keys
+        expect(focus.locator(".q-feedback")).not_to_be_empty()
+        expect(focus.locator(".q-choice.right")).to_have_count(1)             # the right one is always shown
+        focus.locator("[data-q=next]").click()
+    expect(focus.locator(".f-result")).to_be_visible()
+    expect(focus.locator(".f-result .r-text b")).to_have_text(re.compile(r"^\d+%$"))
+
+
+def test_pick_notes_on_the_fretboard(app_page):
+    onboarded(app_page)
+    go(app_page, "lesson/build-triads")
+    expect(app_page.locator(".lesson-figure svg.fb .fb-dot.root").first).to_be_visible()   # the lesson's figure
+    app_page.locator('.exercise[data-id="triad-pick"] [data-act=go]').click()
+    focus = app_page.locator("dialog.ex-focus")
+    expect(focus.locator(".q-prompt")).to_contain_text("Build ")
+    focus.locator('.fb-pos[data-s="2"][data-f="1"]').click()                  # C on the B string
+    expect(focus.locator(".fb-dot.sel")).to_have_count(1)
+    focus.locator("[data-q=check]").click()
+    expect(focus.locator(".q-feedback")).to_contain_text("Not quite")       # one note can't be a triad
+    expect(focus.locator("[data-q=next]")).to_be_visible()
+
+
+def test_drawn_targets_and_theory_figures(app_page):
+    onboarded(app_page)
+    _fake_listener(app_page, {"award": {"passed": False, "need": 80}, "summary": {"score": 40}})
+    go(app_page, "lesson/sharps-flats")
+    expect(app_page.locator(".lesson-figure svg.piano")).to_be_visible()
+    expect(app_page.locator(".lesson-figure svg.piano")).to_contain_text("C♯")
+    app_page.locator('.exercise[data-id="naturals-play"] [data-act=go]').click()
+    focus = app_page.locator("dialog.ex-focus")
+    expect(focus.locator(".drawn-list li")).to_have_count(5)
+    expect(focus.locator(".f-prompt")).to_contain_text("on string")
+    focus.locator("[data-f=go]").click()                                     # stop → the answers are revealed
+    expect(focus.locator(".drawn-list li").first).to_contain_text("fret")
+    app_page.keyboard.press("Escape")
+    go(app_page, "lesson/major-scale")
+    expect(app_page.locator('.exercise[data-id="c-one-string"] pre.tab')).to_contain_text("A|-3")
+    go(app_page, "lesson/drop2")
+    expect(app_page.locator('.exercise[data-id="drop2-top"] .ex-shapes .mini-chord')).to_have_count(3)
 
 
 def test_tuning_and_left_handed(app_page):

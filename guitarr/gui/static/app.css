@@ -926,3 +926,47 @@ body.is-setup #main { margin: 0 auto; max-width: 760px; padding-top: 48px; }
 @keyframes ring-fill { to { stroke-dashoffset: var(--to); } }
 @keyframes xp-pop { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .gl .f-result .r-val { animation-duration: .01s; } .gl .f-result .r-xp { animation: none; } }
+
+/* ---------- fretboard (lessons and tools): every mark has a label; kinds also differ by outline */
+.gl svg.fb { width: 100%; min-width: 520px; color: var(--text); }
+.gl .fb-pos.click { cursor: pointer; }
+.gl .fb-pos.click:hover .fb-dot, .gl .fb-pos.click:focus-visible .fb-dot { stroke: var(--gl-accent); stroke-width: 3; }
+.gl .fb-pos:focus-visible { outline: none; }
+.gl .fb-pos.click:focus-visible rect { stroke: var(--gl-accent); stroke-width: 2; }
+.gl .fb-dot { fill: var(--gl-panel-2); stroke: var(--muted); stroke-width: 1.5; }
+.gl .fb-dot.root { fill: var(--gl-accent); stroke: none; }
+.gl .fb-dot.sel { fill: var(--gl-info); stroke: none; }
+.gl .fb-dot.right { fill: var(--gl-ok); stroke: none; }
+.gl .fb-dot.wrong { fill: var(--gl-err); stroke: none; }
+.gl .fb-dot.missed { fill: none; stroke: var(--gl-ok); stroke-width: 3; stroke-dasharray: 4 3; }
+.gl .fb-txt { font-size: 11px; font-weight: 700; fill: var(--text); pointer-events: none; }
+.gl .fb-txt.root, .gl .fb-txt.sel, .gl .fb-txt.right, .gl .fb-txt.wrong { fill: #fff; }
+.gl .fb-txt.root { fill: var(--gl-accent-ink); }
+
+/* ---------- answering exercises */
+.gl .how-chip { display: inline-block; margin-top: 6px; font-size: 11px; color: var(--muted); border: 1px solid var(--border); border-radius: 99px; padding: 2px 8px; }
+.gl .ex-shapes { margin-top: 8px; }
+.gl .quiz { display: grid; gap: 14px; justify-items: center; text-align: center; max-width: 820px; margin: 0 auto; width: 100%; }
+.gl .quiz:focus { outline: none; }
+.gl .q-prompt { font-size: clamp(20px, 3vw, 28px); font-weight: 700; line-height: 1.25; margin: 0; }
+.gl .q-count { margin: 0; }
+.gl .q-tab { font-size: 18px; margin: 0; text-align: left; }
+.gl .q-choices { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; width: 100%; }
+.gl .q-choice { justify-content: flex-start; text-align: left; padding: 14px 16px; font-size: 16px; }
+.gl .q-choice kbd { margin-right: 6px; }
+.gl .q-choice.right { border-color: var(--gl-ok); box-shadow: inset 0 0 0 2px var(--gl-ok); }
+.gl .q-choice.right::after { content: " ✓"; color: var(--gl-ok); font-weight: 800; }
+.gl .q-choice.wrong { border-color: var(--gl-err); box-shadow: inset 0 0 0 2px var(--gl-err); }
+.gl .q-choice.wrong::after { content: " ✕"; color: var(--gl-err); font-weight: 800; }
+.gl .q-choice:disabled { opacity: 1; cursor: default; }
+.gl .q-neck { width: 100%; }
+.gl .q-feedback { min-height: 24px; font-weight: 700; margin: 0; }
+.gl .q-feedback.ok { color: var(--gl-ok); } .gl .q-feedback.err { color: var(--gl-err); }
+.gl .q-actions { gap: 10px; }
+.gl .drawn-list { margin: 0 auto; padding-left: 22px; max-width: 520px; display: grid; gap: 4px; }
+.gl .drawn-list li.cur { font-weight: 800; color: var(--gl-accent); }
+.gl .drawn-list li.cur::marker { content: "▶ "; }
+.gl .drawn-list li.done { color: var(--muted); }
+.gl .f-prompt { font-size: clamp(32px, 6vw, 64px); }
+.gl .lesson-figure { margin: 10px 0 4px; }
+.gl .piano { display: block; width: 100%; max-width: 520px; color: var(--text); }

@@ -55,6 +55,44 @@
      ]
     },
     {
+     "id": "reading-tab",
+     "title": "Parts of the guitar and reading tab",
+     "minutes": 10,
+     "theory": [
+      "The headstock holds the tuners, the neck holds the frets, and the body holds the bridge (and, on an electric, the pickups).",
+      "Frets are counted from the nut: fret 1 is the one closest to the headstock. In tab, 0 means the open string.",
+      "Tab draws the six strings as lines with the thinnest (1st string, high E) on top. A number on a line tells you which fret to press.",
+      "Read tab from left to right, like text. Numbers stacked in the same column are played together."
+     ],
+     "tips": [
+      "Say the string and the fret out loud before you play each number: it makes reading automatic sooner."
+     ],
+     "tutorials": [
+      "how to read guitar tab for beginners",
+      "parts of the guitar explained"
+     ],
+     "exercises": [
+      {
+       "id": "strings-tab-quiz",
+       "kind": "quiz",
+       "title": "Strings and tab",
+       "quiz": [
+        "open_string",
+        "tab_read"
+       ],
+       "count": 6,
+       "min": 80
+      },
+      {
+       "id": "play-the-tab",
+       "kind": "lick",
+       "title": "Play what the tab says",
+       "tab": "6:0 6:3 5:0 5:2 4:0 4:2 3:0 3:2",
+       "min": 80
+      }
+     ]
+    },
+    {
      "id": "e-minor",
      "title": "Your first chord: E minor",
      "minutes": 10,
@@ -1075,6 +1113,2218 @@
        "title": "The whole chart at full speed",
        "chart": "18-comfortably-numb",
        "speed": 1.0,
+       "min": 80
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "n8",
+   "number": 8,
+   "title": "Reading the neck",
+   "subtitle": "Half steps, intervals by ear and by fret, finding notes and thinking in degrees.",
+   "lessons": [
+    {
+     "id": "sharps-flats",
+     "title": "Sharps, flats and half steps",
+     "minutes": 12,
+     "theory": [
+      "On a piano, going from one key to the very next one (white or black) is a half step. On a guitar, one fret is a half step.",
+      "There's a black key between most natural notes. Only E–F and B–C are a half step apart, with nothing in between.",
+      "A black key has two names: C♯ (C raised) is the same pitch as D♭ (D lowered). Which name you use depends on the key you're in.",
+      "Two frets make a whole step: C to D, E to F♯, B to C♯."
+     ],
+     "tips": [
+      "Play a natural note, then the same note one fret higher, and name both ways: F, F♯ = G♭."
+     ],
+     "tutorials": [
+      "sharps and flats explained guitar",
+      "half steps and whole steps guitar"
+     ],
+     "figures": [
+      {
+       "type": "keyboard"
+      },
+      {
+       "type": "fretboard",
+       "key": "C",
+       "scale": "major",
+       "frets": [
+        0,
+        12
+       ],
+       "strings": [
+        6,
+        5
+       ],
+       "labels": "notes"
+      }
+     ],
+     "captions": [
+      "One octave of a piano: tap a key to hear it. Black keys carry both names.",
+      "The natural notes on the 6th and 5th strings. The empty frets between them are the sharps and flats."
+     ],
+     "exercises": [
+      {
+       "id": "steps-quiz",
+       "kind": "quiz",
+       "title": "Half steps, whole steps and two names",
+       "quiz": [
+        "half_step",
+        "enharmonic"
+       ],
+       "count": 6,
+       "min": 80
+      },
+      {
+       "id": "naturals-pick",
+       "kind": "pick",
+       "title": "Find the natural notes on the neck",
+       "pick": "note",
+       "strings": [
+        6,
+        5
+       ],
+       "frets": [
+        0,
+        12
+       ],
+       "count": 3,
+       "min": 80
+      },
+      {
+       "id": "naturals-play",
+       "kind": "find_note",
+       "title": "Play the note on the string",
+       "strings": [
+        6,
+        5
+       ],
+       "frets": [
+        0,
+        12
+       ],
+       "count": 5,
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "intervals",
+     "title": "Intervals: counting frets",
+     "minutes": 15,
+     "theory": [
+      "An interval is the distance between two notes, counted in half steps, which on the guitar means frets.",
+      "The ones you'll use most: minor 3rd = 3 frets, major 3rd = 4, perfect 4th = 5, perfect 5th = 7, octave = 12.",
+      "Across strings the count still works: the next string up starts 5 frets higher (4 between the G and B strings).",
+      "Every interval has its own sound: the major 3rd is bright, the minor 3rd darker, the 5th open and hollow."
+     ],
+     "tips": [
+      "Hum the two notes after you play them. Linking the sound to the shape is what makes intervals stick."
+     ],
+     "tutorials": [
+      "guitar intervals explained",
+      "intervals on the fretboard"
+     ],
+     "figures": [
+      {
+       "type": "fretboard",
+       "key": "A",
+       "scale": "major",
+       "frets": [
+        0,
+        12
+       ],
+       "string": 5,
+       "path": true
+      }
+     ],
+     "captions": [
+      "A major on one string, labeled by degree. The distance from 1 to each number is an interval."
+     ],
+     "exercises": [
+      {
+       "id": "interval-frets-quiz",
+       "kind": "quiz",
+       "title": "Name the interval by its frets",
+       "quiz": "interval_frets",
+       "count": 6,
+       "min": 80
+      },
+      {
+       "id": "play-3-5-8",
+       "kind": "play_interval",
+       "title": "Play a 3rd, a 5th or an octave",
+       "intervals": [
+        "M3",
+        "P5",
+        "P8"
+       ],
+       "count": 4,
+       "min": 80
+      },
+      {
+       "id": "play-m3-4-6",
+       "kind": "play_interval",
+       "title": "Play a minor 3rd, a 4th or a 6th",
+       "intervals": [
+        "m3",
+        "P4",
+        "M6"
+       ],
+       "count": 4,
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "interval-ear",
+     "title": "Hearing intervals",
+     "minutes": 12,
+     "theory": [
+      "Ear training links a sound to a name. Start with a few intervals that sound very different, then add the closer ones.",
+      "Sing the two notes back after you hear them. If you can sing it, you can find it on the neck.",
+      "Naming what you hear and playing it are two different skills, so they're two separate exercises here."
+     ],
+     "tips": [
+      "Don't guess fast: replay the pair, sing it, and compare it with intervals you already know."
+     ],
+     "tutorials": [
+      "ear training intervals for guitarists",
+      "how to recognize intervals by ear"
+     ],
+     "exercises": [
+      {
+       "id": "ear-3-5-8",
+       "kind": "quiz",
+       "title": "Third, fifth or octave?",
+       "quiz": "interval_ear",
+       "intervals": [
+        "M3",
+        "P5",
+        "P8"
+       ],
+       "count": 6,
+       "min": 80
+      },
+      {
+       "id": "ear-thirds-fourths",
+       "kind": "quiz",
+       "title": "Thirds, fourths and fifths",
+       "quiz": "interval_ear",
+       "intervals": [
+        "m3",
+        "M3",
+        "P4",
+        "P5"
+       ],
+       "count": 8,
+       "min": 75
+      },
+      {
+       "id": "ear-play",
+       "kind": "play_interval",
+       "title": "Now play them",
+       "intervals": [
+        "M3",
+        "P5"
+       ],
+       "count": 4,
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "find-note",
+     "title": "Find the note",
+     "minutes": 15,
+     "theory": [
+      "Learn the natural notes on the 6th and 5th strings first: they're where the roots of most chord shapes live.",
+      "Use the fret markers as landmarks. On the 6th string, frets 3, 5, 7, 9 and 12 are G, A, B, C♯ and E.",
+      "The octave shape finds the same note higher up: two strings up and two frets up (three frets when you cross the B string)."
+     ],
+     "tips": [
+      "Practice in short bursts: five notes, then rest. Accuracy first, speed later."
+     ],
+     "tutorials": [
+      "learn the notes on the guitar neck",
+      "octave shapes guitar"
+     ],
+     "figures": [
+      {
+       "type": "fretboard",
+       "key": "C",
+       "scale": "major",
+       "frets": [
+        0,
+        12
+       ],
+       "strings": [
+        6,
+        5
+       ],
+       "labels": "notes"
+      }
+     ],
+     "captions": [
+      "Natural notes on the 6th and 5th strings."
+     ],
+     "exercises": [
+      {
+       "id": "find-pick",
+       "kind": "pick",
+       "title": "Mark every one on the low strings",
+       "pick": "note",
+       "strings": [
+        6,
+        5
+       ],
+       "frets": [
+        0,
+        12
+       ],
+       "count": 4,
+       "min": 80
+      },
+      {
+       "id": "find-6",
+       "kind": "find_note",
+       "title": "On the 6th string",
+       "strings": [
+        6
+       ],
+       "frets": [
+        0,
+        12
+       ],
+       "count": 5,
+       "min": 80
+      },
+      {
+       "id": "find-5",
+       "kind": "find_note",
+       "title": "On the 5th string",
+       "strings": [
+        5
+       ],
+       "frets": [
+        0,
+        12
+       ],
+       "count": 5,
+       "min": 80
+      },
+      {
+       "id": "find-mixed",
+       "kind": "find_note",
+       "title": "6th, 5th and 4th strings",
+       "strings": [
+        6,
+        5,
+        4
+       ],
+       "frets": [
+        0,
+        12
+       ],
+       "count": 6,
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "degree-map",
+     "title": "Degrees: a map that moves with the key",
+     "minutes": 15,
+     "theory": [
+      "A degree names a note by its place in the key: 1 is the root, 3 the third, 5 the fifth. In G the 3rd is B; in A it's C♯.",
+      "Degree shapes don't change when the key does: move the root and every degree moves with it.",
+      "Learn where 1, 3 and 5 sit around a root. That's every major chord, in every key."
+     ],
+     "tips": [
+      "Say degrees, not letters, while you practice a shape: “1, 3, 5” works in any key."
+     ],
+     "tutorials": [
+      "scale degrees on the guitar",
+      "learn the fretboard with intervals"
+     ],
+     "figures": [
+      {
+       "type": "fretboard",
+       "key": "G",
+       "scale": "major",
+       "frets": [
+        2,
+        6
+       ]
+      }
+     ],
+     "captions": [
+      "G major around fret 2, labeled by degree. Move it up two frets and it's A major."
+     ],
+     "exercises": [
+      {
+       "id": "roots-pick",
+       "kind": "pick",
+       "title": "Find every root",
+       "pick": "degree",
+       "keys": [
+        "G",
+        "A",
+        "C"
+       ],
+       "degrees": [
+        "1"
+       ],
+       "frets": [
+        0,
+        7
+       ],
+       "count": 3,
+       "min": 80
+      },
+      {
+       "id": "thirds-pick",
+       "kind": "pick",
+       "title": "Find every 3rd",
+       "pick": "degree",
+       "keys": [
+        "G",
+        "A",
+        "C",
+        "D"
+       ],
+       "degrees": [
+        "3"
+       ],
+       "frets": [
+        0,
+        7
+       ],
+       "count": 3,
+       "min": 80
+      },
+      {
+       "id": "degree-quiz",
+       "kind": "quiz",
+       "title": "Which note is that degree?",
+       "quiz": "scale_degree",
+       "keys": [
+        "G",
+        "D",
+        "A",
+        "C"
+       ],
+       "count": 6,
+       "min": 80
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "n9",
+   "number": 9,
+   "title": "Scales",
+   "subtitle": "Build scales from their steps, spell them in every key, and play them across the neck.",
+   "lessons": [
+    {
+     "id": "major-scale",
+     "title": "Building the major scale",
+     "minutes": 15,
+     "theory": [
+      "The major scale is a pattern of steps: whole, whole, half, whole, whole, whole, half (W W H W W W H).",
+      "Start on any note and follow the pattern. From C you get C D E F G A B C, with no sharps or flats.",
+      "Each note is a degree, 1 to 7. The half steps always fall between 3–4 and 7–1."
+     ],
+     "tips": [
+      "Play it on one string first: you'll see the steps as fret distances (2 2 1 2 2 2 1)."
+     ],
+     "tutorials": [
+      "major scale formula guitar",
+      "how to build the major scale"
+     ],
+     "figures": [
+      {
+       "type": "fretboard",
+       "key": "C",
+       "scale": "major",
+       "frets": [
+        3,
+        15
+       ],
+       "string": 5,
+       "path": true
+      }
+     ],
+     "captions": [
+      "C major on one string: the frets between neighbors go 2 2 1 2 2 2 1."
+     ],
+     "exercises": [
+      {
+       "id": "c-one-string",
+       "kind": "scale",
+       "title": "C major on one string",
+       "key": "C",
+       "scale": "major",
+       "string": 5,
+       "frets": [
+        3,
+        15
+       ],
+       "min": 80
+      },
+      {
+       "id": "g-position",
+       "kind": "scale",
+       "title": "G major in one position",
+       "key": "G",
+       "scale": "major",
+       "frets": [
+        2,
+        5
+       ],
+       "min": 80
+      },
+      {
+       "id": "major-degree-quiz",
+       "kind": "quiz",
+       "title": "Degrees of the major scale",
+       "quiz": "scale_degree",
+       "keys": [
+        "C",
+        "G",
+        "F",
+        "D"
+       ],
+       "count": 6,
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "spelling",
+     "title": "The major scale in all 12 keys",
+     "minutes": 15,
+     "theory": [
+      "A major scale uses each letter from A to G exactly once. So F♯ major has E♯, not F, and G♭ major has C♭, not B.",
+      "Keys with sharps go up in fifths: G (1♯), D (2), A (3), E (4), B (5), F♯ (6).",
+      "Keys with flats go the other way: F (1♭), B♭ (2), E♭ (3), A♭ (4), D♭ (5), G♭ (6).",
+      "The shape on the guitar doesn't care about names: the same fingering works in every key. Spelling matters when you read, write and talk about music."
+     ],
+     "tips": [
+      "Write a scale's letters first (one of each), then add the sharps or flats the pattern needs."
+     ],
+     "tutorials": [
+      "circle of fifths explained guitar",
+      "key signatures for guitarists"
+     ],
+     "exercises": [
+      {
+       "id": "spelling-quiz",
+       "kind": "quiz",
+       "title": "Spell the scale correctly",
+       "quiz": "scale_degree",
+       "keys": [
+        "F#",
+        "Gb",
+        "Db",
+        "B",
+        "E",
+        "Ab",
+        "Eb",
+        "A"
+       ],
+       "count": 8,
+       "min": 80
+      },
+      {
+       "id": "a-major",
+       "kind": "scale",
+       "title": "A major",
+       "key": "A",
+       "scale": "major",
+       "frets": [
+        4,
+        7
+       ],
+       "min": 80
+      },
+      {
+       "id": "eb-major",
+       "kind": "scale",
+       "title": "E♭ major",
+       "key": "Eb",
+       "scale": "major",
+       "frets": [
+        5,
+        8
+       ],
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "natural-minor",
+     "title": "Natural minor and the relative minor",
+     "minutes": 15,
+     "theory": [
+      "The natural minor scale is the major scale started on its 6th degree: A minor has the same notes as C major.",
+      "Same notes, different home. A minor sounds sad or serious because everything comes back to A.",
+      "From its own root the formula is 1 2 ♭3 4 5 ♭6 ♭7.",
+      "Every major key has a relative minor a minor 3rd below its root: G → E minor, F → D minor."
+     ],
+     "tips": [
+      "Play C major, then the same notes starting and ending on A. Listen to how the home changes."
+     ],
+     "tutorials": [
+      "relative minor explained",
+      "natural minor scale guitar"
+     ],
+     "figures": [
+      {
+       "type": "fretboard",
+       "key": "A",
+       "scale": "natural_minor",
+       "frets": [
+        5,
+        8
+       ]
+      }
+     ],
+     "captions": [
+      "A natural minor around fret 5, labeled by degree."
+     ],
+     "exercises": [
+      {
+       "id": "relative-quiz",
+       "kind": "quiz",
+       "title": "Relative minor and major",
+       "quiz": "relative_minor",
+       "count": 6,
+       "min": 80
+      },
+      {
+       "id": "which-one",
+       "kind": "quiz",
+       "title": "Major or minor? (by ear)",
+       "quiz": "hear_quality",
+       "as_scale": true,
+       "count": 6,
+       "min": 80
+      },
+      {
+       "id": "a-minor",
+       "kind": "scale",
+       "title": "A natural minor",
+       "key": "A",
+       "scale": "natural_minor",
+       "frets": [
+        5,
+        8
+       ],
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "positions",
+     "title": "Major scale positions across the neck",
+     "minutes": 20,
+     "theory": [
+      "One position covers four or five frets, one finger per fret. Five positions connect to cover the whole neck.",
+      "Each position starts on a different degree on the 6th string, and the end of one is the start of the next.",
+      "Learn them one at a time, saying the root out loud. Then link two neighbors."
+     ],
+     "tips": [
+      "Stay in one position for a whole session before you add the next one."
+     ],
+     "tutorials": [
+      "major scale five positions guitar",
+      "connect scale positions guitar"
+     ],
+     "figures": [
+      {
+       "type": "fretboard",
+       "key": "G",
+       "scale": "major",
+       "frets": [
+        2,
+        5
+       ]
+      },
+      {
+       "type": "fretboard",
+       "key": "G",
+       "scale": "major",
+       "frets": [
+        4,
+        8
+       ]
+      }
+     ],
+     "captions": [
+      "G major, position starting at fret 2.",
+      "G major, the next position up (frets 4–8)."
+     ],
+     "exercises": [
+      {
+       "id": "position-pick",
+       "kind": "pick",
+       "title": "Mark the scale in one position",
+       "pick": "scale",
+       "keys": [
+        "G"
+       ],
+       "scale": "major",
+       "frets": [
+        2,
+        5
+       ],
+       "count": 1,
+       "min": 80
+      },
+      {
+       "id": "position-1",
+       "kind": "scale",
+       "title": "Position at fret 2, up and down",
+       "key": "G",
+       "scale": "major",
+       "frets": [
+        2,
+        5
+       ],
+       "direction": "updown",
+       "min": 80
+      },
+      {
+       "id": "position-2",
+       "kind": "scale",
+       "title": "The next position (frets 4–8)",
+       "key": "G",
+       "scale": "major",
+       "frets": [
+        4,
+        8
+       ],
+       "min": 80
+      },
+      {
+       "id": "position-3",
+       "kind": "scale",
+       "title": "Higher up (frets 7–10)",
+       "key": "G",
+       "scale": "major",
+       "frets": [
+        7,
+        10
+       ],
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "three-nps",
+     "title": "Three notes per string",
+     "minutes": 15,
+     "theory": [
+      "Three-notes-per-string patterns put exactly three scale notes on each string.",
+      "They stretch more, but they make alternate picking even: down-up-down, up-down-up.",
+      "Each pattern spans about two octaves and moves diagonally up the neck."
+     ],
+     "tips": [
+      "Start slow with strict alternate picking. Speed comes from evenness, not effort."
+     ],
+     "tutorials": [
+      "three notes per string scales",
+      "alternate picking scale exercise"
+     ],
+     "exercises": [
+      {
+       "id": "g-3nps",
+       "kind": "scale",
+       "title": "G major, three notes per string",
+       "key": "G",
+       "scale": "major",
+       "nps": 3,
+       "frets": [
+        3,
+        15
+       ],
+       "octaves": 2,
+       "min": 80
+      },
+      {
+       "id": "g-3nps-back",
+       "kind": "scale",
+       "title": "Up and back down",
+       "key": "G",
+       "scale": "major",
+       "nps": 3,
+       "frets": [
+        3,
+        15
+       ],
+       "octaves": 2,
+       "direction": "updown",
+       "min": 80
+      },
+      {
+       "id": "a-minor-3nps",
+       "kind": "scale",
+       "title": "A minor, three notes per string",
+       "key": "A",
+       "scale": "natural_minor",
+       "nps": 3,
+       "frets": [
+        5,
+        17
+       ],
+       "octaves": 2,
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "pentatonic-relation",
+     "title": "Major and minor pentatonic: one shape, two homes",
+     "minutes": 12,
+     "theory": [
+      "The minor pentatonic has five notes: 1 ♭3 4 5 ♭7. The major pentatonic has 1 2 3 5 6.",
+      "A minor pentatonic and C major pentatonic share the same five notes: the box you already know is both.",
+      "What changes is the home note. Over A minor aim for A; over C major aim for C."
+     ],
+     "tips": [
+      "Play the box over a C chord, then over an Am chord, and end each phrase on its root."
+     ],
+     "tutorials": [
+      "major vs minor pentatonic guitar",
+      "relative pentatonic scales"
+     ],
+     "figures": [
+      {
+       "type": "fretboard",
+       "key": "A",
+       "scale": "minor_pentatonic",
+       "frets": [
+        5,
+        8
+       ]
+      },
+      {
+       "type": "fretboard",
+       "key": "C",
+       "scale": "major_pentatonic",
+       "frets": [
+        5,
+        8
+       ]
+      }
+     ],
+     "captions": [
+      "A minor pentatonic at fret 5, by degree.",
+      "The same notes as C major pentatonic: only the 1 moved."
+     ],
+     "exercises": [
+      {
+       "id": "penta-quiz",
+       "kind": "quiz",
+       "title": "Which major pentatonic is it?",
+       "quiz": "pentatonic",
+       "count": 6,
+       "min": 80
+      },
+      {
+       "id": "c-major-penta",
+       "kind": "scale",
+       "title": "C major pentatonic",
+       "key": "C",
+       "scale": "major_pentatonic",
+       "frets": [
+        5,
+        8
+       ],
+       "min": 80
+      },
+      {
+       "id": "penta-pick",
+       "kind": "pick",
+       "title": "Mark the minor pentatonic box",
+       "pick": "scale",
+       "keys": [
+        "A",
+        "E"
+       ],
+       "scale": "minor_pentatonic",
+       "frets": [
+        5,
+        8
+       ],
+       "count": 2,
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "minor-colors",
+     "title": "Harmonic and melodic minor",
+     "minutes": 15,
+     "theory": [
+      "Harmonic minor raises the 7th of natural minor: 1 2 ♭3 4 5 ♭6 7. That raised 7th pulls hard toward the root.",
+      "It also makes the V chord major: E7 in A minor. That's why it's called harmonic.",
+      "Melodic minor raises the 6th as well: 1 2 ♭3 4 5 6 7. Jazz uses it the same way going up and down."
+     ],
+     "tips": [
+      "Listen for the jump between ♭6 and 7 in harmonic minor: that gap gives it its exotic sound."
+     ],
+     "tutorials": [
+      "harmonic minor scale guitar",
+      "melodic minor scale jazz guitar"
+     ],
+     "figures": [
+      {
+       "type": "fretboard",
+       "key": "A",
+       "scale": "harmonic_minor",
+       "frets": [
+        4,
+        8
+       ]
+      }
+     ],
+     "captions": [
+      "A harmonic minor, by degree."
+     ],
+     "exercises": [
+      {
+       "id": "a-harmonic",
+       "kind": "scale",
+       "title": "A harmonic minor",
+       "key": "A",
+       "scale": "harmonic_minor",
+       "frets": [
+        4,
+        8
+       ],
+       "min": 80
+      },
+      {
+       "id": "a-melodic",
+       "kind": "scale",
+       "title": "A melodic minor",
+       "key": "A",
+       "scale": "melodic_minor",
+       "frets": [
+        4,
+        8
+       ],
+       "min": 80
+      },
+      {
+       "id": "minor-quiz",
+       "kind": "quiz",
+       "title": "Degrees of the minor scales",
+       "quiz": "scale_degree",
+       "scales": [
+        "harmonic_minor",
+        "melodic_minor"
+       ],
+       "keys": [
+        "A",
+        "E",
+        "D"
+       ],
+       "count": 6,
+       "min": 80
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "n10",
+   "number": 10,
+   "title": "Scale colors",
+   "subtitle": "Modes, symmetric scales, bebop and altered: the colors of rock and jazz.",
+   "lessons": [
+    {
+     "id": "modes-bright",
+     "title": "Bright modes: Lydian and Mixolydian",
+     "minutes": 15,
+     "theory": [
+      "A mode uses the major scale's notes with a different home. Compare each mode with the major scale on the same root.",
+      "Lydian is major with a ♯4: floating and dreamy.",
+      "Mixolydian is major with a ♭7: bluesy, rock, the sound of a dominant chord.",
+      "Play a mode over its root held as a drone, and lean on the color note."
+     ],
+     "tips": [
+      "Let an open string ring as the drone (G or D) and improvise slowly with the mode on top."
+     ],
+     "tutorials": [
+      "lydian mode guitar",
+      "mixolydian mode guitar"
+     ],
+     "figures": [
+      {
+       "type": "fretboard",
+       "key": "G",
+       "scale": "mixolydian",
+       "frets": [
+        2,
+        5
+       ]
+      }
+     ],
+     "captions": [
+      "G Mixolydian at fret 2: the b7 is what makes it different from G major."
+     ],
+     "exercises": [
+      {
+       "id": "bright-quiz",
+       "kind": "quiz",
+       "title": "Which note gives the color?",
+       "quiz": "mode_color",
+       "modes": [
+        "lydian",
+        "mixolydian"
+       ],
+       "count": 4,
+       "min": 75
+      },
+      {
+       "id": "g-mixolydian",
+       "kind": "scale",
+       "title": "G Mixolydian",
+       "key": "G",
+       "scale": "mixolydian",
+       "frets": [
+        2,
+        5
+       ],
+       "min": 80
+      },
+      {
+       "id": "f-lydian",
+       "kind": "scale",
+       "title": "F Lydian",
+       "key": "F",
+       "scale": "lydian",
+       "frets": [
+        0,
+        3
+       ],
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "modes-dark",
+     "title": "Dark modes: Dorian, Phrygian and Locrian",
+     "minutes": 15,
+     "theory": [
+      "Dorian is natural minor with a natural 6: minor, but brighter. You hear it in funk, jazz and a lot of rock solos.",
+      "Phrygian is natural minor with a ♭2: dark and tense, with a Spanish flavor.",
+      "Locrian has a ♭2 and a ♭5: unstable. Jazz uses it over m7♭5 chords."
+     ],
+     "tips": [
+      "Over a minor drone, alternate natural minor and Dorian: the 6th is the only note that changes."
+     ],
+     "tutorials": [
+      "dorian mode guitar",
+      "phrygian mode guitar"
+     ],
+     "figures": [
+      {
+       "type": "fretboard",
+       "key": "D",
+       "scale": "dorian",
+       "frets": [
+        3,
+        7
+       ]
+      }
+     ],
+     "captions": [
+      "D Dorian, by degree: a minor scale with a natural 6."
+     ],
+     "exercises": [
+      {
+       "id": "dark-quiz",
+       "kind": "quiz",
+       "title": "Which note gives the color?",
+       "quiz": "mode_color",
+       "modes": [
+        "dorian",
+        "phrygian",
+        "locrian"
+       ],
+       "count": 5,
+       "min": 80
+      },
+      {
+       "id": "d-dorian",
+       "kind": "scale",
+       "title": "D Dorian",
+       "key": "D",
+       "scale": "dorian",
+       "frets": [
+        3,
+        7
+       ],
+       "min": 80
+      },
+      {
+       "id": "e-phrygian",
+       "kind": "scale",
+       "title": "E Phrygian",
+       "key": "E",
+       "scale": "phrygian",
+       "frets": [
+        0,
+        3
+       ],
+       "min": 80
+      },
+      {
+       "id": "dark-degrees",
+       "kind": "quiz",
+       "title": "Degrees of Dorian and Phrygian",
+       "quiz": "scale_degree",
+       "scales": [
+        "dorian",
+        "phrygian"
+       ],
+       "keys": [
+        "D",
+        "E",
+        "A"
+       ],
+       "count": 6,
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "symmetric",
+     "title": "Whole-tone and diminished scales",
+     "minutes": 15,
+     "theory": [
+      "Whole-tone: six notes, all a whole step apart. No note sounds like home, so it floats.",
+      "The diminished scales alternate half and whole steps, with eight notes. Half-whole fits dominant 7♭9 chords; whole-half fits diminished chords.",
+      "Both are symmetric: the pattern repeats every 2 frets (whole-tone) or every 3 frets (diminished), so one shape moves everywhere."
+     ],
+     "tips": [
+      "Learn one fingering, then slide it by its repeat distance and hear that it's the same scale."
+     ],
+     "tutorials": [
+      "whole tone scale guitar",
+      "diminished scale guitar jazz"
+     ],
+     "exercises": [
+      {
+       "id": "symmetric-quiz",
+       "kind": "quiz",
+       "title": "How often does it repeat?",
+       "quiz": "symmetric",
+       "count": 4,
+       "min": 75
+      },
+      {
+       "id": "c-whole-tone",
+       "kind": "scale",
+       "title": "C whole-tone",
+       "key": "C",
+       "scale": "whole_tone",
+       "frets": [
+        7,
+        11
+       ],
+       "min": 80
+      },
+      {
+       "id": "g-half-whole",
+       "kind": "scale",
+       "title": "G half-whole diminished",
+       "key": "G",
+       "scale": "half_whole",
+       "frets": [
+        2,
+        6
+       ],
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "bebop",
+     "title": "Bebop scales",
+     "minutes": 15,
+     "theory": [
+      "A bebop scale adds one passing tone to a seven-note scale, which makes eight notes.",
+      "Dominant bebop adds the natural 7 to Mixolydian. With eight notes, a run of eighth notes that starts on a chord tone on the beat keeps chord tones on the beats.",
+      "Major bebop adds a ♭6 to the major scale, for the same reason."
+     ],
+     "tips": [
+      "Start the run on the root on beat 1 and descend: listen for the chord tones landing on the beats."
+     ],
+     "tutorials": [
+      "bebop scale guitar",
+      "dominant bebop scale lines"
+     ],
+     "exercises": [
+      {
+       "id": "bebop-quiz",
+       "kind": "quiz",
+       "title": "Which note does it add?",
+       "quiz": "bebop",
+       "count": 4,
+       "min": 75
+      },
+      {
+       "id": "g-dom-bebop",
+       "kind": "scale",
+       "title": "G dominant bebop",
+       "key": "G",
+       "scale": "dominant_bebop",
+       "frets": [
+        2,
+        6
+       ],
+       "direction": "down",
+       "min": 80
+      },
+      {
+       "id": "c-major-bebop",
+       "kind": "scale",
+       "title": "C major bebop",
+       "key": "C",
+       "scale": "major_bebop",
+       "frets": [
+        7,
+        10
+       ],
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "altered",
+     "title": "The altered scale",
+     "minutes": 15,
+     "theory": [
+      "The altered scale is the 7th mode of melodic minor. Over a dominant chord it gives every tension at once: ♭9, ♯9, ♯11 and ♭13.",
+      "Over G7 that's G A♭ A♯ B C♯ E♭ F: the root, 3rd and ♭7 stay; the 5th and the 9th are all altered.",
+      "Use it on a V7 just before it resolves: maximum tension right before the release."
+     ],
+     "tips": [
+      "Resolve every altered phrase to a chord tone of the next chord, a half step away if you can."
+     ],
+     "tutorials": [
+      "altered scale guitar",
+      "altered dominant jazz guitar"
+     ],
+     "exercises": [
+      {
+       "id": "altered-quiz",
+       "kind": "quiz",
+       "title": "What does it add?",
+       "quiz": "altered",
+       "count": 3,
+       "min": 66
+      },
+      {
+       "id": "tensions-quiz",
+       "kind": "quiz",
+       "title": "Name the tension",
+       "quiz": "extension",
+       "count": 5,
+       "min": 80
+      },
+      {
+       "id": "g-altered",
+       "kind": "scale",
+       "title": "G altered",
+       "key": "G",
+       "scale": "altered",
+       "frets": [
+        2,
+        6
+       ],
+       "min": 80
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "n11",
+   "number": 11,
+   "title": "Building chords",
+   "subtitle": "Triads, inversions, sus and sixth chords, the seventh family and extensions.",
+   "lessons": [
+    {
+     "id": "build-triads",
+     "title": "Build a triad",
+     "minutes": 15,
+     "theory": [
+      "A triad stacks two thirds: root, 3rd and 5th. Major is a major 3rd plus a minor 3rd; minor is a minor 3rd plus a major 3rd.",
+      "The 3rd decides major or minor: lower it one fret and C becomes Cm.",
+      "Any three strings can hold a triad, as long as you find the three notes."
+     ],
+     "tips": [
+      "Before you play a shape, point at its root, 3rd and 5th."
+     ],
+     "tutorials": [
+      "how triads are built guitar",
+      "major and minor triads explained"
+     ],
+     "figures": [
+      {
+       "type": "fretboard",
+       "chord": "C",
+       "frets": [
+        0,
+        5
+       ]
+      }
+     ],
+     "captions": [
+      "C chord tones up to fret 5, labeled by degree."
+     ],
+     "exercises": [
+      {
+       "id": "triad-pick",
+       "kind": "pick",
+       "title": "Build the triad on the neck",
+       "pick": "chord",
+       "chords": [
+        "C",
+        "G",
+        "D",
+        "A",
+        "E",
+        "F",
+        "Am",
+        "Dm"
+       ],
+       "frets": [
+        0,
+        5
+       ],
+       "count": 4,
+       "min": 75
+      },
+      {
+       "id": "triad-tones",
+       "kind": "quiz",
+       "title": "Which notes make it?",
+       "quiz": "chord_tones",
+       "qualities": [
+        "maj",
+        "min"
+       ],
+       "count": 6,
+       "min": 80
+      },
+      {
+       "id": "triad-ear",
+       "kind": "quiz",
+       "title": "Major or minor? (by ear)",
+       "quiz": "hear_quality",
+       "count": 6,
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "triad-inversions",
+     "title": "Triad inversions on string sets",
+     "minutes": 18,
+     "theory": [
+      "An inversion puts a different chord tone in the bass: root position (1 3 5), 1st inversion (3 5 1), 2nd inversion (5 1 3).",
+      "On a set of three adjacent strings, the three inversions follow each other up the neck.",
+      "Slash names say what's in the bass: C/E is C with E in the bass."
+     ],
+     "tips": [
+      "Learn one string set completely before the next: top strings first, then the middle ones."
+     ],
+     "tutorials": [
+      "triad inversions guitar",
+      "triads on string sets"
+     ],
+     "exercises": [
+      {
+       "id": "c-top",
+       "kind": "shape",
+       "title": "C on the top three strings",
+       "chord": "C",
+       "voicing": "triad",
+       "strings": "123",
+       "inversions": [
+        0,
+        1,
+        2
+       ],
+       "near": 5,
+       "times": 2,
+       "min": 75
+      },
+      {
+       "id": "g-middle",
+       "kind": "shape",
+       "title": "G on strings 2–4",
+       "chord": "G",
+       "voicing": "triad",
+       "strings": "234",
+       "inversions": [
+        0,
+        1,
+        2
+       ],
+       "near": 5,
+       "times": 2,
+       "min": 75
+      },
+      {
+       "id": "inversion-quiz",
+       "kind": "quiz",
+       "title": "Name the inversion",
+       "quiz": "inversion",
+       "count": 6,
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "inversion-bass",
+     "title": "Inversions for smooth bass lines",
+     "minutes": 12,
+     "theory": [
+      "Inversions let the bass move by step instead of jumping.",
+      "C – Em – F – G has a bass that jumps around. C – Em/B – F/A – G makes it walk down: C, B, A, G.",
+      "Listen to the bass as its own melody: it ties the chords together."
+     ],
+     "tips": [
+      "Play only the bass notes first, then the full chords."
+     ],
+     "tutorials": [
+      "slash chords descending bass line guitar",
+      "inversions bass line guitar"
+     ],
+     "exercises": [
+      {
+       "id": "walk-down",
+       "kind": "voiced",
+       "title": "A bass line that walks down",
+       "shapes": [
+        {
+         "name": "C",
+         "frets": [
+          -1,
+          3,
+          2,
+          0,
+          1,
+          0
+         ]
+        },
+        {
+         "name": "Em/B",
+         "frets": [
+          -1,
+          2,
+          2,
+          0,
+          0,
+          0
+         ]
+        },
+        {
+         "name": "F/A",
+         "frets": [
+          -1,
+          0,
+          3,
+          2,
+          1,
+          1
+         ]
+        },
+        {
+         "name": "G",
+         "frets": [
+          3,
+          2,
+          0,
+          0,
+          0,
+          3
+         ]
+        }
+       ],
+       "times": 2,
+       "min": 75
+      },
+      {
+       "id": "slash-quiz",
+       "kind": "quiz",
+       "title": "Which inversion is it?",
+       "quiz": "inversion",
+       "count": 4,
+       "min": 75
+      }
+     ]
+    },
+    {
+     "id": "sus-sixth",
+     "title": "Sus and sixth chords",
+     "minutes": 15,
+     "theory": [
+      "A sus chord swaps the 3rd for the 2nd (sus2) or the 4th (sus4). With no 3rd it's neither major nor minor: open, waiting.",
+      "A sus4 often resolves to the major chord: Dsus4 → D.",
+      "A sixth chord adds the 6th to a triad (C6 = C E G A). It's sweet and stable, an alternative to maj7."
+     ],
+     "tips": [
+      "Keep the fingers that don't move pressed down when you go from sus to major."
+     ],
+     "tutorials": [
+      "sus2 and sus4 chords explained",
+      "sixth chords guitar"
+     ],
+     "exercises": [
+      {
+       "id": "dsus-d",
+       "kind": "change",
+       "title": "Dsus4 → D",
+       "chords": [
+        "Dsus4",
+        "D"
+       ],
+       "times": 4,
+       "min": 75
+      },
+      {
+       "id": "a-sus",
+       "kind": "change",
+       "title": "Asus2 → A → Asus4 → A",
+       "chords": [
+        "Asus2",
+        "A",
+        "Asus4",
+        "A"
+       ],
+       "times": 2,
+       "min": 75
+      },
+      {
+       "id": "sus-quiz",
+       "kind": "quiz",
+       "title": "Which notes make it?",
+       "quiz": "chord_tones",
+       "qualities": [
+        "sus2",
+        "sus4",
+        "6",
+        "m6"
+       ],
+       "count": 6,
+       "min": 80
+      },
+      {
+       "id": "c6-shape",
+       "kind": "shape",
+       "title": "C6 on the top four strings",
+       "chord": "C6",
+       "voicing": "drop2",
+       "strings": "1234",
+       "near": 5,
+       "times": 3,
+       "min": 75
+      }
+     ]
+    },
+    {
+     "id": "seventh-family",
+     "title": "The seventh-chord family",
+     "minutes": 20,
+     "theory": [
+      "Put one more third on top of a triad and you get a seventh chord. Five types cover almost all of jazz.",
+      "maj7 (1 3 5 7) is lush. 7 (1 3 5 ♭7) is the dominant: it wants to resolve. m7 (1 ♭3 5 ♭7) is mellow.",
+      "m7♭5 (1 ♭3 ♭5 ♭7) is the ii chord of a minor key. dim7 (1 ♭3 ♭5 ♭♭7) is symmetric and tense.",
+      "m(maj7) (1 ♭3 5 7) is the dark, cinematic one."
+     ],
+     "tips": [
+      "Play the same root in all five types and listen to what each change of one note does."
+     ],
+     "tutorials": [
+      "seventh chords explained guitar",
+      "maj7 dominant 7 minor 7 guitar"
+     ],
+     "exercises": [
+      {
+       "id": "formula-quiz",
+       "kind": "quiz",
+       "title": "Which formula is it?",
+       "quiz": "chord_formula",
+       "count": 6,
+       "min": 80
+      },
+      {
+       "id": "sevenths-tones",
+       "kind": "quiz",
+       "title": "Which notes make it?",
+       "quiz": "chord_tones",
+       "qualities": [
+        "maj7",
+        "7",
+        "m7",
+        "m7b5",
+        "dim7"
+       ],
+       "count": 6,
+       "min": 80
+      },
+      {
+       "id": "c-family",
+       "kind": "voiced",
+       "title": "Cmaj7, C7, Cm7, Cm7♭5",
+       "progression": [
+        "Cmaj7",
+        "C7",
+        "Cm7",
+        "Cm7b5"
+       ],
+       "voicing": "drop2",
+       "sets": [
+        "2345"
+       ],
+       "near": 3,
+       "times": 2,
+       "min": 75
+      }
+     ]
+    },
+    {
+     "id": "extensions",
+     "title": "Extensions and altered dominants",
+     "minutes": 18,
+     "theory": [
+      "Keep stacking thirds past the 7th to get the 9th, the 11th and the 13th: the 2nd, 4th and 6th an octave up.",
+      "On a dominant chord the 9th, 11th and 13th can be altered: ♭9, ♯9, ♯11, ♭13. Altered tones add tension before the chord resolves.",
+      "On guitar you rarely play every note. Keep the 3rd and the 7th, add the color, and leave out the 5th (and often the root)."
+     ],
+     "tips": [
+      "Hear each color against the plain 7 chord first: C7, then C9, then C7♯9."
+     ],
+     "tutorials": [
+      "chord extensions explained guitar",
+      "altered dominant chords guitar"
+     ],
+     "exercises": [
+      {
+       "id": "extension-quiz",
+       "kind": "quiz",
+       "title": "Which note is the tension?",
+       "quiz": "extension",
+       "count": 6,
+       "min": 80
+      },
+      {
+       "id": "extension-formula",
+       "kind": "quiz",
+       "title": "Formulas with tensions",
+       "quiz": "chord_formula",
+       "qualities": [
+        "9",
+        "13",
+        "7b9",
+        "7#9",
+        "maj9",
+        "m9"
+       ],
+       "count": 6,
+       "min": 80
+      },
+      {
+       "id": "c-colors",
+       "kind": "voiced",
+       "title": "C9, C7♯9, C7♭9, C13",
+       "shapes": [
+        {
+         "name": "C9",
+         "frets": [
+          -1,
+          3,
+          2,
+          3,
+          3,
+          3
+         ]
+        },
+        {
+         "name": "C7#9",
+         "frets": [
+          -1,
+          3,
+          2,
+          3,
+          4,
+          -1
+         ]
+        },
+        {
+         "name": "C7b9",
+         "frets": [
+          -1,
+          3,
+          2,
+          3,
+          2,
+          -1
+         ]
+        },
+        {
+         "name": "C13",
+         "frets": [
+          -1,
+          3,
+          2,
+          3,
+          5,
+          5
+         ]
+        }
+       ],
+       "times": 2,
+       "min": 75
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "n12",
+   "number": 12,
+   "title": "Harmony",
+   "subtitle": "The chords that live in a key, written as roman numerals, in major and minor.",
+   "lessons": [
+    {
+     "id": "diatonic-triads",
+     "title": "The chords of a key",
+     "minutes": 15,
+     "theory": [
+      "Build a triad on each degree of the major scale, using only notes of the scale: you get I ii iii IV V vi vii°.",
+      "Uppercase numerals are major, lowercase are minor, and ° is diminished. The pattern is the same in every key.",
+      "In C: C Dm Em F G Am B°. In G: G Am Bm C D Em F♯°.",
+      "Numerals let you move a song to any key in your head: I–V–vi–IV is the same progression everywhere."
+     ],
+     "tips": [
+      "Say the numeral while you play each chord of a song you know."
+     ],
+     "tutorials": [
+      "diatonic chords explained guitar",
+      "roman numerals chord progressions"
+     ],
+     "exercises": [
+      {
+       "id": "roman-quiz",
+       "kind": "quiz",
+       "title": "Chords and numerals",
+       "quiz": "roman",
+       "size": "triads",
+       "keys": [
+        "C",
+        "G",
+        "D",
+        "F"
+       ],
+       "count": 8,
+       "min": 80
+      },
+      {
+       "id": "c-scale-chords",
+       "kind": "voiced",
+       "title": "Every chord of C, on the top strings",
+       "progression": [
+        "C",
+        "Dm",
+        "Em",
+        "F",
+        "G",
+        "Am",
+        "Bdim",
+        "C"
+       ],
+       "voicing": "triad",
+       "sets": [
+        "123"
+       ],
+       "near": 5,
+       "times": 1,
+       "min": 75
+      }
+     ]
+    },
+    {
+     "id": "diatonic-sevenths",
+     "title": "Sevenths and ninths in a key",
+     "minutes": 15,
+     "theory": [
+      "Stack one more third and every degree gets a seventh chord: Imaj7 ii7 iii7 IVmaj7 V7 vi7 viiø7.",
+      "A major key has only one dominant 7: the V7. It's the chord that pulls you home.",
+      "Add the 9th where the scale allows it: Imaj9, ii9, IVmaj9, V9 and vi9 work. On iii and vii the 9th would be ♭9, so they usually stay sevenths."
+     ],
+     "tips": [
+      "Play the seven chords in order, then just ii–V–I: hear how much the V7 wants to go home."
+     ],
+     "tutorials": [
+      "diatonic seventh chords guitar",
+      "harmonizing the major scale in sevenths"
+     ],
+     "exercises": [
+      {
+       "id": "sevenths-roman",
+       "kind": "quiz",
+       "title": "Seventh chords and numerals",
+       "quiz": "roman",
+       "size": "sevenths",
+       "count": 8,
+       "min": 80
+      },
+      {
+       "id": "c-sevenths",
+       "kind": "voiced",
+       "title": "Every seventh chord of C",
+       "progression": [
+        "Cmaj7",
+        "Dm7",
+        "Em7",
+        "Fmaj7",
+        "G7",
+        "Am7",
+        "Bm7b5",
+        "Cmaj7"
+       ],
+       "voicing": "drop2",
+       "sets": [
+        "2345"
+       ],
+       "near": 3,
+       "times": 1,
+       "min": 75
+      },
+      {
+       "id": "ninths-roman",
+       "kind": "quiz",
+       "title": "With ninths",
+       "quiz": "roman",
+       "size": "ninths",
+       "keys": [
+        "C",
+        "F",
+        "G"
+       ],
+       "count": 4,
+       "min": 75
+      }
+     ]
+    },
+    {
+     "id": "minor-key-chords",
+     "title": "Seventh chords in minor keys",
+     "minutes": 15,
+     "theory": [
+      "Natural minor gives you i7, iiø7, IIImaj7, iv7, v7, VImaj7 and VII7. Its v chord is minor (Em7 in A minor), so it doesn't pull home strongly.",
+      "Harmonic minor raises the 7th, and now the V is a dominant 7 (E7 in A minor) that pulls hard to i.",
+      "Most minor-key songs mix both: natural minor for color, and the V7 from harmonic minor for the cadence."
+     ],
+     "tips": [
+      "Play Am – Em – Am, then Am – E7 – Am, and compare how the ending feels."
+     ],
+     "tutorials": [
+      "minor key chords explained",
+      "harmonic minor chords guitar"
+     ],
+     "exercises": [
+      {
+       "id": "harmonic-roman",
+       "kind": "quiz",
+       "title": "Harmonic minor chords",
+       "quiz": "roman",
+       "scale": "harmonic_minor",
+       "size": "sevenths",
+       "keys": [
+        "A",
+        "E",
+        "D"
+       ],
+       "count": 6,
+       "min": 80
+      },
+      {
+       "id": "natural-roman",
+       "kind": "quiz",
+       "title": "Natural minor chords",
+       "quiz": "roman",
+       "scale": "natural_minor",
+       "size": "sevenths",
+       "keys": [
+        "A",
+        "E",
+        "D"
+       ],
+       "count": 6,
+       "min": 80
+      },
+      {
+       "id": "am-e7",
+       "kind": "change",
+       "title": "i → V7 in A minor",
+       "chords": [
+        "Am",
+        "E7"
+       ],
+       "times": 4,
+       "min": 75
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "n13",
+   "number": 13,
+   "title": "Voicings",
+   "subtitle": "Shells, drop-2, drop-3, voice leading and guide tones: chords the way jazz guitarists play them.",
+   "lessons": [
+    {
+     "id": "shells",
+     "title": "Shell voicings",
+     "minutes": 15,
+     "theory": [
+      "A shell has three notes: root, 3rd and 7th. That's enough to say exactly what the chord is.",
+      "Two shapes cover everything: root on the 6th string (1–7–3) and root on the 5th string (1–3–7).",
+      "Alternating them keeps your hand in one place: Dm7 (root on the 5th) → G7 (root on the 6th) → Cmaj7 (root on the 5th)."
+     ],
+     "tips": [
+      "Mute the strings you don't use with the side of your fingers: shells should sound like three clean notes."
+     ],
+     "tutorials": [
+      "shell voicings jazz guitar",
+      "jazz guitar chords for beginners"
+     ],
+     "exercises": [
+      {
+       "id": "cmaj7-shell",
+       "kind": "shape",
+       "title": "Cmaj7 shell, root on the 5th",
+       "chord": "Cmaj7",
+       "voicing": "shell",
+       "strings": "543",
+       "near": 3,
+       "times": 3,
+       "min": 75
+      },
+      {
+       "id": "ii-v-i-shells",
+       "kind": "voiced",
+       "title": "ii–V–I in C with shells",
+       "progression": [
+        "Dm7",
+        "G7",
+        "Cmaj7"
+       ],
+       "voicing": "shell",
+       "near": 3,
+       "times": 2,
+       "min": 75
+      },
+      {
+       "id": "ii-v-i-g",
+       "kind": "voiced",
+       "title": "ii–V–I in G with shells",
+       "progression": [
+        "Am7",
+        "D7",
+        "Gmaj7"
+       ],
+       "voicing": "shell",
+       "near": 3,
+       "times": 2,
+       "min": 75
+      },
+      {
+       "id": "shell-quiz",
+       "kind": "quiz",
+       "title": "Which notes are the guide tones?",
+       "quiz": "guide_tones",
+       "count": 5,
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "drop2",
+     "title": "Drop-2 voicings",
+     "minutes": 18,
+     "theory": [
+      "Start with a close four-note chord and drop the second voice from the top down an octave: that's drop 2.",
+      "It spreads the chord so it fits on four adjacent strings: the top four (1–4) or the middle four (2–5).",
+      "Every chord has four drop-2 inversions on each string set, one for each chord tone in the bass."
+     ],
+     "tips": [
+      "Learn one chord's four inversions on one string set, then move the same idea to other chord types."
+     ],
+     "tutorials": [
+      "drop 2 voicings guitar",
+      "drop 2 chords jazz guitar"
+     ],
+     "exercises": [
+      {
+       "id": "drop2-quiz",
+       "kind": "quiz",
+       "title": "Which voice drops?",
+       "quiz": "drop",
+       "drops": [
+        2
+       ],
+       "count": 3,
+       "min": 66
+      },
+      {
+       "id": "cmaj7-drop2",
+       "kind": "shape",
+       "title": "Cmaj7 on the top four strings",
+       "chord": "Cmaj7",
+       "voicing": "drop2",
+       "strings": "1234",
+       "near": 7,
+       "times": 3,
+       "min": 75
+      },
+      {
+       "id": "drop2-top",
+       "kind": "voiced",
+       "title": "ii–V–I, top four strings",
+       "progression": [
+        "Dm7",
+        "G7",
+        "Cmaj7"
+       ],
+       "voicing": "drop2",
+       "sets": [
+        "1234"
+       ],
+       "near": 5,
+       "times": 2,
+       "min": 75
+      },
+      {
+       "id": "drop2-middle",
+       "kind": "voiced",
+       "title": "ii–V–I, middle four strings",
+       "progression": [
+        "Dm7",
+        "G7",
+        "Cmaj7"
+       ],
+       "voicing": "drop2",
+       "sets": [
+        "2345"
+       ],
+       "near": 3,
+       "times": 2,
+       "min": 75
+      }
+     ]
+    },
+    {
+     "id": "drop3",
+     "title": "Drop-3 voicings",
+     "minutes": 15,
+     "theory": [
+      "Drop the third voice from the top instead and you get drop 3: a wider sound, with the bass on the 6th or 5th string and one string skipped.",
+      "Drop-3 shapes are the classic big-band comping chords: a bass note, then three notes on the middle strings."
+     ],
+     "tips": [
+      "Mute the skipped string with the finger that plays the bass."
+     ],
+     "tutorials": [
+      "drop 3 voicings guitar",
+      "big band comping chords guitar"
+     ],
+     "exercises": [
+      {
+       "id": "drop3-quiz",
+       "kind": "quiz",
+       "title": "Which voice drops?",
+       "quiz": "drop",
+       "drops": [
+        3
+       ],
+       "count": 3,
+       "min": 66
+      },
+      {
+       "id": "g7-drop3",
+       "kind": "shape",
+       "title": "G7, bass on the 6th string",
+       "chord": "G7",
+       "voicing": "drop3",
+       "strings": "6432",
+       "near": 3,
+       "times": 3,
+       "min": 75
+      },
+      {
+       "id": "drop3-ii-v-i",
+       "kind": "voiced",
+       "title": "ii–V–I with drop-3",
+       "progression": [
+        "Dm7",
+        "G7",
+        "Cmaj7"
+       ],
+       "voicing": "drop3",
+       "near": 3,
+       "times": 2,
+       "min": 75
+      }
+     ]
+    },
+    {
+     "id": "voice-leading",
+     "title": "Voice leading",
+     "minutes": 18,
+     "theory": [
+      "Voice leading means moving each note of a chord to the nearest note of the next chord.",
+      "Common tones stay put and the rest move by a half or a whole step. The progression sounds smooth even when the chords change a lot.",
+      "Choose the next inversion by its top note (the melody) or by its bass, and let the other voices find the closest notes.",
+      "Try it in the chord finder: write a progression and it chooses the voicings for you."
+     ],
+     "tips": [
+      "Hold the notes that repeat between two chords: if a finger doesn't need to move, don't move it."
+     ],
+     "tutorials": [
+      "voice leading guitar chords",
+      "smooth chord changes jazz guitar"
+     ],
+     "exercises": [
+      {
+       "id": "lead-quiz",
+       "kind": "quiz",
+       "title": "Where does the 7th go?",
+       "quiz": "voice_lead",
+       "count": 6,
+       "min": 80
+      },
+      {
+       "id": "lead-drop2",
+       "kind": "voiced",
+       "title": "I–vi–ii–V, voice-led",
+       "progression": [
+        "Cmaj7",
+        "Am7",
+        "Dm7",
+        "G7"
+       ],
+       "voicing": "drop2",
+       "near": 5,
+       "times": 2,
+       "min": 75
+      },
+      {
+       "id": "lead-triads",
+       "kind": "voiced",
+       "title": "C–Am–F–G, top note close",
+       "progression": [
+        "C",
+        "Am",
+        "F",
+        "G"
+       ],
+       "voicing": "triad",
+       "sets": [
+        "123"
+       ],
+       "lead": "top",
+       "near": 5,
+       "times": 2,
+       "min": 75
+      }
+     ]
+    },
+    {
+     "id": "guide-tones",
+     "title": "Guide-tone lines",
+     "minutes": 15,
+     "theory": [
+      "A chord's guide tones are its 3rd and 7th: they tell major from minor, and dominant from major 7th.",
+      "Through a ii–V–I they move by a half step or not at all: the 7th of one chord falls to the 3rd of the next.",
+      "Play just those two notes per chord, then a single line through them. It's the skeleton of a jazz solo."
+     ],
+     "tips": [
+      "Sing the guide-tone line while a friend (or the app) plays the chords."
+     ],
+     "tutorials": [
+      "guide tone lines jazz guitar",
+      "3rds and 7ths jazz improvisation"
+     ],
+     "exercises": [
+      {
+       "id": "guide-quiz",
+       "kind": "quiz",
+       "title": "Name the guide tones",
+       "quiz": "guide_tones",
+       "count": 5,
+       "min": 80
+      },
+      {
+       "id": "guide-pairs",
+       "kind": "voiced",
+       "title": "3rds and 7ths through ii–V–I",
+       "progression": [
+        "Dm7",
+        "G7",
+        "Cmaj7"
+       ],
+       "voicing": "guide",
+       "times": 2,
+       "min": 75
+      },
+      {
+       "id": "guide-line-c",
+       "kind": "line",
+       "title": "A guide-tone line in C",
+       "progression": [
+        "Dm7",
+        "G7",
+        "Cmaj7",
+        "Cmaj7"
+       ],
+       "frets": [
+        3,
+        8
+       ],
+       "per_chord": 2,
+       "min": 80
+      },
+      {
+       "id": "guide-line-d",
+       "kind": "line",
+       "title": "A guide-tone line in D",
+       "progression": [
+        "Em7",
+        "A7",
+        "Dmaj7",
+        "Dmaj7"
+       ],
+       "frets": [
+        5,
+        10
+       ],
+       "per_chord": 2,
        "min": 80
       }
      ]
