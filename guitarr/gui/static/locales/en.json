@@ -1128,7 +1128,9 @@
    "all_done": "All done for today. See you tomorrow!",
    "budget": "Time today",
    "budget_auto": "auto",
-   "budget_n": "{{n}} min"
+   "budget_n": "{{n}} min",
+   "step_queued": "Section: {{section}} ({{name}})",
+   "why_queued": "you added it"
   },
   "reminder": {
    "title": "Daily reminder",
@@ -1424,7 +1426,11 @@
    "learning": "learning",
    "unsure": "unsure",
    "solid": "solid",
-   "ready": "ready"
+   "ready": "ready",
+   "whole": "the whole song",
+   "queue": "today",
+   "queue_of": "Add {{name}} to today's plan",
+   "queued": "{{name}} is in today's plan"
   },
   "metro": {
    "accents": "Accents per beat",

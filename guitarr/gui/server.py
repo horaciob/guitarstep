@@ -206,7 +206,19 @@ def api_chords():
 
 @app.get("/api/charts")
 def api_charts():
-    return catalog.charts()
+    """Every chart, with its readiness: the average of its sections' states (0–100)."""
+    saved = progress.get()["sections"]
+    rows = catalog.charts()
+    for r in rows:
+        if r.get("error"):
+            continue
+        st = saved.get(r["id"], {})
+        try:
+            keys = [s["key"] for s in catalog.chart_sections(catalog.get_chart(r["id"]))]
+        except catalog.CatalogError:
+            keys = []
+        r["readiness"] = progress.section_mastery([st.get(k, {}).get("state", "not_started") for k in keys]) if keys else None
+    return rows
 
 
 @app.get("/api/charts/{cid}")
@@ -659,6 +671,25 @@ def api_today_budget(body: dict):
     return routine.build()
 
 
+@app.post("/api/today/queue")
+def api_today_queue(body: dict):
+    """Pins a section of a chart ("chart:<id>") or a song ("song:<name>") to today's plan."""
+    ref, section = str(body.get("ref") or ""), str(body.get("section") or "")
+    if not ref.startswith(("chart:", "song:")) or not section:
+        fail(400, "bad_queue", "Pick a chart or song section")
+    try:
+        progress.queue_add(ref, section)
+    except ValueError:
+        fail(400, "queue_full", f"Today's queue holds up to {progress.QUEUE_MAX} sections: clear some first")
+    return routine.build()
+
+
+@app.delete("/api/today/queue")
+def api_today_queue_clear(ref: str | None = None, section: str | None = None):
+    progress.queue_remove(ref, section)
+    return routine.build()
+
+
 @app.post("/api/today/check")
 def api_today_check(body: dict):
     step = str(body.get("step") or "")
@@ -844,10 +875,141 @@ def songs():
     config.SONGS_DIR.mkdir(parents=True, exist_ok=True)
     presets = config.load()["songs"]
     out = []
+    saved = progress.get()["sections"]
     for p in sorted(config.SONGS_DIR.iterdir(), key=lambda p: -p.stat().st_mtime):
         if p.suffix.lower() in REFERENCE_EXT:
-            out.append(dict(name=p.name, ext=p.suffix.lower(), preset=presets.get(p.name, {})))
+            st = saved.get(f"song:{p.name}", {})
+            readiness = None
+            if st:                                    # only songs you've started tracking: reading every file is slow
+                keys = [s["key"] for s in _song_sections(p.name)]
+                readiness = progress.section_mastery([st.get(k, {}).get("state", "not_started") for k in keys])
+            out.append(dict(name=p.name, ext=p.suffix.lower(), preset=presets.get(p.name, {}), readiness=readiness))
     return out
+
+
+def _song_sections(name: str) -> list[dict]:
+    """A song's sections from its file (Guitar Pro markers); without markers, the whole song is one section."""
+    from .. import songfacts
+
+    f = songfacts.facts(song_path(name))
+    return f["sections"] or [{"name": "Whole song", "key": "Whole song", "from": 1, "to": None}]
+
+
+@app.get("/api/songs/{name}/facts")
+def song_facts(name: str):
+    from .. import songfacts
+
+    p = song_path(name)
+    f = songfacts.facts(p)
+    q = " ".join(x for x in [f.get("title"), f.get("artist")] if x)
+    return dict(f, name=name, video=progress.get()["tutorials"].get(f"song:{name}"),
+                searches=dict(lesson=f"{q} guitar lesson", backing=f"{q} backing track", guitar=f"{q} guitar only"))
+
+
+@app.get("/api/songs/{name}/sections")
+def song_sections_get(name: str):
+    saved = progress.get()["sections"].get(f"song:{name}", {})
+    secs = [dict(s, state=saved.get(s["key"], {}).get("state", "not_started"), bpm=saved.get(s["key"], {}).get("bpm"))
+            for s in _song_sections(name)]
+    return dict(sections=secs, states=list(progress.SECTION_STATES), mastery=progress.section_mastery([s["state"] for s in secs]))
+
+
+@app.post("/api/songs/{name}/sections")
+def song_sections_set(name: str, body: dict):
+    if body.get("key") not in {s["key"] for s in _song_sections(name)}:
+        fail(400, "bad_section", "That song has no such section")
+    try:
+        progress.set_section(f"song:{name}", body["key"], body.get("state"), _float(body.get("bpm")))
+    except ValueError as e:
+        fail(400, str(e), "Invalid state or tempo (20–300 BPM)" if str(e) == "bad_bpm" else "Invalid state")
+    return song_sections_get(name)
+
+
+@app.post("/api/songs/{name}/video")
+def song_video(name: str, body: dict):
+    """Pins (or clears, with an empty url) a video for a song."""
+    song_path(name)
+    url = str(body.get("url") or "").strip()
+    if url and not url.startswith(("http://", "https://")):
+        fail(400, "bad_url", "A link starts with http:// or https://")
+    progress.pin_tutorial(f"song:{name}", url or None)
+    return dict(video=url or None)
+
+
+# ---------------------------------------------------------------- setlists
+def _setlist_view(s: dict) -> dict:
+    from .. import setlists
+
+    saved = progress.get()["sections"]
+    items = []
+    for it in s["items"]:
+        row = dict(it, tuning=setlists.tuning_of(it))
+        if it["kind"] == "chart":
+            try:
+                c = catalog.get_chart(it["id"])
+                keys = [x["key"] for x in catalog.chart_sections(c)]
+                st = saved.get(it["id"], {})
+                row.update(title=c["title"], bpm=c["bpm"], exists=True,
+                           readiness=progress.section_mastery([st.get(k, {}).get("state", "not_started") for k in keys]) if keys else None)
+            except catalog.CatalogError:
+                row.update(title=it["id"], exists=False)
+        else:
+            p = config.SONGS_DIR / _safe_name(it["id"])
+            st = saved.get(f"song:{it['id']}", {})
+            keys = [x["key"] for x in _song_sections(it["id"])] if st and p.exists() else []
+            row.update(title=it["id"], exists=p.exists(),
+                       readiness=progress.section_mastery([st.get(k, {}).get("state", "not_started") for k in keys]) if keys else None)
+        items.append(row)
+    return dict(s, items=items, warnings=setlists.warnings(s["items"]))
+
+
+@app.get("/api/setlists")
+def setlists_all():
+    from .. import setlists
+
+    return [_setlist_view(s) for s in setlists.all_lists()]
+
+
+@app.post("/api/setlists")
+def setlists_create(body: dict):
+    from .. import setlists
+
+    try:
+        return _setlist_view(setlists.create(body.get("name", "")))
+    except setlists.SetlistError as e:
+        fail(400, str(e), {"empty_name": "Give the setlist a name", "long_name": "Use 80 characters or fewer",
+                            "duplicate_name": "There's already a setlist with that name"}.get(str(e), str(e)))
+
+
+@app.get("/api/setlists/{sid}")
+def setlists_get(sid: str):
+    from .. import setlists
+
+    try:
+        return _setlist_view(setlists.get(sid))
+    except setlists.SetlistError as e:
+        fail(404, str(e), "Setlist not found")
+
+
+@app.put("/api/setlists/{sid}")
+def setlists_update(sid: str, body: dict):
+    from .. import setlists
+
+    try:
+        return _setlist_view(setlists.update(sid, body.get("items"), body.get("name")))
+    except setlists.SetlistError as e:
+        fail(404 if str(e) == "no_setlist" else 400, str(e), "Setlist not found" if str(e) == "no_setlist" else "Invalid setlist")
+
+
+@app.delete("/api/setlists/{sid}")
+def setlists_delete(sid: str):
+    from .. import setlists
+
+    try:
+        setlists.delete(sid)
+    except setlists.SetlistError as e:
+        fail(404, str(e), "Setlist not found")
+    return dict(ok=True)
 
 
 @app.post("/api/songs")

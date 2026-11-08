@@ -1128,7 +1128,9 @@
    "all_done": "Todo hecho por hoy. ¡Hasta mañana!",
    "budget": "Tiempo hoy",
    "budget_auto": "auto",
-   "budget_n": "{{n}} min"
+   "budget_n": "{{n}} min",
+   "step_queued": "Sección: {{section}} ({{name}})",
+   "why_queued": "la agregaste vos"
   },
   "reminder": {
    "title": "Recordatorio diario",
@@ -1424,7 +1426,11 @@
    "learning": "aprendiendo",
    "unsure": "inseguro",
    "solid": "firme",
-   "ready": "lista"
+   "ready": "lista",
+   "whole": "el tema completo",
+   "queue": "hoy",
+   "queue_of": "Agregar {{name}} al plan de hoy",
+   "queued": "{{name}} está en el plan de hoy"
   },
   "metro": {
    "accents": "Acentos por tiempo",

@@ -18,6 +18,7 @@ function stepTitle(s) {
   switch (s.kind) {
     case "lesson": return t("today.step_lesson", { title: tc(`lessons.${p.lesson}.title`, p.title || p.lesson) });
     case "review_chord": return t("today.step_review_chord", { chord: p.chord });
+    case "queued": return t("today.step_queued", { section: p.section, name: p.name });
     case "review_exercise": return t("today.step_review_exercise", { title: tc(`exercises.${p.lesson}/${p.exercise}`, p.title || p.exercise) });
     case "bars": return t("today.step_bars", { name: p.name, from: p.start, to: p.end });
     case "chart": return t("today.step_chart", { title: tc(`charts.${p.chart}.title`, p.title) });

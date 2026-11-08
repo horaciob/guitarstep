@@ -24,7 +24,7 @@ const VIEWS = {
   plan: () => import("./views/plan.js"),
   signal: () => import("./views/signal.js"),
 };
-const NAV_OF = { lesson: "course", chart: "charts", camera: "chords", setup: "settings", signal: "settings" };
+const NAV_OF = { lesson: "course", chart: "charts", camera: "chords", setup: "settings", signal: "settings", song: "practice", stage: "setlists" };
 const view = $("#view");
 let current = null;   // mounted module (to unmount it when leaving)
 let seq = 0;
@@ -50,6 +50,7 @@ async function route() {
   const my = ++seq;
   $$("[data-route]").forEach(a => a.classList.toggle("active", a.dataset.route === (NAV_OF[name] || name)));
   document.body.classList.toggle("is-setup", name === "setup");
+  document.body.classList.toggle("is-stage", name === "stage");
   if (current && current.unmount) { try { current.unmount(); } catch (e) { console.error(e); } }
   current = null;
   view.innerHTML = "";

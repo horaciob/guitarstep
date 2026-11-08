@@ -43,7 +43,8 @@ def _empty() -> dict:
                 tested_out=[],    # lessons you skipped by passing their check
                 rhythm={},        # rhythm test → best (steadiest) result per tempo
                 ear={},           # ear trainer → best score per kind
-                budget=None)      # minutes you chose for today's plan (15, 30, 60, 120)
+                budget=None,      # minutes you chose for today's plan (15, 30, 60, 120)
+                queue=[])         # song or chart sections you pinned to today's plan
 
 
 # rhythm test: how early (−) or late (+) each strum was, in bins with the count in each
@@ -75,6 +76,31 @@ def ear_result(kind: str, score: float) -> dict:
             out["xp"] = 5
         _write(d)
         return out
+
+
+QUEUE_MAX = 8
+
+
+def queue_add(ref: str, section: str) -> list[dict]:
+    """Pins a song or chart section to today's plan; it stays until you clear it."""
+    with _lock:
+        d = _read()
+        q = d.setdefault("queue", [])
+        if not any(x["ref"] == ref and x["section"] == section for x in q):
+            if len(q) >= QUEUE_MAX:
+                raise ValueError("queue_full")
+            q.append(dict(ref=ref, section=section, added=date.today().isoformat()))
+        _write(d)
+        return q
+
+
+def queue_remove(ref: str | None = None, section: str | None = None) -> list[dict]:
+    """Removes one pinned item (or all of them, with no arguments)."""
+    with _lock:
+        d = _read()
+        d["queue"] = [] if ref is None else [x for x in d.get("queue", []) if not (x["ref"] == ref and x["section"] == section)]
+        _write(d)
+        return d["queue"]
 
 
 BUDGETS = (15, 30, 60, 120)

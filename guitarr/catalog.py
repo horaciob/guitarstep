@@ -40,7 +40,7 @@ from . import config
 
 DATA_DIR = Path(__file__).parent / "data"
 OPEN_STRINGS = [40, 45, 50, 55, 59, 64]  # 6th ... 1st
-HEADER_KEYS = {"title", "artist", "level", "bpm", "time", "capo", "strum", "note", "voicing", "swing"}
+HEADER_KEYS = {"title", "artist", "level", "bpm", "time", "capo", "strum", "note", "voicing", "swing", "tuning"}
 
 
 class CatalogError(Exception):
@@ -135,10 +135,20 @@ def parse_chart(text: str, cid: str = "chart") -> dict:
     return dict(id=cid, title=meta.get("title") or cid, artist=meta.get("artist"), bpm=bpm,
                 beats_per_bar=_beats_per_bar(meta.get("time", "4/4"), 0), capo=capo, level=level,
                 strum=meta.get("strum", ""), note=meta.get("note", ""), bars=bars, missing=unknown,
-                swing=_swing(meta.get("swing", "")), voicing=voicing or None)
+                swing=_swing(meta.get("swing", "")), voicing=voicing or None, tuning=_tuning(meta.get("tuning", "")))
 
 
 SWING = {"": 0.0, "straight": 0.0, "off": 0.0, "light": 0.6, "medium": 0.64, "hard": 0.67}
+
+
+def _tuning(v: str) -> str:
+    """`tuning: drop_d` (any tuning the app knows); empty = standard."""
+    from .core import TUNINGS
+
+    v = (v or "standard").strip().lower().replace(" ", "_").replace("-", "_")
+    if v not in TUNINGS:
+        raise CatalogError(f"tuning: one of {', '.join(TUNINGS)} (not '{v}')")
+    return v
 
 
 def _swing(v: str) -> float:
@@ -208,7 +218,7 @@ def charts() -> list[dict]:
         chords_used = list(dict.fromkeys(b["chord"] for b in c["bars"] if b["chord"]))
         rows.append(dict(id=cid, title=c["title"], artist=c["artist"], level=c["level"], bpm=c["bpm"],
                          capo=c["capo"], beats_per_bar=c["beats_per_bar"], strum=c["strum"], note=c["note"],
-                         chords=chords_used, bars=len(c["bars"]), missing=c["missing"], mine=mine))
+                         chords=chords_used, bars=len(c["bars"]), missing=c["missing"], mine=mine, tuning=c["tuning"]))
     rows.sort(key=lambda r: (r.get("mine", False), r.get("level") or 0, r["id"]))
     return rows
 

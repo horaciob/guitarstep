@@ -64,6 +64,25 @@ def build(today: date | None = None) -> dict:
 
     add("tune", "tune", TUNE_MIN, "#/tuner", "tune" in checked, "technique")
 
+    # sections you pinned yourself: they stay on the plan until you clear them
+    for q in d.get("queue", []):
+        kind, ref = q["ref"].split(":", 1)
+        a = z = None
+        if kind == "chart":
+            try:
+                sec = next((s for s in catalog.chart_sections(catalog.get_chart(ref)) if s["key"] == q["section"]), None)
+            except catalog.CatalogError:
+                continue
+            if sec:
+                a, z = sec["from"], sec["to"]
+            route = f"#/practice?chart={ref}" + (f"&from={a}&to={z}" if a else "")
+            sid = history.song_id(f"chart:{ref}")
+        else:
+            route = f"#/song/{ref}"
+            sid = None
+        add(f"queue:{q['ref']}:{q['section']}", "queued", BARS_MIN, route, bool(sid) and _played_today(sid, t), "repertoire",
+            ref=q["ref"], section=q["section"], kind=kind, name=ref)
+
     # due reviews, plus the ones you already did today (so they stay on the list, ticked)
     due = [k for k, _ in progress.due_reviews(d, today)]
     did = [k for k, r in d["reviews"].items() if r.get("last") == t and k not in due]
