@@ -74,3 +74,39 @@ def test_run_and_shape_exercises_build_from_theory():
     assert hand[0]["frets"] == [-1, 2, 2, 0, 0, 0]
     chart = catalog.chart_from_shapes(shapes, 2)
     assert len(chart["bars"]) == 6
+
+
+def test_quiz_over_the_api_records_progress():
+    from fastapi.testclient import TestClient
+    from guitarr.gui.server import app
+
+    c = TestClient(app)
+    d = c.post("/api/exercise/draw", json=dict(lesson="intervals", exercise="interval-frets-quiz")).json()
+    assert len(d["items"]) == 6 and "answer" not in d["items"][0]
+    for i in range(6):
+        right = quiz._draws[d["token"]]["items"][i]["answer"]
+        assert c.post("/api/exercise/check", json=dict(token=d["token"], index=i, answer=right)).json()["correct"]
+    r = c.post("/api/exercise/finish", json=dict(token=d["token"])).json()
+    assert r["summary"]["score"] == 100 and r["award"]["passed"] and r["award"]["xp"] > 0
+    assert c.get("/api/progress").json()["exercises"]["intervals/interval-frets-quiz"] == 100
+    assert c.post("/api/exercise/finish", json=dict(token=d["token"])).status_code == 400   # once only
+    assert c.post("/api/exercise/draw", json=dict(lesson="intervals", exercise="nope")).status_code == 404
+
+
+def test_theory_endpoints():
+    from fastapi.testclient import TestClient
+    from guitarr.gui.server import app
+
+    c = TestClient(app)
+    assert [n["note"] for n in c.get("/api/theory/scale?key=Gb&name=major").json()["notes"]][3] == "Cb"
+    assert c.get("/api/theory/chord?symbol=H7").status_code == 400
+    vs = c.get("/api/theory/voicings?chord=Cmaj7&kind=drop2").json()["voicings"]
+    assert vs and all(len(v["frets"]) == 6 for v in vs)
+    assert c.post("/api/theory/name", json=dict(frets=[-1, 3, 2, 0, 1, 0])).json()["names"][0] == "C"
+    assert c.post("/api/theory/name", json=dict(frets=[1, 2])).status_code == 400
+    r = c.post("/api/theory/voice-lead", json=dict(progression="Dm7 G7 Cmaj7", kind="shell")).json()
+    assert [s["name"] for s in r["shapes"]] == ["Dm7", "G7", "Cmaj7"]
+    assert c.post("/api/theory/voice-lead", json=dict(progression="Dm7")).json()["detail"]["code"] == "bad_progression"
+    course = c.get("/api/course").json()
+    fig = next(ls for lv in course["levels"] for ls in lv["lessons"] if ls["id"] == "degree-map")["figures"][0]
+    assert fig["type"] == "fretboard" and any(m["kind"] == "root" and m["text"] == "1" for m in fig["marks"])

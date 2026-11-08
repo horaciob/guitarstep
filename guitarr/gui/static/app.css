@@ -969,4 +969,15 @@ body.is-setup #main { margin: 0 auto; max-width: 760px; padding-top: 48px; }
 .gl .drawn-list li.done { color: var(--muted); }
 .gl .f-prompt { font-size: clamp(32px, 6vw, 64px); }
 .gl .lesson-figure { margin: 10px 0 4px; }
+
+/* ---------- chord finder */
+.gl .cf-grid { align-items: center; margin-top: 10px; }
+.gl .cf-card small { font-size: 11px; text-align: center; max-width: 120px; }
+.gl .cf-arrow { font-size: 22px; color: var(--muted); }
+.gl .cf-tones { font-weight: 600; margin: 8px 0 0; }
+.gl .cf-name-out { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; margin-top: 10px; }
+.gl .cf-names { font-size: 26px; font-weight: 800; margin: 0 0 4px; }
+.gl .field.grow { flex: 1 1 260px; }
+.gl .field-error { color: var(--gl-err); font-weight: 600; margin: 6px 0 0; }
+.gl #cfMode { margin: 0 0 12px; flex-wrap: wrap; }
 .gl .piano { display: block; width: 100%; max-width: 520px; color: var(--text); }

@@ -289,6 +289,16 @@ def theory_scale(key: str = "C", name: str = "major"):
         fail(400, "theory", str(e))
 
 
+@app.get("/api/theory/chord")
+def theory_chord(symbol: str):
+    from .. import theory as th
+
+    try:
+        return th.chord(symbol)
+    except th.TheoryError as e:
+        fail(400, "theory", str(e))
+
+
 @app.get("/api/theory/voicings")
 def theory_voicings(chord: str, kind: str = "triad"):
     from .. import theory as th

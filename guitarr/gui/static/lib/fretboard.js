@@ -66,6 +66,7 @@ export function neck(box, { lo = 0, hi = 12, marks = [], selectable = false, onT
   const api = {
     set(m) { cur = m; draw(); },
     selected: () => [...sel].map(k => k.split(":").map(Number)),
+    select(list) { sel = new Set(list.map(([s, f]) => key(s, f))); draw(); },
     clear() { sel = new Set(); draw(); },
     lock() { locked = true; },
   };

@@ -411,11 +411,44 @@ def test_tuning_and_left_handed(app_page):
     expect(app_page.locator("#iStatus")).to_contain_text("Instrument saved")
     app_page.reload()
     go(app_page, "tools?tab=fretboard")
-    expect(app_page.locator("#neck")).to_have_attribute("viewBox", "0 0 1000 274")       # 7 strings
+    expect(app_page.locator("#fbNeck svg.fb")).to_have_attribute("viewBox", "0 0 1000 256")   # 7 strings
     go(app_page, "chords")
     expect(app_page.locator(".callout", has_text="standard tuning")).to_be_visible()
     label = app_page.locator(".chord-card").first.locator("svg text").last
     expect(label).to_have_text("E  B  G  D  A  E")                                      # mirrored
+
+
+def test_fretboard_explorer_and_chord_finder(app_page):
+    onboarded(app_page)
+    go(app_page, "tools?tab=fretboard")
+    app_page.locator("#root").select_option("Gb")
+    app_page.locator("#scale").select_option("major")
+    expect(app_page.locator("#fbNotes")).to_contain_text("Cb (4)")              # spelled from the key
+    app_page.locator("#labels").select_option("degree")
+    expect(app_page.locator("#fbNeck .fb-txt.root").first).to_have_text("1")
+    app_page.locator("#window").select_option("2")                            # frets 2–5
+    expect(app_page.locator("#fbNeck .fb-pos")).to_have_count(24)
+
+    go(app_page, "tools?tab=finder")
+    expect(app_page.locator("#cfTones")).to_contain_text("Cmaj7: C (1) · E (3) · G (5) · B (7)")
+    expect(app_page.locator("#cfGrid .cf-card").first).to_be_visible()
+    app_page.locator("#cfQ").select_option("maj")
+    expect(app_page.locator("#cfGrid")).to_contain_text("need a chord with a 7th")   # drop 2 of a triad
+
+    app_page.locator("#cfMode button", has_text="Name a chord").click()
+    for s, f in ((5, 3), (4, 2), (3, 0)):                                      # C E G
+        app_page.locator(f'#cfNeck .fb-pos[data-s="{s}"][data-f="{f}"]').click()
+    expect(app_page.locator("#cfNames")).to_contain_text("C")
+    app_page.locator('#cfNeck .fb-pos[data-s="5"][data-f="2"]').click()          # B on the same string replaces the C
+    expect(app_page.locator("#cfNeck .fb-dot.sel")).to_have_count(3)
+    expect(app_page.locator("#cfNames")).to_contain_text("Em/B")
+
+    app_page.locator("#cfMode button", has_text="Voice-lead").click()
+    expect(app_page.locator("#cfLGrid .cf-card")).to_have_count(4)
+    app_page.locator("#cfProg").fill("Dm7")
+    app_page.locator("#cfForm button[type=submit]").click()
+    expect(app_page.locator("#cfErr")).to_contain_text("2 to 16 chords")
+    expect(app_page.locator("#cfProg")).to_have_value("Dm7")                    # what you typed stays
 
 
 def test_phone_layout_and_install_manifest(page, server_url):
