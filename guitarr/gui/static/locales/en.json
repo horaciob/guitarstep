@@ -433,7 +433,18 @@
    "failed": "{{score}}% — you need {{need}}%. Again!",
    "bend_target": "string {{string}}, fret {{fret}} → {{note}} · {{tries}} tries · hold {{hold}} s",
    "bend_ready": "Pick the note, bend up to the target and hold it. Every try counts.",
-   "tab_label": "Tab"
+   "tab_label": "Tab",
+   "focus_back": "Back to the lesson",
+   "focus_next": "Next exercise",
+   "focus_again": "🎧 Again",
+   "focus_demo": "Demo",
+   "focus_hear": "Hear it",
+   "focus_now": "Now",
+   "focus_then": "then: {{x}}",
+   "focus_step": "{{k}} of {{total}}",
+   "metro_bpm": "BPM",
+   "metro_beat": "beat",
+   "metro_count_in": "count-in"
   },
   "chords": {
    "title": "Chords",

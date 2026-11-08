@@ -283,7 +283,32 @@ a { color: inherit; }
 .gl .ex-head { display: flex; gap: 10px; align-items: center; }
 .gl .ex-head > div { flex: 1; min-width: 0; } .gl .ex-head small { display: block; }
 .gl .exercise .tab { margin: 8px 0 0; font: 13px/1.35 ui-monospace, "SF Mono", Menlo, monospace; overflow-x: auto; color: var(--text); }
-.gl .ex-live { margin-top: 10px; }
+/* an exercise on its own full screen, with a big metronome */
+.gl .ex-focus { width: 100vw; height: 100dvh; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: var(--bg); color: var(--text); overflow-y: auto; }
+.gl .ex-focus::backdrop { background: var(--bg); }
+.gl .focus-inner { max-width: 1100px; min-height: 100%; margin: 0 auto; padding: 16px; display: flex; flex-direction: column; gap: 16px; }
+.gl .focus-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.gl .focus-head h1 { font-size: clamp(22px, 4vw, 34px); line-height: 1.15; margin: 0 0 4px; }
+.gl .focus-head p { margin: 0; }
+.gl .focus-body { flex: 1; display: grid; gap: 24px; align-content: center; min-width: 0; }
+.gl .f-metro { display: flex; align-items: center; justify-content: center; gap: clamp(16px, 5vw, 56px); flex-wrap: wrap; }
+.gl .f-num { display: grid; justify-items: center; min-width: 3ch; }
+.gl .f-num b { font-size: clamp(48px, 10vw, 96px); font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+.gl .f-metro .metro-dots { margin: 0; gap: clamp(8px, 2vw, 16px); }
+.gl .f-metro .metro-dots i { width: clamp(34px, 7vw, 60px); height: clamp(34px, 7vw, 60px); display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-style: normal; font-size: clamp(14px, 2.4vw, 20px); color: var(--muted); transition: transform .06s, background .05s; }
+.gl .f-metro .metro-dots i.on { transform: scale(1.15); color: var(--gl-accent-ink); }
+.gl .focus-guide { margin: 0; }
+.gl .focus-guide .g-chord { font-size: clamp(48px, 9vw, 88px); }
+.gl .focus-guide .bar-cell { font-size: 16px; }
+.gl .focus-body .tab { margin: 0; font: clamp(15px, 2.4vw, 22px)/1.35 ui-monospace, "SF Mono", Menlo, monospace; overflow-x: auto; text-align: center; }
+.gl .focus-now { display: grid; justify-items: center; gap: 4px; text-align: center; }
+.gl .f-now { font-size: clamp(56px, 12vw, 120px); font-weight: 800; line-height: 1; color: var(--gl-accent); }
+.gl .f-then { font-size: 18px; min-height: 27px; }
+.gl .focus-foot { display: grid; gap: 10px; padding-bottom: 8px; }
+.gl .focus-foot .ex-progress { height: 10px; }
+.gl .focus-foot .ex-msg { font-size: clamp(16px, 2.4vw, 20px); text-align: center; min-height: 30px; }
+.gl .ex-msg.ok { color: var(--gl-ok); } .gl .ex-msg.err { color: var(--gl-err); }
+.gl .btn.xl { font-size: 18px; padding: 12px 28px; }
 .gl .ex-progress { height: 6px; border-radius: 99px; background: var(--border); overflow: hidden; }
 .gl .ex-progress i { display: block; height: 100%; width: 0; background: var(--gl-accent); transition: width .15s; }
 .gl .ex-msg { margin-top: 6px; font-weight: 600; min-height: 20px; }

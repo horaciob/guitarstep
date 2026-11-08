@@ -239,6 +239,59 @@ def test_chart_exercise_shows_a_guide_and_plays_a_demo(app_page):
     expect(guide.locator(".bar-cell span.on")).to_have_count(0)
 
 
+def _fake_listener(page):
+    """Answers /api/live/* in the browser, so no microphone or metronome output is ever opened."""
+    import json
+    import time
+
+    live = {}
+
+    def handle(route):
+        url = route.request.url
+        if url.endswith("/start"):
+            live.update(t0=time.monotonic(), stopped=False)
+            body = {"ok": True}
+        elif url.endswith("/stop"):
+            live["stopped"] = True
+            body = {"ok": True}
+        elif "t0" not in live:                                      # polled before anything started
+            body = {"active": False, "state": None, "report": None}
+        elif live.get("stopped"):
+            body = {"active": False, "state": None, "report": {"award": {"passed": False, "need": 80}, "summary": {"score": None}}}
+        else:
+            beat = (time.monotonic() - live["t0"]) * 49 / 60 - 4       # 4-beat count-in at 49 BPM
+            body = {"active": True, "report": None, "state": {"k": 0, "total": 8, "pos": beat, "lane": [], "last": None,
+                                                              "countdown": None if beat >= 0 else -int(beat // 1)}}
+        route.fulfill(status=200, content_type="application/json", body=json.dumps(body))
+
+    page.route("**/api/live/**", handle)
+
+
+def test_exercise_opens_on_its_own_screen_with_a_big_metronome(app_page):
+    onboarded(app_page)
+    _fake_listener(app_page)
+    go(app_page, "lesson/first-change")
+    app_page.locator('.exercise[data-id="em-am-chart"] [data-act=go]').click()
+    focus = app_page.locator("dialog.ex-focus")
+    expect(focus).to_be_visible()
+    expect(focus.locator("#fTitle")).to_have_text("With the metronome at 70%")
+    expect(focus.locator(".f-metro .metro-dots i")).to_have_count(4)
+    expect(focus.locator(".f-num b").first).to_have_text("49")
+    expect(focus.locator(".focus-guide .bar-cell span")).to_have_count(8)
+    expect(focus.locator(".f-metro .metro-dots i.on")).to_have_count(1, timeout=10_000)   # follows the listener
+    focus.locator("[data-f=go]").click()           # stop
+    expect(focus.locator("[data-f=go]")).to_have_text(re.compile("Again"), timeout=10_000)
+    expect(focus.locator(".f-metro .metro-dots i.on")).to_have_count(0)
+    demo = focus.locator("[data-f=hear]")
+    demo.click()                                   # headless Chromium has no audio output
+    expect(focus.locator(".f-metro .metro-dots i.on")).to_have_count(1, timeout=10_000)
+    expect(focus.locator(".focus-guide .bar-cell span.on")).to_have_count(1, timeout=10_000)
+    expect(focus.locator(".f-beat")).to_have_text(re.compile("^[1-4]$"))
+    app_page.keyboard.press("Escape")
+    expect(focus).to_be_hidden()
+    expect(app_page.locator(".exercise").first).to_be_visible()
+
+
 def test_tuning_and_left_handed(app_page):
     onboarded(app_page)
     go(app_page, "settings")

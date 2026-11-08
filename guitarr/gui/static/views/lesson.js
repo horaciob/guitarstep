@@ -5,6 +5,7 @@ import { listen } from "../lib/listen.js";
 import { chartGuide, playChart } from "./charts.js";
 
 let task = null, demo = null;
+let focus = null;   // the exercise open on its own full screen: { ex, views, changed }
 const guides = new Map();   // exercise id → { guide, chart } for chart exercises
 
 const STRINGS = ["e", "B", "G", "D", "A", "E"];   // tab lines, 1st string on top
@@ -67,7 +68,6 @@ export async function mount(el, { segs }) {
                 <button class="btn small primary" data-act="go">${esc(t("lesson.listen"))}</button></div>
               ${ex.kind === "lick" ? `<pre class="tab" aria-label="${esc(t("lesson.tab_label"))}">${esc(tabText(ex.steps))}</pre>` : ""}
               ${ex.kind === "chart" ? `<div class="ex-guide"></div>` : ""}
-              <div class="ex-live" hidden><div class="ex-progress"><i></i></div><div class="ex-msg muted"></div></div>
             </div>`).join("")}</div></div>
       </div>
       <div class="stack">
@@ -83,7 +83,20 @@ export async function mount(el, { segs }) {
         </div>
         ${next ? `<a class="callout" href="#/lesson/${encodeURIComponent(next.id)}"><span>${t("lesson.next_html", { title: esc(tc(`lessons.${next.id}.title`, next.title)), interpolation: { escapeValue: false } })}</span><span>→</span></a>` : ""}
       </div>
-    </div>`;
+    </div>
+    <dialog class="ex-focus" aria-labelledby="fTitle"><div class="focus-inner">
+      <div class="focus-top"><button class="btn small" data-f="back">← ${esc(t("lesson.focus_back"))}</button>
+        <small class="muted">${esc(lt("title", ls.title))}</small></div>
+      <div class="focus-head"><h1 id="fTitle"></h1><p class="muted" id="fTarget"></p></div>
+      <div class="focus-body"></div>
+      <div class="focus-foot">
+        <div class="ex-progress"><i></i></div>
+        <div class="ex-msg muted" aria-live="polite"></div>
+        <div class="row center"><button class="btn" data-f="hear"></button>
+          <button class="btn primary xl" data-f="go"></button>
+          <button class="btn" data-f="next" hidden>${esc(t("lesson.focus_next"))} →</button></div>
+      </div>
+    </div></dialog>`;
 
   $$(".mini-chord", el).forEach(m => bindChordSvg(m, chords.find(c => c.id === m.dataset.id)));
   $$("[data-strum]", el).forEach(b => b.onclick = () => strum(chords.find(c => c.id === b.dataset.strum)));
@@ -103,28 +116,122 @@ export async function mount(el, { segs }) {
   }));
   $$(".exercise", el).forEach(box => {
     const ex = ls.exercises.find(e => e.id === box.dataset.id);
-    $("[data-act=hear]", box).onclick = () => ex.kind === "chart" ? toggleDemo(ex, box) : preview(ex, chordData);
-    $("[data-act=go]", box).onclick = () => run(el, segs, ls, ex, box);
+    const hear = $("[data-act=hear]", box);
+    hear.onclick = () => ex.kind === "chart" ? toggleDemo(ex, hear, [guides.get(ex.id).guide]) : preview(ex, chordData);
+    $("[data-act=go]", box).onclick = () => openFocus(el, segs, ls, ex, chordData, exTitle, true);
   });
+  const dlg = $(".ex-focus", el);
+  dlg.addEventListener("cancel", e => { e.preventDefault(); closeFocus(el, segs); });   // Esc
+  $("[data-f=back]", dlg).onclick = () => closeFocus(el, segs);
 }
 
-/** Chart exercises: plays the chart at the exercise's speed while the guide shows what to strum. */
-function toggleDemo(ex, box) {
+/** Chart exercises: plays the chart at the exercise's speed while the views (guide, metronome) follow it. */
+function toggleDemo(ex, btn, views, labels = ["♪", "■"]) {
   if (demo) return stopDemo();
   if (task) return toast(t("lesson.busy"));
-  const g = guides.get(ex.id), btn = $("[data-act=hear]", box);
+  const g = guides.get(ex.id);
   if (!g) return;
   demo = playChart(g.chart, { speed: ex.speed });
   const mine = demo;
-  g.guide.setClock(demo.clock);
-  btn.textContent = "■";
+  views.forEach(v => v.setClock(mine.clock));
+  btn.textContent = labels[1];
   btn.title = t("lesson.demo_stop");
   mine.done.then(() => {
-    g.guide.setClock(null);
-    btn.textContent = "♪";
+    views.forEach(v => v.setClock(null));
+    btn.textContent = labels[0];
     btn.title = t("lesson.demo_hint");
     if (demo === mine) demo = null;
   });
+}
+
+/** A big metronome: the BPM, one numbered dot per beat of the bar and the beat you're on.
+ * `setClock(fn)` as in chartGuide: fn() returns beats since the start (negative during the count-in). */
+function metronomeView(box, bpb, bpm) {
+  box.innerHTML = `
+    <div class="f-metro" aria-hidden="true">
+      <div class="f-num"><b>${bpm}</b><small class="muted">${esc(t("lesson.metro_bpm"))}</small></div>
+      <div class="metro-dots">${Array.from({ length: bpb }, (_, i) => `<i class="${i ? "" : "first"}">${i + 1}</i>`).join("")}</div>
+      <div class="f-num"><b class="f-beat">–</b><small class="muted f-beat-label">${esc(t("lesson.metro_beat"))}</small></div>
+    </div>`;
+  const dots = $$(".metro-dots i", box), num = $(".f-beat", box), label = $(".f-beat-label", box);
+  let clock = null, raf = 0, shown = "";
+  const show = beat => {
+    const k = beat == null ? -1 : ((Math.floor(beat) % bpb) + bpb) % bpb;
+    const counting = beat != null && beat < 0;
+    const key = `${k}|${counting ? Math.ceil(-beat) : ""}`;
+    if (key === shown) return;
+    shown = key;
+    dots.forEach((d, i) => d.classList.toggle("on", i === k));
+    num.textContent = k < 0 ? "–" : counting ? Math.ceil(-beat) : k + 1;
+    label.textContent = t(counting ? "lesson.metro_count_in" : "lesson.metro_beat");
+  };
+  const frame = () => { show(clock ? clock() : null); raf = clock ? requestAnimationFrame(frame) : 0; };
+  show(null);
+  return { setClock(fn) { clock = fn; cancelAnimationFrame(raf); frame(); } };
+}
+
+/** What to play now and next, for exercises without a tempo (notes, chords, licks, bends). */
+function nowView(box) {
+  box.innerHTML = `<div class="focus-now"><small class="muted">${esc(t("lesson.focus_now"))}</small>
+    <b class="f-now">–</b><span class="f-then muted"></span><small class="f-step muted"></small></div>`;
+  return {
+    setClock() {},
+    update(s) {
+      const cur = s.lane.findIndex(e => e.current), now = s.lane[cur], then = s.lane[cur + 1];
+      $(".f-now", box).textContent = now ? now.label : "–";
+      $(".f-then", box).textContent = then ? t("lesson.focus_then", { x: then.label }) : "";
+      $(".f-step", box).textContent = t("lesson.focus_step", { k: Math.min(s.k + 1, s.total), total: s.total });
+    },
+  };
+}
+
+/** Opens an exercise on its own full screen (and starts listening when `start`). */
+async function openFocus(el, segs, ls, ex, chordData, exTitle, start = false) {
+  if (task && focus) return toast(t("lesson.busy"));
+  if (task) await task.done.catch(() => {});   // you just closed one: let it finish stopping
+  stopDemo();
+  if (focus) focus.views.forEach(v => v.setClock(null));
+  const dlg = $(".ex-focus", el), body = $(".focus-body", dlg), g = guides.get(ex.id);
+  $("#fTitle", dlg).textContent = exTitle(ex);
+  $("#fTarget", dlg).textContent = `${exerciseTarget(ex)} · ${t("lesson.pass_with", { min: ex.min })}`
+    + (ex.best != null ? ` · ${t("lesson.your_best", { best: Math.round(ex.best) })}` : "");
+  const views = [];
+  let now = null;
+  if (g) {
+    body.innerHTML = `<div class="f-metro-box"></div><div class="ex-guide focus-guide"></div>`;
+    views.push(metronomeView($(".f-metro-box", body), g.chart.beats_per_bar, Math.round(g.chart.bpm * ex.speed)));
+    const note = g.chart.note && tc(`charts.${g.chart.id}.note`, g.chart.note);
+    views.push(chartGuide($(".focus-guide", body), g.chart, { speed: ex.speed, note }));
+  } else {
+    body.innerHTML = `<div class="f-now-box"></div>${ex.kind === "lick" ? `<pre class="tab" aria-label="${esc(t("lesson.tab_label"))}">${esc(tabText(ex.steps))}</pre>` : ""}`;
+    now = nowView($(".f-now-box", body));
+    views.push(now);
+  }
+  focus = { ex, views, now, changed: focus?.changed || false };
+  const bar = $(".ex-progress i", dlg), msg = $(".ex-msg", dlg);
+  bar.style.width = "0%";
+  msg.className = "ex-msg muted";
+  msg.textContent = "";
+  const hear = $("[data-f=hear]", dlg), labels = [`♪ ${t(g ? "lesson.focus_demo" : "lesson.focus_hear")}`, `■ ${t("lesson.demo_stop")}`];
+  hear.textContent = labels[0];
+  hear.onclick = () => g ? toggleDemo(ex, hear, views, labels) : preview(ex, chordData);
+  $("[data-f=next]", dlg).hidden = true;
+  const go = $("[data-f=go]", dlg);
+  go.textContent = t("lesson.listen");
+  go.onclick = () => run(el, segs, ls, ex, chordData, exTitle);
+  if (!dlg.open) dlg.showModal();
+  if (start) run(el, segs, ls, ex, chordData, exTitle);
+}
+
+function closeFocus(el, segs) {
+  if (task) task.stop();
+  stopDemo();
+  if (!focus) return;
+  focus.views.forEach(v => v.setClock(null));
+  const changed = focus.changed;
+  focus = null;
+  $(".ex-focus", el).close();
+  if (changed) mount(el, { segs });   // show the exercises you just passed
 }
 
 function stopDemo() {
@@ -141,16 +248,17 @@ function preview(ex, chordData) {
   else toast(t("lesson.open_chart"));
 }
 
-async function run(el, segs, ls, ex, box) {
+async function run(el, segs, ls, ex, chordData, exTitle) {
   if (task) return toast(t("lesson.busy"));
   stopDemo();   // the microphone would hear it
-  const g = guides.get(ex.id);
+  const g = guides.get(ex.id), dlg = $(".ex-focus", el), views = focus.views, now = focus.now;
   let pos = null, at = 0;
   const rate = g ? g.chart.bpm * ex.speed / 60 : 0;
   // between state polls the playhead runs on its own at the exercise's tempo
-  if (g) g.guide.setClock(() => pos == null ? null : pos + (performance.now() - at) / 1000 * rate);
-  const live = $(".ex-live", box), bar = $(".ex-progress i", box), msg = $(".ex-msg", box), btn = $("[data-act=go]", box);
-  live.hidden = false;
+  if (g) views.forEach(v => v.setClock(() => pos == null ? null : pos + (performance.now() - at) / 1000 * rate));
+  const bar = $(".ex-progress i", dlg), msg = $(".ex-msg", dlg), btn = $("[data-f=go]", dlg), next = $("[data-f=next]", dlg);
+  next.hidden = true;
+  $("[data-f=hear]", dlg).disabled = true;
   btn.textContent = t("lesson.stop");
   msg.className = "ex-msg muted";
   msg.textContent = t(ex.kind === "chart" ? "lesson.wait_count_in" : ex.kind === "bend" ? "lesson.bend_ready" : "lesson.play_when_ready");
@@ -159,6 +267,7 @@ async function run(el, segs, ls, ex, box) {
     onState: s => {
       bar.style.width = `${Math.round(100 * Math.min(s.k, s.total) / s.total)}%`;
       if (s.countdown) msg.textContent = t("lesson.count_in", { n: s.countdown });
+      if (now && s.lane) now.update(s);
       pos = s.pos ?? null;
       at = performance.now();
     },
@@ -172,22 +281,32 @@ async function run(el, segs, ls, ex, box) {
     msg.textContent = a.passed
       ? t("lesson.passed", { score: Math.round(score) }) + (a.xp ? ` · +${a.xp} XP` : "") + (a.lesson_done ? ` · ${t("lesson.lesson_done")}` : "")
       : score == null ? t("lesson.not_played") : t("lesson.failed", { score: Math.round(score), need: a.need });
-    const here = location.hash;
-    if (a.passed) setTimeout(() => { if (location.hash === here) mount(el, { segs }); }, 1800);
+    if (a.passed && focus) {
+      focus.changed = true;
+      ex.passed = true;
+      if (ex.best == null || score > ex.best) ex.best = score;
+      const after = ls.exercises[ls.exercises.indexOf(ex) + 1];
+      if (after) {
+        next.hidden = false;
+        next.onclick = () => openFocus(el, segs, ls, after, chordData, exTitle);
+      }
+    }
   } catch (e) {
     msg.className = "ex-msg err";
     msg.textContent = e.message;
   } finally {
-    if (g) g.guide.setClock(null);
+    views.forEach(v => v.setClock(null));
     task = null;
-    btn.textContent = t("lesson.listen");
-    btn.onclick = () => run(el, segs, ls, ex, box);
+    $("[data-f=hear]", dlg).disabled = false;
+    btn.textContent = t("lesson.focus_again");
+    btn.onclick = () => run(el, segs, ls, ex, chordData, exTitle);
   }
 }
 
 export function unmount() {
   if (task) { task.stop(); task = null; }
   stopDemo();
+  focus = null;
   guides.forEach(g => g.guide.setClock(null));
   guides.clear();
 }

@@ -433,7 +433,18 @@
    "failed": "{{score}}% — necesitás {{need}}%. ¡Otra vez!",
    "bend_target": "cuerda {{string}}, traste {{fret}} → {{note}} · {{tries}} intentos · sostené {{hold}} s",
    "bend_ready": "Tocá la nota, estirala hasta el destino y sostenela. Cada intento cuenta.",
-   "tab_label": "Tablatura"
+   "tab_label": "Tablatura",
+   "focus_back": "Volver a la lección",
+   "focus_next": "Siguiente ejercicio",
+   "focus_again": "🎧 Otra vez",
+   "focus_demo": "Demo",
+   "focus_hear": "Escuchar",
+   "focus_now": "Ahora",
+   "focus_then": "después: {{x}}",
+   "focus_step": "{{k}} de {{total}}",
+   "metro_bpm": "BPM",
+   "metro_beat": "tiempo",
+   "metro_count_in": "cuenta"
   },
   "chords": {
    "title": "Acordes",
