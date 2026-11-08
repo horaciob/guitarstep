@@ -208,6 +208,102 @@ def api_chart_delete(cid: str):
     return dict(ok=True)
 
 
+def _exercise_extras(e: dict) -> dict:
+    """What the UI needs to draw an exercise: tab steps (licks, bends, runs) or chord shapes."""
+    out = {}
+    steps = catalog.exercise_steps(e)
+    if steps is not None:
+        out["steps"] = steps
+    shapes = catalog.exercise_shapes(e)
+    if shapes is not None:
+        out["shapes"] = shapes
+    return out
+
+
+# ---------------------------------------------------------------- drawn exercises and quizzes
+@app.post("/api/exercise/draw")
+def exercise_draw(body: dict):
+    from .. import quiz
+
+    try:
+        ex = catalog.get_exercise(body.get("lesson", ""), body.get("exercise", ""))
+        return quiz.draw(body["lesson"], ex, ex.get("min", 80))
+    except catalog.CatalogError as e:
+        fail(404, "catalog", str(e))
+    except quiz.QuizError as e:
+        fail(400, "quiz", str(e))
+
+
+@app.post("/api/exercise/check")
+def exercise_check(body: dict):
+    from .. import quiz
+
+    try:
+        return quiz.check(str(body.get("token", "")), int(body.get("index", -1)), body.get("answer"))
+    except (quiz.QuizError, ValueError) as e:
+        fail(400, "quiz_expired", str(e))
+
+
+@app.post("/api/exercise/finish")
+def exercise_finish(body: dict):
+    from .. import quiz
+
+    try:
+        r = quiz.finish(str(body.get("token", "")))
+    except quiz.QuizError as e:
+        fail(400, "quiz_expired", str(e))
+    award = progress.exercise_answered(r["lesson"], r["exercise"], r["score"], r["need"])
+    award.pop("progress", None)
+    return dict(summary=dict(score=r["score"]), award=award)
+
+
+# ---------------------------------------------------------------- theory (tools)
+@app.get("/api/theory/scale")
+def theory_scale(key: str = "C", name: str = "major"):
+    from .. import theory as th
+
+    try:
+        return dict(key=key, name=name, notes=th.scale(key, name), scales=list(th.SCALES))
+    except th.TheoryError as e:
+        fail(400, "theory", str(e))
+
+
+@app.get("/api/theory/voicings")
+def theory_voicings(chord: str, kind: str = "triad"):
+    from .. import theory as th
+
+    try:
+        return dict(chord=th.chord(chord), voicings=th.voicings(chord, kind), kinds=list(th.VOICING_SETS))
+    except th.TheoryError as e:
+        fail(400, "theory", str(e))
+
+
+@app.post("/api/theory/name")
+def theory_name(body: dict):
+    from .. import theory as th
+
+    frets = body.get("frets") or []
+    if len(frets) != 6 or any(not isinstance(f, int) or not -1 <= f <= 24 for f in frets):
+        fail(400, "bad_frets", "Six frets, from the 6th string to the 1st (-1 = not played)")
+    pitches = th.shape_pitches(frets)
+    return dict(names=th.name_chord(pitches), notes=[th.plain_name(p) for p in pitches])
+
+
+@app.post("/api/theory/voice-lead")
+def theory_voice_lead(body: dict):
+    from .. import theory as th
+
+    prog = [c for c in str(body.get("progression", "")).replace(",", " ").split() if c]
+    if not 2 <= len(prog) <= 16:
+        fail(400, "bad_progression", "Write 2 to 16 chords, separated by spaces")
+    try:
+        kind = body.get("kind", "drop2")
+        shapes = th.guide_tones(prog) if kind == "guide" else th.voice_lead(prog, kind, body.get("lead", "smooth"))
+        return dict(shapes=[dict(name=s["name"], frets=s["frets"]) for s in shapes])
+    except th.TheoryError as e:
+        fail(400, "theory", str(e))
+
+
 @app.get("/api/course")
 def api_course():
     p = progress.get()
@@ -217,7 +313,7 @@ def api_course():
         for x in lvl["lessons"]:
             exs = [dict(e, best=p["exercises"].get(f"{x['id']}/{e['id']}"),
                         passed=p["exercises"].get(f"{x['id']}/{e['id']}", -1) >= e.get("min", 80),
-                        **({"steps": catalog.exercise_steps(e)} if e["kind"] in ("lick", "bend") else {}))
+                        how="answer" if e["kind"] in ("quiz", "pick") else "play", **_exercise_extras(e))
                    for e in x["exercises"]]
             ls.append(dict(x, exercises=exs, chords=catalog.lesson_chords(x), done=x["id"] in p["lessons"], pinned=p["tutorials"].get(x["id"])))
         levels.append(dict(lvl, lessons=ls))

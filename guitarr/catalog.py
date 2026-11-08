@@ -278,12 +278,67 @@ def bend_steps(ex: dict) -> list[dict]:
 
 
 def exercise_steps(ex: dict) -> list[dict] | None:
-    """Tab steps of a lick or bend exercise (None for other kinds)."""
+    """Tab steps of a lick, bend, scale, arpeggio or guide-tone line exercise (None for other kinds)."""
     if ex["kind"] == "lick":
         return parse_lick(ex["tab"], int(ex.get("shift", 0)))
     if ex["kind"] == "bend":
         return bend_steps(ex)
+    if ex["kind"] in ("scale", "arpeggio", "line"):
+        return [dict(string=s, fret=f, pitch=p, tech="pick", glide_from=None, vibrato=False) for s, f, p in _run(ex)]
     return None
+
+
+# kinds you play: scale/arpeggio/line runs and chord shapes are built by the theory engine
+RUN_KINDS = ("scale", "arpeggio", "line")
+SHAPE_KINDS = ("shape", "voiced")
+
+
+def _run(ex: dict) -> list[tuple[int, int, int]]:
+    from . import theory as th
+
+    lo, hi = (ex.get("frets") or [0, 12])
+    try:
+        if ex["kind"] == "scale":
+            return th.scale_path(ex["key"], ex["scale"], lo, hi, ex.get("direction", "up"), ex.get("string"),
+                                 int(ex.get("nps", 0)), int(ex.get("octaves", 1)))
+        if ex["kind"] == "arpeggio":
+            return th.arpeggio_path(ex["chord"], lo, hi, ex.get("direction", "up"), int(ex.get("octaves", 1)))
+        return th.guide_line(ex["progression"], lo, hi, int(ex.get("per_chord", 1)))
+    except (th.TheoryError, StopIteration) as e:
+        raise CatalogError(f"Can't build {ex['kind']} '{ex.get('id')}': {e}") from e
+
+
+def exercise_shapes(ex: dict) -> list[dict] | None:
+    """[{name, frets}] for chord-shape exercises: one shape, or a voiced progression (None for other kinds)."""
+    from . import theory as th
+
+    if ex["kind"] not in SHAPE_KINDS:
+        return None
+    try:
+        if ex.get("shapes"):                                   # written out by hand
+            return [dict(name=s["name"], frets=list(s["frets"])) for s in ex["shapes"]]
+        if ex["kind"] == "shape":
+            vs = [v for v in th.voicings(ex["chord"], ex["voicing"]) if v["strings"] == ex.get("strings", v["strings"])
+                  and v["inversion"] == int(ex.get("inversion", v["inversion"]))]
+            near = int(ex.get("near", 3))
+            v = min(vs, key=lambda v: (abs(v["position"] - near), v["position"]))
+            return [dict(name=ex["chord"], frets=v["frets"])]
+        prog = ex["progression"]
+        if ex["voicing"] == "guide":
+            shapes = th.guide_tones(prog, tuple(ex.get("strings", (4, 3))))
+        else:
+            sets = tuple(ex["sets"]) if ex.get("sets") else None
+            shapes = th.voice_lead(prog, ex["voicing"], ex.get("lead", "smooth"), int(ex.get("near", 3)), sets)
+        return [dict(name=s["name"], frets=s["frets"]) for s in shapes]
+    except (th.TheoryError, ValueError) as e:
+        raise CatalogError(f"Can't build shapes for '{ex.get('id')}': {e}") from e
+
+
+def chart_from_shapes(shapes: list[dict], times: int) -> dict:
+    """Each shape once per round, one beat each (graded like a chord change)."""
+    bars = [dict(chord=s["name"], beats=1, frets=s["frets"]) for _ in range(times) for s in shapes]
+    return dict(id="shapes-" + "-".join(s["name"] for s in shapes), title=" → ".join(s["name"] for s in shapes),
+                bpm=60, beats_per_bar=1, capo=0, bars=bars)
 
 
 # ---------------------------------------------------------------- course
@@ -341,6 +396,13 @@ def exercise_setup(lid: str, eid: str):
         return RefOptions(tab=exercise_steps(ex)), "wait", 1.0, ex.get("min", 80)
     if kind == "bend":
         return RefOptions(tab=exercise_steps(ex)), "bend", 1.0, ex.get("min", 70)
+    if kind in RUN_KINDS:
+        return RefOptions(tab=exercise_steps(ex)), "wait", 1.0, ex.get("min", 80)
+    if kind in SHAPE_KINDS:
+        return RefOptions(chart=chart_from_shapes(exercise_shapes(ex), int(ex.get("times", 2)))), "wait", 1.0, ex.get("min", 75)
+    if kind in ("find_note", "play_interval"):
+        from . import quiz
+        return RefOptions(notes=quiz.drawn_notes(lid, ex)), "wait", 1.0, ex.get("min", 80)
     raise CatalogError(f"Unknown exercise kind: {kind}")
 
 

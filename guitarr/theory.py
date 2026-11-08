@@ -434,6 +434,30 @@ def _moved(a: list[int], b: list[int]) -> int:
     return sum(min(abs(x - y) for y in b) for x in a) + sum(min(abs(x - y) for x in a) for y in b)
 
 
+def guide_line(progression: list[str], lo: int = 1, hi: int = 10, per_chord: int = 1) -> list[tuple[int, int, int]]:
+    """A single-note line through the 3rds and 7ths: each chord's guide tone nearest to the last note
+    (per_chord = 2 plays both, nearest first). Starts on the first chord's 3rd, low in the fret range."""
+    run: list[tuple[int, int, int]] = []
+    for sym in progression:
+        ch = chord(sym)
+        want = [tone(ch, "3")["pc"], tone(ch, "7")["pc"]]
+        cands = [c for c in positions(set(want), lo, hi, strings=(4, 3, 2))]
+        if not cands:
+            raise TheoryError(f"No guide tones for {sym} between frets {lo} and {hi}")
+        last = run[-1][2] if run else None
+        picked = []
+        for _ in range(per_chord):
+            pool = [c for c in cands if c[2] % 12 not in {p[2] % 12 for p in picked}]
+            if last is None:
+                best = min((c for c in pool if c[2] % 12 == want[0]), key=lambda c: c[2], default=min(pool, key=lambda c: c[2]))
+            else:
+                best = min(pool, key=lambda c: (abs(c[2] - last), c[1]))
+            picked.append(best)
+            last = best[2]
+        run += picked
+    return run
+
+
 def guide_tones(progression: list[str], strings: tuple[int, int] = (4, 3), lo: int = 1, hi: int = 12) -> list[dict]:
     """The 3rd and 7th of each chord as two-note shapes on two adjacent strings, alternating which one is on
     top so each voice moves by step or not at all."""

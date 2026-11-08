@@ -188,6 +188,40 @@ def pin_tutorial(lid: str, url: str | None) -> dict:
         return d["tutorials"]
 
 
+def _record_exercise(d: dict, lid: str, eid: str, score: float | None, need: float, complete: bool = True) -> dict:
+    """Stores an exercise result (best score, review schedule, XP, lesson completion) → what was earned."""
+    from . import catalog
+
+    key = f"{lid}/{eid}"
+    passed = score is not None and complete and score >= need
+    prev = d["exercises"].get(key)
+    out: dict = dict(xp=0, passed=passed, score=score, need=need)
+    if score is not None and (prev is None or score > prev):
+        d["exercises"][key] = score
+    if score is not None:
+        _review(d, f"exercise:{key}", passed)
+    if passed and (prev is None or prev < need):
+        _award(d, XP["exercise"], "exercise_passed", lesson=lid, exercise=eid)
+        out["xp"] += XP["exercise"]
+    lesson = catalog.get_lesson(lid)
+    done = all(d["exercises"].get(f"{lid}/{e['id']}", -1) >= e.get("min", 80) for e in lesson["exercises"])
+    if done and lid not in d["lessons"]:
+        d["lessons"].append(lid)
+        _award(d, XP["lesson"], "lesson_completed", lesson=lid)
+        out.update(xp=out["xp"] + XP["lesson"], lesson_done=True)
+    return out
+
+
+def exercise_answered(lid: str, eid: str, score: float, need: float) -> dict:
+    """Records an exercise you pass by answering (a quiz or picking notes on the neck), not by playing."""
+    with _lock:
+        d = _read()
+        out = _record_exercise(d, lid, eid, score, need)
+        _write(d)
+        out["progress"] = view(d)
+        return out
+
+
 def on_session(ctx: dict | None, report: dict) -> dict:
     """Records a listening session according to its context and returns what was earned."""
     from . import catalog
@@ -201,24 +235,8 @@ def on_session(ctx: dict | None, report: dict) -> dict:
         d = _read()
         out: dict = dict(xp=0)
         if kind == "exercise":
-            lid, eid, need = ctx["lesson"], ctx["exercise"], ctx.get("min", 80)
-            key = f"{lid}/{eid}"
-            passed = score is not None and s.get("judged") == s.get("events") and score >= need
-            prev = d["exercises"].get(key)
-            out.update(passed=passed, score=score, need=need)
-            if score is not None and (prev is None or score > prev):
-                d["exercises"][key] = score
-            if score is not None:
-                _review(d, f"exercise:{key}", passed)
-            if passed and (prev is None or prev < need):
-                _award(d, XP["exercise"], "exercise_passed", lesson=lid, exercise=eid)
-                out["xp"] += XP["exercise"]
-            lesson = catalog.get_lesson(lid)
-            done = all(d["exercises"].get(f"{lid}/{e['id']}", -1) >= e.get("min", 80) for e in lesson["exercises"])
-            if done and lid not in d["lessons"]:
-                d["lessons"].append(lid)
-                _award(d, XP["lesson"], "lesson_completed", lesson=lid)
-                out.update(xp=out["xp"] + XP["lesson"], lesson_done=True)
+            complete = s.get("judged") == s.get("events")
+            out.update(_record_exercise(d, ctx["lesson"], ctx["exercise"], score, ctx.get("min", 80), complete))
         elif kind == "chord":
             ok = s.get("judged", 0) > 0 and (s.get("first_try", 0) > 0 or s.get("fixed", 0) > 0)
             out["passed"] = ok
