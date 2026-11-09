@@ -7,9 +7,10 @@ import { neck } from "../lib/fretboard.js";
 import { linkTerms, loadGlossary, metersHtml, openTerms, stepperHtml } from "../lib/flow.js";
 import { chipsHtml } from "../lib/chips.js";
 import { hearBar, rhythmSvg } from "../lib/notation.js";
+import { staffSvg } from "../lib/staff.js";
 import { chartGuide, playChart } from "./charts.js";
 
-const ANSWER_KINDS = ["quiz", "pick", "tap"], DRAWN_KINDS = ["find_note", "play_interval", "tone_row", "echo", "rhythm"];
+const ANSWER_KINDS = ["quiz", "pick", "tap"], DRAWN_KINDS = ["find_note", "play_interval", "tone_row", "echo", "rhythm", "read_play"];
 const hearable = ex => !ANSWER_KINDS.includes(ex.kind) && !DRAWN_KINDS.includes(ex.kind);
 const shapeChord = s => ({ id: s.name, frets: s.frets });
 
@@ -173,6 +174,7 @@ export async function mount(el, { segs, params = {} }) {
       $$(".pk", box).forEach(k => k.addEventListener("click", () => pluck(+k.dataset.p)));
     }
     else if (f.type === "fretboard") neck(box, { lo: f.lo, hi: f.hi, marks: f.marks, label: captions[+fig.dataset.fig] || "" });
+    else if (f.type === "staff") box.innerHTML = staffSvg(f.notes, { names: true, label: captions[+fig.dataset.fig] || "" });
     else if (f.type === "rhythm") {                    // a bar of rhythm you can hear, each note lighting up in time
       box.innerHTML = `<div class="rhythm-fig">${rhythmSvg(f.pattern, { label: captions[+fig.dataset.fig] || "" })}</div>
         <button class="btn small" data-hear-rhythm>♪ ${esc(t("rhythm.hear_bar"))}</button>`;
@@ -398,7 +400,10 @@ function preview(ex, chordData) {
 function promptView(box, list) {
   let items = [], ends = [];
   box.innerHTML = `<div class="focus-now"><small class="muted">${esc(t("lesson.focus_now"))}</small>
-    <b class="f-now f-prompt">–</b><small class="f-step muted"></small></div>`;
+    <b class="f-now f-prompt">–</b><div class="q-staff f-staff"></div><small class="f-step muted"></small></div>`;
+  const staffBox = $(".f-staff", box);
+  let shown = null;                                   // redraw the staff only when the item changes
+  const showStaff = it => { if (it === shown) return; shown = it; staffBox.innerHTML = it && it.staff ? staffSvg(it.staff) : ""; };
   const render = (cur, reveal) => {
     list.innerHTML = items.map((it, i) => `<li class="${i === cur ? "cur" : i < cur ? "done" : ""}">${esc(say(it.prompt))}${reveal ? ` <span class="muted">· ${esc(say(it.reveal))}</span>` : ""}</li>`).join("");
   };
@@ -409,6 +414,7 @@ function promptView(box, list) {
       let acc = 0;
       ends = its.map(it => (acc += it.notes));
       $(".f-prompt", box).textContent = items.length ? say(items[0].prompt) : "–";
+      showStaff(items[0]);
       $(".f-step", box).textContent = t("lesson.focus_step", { k: 1, total: items.length });
       render(0, false);
     },
@@ -416,6 +422,7 @@ function promptView(box, list) {
       const i = Math.min(ends.findIndex(e => s.k < e), items.length - 1);
       const cur = i < 0 ? items.length - 1 : i;
       $(".f-prompt", box).textContent = items[cur] ? say(items[cur].prompt) : "–";
+      showStaff(items[cur]);
       $(".f-step", box).textContent = t("lesson.focus_step", { k: cur + 1, total: items.length });
       render(cur, false);
     },

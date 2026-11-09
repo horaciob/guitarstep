@@ -2101,8 +2101,401 @@
    ]
   },
   {
-   "id": "n9",
+   "id": "n18",
+   "title": "Reading notation",
+   "subtitle": "From tab to the staff: the treble clef, position by position.",
    "number": 11,
+   "lessons": [
+    {
+     "id": "staff-clef",
+     "title": "The staff and the clef",
+     "minutes": 10,
+     "theory": [
+      "The staff has five lines and four spaces: the higher a note sits, the higher it sounds. The clef at the start says which note lives on which line.",
+      "Guitar is written in the treble clef, an octave above how it sounds, so its notes fit on the staff. That's why the clef has a small 8 under it."
+     ],
+     "tips": [
+      "Notes beyond the staff get ledger lines: short lines that carry the staff up or down."
+     ],
+     "tutorials": [
+      "how to read treble clef guitar",
+      "guitar standard notation basics"
+     ],
+     "figures": [
+      {
+       "type": "staff",
+       "notes": "open"
+      }
+     ],
+     "captions": [
+      "The open strings on the staff, from the lowest to the highest."
+     ],
+     "exercises": [
+      {
+       "id": "staff-quiz",
+       "kind": "quiz",
+       "title": "How the staff works",
+       "quiz": "staff_fact",
+       "count": 5,
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "open-strings-staff",
+     "title": "Open strings on the staff",
+     "minutes": 8,
+     "theory": [
+      "Start with the open strings: they're the landmarks for everything else. Notice where each one sits, on a line or in a space, and how many ledger lines it needs."
+     ],
+     "tips": [],
+     "tutorials": [],
+     "figures": [
+      {
+       "type": "staff",
+       "notes": "open"
+      }
+     ],
+     "captions": [
+      "Open strings, from the lowest to the highest."
+     ],
+     "exercises": [
+      {
+       "id": "open-names",
+       "kind": "quiz",
+       "title": "Name the open string",
+       "quiz": "read_note",
+       "frets": [
+        0,
+        0
+       ],
+       "strings": [
+        6,
+        5,
+        4,
+        3,
+        2,
+        1
+       ],
+       "notes": "naturals",
+       "count": 8,
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "naturals-low",
+     "title": "Natural notes on the low strings",
+     "minutes": 10,
+     "theory": [
+      "Now the natural notes (no sharps or flats) of the two lowest strings, up to the 5th fret. Each letter of the musical alphabet moves the note one step on the staff, from a line to a space or the other way round."
+     ],
+     "tips": [],
+     "tutorials": [],
+     "figures": [
+      {
+       "type": "staff",
+       "string": 6,
+       "frets": [
+        0,
+        1,
+        3,
+        5
+       ]
+      },
+      {
+       "type": "staff",
+       "string": 5,
+       "frets": [
+        0,
+        2,
+        3,
+        5
+       ]
+      }
+     ],
+     "captions": [
+      "Naturals on the 6th string: E, F, G, A.",
+      "Naturals on the 5th string: A, B, C, D."
+     ],
+     "exercises": [
+      {
+       "id": "low-names",
+       "kind": "quiz",
+       "title": "Name the note",
+       "quiz": "read_note",
+       "frets": [
+        0,
+        5
+       ],
+       "strings": [
+        6,
+        5
+       ],
+       "notes": "naturals",
+       "count": 10,
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "naturals-all",
+     "title": "Natural notes on every string",
+     "minutes": 10,
+     "theory": [
+      "With every string, the first position covers more than two octaves. Use the open strings as anchors: find the nearest open string and count steps from it."
+     ],
+     "tips": [],
+     "tutorials": [],
+     "figures": [],
+     "captions": [],
+     "exercises": [
+      {
+       "id": "all-names",
+       "kind": "quiz",
+       "title": "Name the note in first position",
+       "quiz": "read_note",
+       "frets": [
+        0,
+        5
+       ],
+       "strings": [
+        6,
+        5,
+        4,
+        3,
+        2,
+        1
+       ],
+       "notes": "naturals",
+       "count": 10,
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "staff-to-neck",
+     "title": "From the staff to the neck",
+     "minutes": 10,
+     "theory": [
+      "Reading means knowing where to play. The app shows a note on the staff and you click it on the neck at the exact height: the same note an octave up or down doesn't count."
+     ],
+     "tips": [
+      "Some notes exist on two strings (the 5th fret of one string = the next open string). Both count: it's the same pitch."
+     ],
+     "tutorials": [],
+     "figures": [],
+     "captions": [],
+     "exercises": [
+      {
+       "id": "staff-neck",
+       "kind": "pick",
+       "title": "Click the written note",
+       "pick": "staff",
+       "frets": [
+        0,
+        5
+       ],
+       "strings": [
+        6,
+        5,
+        4,
+        3,
+        2,
+        1
+       ],
+       "notes": "naturals",
+       "count": 8,
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "accidentals-staff",
+     "title": "Sharps and flats on the staff",
+     "minutes": 10,
+     "theory": [
+      "A sharp (♯) before a note raises it a half step; a flat (♭) lowers it a half step. On the staff the note stays in the same place and just gets the sign in front. On the neck it's the next fret."
+     ],
+     "tips": [],
+     "tutorials": [],
+     "figures": [
+      {
+       "type": "staff",
+       "string": 6,
+       "frets": [
+        1,
+        2,
+        3,
+        4
+       ]
+      },
+      {
+       "type": "staff",
+       "string": 6,
+       "frets": [
+        1,
+        2,
+        3,
+        4
+       ],
+       "flats": true
+      }
+     ],
+     "captions": [
+      "F, F♯, G, G♯ on the 6th string.",
+      "The same frets spelled with flats: F, G♭, G, A♭."
+     ],
+     "exercises": [
+      {
+       "id": "acc-names",
+       "kind": "quiz",
+       "title": "Name the note, sharps and flats too",
+       "quiz": "read_note",
+       "frets": [
+        0,
+        5
+       ],
+       "strings": [
+        6,
+        5,
+        4,
+        3,
+        2,
+        1
+       ],
+       "notes": "all",
+       "count": 10,
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "fifth-position",
+     "title": "Reading in 5th position",
+     "minutes": 10,
+     "theory": [
+      "Readers don't stay stuck in first position. In 5th position, finger 1 sits on fret 5 and each finger takes care of one fret (5 to 8). The notes on the staff are the same; only where they live on the neck changes."
+     ],
+     "tips": [
+      "Use the string above as a shortcut: the 5th fret of one string is the next open string (except G→B, which is the 4th fret)."
+     ],
+     "tutorials": [],
+     "figures": [
+      {
+       "type": "staff",
+       "string": 6,
+       "frets": [
+        5,
+        7,
+        8
+       ]
+      }
+     ],
+     "captions": [
+      "On the 6th string, frets 5, 7 and 8: A, B, C."
+     ],
+     "exercises": [
+      {
+       "id": "fifth-neck",
+       "kind": "pick",
+       "title": "Click it in 5th position",
+       "pick": "staff",
+       "frets": [
+        5,
+        8
+       ],
+       "strings": [
+        6,
+        5,
+        4,
+        3,
+        2,
+        1
+       ],
+       "notes": "naturals",
+       "count": 8,
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "seventh-position",
+     "title": "Reading in 7th position",
+     "minutes": 10,
+     "theory": [
+      "In 7th position (frets 7 to 10), many notes that were open strings in first position become fretted. It's a great position to read scales in sharp keys such as D and A major."
+     ],
+     "tips": [
+      "Choose a position before you start reading and stay in it: a still hand makes every note easier to find."
+     ],
+     "tutorials": [],
+     "figures": [],
+     "captions": [],
+     "exercises": [
+      {
+       "id": "seventh-play",
+       "kind": "read_play",
+       "title": "Read and play in 7th position",
+       "frets": [
+        7,
+        10
+       ],
+       "strings": [
+        6,
+        5,
+        4,
+        3,
+        2,
+        1
+       ],
+       "notes": "naturals",
+       "count": 8,
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "read-and-play",
+     "title": "Reading on the guitar",
+     "minutes": 10,
+     "theory": [
+      "The finish: the note shows up on the staff and you play it on the guitar. It's the first step to reading real notation note by note, the way you read tab."
+     ],
+     "tips": [
+      "Play it at the written height: the listener wants that exact note, not the same name an octave away."
+     ],
+     "tutorials": [],
+     "figures": [],
+     "captions": [],
+     "exercises": [
+      {
+       "id": "first-play",
+       "kind": "read_play",
+       "title": "Read and play in first position",
+       "frets": [
+        0,
+        5
+       ],
+       "strings": [
+        6,
+        5,
+        4,
+        3,
+        2,
+        1
+       ],
+       "notes": "naturals",
+       "count": 8,
+       "min": 80
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "n9",
+   "number": 12,
    "title": "Scales",
    "subtitle": "Build scales from their steps, spell them in every key, and play them across the neck.",
    "lessons": [
@@ -2621,7 +3014,7 @@
   },
   {
    "id": "n10",
-   "number": 12,
+   "number": 13,
    "title": "Scale colors",
    "subtitle": "Modes, symmetric scales, bebop and altered: the colors of rock and jazz.",
    "lessons": [
@@ -2936,7 +3329,7 @@
   },
   {
    "id": "n11",
-   "number": 13,
+   "number": 14,
    "title": "Building chords",
    "subtitle": "Triads, inversions, sus and sixth chords, the seventh family and extensions.",
    "lessons": [
@@ -3382,7 +3775,7 @@
   },
   {
    "id": "n12",
-   "number": 14,
+   "number": 15,
    "title": "Harmony",
    "subtitle": "The chords that live in a key, written as roman numerals, in major and minor.",
    "lessons": [
@@ -3571,7 +3964,7 @@
   },
   {
    "id": "n13",
-   "number": 15,
+   "number": 16,
    "title": "Voicings",
    "subtitle": "Shells, drop-2, drop-3, voice leading and guide tones: chords the way jazz guitarists play them.",
    "lessons": [
@@ -3910,7 +4303,7 @@
   },
   {
    "id": "n14",
-   "number": 16,
+   "number": 17,
    "title": "Jazz foundations",
    "subtitle": "ii–V–I in every key, minor ii–V–i, turnarounds, tritone subs, the jazz blues, song form and comping.",
    "lessons": [
@@ -4327,7 +4720,7 @@
   },
   {
    "id": "n15",
-   "number": 17,
+   "number": 18,
    "title": "Jazz language",
    "subtitle": "Swing, walking bass, arpeggios, approach notes, enclosures, eighth-note lines and etudes.",
    "lessons": [

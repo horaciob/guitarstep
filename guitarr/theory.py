@@ -265,6 +265,25 @@ CHORD_SCALE = {"maj7": "major", "maj": "major", "6": "major", "maj9": "major", "
                "m7b5": "locrian", "dim7": "whole_half", "dim": "whole_half", "mmaj7": "melodic_minor"}
 
 
+# ---------------------------------------------------------------- the staff
+# Guitar is written in the treble clef an octave above how it sounds (the small 8 under the clef).
+STAFF_MIDDLE = LETTERS.index("B") + 7 * 4             # the middle line of the treble clef: written B4
+
+
+def staff_note(sounding: int, flats: bool = False) -> dict:
+    """Where a guitar note is written: {step, acc, name}. step counts letter steps from the middle line (+ is up,
+    each step is half a space); acc is 1 (sharp), -1 (flat) or 0; black keys are sharps unless `flats`."""
+    written = sounding + 12
+    p, octave = written % 12, written // 12 - 1
+    acc = 0
+    if p not in LETTER_PC.values():
+        acc = -1 if flats else 1
+        p = (p - acc) % 12
+    letter = next(k for k, v in LETTER_PC.items() if v == p)
+    step = LETTERS.index(letter) + 7 * octave - STAFF_MIDDLE
+    return dict(step=step, acc=acc, name=note_name(letter, acc))
+
+
 # ---------------------------------------------------------------- guitar positions
 def fret_pitch(string: int, fret: int) -> int:
     return OPEN[6 - string] + fret

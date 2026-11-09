@@ -1492,7 +1492,34 @@
    "rhythm_play_one": "Tocá {{count}} compás en la {{string}}ª cuerda al aire (Mi grave)",
    "rhythm_play_other": "Tocá {{count}} compases en la {{string}}ª cuerda al aire (Mi grave)",
    "rhythm_bars_one": "{{count}} compás de ritmo",
-   "rhythm_bars_other": "{{count}} compases de ritmo"
+   "rhythm_bars_other": "{{count}} compases de ritmo",
+   "read_note": "¿Cómo se llama esta nota?",
+   "read_play": "Tocá la nota escrita",
+   "read_was": "{{note}}: cuerda {{string}}, traste {{fret}}",
+   "pick_staff": "Marcá la nota escrita en el diapasón (trastes {{lo}}–{{hi}})",
+   "pick_pitch_hint": "Marcala a la altura exacta: una octava arriba o abajo no vale.",
+   "wrong_pick_pitch": "Esa no: te mostramos los lugares correctos.",
+   "staff_lines": "¿Cuántas líneas tiene el pentagrama?",
+   "staff_higher": "Una nota escrita más arriba en el pentagrama suena…",
+   "staff_higher_higher": "más aguda",
+   "staff_higher_lower": "más grave",
+   "staff_higher_louder": "más fuerte",
+   "staff_higher_longer": "más larga",
+   "staff_clef": "¿En qué clave se escribe la guitarra?",
+   "staff_clef_treble": "Clave de sol",
+   "staff_clef_bass": "Clave de fa",
+   "staff_clef_alto": "Clave de do",
+   "staff_clef_none": "Sin clave",
+   "staff_ledger": "¿Para qué sirven las líneas adicionales?",
+   "staff_ledger_bar": "Para marcar los compases",
+   "staff_ledger_beyond": "Para escribir notas arriba o abajo del pentagrama",
+   "staff_ledger_tempo": "Para indicar el tempo",
+   "staff_ledger_string": "Para indicar la cuerda",
+   "staff_eight": "¿Qué significa el 8 chiquito debajo de la clave?",
+   "staff_eight_eight_bars": "Ocho compases",
+   "staff_eight_octave_lower": "Que suena una octava más grave de lo escrito",
+   "staff_eight_eight_notes": "Ocho notas por compás",
+   "staff_eight_fret_eight": "Que se toca en el traste 8"
   },
   "flow": {
    "label": "Los pasos de esta lección",
@@ -1756,6 +1783,9 @@
    "k_latency_ms": "Latencia (ms)",
    "k_tuning": "Afinación",
    "k_left_handed": "Zurdo"
+  },
+  "staff": {
+   "label": "Notas en el pentagrama, clave de sol con un 8 chiquito (la guitarra suena una octava más grave)"
   }
  },
  "content": {
@@ -1993,6 +2023,10 @@
    "n17": {
     "title": "Leer ritmo II",
     "subtitle": "Semicorcheas, puntillos, tresillos, síncopas y dictado."
+   },
+   "n18": {
+    "title": "Leer partitura",
+    "subtitle": "De la tablatura al pentagrama: la clave de sol, posición por posición."
    }
   },
   "lessons": {
@@ -3242,6 +3276,113 @@
     ],
     "tutorials": [],
     "captions": []
+   },
+   "staff-clef": {
+    "title": "El pentagrama y la clave",
+    "theory": [
+     "El pentagrama tiene cinco líneas y cuatro espacios: cuanto más arriba está una nota, más aguda suena. La clave al principio dice qué nota vive en cada línea.",
+     "La guitarra se escribe en clave de sol, una octava más arriba de como suena, para que sus notas entren en el pentagrama. Por eso la clave lleva un 8 chiquito abajo."
+    ],
+    "tips": [
+     "Las notas fuera del pentagrama llevan líneas adicionales: rayitas cortas que continúan el pentagrama hacia arriba o hacia abajo."
+    ],
+    "tutorials": [
+     "cómo leer clave de sol guitarra",
+     "lectura de partitura guitarra básica"
+    ],
+    "captions": [
+     "Las cuerdas al aire en el pentagrama, de la más grave a la más aguda."
+    ]
+   },
+   "open-strings-staff": {
+    "title": "Cuerdas al aire en el pentagrama",
+    "theory": [
+     "Empezá por las cuerdas al aire: son los puntos de referencia de todo lo demás. Fijate dónde cae cada una, en línea o en espacio, y cuántas líneas adicionales usa."
+    ],
+    "tips": [],
+    "tutorials": [],
+    "captions": [
+     "Cuerdas al aire, de la más grave a la más aguda."
+    ]
+   },
+   "naturals-low": {
+    "title": "Notas naturales en las cuerdas graves",
+    "theory": [
+     "Ahora las notas naturales (sin sostenidos ni bemoles) de las dos cuerdas más graves, hasta el traste 5. Cada letra del alfabeto musical mueve la nota un escalón en el pentagrama, de línea a espacio o al revés."
+    ],
+    "tips": [],
+    "tutorials": [],
+    "captions": [
+     "Naturales en la 6ª cuerda: Mi, Fa, Sol, La.",
+     "Naturales en la 5ª cuerda: La, Si, Do, Re."
+    ]
+   },
+   "naturals-all": {
+    "title": "Notas naturales en todas las cuerdas",
+    "theory": [
+     "Con todas las cuerdas, la primera posición abarca más de dos octavas. Usá las cuerdas al aire como anclas: buscá la cuerda al aire más cercana y contá escalones desde ahí."
+    ],
+    "tips": [],
+    "tutorials": [],
+    "captions": []
+   },
+   "staff-to-neck": {
+    "title": "Del pentagrama al diapasón",
+    "theory": [
+     "Leer es saber dónde tocar. La app muestra una nota en el pentagrama y vos la marcás en el diapasón a la altura exacta: la misma nota una octava arriba o abajo no vale."
+    ],
+    "tips": [
+     "Algunas notas están en dos cuerdas (el traste 5 de una cuerda = la cuerda al aire siguiente). Valen las dos: es la misma altura."
+    ],
+    "tutorials": [],
+    "captions": []
+   },
+   "accidentals-staff": {
+    "title": "Sostenidos y bemoles en el pentagrama",
+    "theory": [
+     "El sostenido (♯) antes de una nota la sube medio tono; el bemol (♭) la baja medio tono. En el pentagrama la nota queda en el mismo lugar y solo lleva el signo adelante. En el diapasón es el traste de al lado."
+    ],
+    "tips": [],
+    "tutorials": [],
+    "captions": [
+     "Fa, Fa♯, Sol, Sol♯ en la 6ª cuerda.",
+     "Los mismos trastes escritos con bemoles: Fa, Sol♭, Sol, La♭."
+    ]
+   },
+   "fifth-position": {
+    "title": "Leer en 5ª posición",
+    "theory": [
+     "Quien lee no se queda atado a la primera posición. En 5ª posición el dedo 1 va en el traste 5 y cada dedo se ocupa de un traste (del 5 al 8). Las notas en el pentagrama son las mismas; solo cambia dónde viven en el diapasón."
+    ],
+    "tips": [
+     "Usá la cuerda de arriba como atajo: el traste 5 de una cuerda es la cuerda al aire siguiente (salvo Sol→Si, que es el traste 4)."
+    ],
+    "tutorials": [],
+    "captions": [
+     "En la 6ª cuerda, trastes 5, 7 y 8: La, Si, Do."
+    ]
+   },
+   "seventh-position": {
+    "title": "Leer en 7ª posición",
+    "theory": [
+     "En 7ª posición (trastes 7 a 10), muchas notas que en primera posición eran cuerdas al aire pasan a ser pisadas. Es una posición ideal para leer escalas en tonos con sostenidos, como Re y La mayor."
+    ],
+    "tips": [
+     "Elegí una posición antes de empezar a leer y quedate ahí: con la mano quieta encontrás cada nota más fácil."
+    ],
+    "tutorials": [],
+    "captions": []
+   },
+   "read-and-play": {
+    "title": "Leer con la guitarra",
+    "theory": [
+     "El cierre: la nota aparece en el pentagrama y vos la tocás en la guitarra. Es el primer paso para leer una partitura de verdad nota por nota, como leés una tablatura."
+    ],
+    "tips": [
+     "Tocala a la altura escrita: el oyente quiere esa nota exacta, no el mismo nombre una octava más allá."
+    ],
+    "tutorials": [],
+    "captions": []
    }
   },
   "exercises": {
@@ -3463,7 +3604,16 @@
    "syncopation/sync-tap": "Tocá las síncopas",
    "dictation-1/dictation-16": "¿Qué compás escuchaste?",
    "dictation-2/dictation-mix": "¿Puntillo, tresillo o síncopa?",
-   "rhythm-2-on-guitar/rhythm-2-guitar": "Tocá los ritmos nuevos en el Mi grave"
+   "rhythm-2-on-guitar/rhythm-2-guitar": "Tocá los ritmos nuevos en el Mi grave",
+   "staff-clef/staff-quiz": "Cómo funciona el pentagrama",
+   "open-strings-staff/open-names": "Nombrá la cuerda al aire",
+   "naturals-low/low-names": "Nombrá la nota",
+   "naturals-all/all-names": "Nombrá la nota en primera posición",
+   "staff-to-neck/staff-neck": "Marcá la nota escrita",
+   "accidentals-staff/acc-names": "Nombrá la nota, también con sostenidos y bemoles",
+   "fifth-position/fifth-neck": "Marcala en 5ª posición",
+   "seventh-position/seventh-play": "Leé y tocá en 7ª posición",
+   "read-and-play/first-play": "Leé y tocá en primera posición"
   },
   "charts": {
    "01-em-am": {

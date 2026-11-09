@@ -600,7 +600,7 @@ def exercise_setup(lid: str, eid: str, variant: bool = False):
         return RefOptions(tab=exercise_steps(ex)), "wait", 1.0, ex.get("min", 80)
     if kind in SHAPE_KINDS:
         return RefOptions(chart=chart_from_shapes(exercise_shapes(ex), int(ex.get("times", 2)))), "wait", 1.0, ex.get("min", 75)
-    if kind in ("find_note", "play_interval", "tone_row"):
+    if kind in ("find_note", "play_interval", "tone_row", "read_play"):
         from . import quiz
         return RefOptions(notes=quiz.drawn_notes(lid, ex)), "wait", 1.0, ex.get("min", 80)
     if kind in ("echo", "rhythm"):                      # pitches and rhythm: played on the metronome

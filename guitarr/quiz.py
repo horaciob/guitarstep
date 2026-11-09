@@ -1,7 +1,8 @@
 """Exercises that are drawn fresh every time, and the ones you pass by answering.
 
 - quiz: multiple-choice questions (theory, reading tab, ear training). The server keeps the answers.
-- pick: select notes on the fretboard ("every G between frets 2 and 7"); checked by position or pitch class.
+- pick: select notes on the fretboard ("every G between frets 2 and 7"); checked by position, pitch class or the
+  exact pitch of a note written on the staff.
 - tap: read one bar of rhythm and tap it (Space or a click) over the count-in; graded in milliseconds.
 - find_note / play_interval / rhythm: targets you play, graded by the listener like any other exercise.
 
@@ -361,7 +362,51 @@ def q_rhythm_dictation(rng, ex):
     return _q(L("rhythm_dictation"), ch, str(opts.index(pat)), hear_rhythm=dict(pattern=pat, bpm=float(ex.get("bpm", 70))))
 
 
-QUIZ = {f.__name__[2:]: f for f in [q_figure_value, q_rhythm_dictation, q_tritone_sub, q_shared_tones, q_ii_v_i, q_turnaround,q_interval_frets, q_interval_ear, q_enharmonic, q_half_step, q_tab_read, q_open_string,
+# ---------------------------------------------------------------- reading standard notation
+SHARPS = ["C#", "D#", "F#", "G#", "A#"]
+FLATS = ["Db", "Eb", "Gb", "Ab", "Bb"]
+
+
+def staff_target(rng, ex, last=None) -> tuple[int, int, int, bool]:
+    """A position to read: (string, fret, pitch, spelled with flats). The pool is naturals or every note."""
+    lo, hi = ex.get("frets", [0, 5])
+    strings = ex.get("strings", [6, 5, 4, 3, 2, 1])
+    naturals = ex.get("notes", "naturals") == "naturals"
+    pool = [(s, f) for s in strings for f in range(lo, hi + 1)
+            if not naturals or th.plain_name(th.fret_pitch(s, f)) in NATURALS]
+    pool = [x for x in pool if th.fret_pitch(*x) != last] or pool        # never the same note twice in a row
+    s, f = rng.choice(pool)
+    return s, f, th.fret_pitch(s, f), (not naturals) and rng.random() < 0.5
+
+
+def _staff(pitch: int, flats: bool) -> dict:
+    n = th.staff_note(pitch, flats)
+    return dict(step=n["step"], acc=n["acc"])
+
+
+def q_read_note(rng, ex):
+    """A note on the staff: what's its name?"""
+    s, f, pitch, flats = staff_target(rng, ex)
+    name = th.staff_note(pitch, flats)["name"]
+    pool = NATURALS + (FLATS if flats else SHARPS) if ex.get("notes", "naturals") != "naturals" else NATURALS
+    ch, ans = _choices(rng, name, pool, label=lambda x: x)
+    return _q(L("read_note"), ch, ans, staff=[_staff(pitch, flats)], reveal=L("found_at", string=s, fret=f))
+
+
+STAFF_FACTS = [("staff_lines", ["4", "5", "6", "7"], "5"), ("staff_higher", ["higher", "lower", "louder", "longer"], "higher"),
+               ("staff_clef", ["treble", "bass", "alto", "none"], "treble"),
+               ("staff_ledger", ["bar", "beyond", "tempo", "string"], "beyond"),
+               ("staff_eight", ["eight_bars", "octave_lower", "eight_notes", "fret_eight"], "octave_lower")]
+
+
+def q_staff_fact(rng, ex):
+    """How the staff works: lines, height, the clef, ledger lines and the small 8."""
+    code, opts, right = rng.choice(STAFF_FACTS)
+    ch, ans = _choices(rng, right, opts, label=lambda x: L(f"{code}_{x}") if not x.isdigit() else x)
+    return _q(L(code), ch, ans)
+
+
+QUIZ = {f.__name__[2:]: f for f in [q_read_note, q_staff_fact, q_figure_value, q_rhythm_dictation, q_tritone_sub, q_shared_tones, q_ii_v_i, q_turnaround,q_interval_frets, q_interval_ear, q_enharmonic, q_half_step, q_tab_read, q_open_string,
                                      q_scale_degree, q_relative_minor, q_hear_quality, q_mode_color, q_chord_tones,
                                      q_chord_formula, q_inversion, q_roman, q_pentatonic, q_symmetric, q_bebop, q_altered,
                                      q_guide_tones, q_drop, q_extension, q_voice_lead]}
@@ -391,6 +436,11 @@ def pick_item(rng, ex) -> dict:
         name = ex.get("scale", "major")
         want = {s["pc"] for s in th.scale(key, name)}
         prompt, mode = L("pick_scale", key=key, scale=name, lo=lo, hi=hi), "all"
+    elif what == "staff":                           # read the note, click it at the exact height (not an octave off)
+        _, _, pitch, flats = staff_target(rng, ex)
+        expected = sorted((s, f) for s in strings for f in range(lo, hi + 1) if th.fret_pitch(s, f) == pitch)
+        return dict(type="pick", prompt=L("pick_staff", lo=lo, hi=hi), frets=[lo, hi], strings=strings, mode="pitch",
+                    want=[pitch], expected=[list(x) for x in expected], need=1, staff=[_staff(pitch, flats)])
     else:
         raise QuizError(f"Unknown pick: {what}")
     expected = sorted((s, f) for s, f, _ in th.positions(want, lo, hi, tuple(strings)))
@@ -409,6 +459,8 @@ def _check_pick(item: dict, answer) -> bool:
     pcs = {th.fret_pitch(s, f) % 12 for s, f in sel}
     if item["mode"] == "all":
         return sel == {tuple(x) for x in item["expected"]}
+    if item["mode"] == "pitch":                      # one exact pitch: any string that has it counts
+        return bool(sel) and all(th.fret_pitch(s, f) == item["want"][0] for s, f in sel)
     return pcs == set(item["want"])                      # every chord tone at least once, nothing else
 
 
@@ -490,6 +542,13 @@ def play_items(rng, ex) -> list[dict]:
             timed += rh.timed(p, pitch, start=4.0 * i)
         out.append(dict(prompt=L("rhythm_play", count=len(bars), string=6), notes=[x["pitch"] for x in timed], timed=timed,
                         bars=bars, reveal=L("rhythm_bars", count=len(bars))))
+    elif ex["kind"] == "read_play":                       # read it on the staff, play it at that exact height
+        last = None
+        for _ in range(n):
+            s, f, pitch, flats = staff_target(rng, ex, last)
+            last = pitch
+            out.append(dict(prompt=L("read_play"), notes=[pitch], staff=[_staff(pitch, flats)],
+                            reveal=L("read_was", note=th.staff_note(pitch, flats)["name"], string=s, fret=f)))
     elif ex["kind"] == "tone_row":
         lo, hi = ex.get("frets", [0, 12])
         row = list(range(12))
@@ -536,7 +595,8 @@ def draw(lid: str, ex: dict, need: float, seed: int | None = None) -> dict:
         timed = [n for it in items for n in it.get("timed", [])]
         with _lock:
             _latest[(lid, ex["id"])] = dict(notes=[p for it in items for p in it["notes"]], items=items, timed=timed)
-        out = dict(kind=kind, items=[dict(prompt=it["prompt"], reveal=it["reveal"], notes=len(it["notes"])) for it in items])
+        out = dict(kind=kind, items=[dict(prompt=it["prompt"], reveal=it["reveal"], notes=len(it["notes"]),
+                                          **({"staff": it["staff"]} if it.get("staff") else {})) for it in items])
         if timed and kind == "echo":                      # the phrase the app plays for you to echo
             out.update(phrase=timed, bpm=float(ex.get("bpm", 80)))
         if kind == "rhythm":                              # the bars to read while you play
@@ -576,7 +636,7 @@ def check(token: str, index: int, answer) -> dict:
         ok = _check_pick(it, answer) if it["type"] == "pick" else str(answer) == it["answer"]
         d["answers"].setdefault(index, ok)
         if it["type"] == "pick":
-            return dict(correct=ok, answer=it["expected"] if it["mode"] == "all" else it["want"], mode=it["mode"])
+            return dict(correct=ok, answer=it["expected"] if it["mode"] in ("all", "pitch") else it["want"], mode=it["mode"])
         return dict(correct=ok, answer=it["answer"], **({"reveal": it["reveal"]} if it.get("reveal") else {}))
 
 
@@ -659,7 +719,7 @@ def testout_ready(lid: str) -> bool:
         return _testout_ok.get(lid, False)
 
 
-PLAY_KINDS = ("find_note", "play_interval", "tone_row", "echo", "rhythm")
+PLAY_KINDS = ("find_note", "play_interval", "tone_row", "echo", "rhythm", "read_play")
 ANSWER_KINDS = ("quiz", "pick", "tap")
 # the echo of the tools: A minor pentatonic around fret 5, at 80 BPM
 TOOLS_ECHO = dict(id="echo", kind="echo", key="A", scale="minor_pentatonic", frets=[5, 8], bpm=80, count=1)

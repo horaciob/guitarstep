@@ -4,6 +4,7 @@ import { t } from "./i18n.js";
 import { api, esc, pluck } from "./ui.js";
 import { neck } from "./fretboard.js";
 import { hearBar, markHits, onsetsOf, playBar, rhythmSvg } from "./notation.js";
+import { staffSvg } from "./staff.js";
 
 const PARAM = { scale: "scale", mode: "scale", iv: "iv", which: "voice", q: "q", fig: "fig", big: "fig", small: "figs" };
 
@@ -57,6 +58,7 @@ function ask(box, token, item, i, n, isStopped, setCancel, onReveal) {
     const head = `<p class="q-count muted small">${esc(t("quiz.question_n", { n: i + 1, total: n }))}</p>
       <p class="q-prompt">${esc(say(item.prompt))}</p>
       ${item.tab ? `<pre class="tab q-tab" aria-label="${esc(t("lesson.tab_label"))}">${esc(tabFigure(item.tab))}</pre>` : ""}
+      ${item.staff ? `<div class="q-staff">${staffSvg(item.staff)}</div>` : ""}
       ${item.rhythm && item.type !== "tap" ? `<div class="q-rhythm">${rhythmSvg(item.rhythm.pattern, { width: 420, beatNumbers: false, timeSig: false })}</div>` : ""}
       ${item.play || item.hear_rhythm ? `<button class="btn" data-q="replay">♪ ${esc(t("quiz.play_again"))}</button>` : ""}`;
     const nextBtn = `<div class="row center q-actions"><button class="btn primary" data-q="next" hidden>${esc(t(i + 1 < n ? "quiz.next" : "quiz.see_result"))} →</button></div>`;
@@ -68,7 +70,7 @@ function ask(box, token, item, i, n, isStopped, setCancel, onReveal) {
     }
     if (item.type === "pick") {
       box.innerHTML = `<div class="quiz">${head}<div class="q-neck"></div>
-        <p class="muted small center">${esc(t(item.mode === "all" ? "quiz.pick_all_hint" : "quiz.pick_tones_hint"))}</p>
+        <p class="muted small center">${esc(t(item.mode === "all" ? "quiz.pick_all_hint" : item.mode === "pitch" ? "quiz.pick_pitch_hint" : "quiz.pick_tones_hint"))}</p>
         <div class="row center q-actions"><button class="btn" data-q="clear">${esc(t("quiz.clear"))}</button>
           <button class="btn primary" data-q="check">${esc(t("quiz.check"))}</button></div>
         <p class="q-feedback" aria-live="polite"></p>${nextBtn}</div>`;
@@ -82,14 +84,14 @@ function ask(box, token, item, i, n, isStopped, setCancel, onReveal) {
         answered = true;
         fb.lock();
         const chosen = new Set(sel.map(([s, f]) => `${s}:${f}`));
-        if (r.mode === "all") {
+        if (r.mode === "all" || r.mode === "pitch") {
           const right = new Set(r.answer.map(([s, f]) => `${s}:${f}`));
           fb.set([...right].map(k => k.split(":").map(Number)).map(([s, f]) => ({ string: s, fret: f, kind: chosen.has(`${s}:${f}`) ? "right" : "missed", text: chosen.has(`${s}:${f}`) ? "✓" : "?" }))
             .concat(sel.filter(([s, f]) => !right.has(`${s}:${f}`)).map(([s, f]) => ({ string: s, fret: f, kind: "wrong", text: "✕" }))));
         } else {
           fb.set(sel.map(([s, f]) => ({ string: s, fret: f, kind: r.correct ? "right" : "mark", text: r.correct ? "✓" : "•" })));
         }
-        feedback(box, r.correct, r.correct ? t("quiz.right") : t(r.mode === "all" ? "quiz.wrong_pick_all" : "quiz.wrong_pick_tones"));
+        feedback(box, r.correct, r.correct ? t("quiz.right") : t(r.mode === "all" ? "quiz.wrong_pick_all" : r.mode === "pitch" ? "quiz.wrong_pick_pitch" : "quiz.wrong_pick_tones"));
         box.querySelector("[data-q=check]").disabled = true;
         box.querySelector("[data-q=clear]").disabled = true;
         showNext(box, next);

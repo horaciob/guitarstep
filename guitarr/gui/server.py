@@ -259,6 +259,9 @@ def _figure(f: dict) -> dict:
     fret window, labeled with its degree or its (spelled) note name."""
     from .. import theory as th
 
+    if f.get("type") == "staff":                       # notes on the staff: the open strings, or frets on one string
+        pos = [(st, 0) for st in (6, 5, 4, 3, 2, 1)] if f.get("notes") == "open" else [(f["string"], fr) for fr in f["frets"]]
+        return dict(type="staff", notes=[th.staff_note(th.fret_pitch(st, fr), bool(f.get("flats"))) for st, fr in pos])
     if f.get("type") != "fretboard":
         return f
     lo, hi = f.get("frets", [0, 12])

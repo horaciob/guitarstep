@@ -236,7 +236,7 @@ bass world and bass drills stay out). The text is ours, rewritten in English wit
 
 97. **Reading rhythm** ✅. Note values, rests, eighths, sixteenths, dotted notes, triplets and syncopation on a
     one-line staff; tap a bar (graded in ms per note), rhythm dictation, and the same bars played on the low E.
-98. **Reading standard notation** (M). Treble clef (guitar sounds an octave lower): name the note, find it on
+98. **Reading standard notation** ✅. Treble clef (guitar sounds an octave lower): name the note, find it on
     the neck or play it, in 1st, 5th and 7th position.
 99. **CAGED** (M). The five shapes of one chord, connecting them, and the minor shapes.
 100. **Harmonic function by ear** (M). Tonic, subdominant and dominant; hear the degree after the tonic;

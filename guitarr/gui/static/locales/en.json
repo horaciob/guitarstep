@@ -1492,7 +1492,34 @@
    "rhythm_play_one": "Play {{count}} bar on the open {{string}}th string (low E)",
    "rhythm_play_other": "Play {{count}} bars on the open {{string}}th string (low E)",
    "rhythm_bars_one": "{{count}} bar of rhythm",
-   "rhythm_bars_other": "{{count}} bars of rhythm"
+   "rhythm_bars_other": "{{count}} bars of rhythm",
+   "read_note": "What's this note called?",
+   "read_play": "Play the written note",
+   "read_was": "{{note}}: string {{string}}, fret {{fret}}",
+   "pick_staff": "Click the written note on the neck (frets {{lo}}–{{hi}})",
+   "pick_pitch_hint": "Click it at the exact height: an octave up or down doesn't count.",
+   "wrong_pick_pitch": "Not that one: the right places are shown.",
+   "staff_lines": "How many lines does the staff have?",
+   "staff_higher": "A note written higher on the staff sounds…",
+   "staff_higher_higher": "higher",
+   "staff_higher_lower": "lower",
+   "staff_higher_louder": "louder",
+   "staff_higher_longer": "longer",
+   "staff_clef": "Which clef is guitar written in?",
+   "staff_clef_treble": "Treble clef",
+   "staff_clef_bass": "Bass clef",
+   "staff_clef_alto": "Alto clef",
+   "staff_clef_none": "No clef at all",
+   "staff_ledger": "What are ledger lines for?",
+   "staff_ledger_bar": "Marking the bars",
+   "staff_ledger_beyond": "Writing notes above or below the staff",
+   "staff_ledger_tempo": "Showing the tempo",
+   "staff_ledger_string": "Showing the string",
+   "staff_eight": "What does the small 8 under the clef mean?",
+   "staff_eight_eight_bars": "Eight bars",
+   "staff_eight_octave_lower": "It sounds an octave lower than written",
+   "staff_eight_eight_notes": "Eight notes per bar",
+   "staff_eight_fret_eight": "Play at the 8th fret"
   },
   "flow": {
    "label": "The steps of this lesson",
@@ -1756,6 +1783,9 @@
    "k_latency_ms": "Latency (ms)",
    "k_tuning": "Tuning",
    "k_left_handed": "Left-handed"
+  },
+  "staff": {
+   "label": "Notes on the staff, treble clef with a small 8 (guitar sounds an octave lower)"
   }
  },
  "content": {}
