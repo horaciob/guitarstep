@@ -1526,8 +1526,323 @@
    ]
   },
   {
-   "id": "n6",
+   "id": "n23",
    "number": 8,
+   "title": "Fingerpicking and arpeggios",
+   "subtitle": "Picking patterns, alternating bass, melody over a bass line, and arpeggios of every chord type across the neck.",
+   "lessons": [
+    {
+     "id": "picking-patterns",
+     "title": "Picking patterns: p-i-m-i, p-a-m-i and 3/4",
+     "minutes": 12,
+     "theory": [
+      "A picking pattern is a fixed order of fingers that repeats over each chord: once the right hand knows it, you only think about the chord changes.",
+      "p-i-m-i goes bass, 3rd string, 2nd string, back to the 3rd: a gentle rocking. p-a-m-i plays the bass and then rolls down from the 1st string to the 3rd.",
+      "In 3/4 a six-note pattern (p i m a m i) fills the bar: one bass note per bar, on the strong beat.",
+      "Let every note ring: keep the whole chord pressed while the fingers pick. A finger that lifts too early cuts the arpeggio short."
+     ],
+     "tutorials": [
+      "fingerpicking patterns pimi pami beginner"
+     ],
+     "exercises": [
+      {
+       "id": "pimi-c",
+       "kind": "lick",
+       "title": "p-i-m-i over C",
+       "tab": "5:3 3:0 2:1 3:0 5:3 3:0 2:1 3:0",
+       "min": 75,
+       "theory": "Thumb on the root (C, 5th string), then index on G and middle on C, and back to the index. Four notes per pattern, twice."
+      },
+      {
+       "id": "pimi-am",
+       "kind": "lick",
+       "title": "p-i-m-i over Am, bass moving to E",
+       "tab": "5:0 3:2 2:1 3:2 4:2 3:2 2:1 3:2",
+       "min": 75,
+       "theory": "The second time the thumb plays E on the 4th string instead of A: changing the bass note inside one chord already gives movement."
+      },
+      {
+       "id": "pami-em",
+       "kind": "lick",
+       "title": "p-a-m-i over Em",
+       "tab": "6:0 1:0 2:0 3:0 4:2 1:0 2:0 3:0",
+       "min": 75,
+       "theory": "The bass, then a rolling descent from the high E: ring, middle, index. Em uses many open strings, so you can focus on the right hand."
+      },
+      {
+       "id": "waltz-am-e",
+       "kind": "lick",
+       "title": "Waltz pattern in 3/4: Am and E",
+       "tab": "5:0 3:2 2:1 1:0 2:1 3:2 6:0 3:1 2:0 1:0 2:0 3:1",
+       "min": 75,
+       "theory": "p i m a m i, one bar on Am and one on E. The pattern is identical; only the thumb's string and the chord shape change."
+      }
+     ]
+    },
+    {
+     "id": "travis-picking",
+     "title": "Alternating bass (Travis picking)",
+     "minutes": 15,
+     "theory": [
+      "In alternating-bass picking the thumb keeps a steady pulse, jumping between two bass notes of the chord (usually the root and the 5th), while the fingers add notes in between.",
+      "Learn the thumb alone first, until it runs on its own like a bass player. Then add one finger note between thumb strokes.",
+      "The thumb plays on the beats and the fingers mostly on the offbeats, so the pattern sounds like two instruments: a bass and a little melody.",
+      "On C the thumb alternates between the 5th and 4th strings and sometimes the 6th (G, the 5th of C, with a finger moved). On G it alternates between the 6th and 4th strings."
+     ],
+     "tutorials": [
+      "travis picking beginner alternating bass"
+     ],
+     "exercises": [
+      {
+       "id": "thumb-only-c",
+       "kind": "lick",
+       "title": "The thumb alone over C",
+       "tab": "5:3 4:2 6:3 4:2 5:3 4:2 6:3 4:2",
+       "min": 75,
+       "theory": "C, E, G, E: root, 3rd, 5th, 3rd, steady as a clock. The thumb has to keep this going without thinking before the fingers join in."
+      },
+      {
+       "id": "travis-c",
+       "kind": "lick",
+       "title": "Travis pattern over C",
+       "tab": "5:3 2:1 4:2 3:0 6:3 2:1 4:2 3:0",
+       "min": 75,
+       "theory": "Thumb, finger, thumb, finger: the bass line C-E-G-E with C and G above it. Keep the thumb exactly even; the finger notes fit in the spaces."
+      },
+      {
+       "id": "travis-g",
+       "kind": "lick",
+       "title": "Travis pattern over G",
+       "tab": "6:3 2:0 4:0 3:0 6:3 2:0 4:0 1:3",
+       "min": 75,
+       "theory": "Bass between G (6th string) and D (4th string), the root and the 5th; the fingers play B, G and finally the high G."
+      },
+      {
+       "id": "travis-am-d",
+       "kind": "lick",
+       "title": "Travis over Am, then D",
+       "tab": "5:0 2:1 4:2 3:2 5:0 2:1 4:2 3:2 4:0 2:3 3:2 1:2 4:0 2:3 3:2 1:2",
+       "min": 75,
+       "theory": "Over Am the thumb alternates A and E; over D it plays D on the 4th string. Changing chords without stopping the thumb is the real exercise."
+      }
+     ]
+    },
+    {
+     "id": "melody-over-bass",
+     "title": "Melody over a bass line",
+     "minutes": 12,
+     "theory": [
+      "The next step: the fingers stop playing chord notes at random and play a melody on the top strings, while the thumb keeps the bass going.",
+      "Think of two voices: the thumb is the bass player, the fingers are the singer. Each must make sense on its own.",
+      "Play the melody alone first, then the bass alone, then put them together slowly."
+     ],
+     "tutorials": [
+      "fingerstyle melody with bass beginner"
+     ],
+     "exercises": [
+      {
+       "id": "melody-c",
+       "kind": "lick",
+       "title": "A melody in C over its bass",
+       "tab": "5:3 1:0 4:2 1:1 5:3 1:3 4:2 1:1 6:3 1:0 4:0 2:3 5:3 2:1",
+       "min": 75,
+       "theory": "The melody E-F-G-F-E-D-C sits on the top strings; between its notes the thumb plays C, E, G and D. The melody steps down to C just as the bass returns to C."
+      },
+      {
+       "id": "folk-study-am",
+       "kind": "lick",
+       "title": "Folk study in Am: Am, Dm, E, Am",
+       "tab": "5:0 3:2 2:1 1:0 4:0 3:2 2:3 1:1 6:0 3:1 2:0 1:0 5:0 3:2 2:1 1:0",
+       "min": 75,
+       "theory": "One p-i-m-a sweep per chord: Am, Dm, E and back to Am. The top notes E-F-E-E and the bass A-D-E-A make two lines that move together."
+      },
+      {
+       "id": "broken-chords",
+       "kind": "lick",
+       "title": "Broken chords: C, Am, F, G with a pick or fingers",
+       "tab": "5:3 4:2 3:0 2:1 5:0 4:2 3:2 2:1 4:3 3:2 2:1 1:1 6:3 5:2 4:0 3:0",
+       "min": 75,
+       "theory": "Each chord played as an arpeggio from its bass upward: I-vi-IV-V in C. It's the accompaniment of countless ballads, and it works with a pick too."
+      }
+     ]
+    },
+    {
+     "id": "triad-arpeggios",
+     "title": "Triad arpeggios across the neck",
+     "minutes": 12,
+     "theory": [
+      "An arpeggio plays a chord's notes one after another: for a triad, root, 3rd and 5th, repeated in higher octaves.",
+      "Movable two-octave shapes follow the barre chords: the major arpeggio with the root on the 6th string matches the E-shape barre; the minor one matches the Em shape.",
+      "Say the chord tone as you play it (1, 3, 5): knowing which note is the 3rd is what lets you aim at it in a solo."
+     ],
+     "tutorials": [
+      "major minor arpeggio shapes two octaves guitar"
+     ],
+     "exercises": [
+      {
+       "id": "arp-a-major",
+       "kind": "arpeggio",
+       "title": "A major, two octaves (root on the 6th string)",
+       "chord": "A",
+       "frets": [
+        4,
+        7
+       ],
+       "direction": "up",
+       "octaves": 2,
+       "min": 80,
+       "theory": "A C# E across two octaves, inside the A barre (E shape at fret 5). C# is the major 3rd: four frets above the root."
+      },
+      {
+       "id": "arp-a-minor",
+       "kind": "arpeggio",
+       "title": "A minor, two octaves, up and down",
+       "chord": "Am",
+       "frets": [
+        5,
+        8
+       ],
+       "direction": "updown",
+       "octaves": 2,
+       "min": 80,
+       "theory": "A C E: the same shape as A major with the 3rd one fret lower. Compare both and hear how one note changes the mood."
+      },
+      {
+       "id": "arp-c-major",
+       "kind": "arpeggio",
+       "title": "C major at fret 8",
+       "chord": "C",
+       "frets": [
+        7,
+        10
+       ],
+       "direction": "up",
+       "octaves": 2,
+       "min": 80,
+       "theory": "The A major shape moved up three frets plays C. Arpeggio shapes move like barre chords: the root decides the name."
+      },
+      {
+       "id": "arp-g-major",
+       "kind": "arpeggio",
+       "title": "G major in 2nd position",
+       "chord": "G",
+       "frets": [
+        2,
+        5
+       ],
+       "direction": "up",
+       "octaves": 2,
+       "min": 80,
+       "theory": "G B D from the 6th string at fret 3. Low on the neck the shape changes, but the order 1-3-5 never does."
+      },
+      {
+       "id": "arp-tones-quiz",
+       "kind": "quiz",
+       "title": "Which notes make the triad?",
+       "quiz": "chord_tones",
+       "qualities": [
+        "maj",
+        "min",
+        "dim",
+        "aug"
+       ],
+       "count": 6,
+       "min": 80,
+       "theory": "Major 1-3-5, minor 1-♭3-5, diminished 1-♭3-♭5, augmented 1-3-#5: the notes you play in each arpeggio."
+      }
+     ]
+    },
+    {
+     "id": "seventh-arpeggios",
+     "title": "Seventh-chord arpeggios",
+     "minutes": 15,
+     "theory": [
+      "Seventh arpeggios add a fourth note: maj7 (1 3 5 7), dominant 7 (1 3 5 ♭7), minor 7 (1 ♭3 5 ♭7) and m7♭5 (1 ♭3 ♭5 ♭7).",
+      "These are the arpeggios of the chords of a key: in C, Cmaj7, Dm7, Em7, Fmaj7, G7, Am7 and Bm7♭5. Playing them is the most direct way to make a solo follow the harmony.",
+      "The 7th is the color note: a half step below the root (maj7), or a whole step below it (♭7)."
+     ],
+     "tutorials": [
+      "seventh chord arpeggios guitar maj7 m7 dominant"
+     ],
+     "exercises": [
+      {
+       "id": "arp-cmaj7",
+       "kind": "arpeggio",
+       "title": "Cmaj7, two octaves",
+       "chord": "Cmaj7",
+       "frets": [
+        7,
+        11
+       ],
+       "direction": "up",
+       "octaves": 2,
+       "min": 80,
+       "theory": "C E G B: the major 7th (B) sits a half step below the next C. That closeness is what gives maj7 its soft, dreamy shimmer."
+      },
+      {
+       "id": "arp-g7",
+       "kind": "arpeggio",
+       "title": "G7, two octaves, up and down",
+       "chord": "G7",
+       "frets": [
+        2,
+        6
+       ],
+       "direction": "updown",
+       "octaves": 2,
+       "min": 80,
+       "theory": "G B D F: B and F form a tritone, the tension that wants to resolve to C. Hear it inside the arpeggio."
+      },
+      {
+       "id": "arp-am7",
+       "kind": "arpeggio",
+       "title": "Am7, two octaves",
+       "chord": "Am7",
+       "frets": [
+        5,
+        8
+       ],
+       "direction": "up",
+       "octaves": 2,
+       "min": 80,
+       "theory": "A C E G: a minor triad plus the ♭7. Am7 contains a C major triad (C E G) on top: relative chords share notes."
+      },
+      {
+       "id": "arp-bm7b5",
+       "kind": "arpeggio",
+       "title": "Bm7♭5, two octaves",
+       "chord": "Bm7b5",
+       "frets": [
+        6,
+        10
+       ],
+       "direction": "up",
+       "octaves": 2,
+       "min": 80,
+       "theory": "B D F A: the vii chord of C major. Its ♭5 (F) makes it unstable; over a G7 it sounds like G9 without the root."
+      },
+      {
+       "id": "sevenths-arp-quiz",
+       "kind": "quiz",
+       "title": "Which notes make the seventh chord?",
+       "quiz": "chord_tones",
+       "qualities": [
+        "maj7",
+        "7",
+        "m7",
+        "m7b5"
+       ],
+       "count": 6,
+       "min": 80,
+       "theory": "Spell from the root with the formula, then play the notes in order: that's the arpeggio."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "n6",
+   "number": 9,
    "title": "The blues",
    "subtitle": "Shuffle, thirds that follow the chords, bends with a target, phrases that answer, and a story in three choruses.",
    "lessons": [
@@ -2074,7 +2389,7 @@
   },
   {
    "id": "n7",
-   "number": 9,
+   "number": 10,
    "title": "Songs",
    "subtitle": "Real songs: their chords, their form, the techniques they use, and the chart at your own pace.",
    "lessons": [
@@ -2300,7 +2615,7 @@
   },
   {
    "id": "n8",
-   "number": 10,
+   "number": 11,
    "title": "Reading the neck",
    "subtitle": "Half steps, intervals by ear and by fret, finding notes and thinking in degrees.",
    "lessons": [
@@ -2919,7 +3234,7 @@
   },
   {
    "id": "n17",
-   "number": 11,
+   "number": 12,
    "title": "Reading rhythm II",
    "subtitle": "Sixteenths, dotted notes, triplets, syncopation and dictation.",
    "lessons": [
@@ -3216,7 +3531,7 @@
   },
   {
    "id": "n18",
-   "number": 12,
+   "number": 13,
    "title": "Reading notation",
    "subtitle": "From tab to the staff: the treble clef, position by position.",
    "lessons": [
@@ -3626,7 +3941,7 @@
   },
   {
    "id": "n9",
-   "number": 13,
+   "number": 14,
    "title": "Scales",
    "subtitle": "Build scales from their steps, spell them in every key, and play them across the neck.",
    "lessons": [
@@ -4220,7 +4535,7 @@
   },
   {
    "id": "n10",
-   "number": 14,
+   "number": 15,
    "title": "Scale colors",
    "subtitle": "Modes, symmetric scales, bebop and altered: the colors of rock and jazz.",
    "lessons": [
@@ -4551,7 +4866,7 @@
   },
   {
    "id": "n11",
-   "number": 15,
+   "number": 16,
    "title": "Building chords",
    "subtitle": "Triads, inversions, sus and sixth chords, the seventh family and extensions.",
    "lessons": [
@@ -5016,7 +5331,7 @@
   },
   {
    "id": "n22",
-   "number": 16,
+   "number": 17,
    "title": "Advanced technique",
    "subtitle": "Sweeping triads and tapping, once you know the shapes they come from.",
    "lessons": [
@@ -5112,7 +5427,7 @@
   },
   {
    "id": "n19",
-   "number": 17,
+   "number": 18,
    "title": "CAGED",
    "subtitle": "Five chord shapes that fit together and cover the whole neck.",
    "lessons": [
@@ -5456,7 +5771,7 @@
   },
   {
    "id": "n12",
-   "number": 18,
+   "number": 19,
    "title": "Harmony",
    "subtitle": "The chords that live in a key, written as roman numerals, in major and minor.",
    "lessons": [
@@ -5653,7 +5968,7 @@
   },
   {
    "id": "n20",
-   "number": 19,
+   "number": 20,
    "title": "Harmonic function",
    "subtitle": "What each chord does, by name and by ear: cadences, secondary dominants, borrowed chords.",
    "lessons": [
@@ -5931,7 +6246,7 @@
   },
   {
    "id": "n13",
-   "number": 20,
+   "number": 21,
    "title": "Voicings",
    "subtitle": "Shells, drop-2, drop-3, voice leading and guide tones: chords the way jazz guitarists play them.",
    "lessons": [
@@ -6288,7 +6603,7 @@
   },
   {
    "id": "n14",
-   "number": 21,
+   "number": 22,
    "title": "Jazz foundations",
    "subtitle": "ii–V–I in every key, minor ii–V–i, turnarounds, tritone subs, the jazz blues, song form and comping.",
    "lessons": [
@@ -6731,7 +7046,7 @@
   },
   {
    "id": "n15",
-   "number": 22,
+   "number": 23,
    "title": "Jazz language",
    "subtitle": "Swing, walking bass, arpeggios, approach notes, enclosures, eighth-note lines and etudes.",
    "lessons": [
@@ -7263,7 +7578,7 @@
    "id": "m1",
    "track": "metal",
    "badge": "M1",
-   "number": 23,
+   "number": 24,
    "title": "Metal rhythm",
    "subtitle": "The chug, the gallop, pedal-point riffs and the dark intervals of heavy metal.",
    "lessons": [
@@ -7584,7 +7899,7 @@
    "id": "m2",
    "track": "metal",
    "badge": "M2",
-   "number": 24,
+   "number": 25,
    "title": "Metal lead",
    "subtitle": "The scales of metal, sequences, tremolo picking, screaming bends and harmonics.",
    "lessons": [
@@ -7805,7 +8120,7 @@
    "id": "m3",
    "track": "metal",
    "badge": "M3",
-   "number": 25,
+   "number": 26,
    "title": "Metal speed and harmony",
    "subtitle": "Pedal-point licks, twin-guitar harmonies, diminished arpeggios and a full piece.",
    "lessons": [

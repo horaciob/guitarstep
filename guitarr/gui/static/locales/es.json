@@ -2478,6 +2478,10 @@
    "m3": {
     "title": "Velocidad y armonía en el metal",
     "subtitle": "Licks con nota pedal, armonías de dos guitarras, arpegios disminuidos y un tema completo."
+   },
+   "n23": {
+    "title": "Fingerpicking y arpegios",
+    "subtitle": "Patrones de dedos, bajo alternado, melodía sobre un bajo y arpegios de todos los tipos de acorde por el mástil."
    }
   },
   "lessons": {
@@ -4511,6 +4515,68 @@
     "tutorials": [
      "líneas escala bebop guitarra jazz"
     ]
+   },
+   "picking-patterns": {
+    "title": "Patrones de dedos: p-i-m-i, p-a-m-i y 3/4",
+    "theory": [
+     "Un patrón de dedos es un orden fijo que se repite sobre cada acorde: cuando la mano derecha lo aprende, solo pensás en los cambios de acorde.",
+     "p-i-m-i va bajo, 3ª cuerda, 2ª, y vuelve a la 3ª: un vaivén suave. p-a-m-i toca el bajo y después baja rodando de la 1ª cuerda a la 3ª.",
+     "En 3/4 un patrón de seis notas (p i m a m i) llena el compás: un bajo por compás, en el tiempo fuerte.",
+     "Dejá sonar todas las notas: mantené el acorde pisado mientras los dedos pulsan. Un dedo que se levanta antes de tiempo corta el arpegio."
+    ],
+    "tips": [],
+    "tutorials": [
+     "patrones fingerpicking pimi pami principiante"
+    ]
+   },
+   "travis-picking": {
+    "title": "Bajo alternado (Travis picking)",
+    "theory": [
+     "En el bajo alternado el pulgar sostiene un pulso parejo saltando entre dos bajos del acorde (casi siempre la fundamental y la quinta), mientras los otros dedos agregan notas en el medio.",
+     "Aprendé primero el pulgar solo, hasta que ande por su cuenta como un bajista. Después sumá una nota de los dedos entre golpe y golpe del pulgar.",
+     "El pulgar toca en los tiempos y los dedos casi siempre a contratiempo, así el patrón suena como dos instrumentos: un bajo y una pequeña melodía.",
+     "En C el pulgar alterna entre la 5ª y la 4ª cuerda, y a veces la 6ª (G, la quinta de C, moviendo un dedo). En G alterna entre la 6ª y la 4ª."
+    ],
+    "tips": [],
+    "tutorials": [
+     "travis picking principiante bajo alternado"
+    ]
+   },
+   "melody-over-bass": {
+    "title": "Melodía sobre un bajo",
+    "theory": [
+     "El paso siguiente: los dedos dejan de tocar notas del acorde al azar y tocan una melodía en las cuerdas agudas, mientras el pulgar sostiene el bajo.",
+     "Pensalo como dos voces: el pulgar es el bajista y los dedos, el cantante. Cada una tiene que tener sentido sola.",
+     "Tocá primero la melodía sola, después el bajo solo, y recién entonces juntalos despacio."
+    ],
+    "tips": [],
+    "tutorials": [
+     "fingerstyle melodía con bajo principiante"
+    ]
+   },
+   "triad-arpeggios": {
+    "title": "Arpegios de tríadas por el mástil",
+    "theory": [
+     "Un arpegio toca las notas de un acorde una tras otra: en una tríada, fundamental, tercera y quinta, repetidas en octavas más agudas.",
+     "Las formas móviles de dos octavas siguen a las cejillas: el arpegio mayor con la fundamental en la 6ª cuerda coincide con la cejilla en forma de E; el menor, con la forma de Em.",
+     "Decí qué nota del acorde tocás (1, 3, 5): saber cuál es la tercera es lo que te deja apuntarle en un solo."
+    ],
+    "tips": [],
+    "tutorials": [
+     "formas de arpegio mayor y menor dos octavas guitarra"
+    ]
+   },
+   "seventh-arpeggios": {
+    "title": "Arpegios de acordes de séptima",
+    "theory": [
+     "Los arpegios de séptima suman una cuarta nota: maj7 (1 3 5 7), dominante (1 3 5 ♭7), menor 7 (1 ♭3 5 ♭7) y m7♭5 (1 ♭3 ♭5 ♭7).",
+     "Son los arpegios de los acordes de una tonalidad: en Do, Cmaj7, Dm7, Em7, Fmaj7, G7, Am7 y Bm7♭5. Tocarlos es la forma más directa de que un solo siga la armonía.",
+     "La séptima es la nota de color: medio tono debajo de la fundamental (maj7) o un tono debajo (♭7)."
+    ],
+    "tips": [],
+    "tutorials": [
+     "arpegios acordes de séptima guitarra maj7 m7 dominante"
+    ]
    }
   },
   "exercises": {
@@ -4854,7 +4920,28 @@
    "jazz-licks-bebop/major-bebop-down": "Do mayor bebop, bajando",
    "jazz-licks-bebop/dominant-bebop-down": "Sol dominante bebop, bajando",
    "jazz-licks-bebop/minor-ii-v-i-line": "ii–V–i menor en La: Bm7♭5, E7♭9, Am",
-   "jazz-licks-bebop/jazz-blues-f": "Jazz blues en Fa: la tercera bluesera"
+   "jazz-licks-bebop/jazz-blues-f": "Jazz blues en Fa: la tercera bluesera",
+   "picking-patterns/pimi-c": "p-i-m-i sobre C",
+   "picking-patterns/pimi-am": "p-i-m-i sobre Am, con el bajo que pasa a E",
+   "picking-patterns/pami-em": "p-a-m-i sobre Em",
+   "picking-patterns/waltz-am-e": "Patrón de vals en 3/4: Am y E",
+   "travis-picking/thumb-only-c": "El pulgar solo sobre C",
+   "travis-picking/travis-c": "Patrón Travis sobre C",
+   "travis-picking/travis-g": "Patrón Travis sobre G",
+   "travis-picking/travis-am-d": "Travis sobre Am y después D",
+   "melody-over-bass/melody-c": "Una melodía en Do sobre su bajo",
+   "melody-over-bass/folk-study-am": "Estudio folk en Am: Am, Dm, E, Am",
+   "melody-over-bass/broken-chords": "Acordes quebrados: C, Am, F, G con púa o dedos",
+   "triad-arpeggios/arp-a-major": "La mayor, dos octavas (fundamental en la 6ª cuerda)",
+   "triad-arpeggios/arp-a-minor": "La menor, dos octavas, subiendo y bajando",
+   "triad-arpeggios/arp-c-major": "Do mayor en el traste 8",
+   "triad-arpeggios/arp-g-major": "Sol mayor en 2ª posición",
+   "triad-arpeggios/arp-tones-quiz": "¿Qué notas forman la tríada?",
+   "seventh-arpeggios/arp-cmaj7": "Cmaj7, dos octavas",
+   "seventh-arpeggios/arp-g7": "G7, dos octavas, subiendo y bajando",
+   "seventh-arpeggios/arp-am7": "Am7, dos octavas",
+   "seventh-arpeggios/arp-bm7b5": "Bm7♭5, dos octavas",
+   "seventh-arpeggios/sevenths-arp-quiz": "¿Qué notas forman el acorde de séptima?"
   },
   "charts": {
    "01-em-am": {
@@ -5654,7 +5741,28 @@
    "jazz-licks-bebop/major-bebop-down": "C B A A♭ G F E D C: la A♭ de paso entre A y G pone C, A, G y E en los tiempos. Tocala en corcheas parejas y el acorde se escucha aunque no haya acompañamiento.",
    "jazz-licks-bebop/dominant-bebop-down": "G F# F E D C B A G: la F# de paso entre G y F mantiene G, F, D y B (las notas de G7) en los tiempos.",
    "jazz-licks-bebop/minor-ii-v-i-line": "B-D-F-A (Bm7♭5), G#-B-D-F (E7♭9 sin la fundamental), y después E y C. F, la ♭9 de E7, baja a E, la quinta de Am, y la línea descansa en C, la tercera menor.",
-   "jazz-licks-bebop/jazz-blues-f": "F, A♭ ligada a A, C, D, C, A, F: la ♭3 deslizándose hacia la tercera, y después la sexta (D) para un color dulce y swingueado. Tocá las corcheas con swing."
+   "jazz-licks-bebop/jazz-blues-f": "F, A♭ ligada a A, C, D, C, A, F: la ♭3 deslizándose hacia la tercera, y después la sexta (D) para un color dulce y swingueado. Tocá las corcheas con swing.",
+   "picking-patterns/pimi-c": "Pulgar en la fundamental (C, 5ª cuerda), después índice en G y medio en C, y vuelta al índice. Cuatro notas por patrón, dos veces.",
+   "picking-patterns/pimi-am": "La segunda vez el pulgar toca E en la 4ª cuerda en lugar de A: cambiar el bajo dentro del mismo acorde ya da movimiento.",
+   "picking-patterns/pami-em": "El bajo y después una bajada rodando desde la E aguda: anular, medio, índice. Em usa muchas cuerdas al aire, así que podés concentrarte en la mano derecha.",
+   "picking-patterns/waltz-am-e": "p i m a m i, un compás en Am y uno en E. El patrón es idéntico; solo cambian la cuerda del pulgar y la forma del acorde.",
+   "travis-picking/thumb-only-c": "C, E, G, E: fundamental, tercera, quinta, tercera, parejo como un reloj. El pulgar tiene que sostener esto sin pensar antes de que se sumen los dedos.",
+   "travis-picking/travis-c": "Pulgar, dedo, pulgar, dedo: la línea de bajo C-E-G-E con C y G por encima. Mantené el pulgar exactamente parejo; las notas de los dedos entran en los huecos.",
+   "travis-picking/travis-g": "El bajo entre G (6ª cuerda) y D (4ª cuerda), la fundamental y la quinta; los dedos tocan B, G y al final la G aguda.",
+   "travis-picking/travis-am-d": "Sobre Am el pulgar alterna A y E; sobre D toca D en la 4ª cuerda. Cambiar de acorde sin frenar el pulgar es el verdadero ejercicio.",
+   "melody-over-bass/melody-c": "La melodía E-F-G-F-E-D-C está en las cuerdas agudas; entre sus notas el pulgar toca C, E, G y D. La melodía baja a C justo cuando el bajo vuelve a C.",
+   "melody-over-bass/folk-study-am": "Un barrido p-i-m-a por acorde: Am, Dm, E y vuelta a Am. Las notas de arriba E-F-E-E y el bajo A-D-E-A forman dos líneas que se mueven juntas.",
+   "melody-over-bass/broken-chords": "Cada acorde tocado como arpegio desde el bajo hacia arriba: I-vi-IV-V en Do. Es el acompañamiento de muchísimas baladas, y también funciona con púa.",
+   "triad-arpeggios/arp-a-major": "A C# E en dos octavas, dentro de la cejilla de A (forma de E en el traste 5). C# es la tercera mayor: cuatro trastes arriba de la fundamental.",
+   "triad-arpeggios/arp-a-minor": "A C E: la misma forma que La mayor con la tercera un traste más abajo. Compará los dos y escuchá cómo una sola nota cambia el carácter.",
+   "triad-arpeggios/arp-c-major": "La forma de La mayor subida tres trastes toca Do. Las formas de arpegio se mueven como las cejillas: la fundamental decide el nombre.",
+   "triad-arpeggios/arp-g-major": "G B D desde la 6ª cuerda en el traste 3. Abajo en el mástil la forma cambia, pero el orden 1-3-5 nunca.",
+   "triad-arpeggios/arp-tones-quiz": "Mayor 1-3-5, menor 1-♭3-5, disminuida 1-♭3-♭5 y aumentada 1-3-#5: las notas que tocás en cada arpegio.",
+   "seventh-arpeggios/arp-cmaj7": "C E G B: la séptima mayor (B) está medio tono debajo de la C siguiente. Esa cercanía es lo que le da al maj7 su brillo suave y soñador.",
+   "seventh-arpeggios/arp-g7": "G B D F: B y F forman un tritono, la tensión que quiere resolver a C. Escuchala dentro del arpegio.",
+   "seventh-arpeggios/arp-am7": "A C E G: una tríada menor más la ♭7. Am7 tiene adentro una tríada de Do mayor (C E G): los acordes relativos comparten notas.",
+   "seventh-arpeggios/arp-bm7b5": "B D F A: el acorde vii de Do mayor. Su ♭5 (F) lo vuelve inestable; sobre un G7 suena como un G9 sin fundamental.",
+   "seventh-arpeggios/sevenths-arp-quiz": "Deletreá desde la fundamental con la fórmula y después tocá las notas en orden: eso es el arpegio."
   }
  }
 }

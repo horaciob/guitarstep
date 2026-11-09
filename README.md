@@ -59,7 +59,7 @@ retakes them in both themes.
 - **Legato detection**: hammer-ons, pull-offs and slides are caught even without a pick attack.
 
 **Learn**
-- **Course**: 22 levels, 129 lessons and 313 exercises, from open strings to barre chords, the blues, reading, scales, harmony and jazz. Every exercise is passed by playing it, and nothing is used before a lesson teaches it (a test checks the order). Each exercise has a short theory note (📖), written as plain sentences so it can be read aloud later.
+- **Course**: 23 levels, 134 lessons and 334 exercises, from open strings to barre chords, fingerpicking and arpeggios, the blues, reading, scales, harmony and jazz. Every exercise is passed by playing it, and nothing is used before a lesson teaches it (a test checks the order). Each exercise has a short theory note (📖), written as plain sentences so it can be read aloud later.
 - **Optional courses**: a heavy-metal course in 3 levels (12 lessons, 28 exercises): the chug and the gallop, pedal-point riffs, dark intervals, the scales of metal, sequences, tremolo picking, bends and harmonics, twin-guitar harmony and a full piece. It doesn't count toward the main course.
 - **Tutorials**: each lesson suggests video searches, and you can pin your favorite video (YouTube links play inline).
 - **Chord dictionary**: 39 chords with clickable diagrams. **Check** listens to you strum and tells you what was missing ("missing C# (major 3rd), extra C").
