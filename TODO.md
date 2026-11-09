@@ -249,7 +249,7 @@ bass world and bass drills stay out). The text is ours, rewritten in English wit
      Random challenges on top.
 104. **Interval ear cycle** ✅. Modules of two intervals, a four-beat loop (hear, pause, answer, check) that
      keeps going after a mistake.
-105. **Weak spots by fact** (M). Review the exact note, interval or chord you missed, not the whole exercise.
+105. **Weak spots by fact** ✅. Review the exact note, interval or chord you missed, not the whole exercise.
 106. **A song's theory** (M). Key, the chords of the key it uses, the main progression and a bar-by-bar
      reading of a Guitar Pro file.
 107. **One-channel-per-string MIDI** (S). Import tab exported as MIDI with one channel per string, keeping the

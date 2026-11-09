@@ -342,9 +342,22 @@ def exercise_check(body: dict):
     from .. import quiz
 
     try:
-        return quiz.check(str(body.get("token", "")), int(body.get("index", -1)), body.get("answer"))
+        r = quiz.check(str(body.get("token", "")), int(body.get("index", -1)), body.get("answer"))
     except (quiz.QuizError, ValueError) as e:
         fail(400, "quiz_expired", str(e))
+    progress.record_facts(quiz.take_facts())               # weak spots: misses come back, right answers space out
+    return r
+
+
+@app.get("/api/weak")
+def api_weak():
+    """Weak spots due today: the exact facts you missed (a note, an interval, a chord by ear), most missed first."""
+    def title(f):
+        try:
+            return catalog.get_exercise(f["lesson"], f["exercise"])["title"]
+        except catalog.CatalogError:
+            return None
+    return [dict(f, route=progress.fact_route(f), title=title(f) if f["lesson"] != "__tools__" else None) for f in progress.weak_facts()]
 
 
 @app.post("/api/exercise/finish")

@@ -45,6 +45,7 @@ def _empty() -> dict:
                 rhythm={},        # rhythm test → best (steadiest) result per tempo
                 ear={},           # ear trainer → best score per kind
                 warmup={},        # daily warm-up → {drill: {bpm (the goal), best, day}}
+                facts={},         # weak spots: facts you missed → {label, lesson, exercise, misses, step, due}
                 budget=None,      # minutes you chose for today's plan (15, 30, 60, 120)
                 queue=[])         # song or chart sections you pinned to today's plan
 
@@ -146,6 +147,52 @@ def _review(d: dict, key: str, ok: bool, today: date | None = None) -> None:
         r["step"] = 0
         r["due"] = (today + timedelta(days=REVIEW_DAYS[0])).isoformat()
     r["last"] = today.isoformat()
+
+
+FACT_DAYS = (1, 3, 7)      # a missed fact comes back today; then after 1, 3 and 7 days right; then it's gone
+FACTS_MAX = 200
+
+
+def record_facts(facts: list[dict], today: date | None = None) -> None:
+    """Weak spots: a miss puts the fact on today's list (or back to the start); a right answer on a due fact moves it
+    1, 3, then 7 days ahead, and after that it's retired. Facts you never missed aren't tracked."""
+    if not facts:
+        return
+    t = (today or date.today())
+    with _lock:
+        d = _read()
+        for f in facts:
+            cur = d["facts"].get(f["key"])
+            if not f["ok"]:
+                d["facts"][f["key"]] = dict(label=f["label"], lesson=f["lesson"], exercise=f["exercise"],
+                                            misses=(cur or {}).get("misses", 0) + 1, step=0, due=t.isoformat())
+            elif cur and t.isoformat() >= cur["due"]:
+                if cur["step"] >= len(FACT_DAYS):
+                    d["facts"].pop(f["key"])
+                else:
+                    cur.update(due=(t + timedelta(days=FACT_DAYS[cur["step"]])).isoformat(), step=cur["step"] + 1)
+        if len(d["facts"]) > FACTS_MAX:                  # keep the most missed ones
+            keep = sorted(d["facts"].items(), key=lambda kv: -kv[1]["misses"])[:FACTS_MAX]
+            d["facts"] = dict(keep)
+        _write(d)
+
+
+def fact_route(f: dict) -> str:
+    """Where to practice a weak fact again: its exercise, or the tool it came from."""
+    ex = f["exercise"]
+    if f["lesson"] != "__tools__":
+        return f"#/lesson/{f['lesson']}?ex={ex}"
+    if ex.startswith("ear-cycle-"):
+        return f"#/tools?tab=ear&ear=cycle&module={ex[len('ear-cycle-'):]}"
+    return f"#/tools?tab=ear&ear={ex.removeprefix('ear-')}"
+
+
+def weak_facts(d: dict | None = None, today: date | None = None, limit: int = 8) -> list[dict]:
+    """Facts due today, the most missed first: [{key, label, lesson, exercise, misses}]."""
+    d = d or get()
+    t = (today or date.today()).isoformat()
+    due = [dict(key=k, **v) for k, v in d.get("facts", {}).items() if v["due"] <= t]
+    return sorted(due, key=lambda f: (-f["misses"], f["due"]))[:limit]
 
 
 def due_reviews(d: dict, today: date | None = None) -> list[tuple[str, dict]]:

@@ -1227,7 +1227,11 @@
    "unqueue": "Remove from today",
    "clear_queue": "Clear the sections you added",
    "step_warmup": "Daily warm-up: {{drill}} in {{key}}",
-   "why_warmup": "warm hands, a rising tempo"
+   "why_warmup": "warm hands, a rising tempo",
+   "why_weak": "what you missed lately",
+   "step_weak": "Weak spot: {{what}}",
+   "step_weak_more_one": "Weak spots: {{what}} and {{count}} more",
+   "step_weak_more_other": "Weak spots: {{what}} and {{count}} more"
   },
   "reminder": {
    "title": "Daily reminder",
@@ -1652,7 +1656,10 @@
    "tech_barre_finger_near_fret": "Close to the fret, on its side",
    "tech_barre_finger_on_fret": "On top of the fret",
    "tech_barre_finger_tip": "With the tip",
-   "name_note": "What's the marked note?"
+   "name_note": "What's the marked note?",
+   "fact_neck": "{{note}} at string {{string}}, fret {{fret}}",
+   "fact_read": "{{note}} on the staff",
+   "fact_degree": "{{roman}} by ear"
   },
   "flow": {
    "label": "The steps of this lesson",
@@ -1997,6 +2004,14 @@
    "sweep_focus": "One pick motion across the strings, every note on its own",
    "sweep_why": "Sweeping plays an arpeggio with one stroke across the strings. The hard part is the fretting hand: each note has to sound alone, not ring into a chord.",
    "sweep_how": "Down strokes going toward the high strings, up strokes coming back. Lift each finger right after its note. Start slow, three strings at a time if you need to."
+  },
+  "weak": {
+   "title": "Weak spots",
+   "intro": "The exact things you missed lately. Each one comes back until you get it right a few days apart.",
+   "from_tools": "ear training",
+   "misses_one": "missed {{count}} time",
+   "misses_other": "missed {{count}} times",
+   "practice": "Practice"
   }
  },
  "content": {}

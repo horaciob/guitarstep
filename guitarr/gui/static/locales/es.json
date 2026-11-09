@@ -1227,7 +1227,11 @@
    "unqueue": "Quitar de hoy",
    "clear_queue": "Quitar las secciones que agregaste",
    "step_warmup": "Calentamiento diario: {{drill}} en {{key}}",
-   "why_warmup": "manos calientes, un tempo que sube"
+   "why_warmup": "manos calientes, un tempo que sube",
+   "why_weak": "lo que fallaste últimamente",
+   "step_weak": "Punto débil: {{what}}",
+   "step_weak_more_one": "Puntos débiles: {{what}} y {{count}} más",
+   "step_weak_more_other": "Puntos débiles: {{what}} y {{count}} más"
   },
   "reminder": {
    "title": "Recordatorio diario",
@@ -1652,7 +1656,10 @@
    "tech_barre_finger_near_fret": "Cerca del traste, de costado",
    "tech_barre_finger_on_fret": "Encima del traste",
    "tech_barre_finger_tip": "Con la punta",
-   "name_note": "¿Qué nota está marcada?"
+   "name_note": "¿Qué nota está marcada?",
+   "fact_neck": "{{note}} en la cuerda {{string}}, traste {{fret}}",
+   "fact_read": "{{note}} en el pentagrama",
+   "fact_degree": "{{roman}} de oído"
   },
   "flow": {
    "label": "Los pasos de esta lección",
@@ -1997,6 +2004,14 @@
    "sweep_focus": "Un solo movimiento de púa por las cuerdas, cada nota sola",
    "sweep_why": "El sweep toca un arpegio con un solo golpe que cruza las cuerdas. Lo difícil es la mano izquierda: cada nota tiene que sonar sola, no quedar sonando como un acorde.",
    "sweep_how": "Golpes hacia abajo yendo a las cuerdas agudas, hacia arriba de vuelta. Levantá cada dedo apenas suena su nota. Empezá despacio, de a tres cuerdas si hace falta."
+  },
+  "weak": {
+   "title": "Puntos débiles",
+   "intro": "Lo que fallaste últimamente, dato por dato. Cada uno vuelve hasta que lo aciertes varios días seguidos.",
+   "from_tools": "entrenamiento de oído",
+   "misses_one": "fallado {{count}} vez",
+   "misses_other": "fallado {{count}} veces",
+   "practice": "Practicar"
   }
  },
  "content": {

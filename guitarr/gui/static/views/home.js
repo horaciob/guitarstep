@@ -1,6 +1,7 @@
 // Home: your level, streak, what's next and what you did lately.
 import { eventText, lang, t, tc } from "../lib/i18n.js";
 import { $, $$, api, esc, toast } from "../lib/ui.js";
+import { say } from "../lib/answer.js";
 import { fmtHM, ring, weekStrip } from "../lib/plan.js";
 
 function ago(iso) {
@@ -24,6 +25,7 @@ function stepTitle(s) {
     case "chart": return t("today.step_chart", { title: tc(`charts.${p.chart}.title`, p.title) });
     case "drill": return t("today.step_drill", { a: p.chords[0], b: p.chords[1] });
     case "warmup": return t("today.step_warmup", { drill: t(`warmup.${p.drill}`), key: p.key });
+    case "weak": return p.more ? t("today.step_weak_more", { what: say(p.label), count: p.more }) : t("today.step_weak", { what: say(p.label) });
     default: return t(`today.step_${s.kind}`);
   }
 }
@@ -71,8 +73,8 @@ function bindToday(el) {
 }
 
 export async function mount(el) {
-  const [p, course, hist, plan, today] = await Promise.all([api("/api/progress"), api("/api/course"), api("/api/history").catch(() => []),
-    api("/api/plan").catch(() => null), api("/api/today").catch(() => null)]);
+  const [p, course, hist, plan, today, facts] = await Promise.all([api("/api/progress"), api("/api/course"), api("/api/history").catch(() => []),
+    api("/api/plan").catch(() => null), api("/api/today").catch(() => null), api("/api/weak").catch(() => [])]);
   const lv = p.level;
   let weak = null;
   if (hist.length) {
@@ -115,6 +117,10 @@ export async function mount(el) {
     <div class="dash two">
       <div class="stack">
         ${course.next ? `<a class="callout" href="#/lesson/${encodeURIComponent(course.next.id)}"><span>${t("home.next_lesson_html", { title: esc(tc(`lessons.${course.next.id}.title`, course.next.title)), interpolation: { escapeValue: false } })}</span><span class="btn small primary">${esc(t("home.go"))}</span></a>` : ""}
+        ${facts.length ? `<div class="panel weak-facts"><h2>${esc(t("weak.title"))}</h2><p class="muted small">${esc(t("weak.intro"))}</p>
+          <ul>${facts.map(f => `<li><span><b>${esc(say(f.label))}</b> <small class="muted">· ${esc(f.lesson === "__tools__" ? t("weak.from_tools")
+            : tc(`exercises.${f.lesson}/${f.exercise}`, f.title || f.exercise))} · ${esc(t("weak.misses", { count: f.misses }))}</small></span>
+            <a class="btn small" href="${esc(f.route)}">${esc(t("weak.practice"))}</a></li>`).join("")}</ul></div>` : ""}
         ${weak ? `<a class="callout" href="#/history"><span>${t("home.weak_html", { song: esc(weak.h.reference.name || weak.h.id), bars: weak.bars.join(" & "), interpolation: { escapeValue: false } })}</span><span class="btn small">${esc(t("home.see"))}</span></a>` : ""}
         <div class="quick">
           <a class="panel" href="#/charts"><b>♫ ${esc(t("home.q_chart"))}</b><span class="muted small">${esc(t("home.q_chart_hint"))}</span></a>

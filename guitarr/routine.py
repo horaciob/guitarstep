@@ -105,6 +105,11 @@ def build(today: date | None = None) -> dict:
                 add(key, "review_exercise", REVIEW_MIN, f"#/lesson/{lid}?ex={eid}", done, "technique", lesson=lid, exercise=eid,
                     title=ex.get("title", eid))
 
+    facts = progress.weak_facts(d, today)                 # weak spots: the fact you missed most, back where it came from
+    if facts:
+        f = facts[0]
+        add(f"weak:{f['key']}", "weak", REVIEW_MIN, progress.fact_route(f), False, "technique", label=f["label"], more=len(facts) - 1)
+
     nxt = next((x for x in lessons if x["id"] not in d["lessons"]), None)
     done_lesson = next((e["params"]["lesson"] for e in events if e["code"] in ("exercise_passed", "lesson_completed")), None)
     if nxt or done_lesson:

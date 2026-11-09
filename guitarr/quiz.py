@@ -21,6 +21,7 @@ from . import theory as th
 _lock = threading.Lock()
 _draws: dict[str, dict] = {}                      # token → {lesson, exercise, need, items, answers}
 _latest: dict[tuple[str, str], dict] = {}         # (lesson, exercise) → the last listener draw {notes, prompts}
+_facts_seen: list[dict] = []                      # facts answered since the server last collected them
 MAX_DRAWS = 64
 
 
@@ -58,13 +59,20 @@ def _q(prompt: dict, choices, answer: str, **extra) -> dict:
     return dict(type="choice", prompt=prompt, choices=choices, answer=answer, **extra)
 
 
+def _fact(item: dict, key: str, label) -> dict:
+    """Names what a question checks ("interval:m7", "read:42") so a miss can come back on its own (weak spots).
+    label is what the UI shows: a plain string or {code, params}."""
+    item["fact"] = dict(key=key, label=label)
+    return item
+
+
 # ---------------------------------------------------------------- quiz generators (one question each)
 def q_interval_frets(rng, ex):
     pool = ex.get("intervals", SIMPLE)
     iv = rng.choice(pool)
     a = rng.randint(0, 12 - th.INTERVALS[iv][1] if th.INTERVALS[iv][1] <= 12 else 0)
     ch, ans = _choices(rng, iv, pool if len(pool) >= 4 else SIMPLE, label=_iv)
-    return _q(L("interval_frets", a=a, b=a + th.INTERVALS[iv][1]), ch, ans)
+    return _fact(_q(L("interval_frets", a=a, b=a + th.INTERVALS[iv][1]), ch, ans), f"interval_shape:{iv}", _iv(iv))
 
 
 def q_interval_ear(rng, ex):
@@ -75,7 +83,8 @@ def q_interval_ear(rng, ex):
     melodic = mode == "melodic" or (mode == "both" and rng.random() < 0.5)
     n = len(pool) if ex.get("all_choices") else min(4, len(pool))
     ch, ans = _choices(rng, iv, pool, n=n, label=_iv)
-    return _q(L("interval_ear"), ch, ans, play=[root, root + th.INTERVALS[iv][1]], melodic=melodic)
+    return _fact(_q(L("interval_ear"), ch, ans, play=[root, root + th.INTERVALS[iv][1]], melodic=melodic),
+                 f"interval_ear:{iv}", _iv(iv))
 
 
 # the interval ear cycle: modules of two intervals that are easy to mix up (or that complete each other)
@@ -158,7 +167,8 @@ def q_hear_quality(rng, ex):
         kind = "triad" if len(th.CHORDS[q][1]) == 3 else "drop2"
         v = min(th.voicings(sym, kind), key=lambda v: (abs(v["position"] - 4), v["position"]))
         extra["reveal"] = dict(name=sym, frets=v["frets"])
-    return _q(L("hear_scale" if ex.get("as_scale") else "hear_quality"), ch, ans, play=pitches, melodic=bool(ex.get("as_scale")), **extra)
+    return _fact(_q(L("hear_scale" if ex.get("as_scale") else "hear_quality"), ch, ans, play=pitches, melodic=bool(ex.get("as_scale")), **extra),
+                 f"quality_ear:{q}", L("quality", q=q))
 
 
 def q_mode_color(rng, ex):
@@ -383,8 +393,9 @@ def q_name_note(rng, ex):
     names = NATURALS if naturals else NATURALS + ["C#", "Eb", "F#", "Ab", "Bb"]
     ch, ans = _choices(rng, name, names, label=lambda x: x)
     view_lo = max(0, min(lo, f - 2)) if hi - lo > 12 else lo
-    return _q(L("name_note"), ch, ans,
-              neck=dict(lo=view_lo, hi=max(hi, view_lo + 4), marks=[dict(string=s_, fret=f, text="?", kind="mark")]))
+    return _fact(_q(L("name_note"), ch, ans,
+              neck=dict(lo=view_lo, hi=max(hi, view_lo + 4), marks=[dict(string=s_, fret=f, text="?", kind="mark")])),
+                 f"neck:{s_}:{f}", L("fact_neck", note=name, string=s_, fret=f))
 
 
 # ---------------------------------------------------------------- reading standard notation
@@ -415,7 +426,8 @@ def q_read_note(rng, ex):
     name = th.staff_note(pitch, flats)["name"]
     pool = NATURALS + (FLATS if flats else SHARPS) if ex.get("notes", "naturals") != "naturals" else NATURALS
     ch, ans = _choices(rng, name, pool, label=lambda x: x)
-    return _q(L("read_note"), ch, ans, staff=[_staff(pitch, flats)], reveal=L("found_at", string=s, fret=f))
+    return _fact(_q(L("read_note"), ch, ans, staff=[_staff(pitch, flats)], reveal=L("found_at", string=s, fret=f)),
+                 f"read:{name}{pitch // 12 - 1}", L("fact_read", note=name))
 
 
 STAFF_FACTS = [("staff_lines", ["4", "5", "6", "7"], "5"), ("staff_higher", ["higher", "lower", "louder", "longer"], "higher"),
@@ -471,7 +483,8 @@ def q_hear_degree(rng, ex):
         r -= 12
     seq.append(_voiced(r, c["quality"]))
     ch, ans = _choices(rng, c["roman"], [hz[k - 1]["roman"] for k in degrees], n=min(4, len(degrees)), label=lambda x: x)
-    return _q(L("hear_degree_minor" if mode == "minor" else "hear_degree"), ch, ans, play_chords=seq)
+    return _fact(_q(L("hear_degree_minor" if mode == "minor" else "hear_degree"), ch, ans, play_chords=seq),
+                 f"degree_ear:{mode}:{c['roman']}", L("fact_degree", roman=c["roman"]))
 
 
 CADENCES = {"authentic": (5, 1), "plagal": (4, 1), "half": (2, 5), "deceptive": (5, 6)}
@@ -491,7 +504,8 @@ def q_cadence(rng, ex):
         tonic = rng.randint(52, 59)
         off = lambda k: (th.pc(hz[k - 1]["notes"][0]) - th.pc(key)) % 12
         chord_at = lambda k: _voiced(tonic + off(k) - (12 if off(k) > 6 else 0), hz[k - 1]["quality"])
-        return _q(L("cadence_ear"), ch, ans, play_chords=[chord_at(1), chord_at(a), chord_at(b)])
+        return _fact(_q(L("cadence_ear"), ch, ans, play_chords=[chord_at(1), chord_at(a), chord_at(b)]),
+                     f"cadence_ear:{name}", L(f"cad_{name}"))
     return _q(L("cadence_name", key=key, a=sym(a), b=sym(b)), ch, ans)
 
 
@@ -826,7 +840,7 @@ def draw(lid: str, ex: dict, need: float, seed: int | None = None) -> dict:
 
 def _public(it: dict) -> dict:
     """What the UI may see of a question: never the answer (a dictation doesn't say which choice it played)."""
-    out = {k: v for k, v in it.items() if k not in ("answer", "expected", "want")}
+    out = {k: v for k, v in it.items() if k not in ("answer", "expected", "want", "fact")}
     if "hear_rhythm" in out:
         out["hear_rhythm"] = {**out["hear_rhythm"], "pattern": None, "onsets": rh.onsets(it["hear_rhythm"]["pattern"])}
     return out
@@ -846,10 +860,21 @@ def check(token: str, index: int, answer) -> dict:
             d["answers"].setdefault(index, r["accuracy"] / 100)
             return dict(correct=r["accuracy"] >= rh.PASS_ITEM, **r)
         ok = _check_pick(it, answer) if it["type"] == "pick" else str(answer) == it["answer"]
+        first = index not in d["answers"]
         d["answers"].setdefault(index, ok)
+        if first and it.get("fact"):                    # only the first answer counts, for weak spots too
+            _facts_seen.append(dict(it["fact"], ok=ok, lesson=d["lesson"], exercise=d["exercise"]))
         if it["type"] == "pick":
             return dict(correct=ok, answer=it["expected"] if it["mode"] in ("all", "pitch") else it["want"], mode=it["mode"])
         return dict(correct=ok, answer=it["answer"], **({"reveal": it["reveal"]} if it.get("reveal") else {}))
+
+
+def take_facts() -> list[dict]:
+    """The facts answered since the last call ({key, label, ok, lesson, exercise}); progress records them."""
+    with _lock:
+        out = list(_facts_seen)
+        _facts_seen.clear()
+    return out
 
 
 def finish(token: str, asked_only: bool = False) -> dict:
