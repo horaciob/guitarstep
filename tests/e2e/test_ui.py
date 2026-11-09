@@ -880,3 +880,18 @@ def test_latency_status_and_take_timing_verdict(app_page):
     v = focus.locator(".timing-verdict")
     expect(v).to_contain_text("140 ms ahead of the click every time")
     expect(v.locator("a[href='#/settings']")).to_be_visible()
+
+
+def test_cable_measurement_guide(app_page):
+    import json
+    onboarded(app_page)
+    app_page.route("**/api/latency", lambda r: r.fulfill(status=200, content_type="application/json", body=json.dumps({
+        "applied_ms": None, "method": None, "current_input": "Interface X", "current_output": "Laptop Speakers",
+        "tendency_ms": None, "warnings": []})))
+    go(app_page, "settings")
+    help_ = app_page.locator("#cableHelp")
+    help_.locator("summary").click()
+    expect(help_.locator(".cable-diagram svg")).to_be_visible()
+    expect(help_).to_contain_text("direct monitoring off")
+    expect(help_.locator("#cableNow")).to_contain_text("plays on Laptop Speakers and you record from Interface X")
+    expect(help_.locator(".cable-steps li")).to_have_count(6)

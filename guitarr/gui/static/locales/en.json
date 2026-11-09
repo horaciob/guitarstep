@@ -2094,6 +2094,32 @@
    "slight": "On average {{ms}} ms {{dir}} the click (±{{spread}} ms): small. Landing slightly ahead of a click is very common.",
    "on_time": "On time: {{signed_ms}} ms on average, ±{{spread}} ms over {{n}} hits.",
    "fix_link": "Measure the latency →"
+  },
+  "cable": {
+   "title": "How to connect the cable, step by step",
+   "need_title": "What you need",
+   "need": "An instrument cable (6.3 mm plug on both ends, like your guitar's). If the metronome plays from your computer's headphone jack, a 3.5 mm to 6.3 mm cable.",
+   "steps_title": "Steps",
+   "s1": "In <b>Metronome output</b> (above), choose your interface. Then the cable goes from the interface back into itself.",
+   "s2": "Turn <b>direct monitoring off</b> (the MONITOR / DIRECT button or knob) and take your headphones off: with the cable in, a loop can whistle loudly.",
+   "s3": "Turn the <b>gain of input 2 all the way down</b>, and the headphone volume to about half.",
+   "s4": "Plug the cable from the interface's <b>headphone output</b> (or a line output) into <b>input 2</b>. Leave the guitar in input 1, with its volume knob down.",
+   "s5": "In <b>Input with the cable</b> choose 2 and press <b>Measure with the cable</b>. 13 clicks go out and come back; don't play or touch anything for about 8 seconds.",
+   "s6": "When it says ✓, unplug the cable, turn the monitoring back on if you use it, and do <b>Playing along</b> with the guitar: that one tells you your own habit.",
+   "trouble_title": "If it doesn't work",
+   "t1": "<b>“The clicks didn't come back”</b>: the cable is in another input than the one chosen, the metronome plays on another device (the speakers?), the headphone volume is at zero, or the gain is too low (raise it a little at a time).",
+   "t2": "<b>“Irregular clicks”</b>: direct monitoring is still on (the click goes round and round), the gain is so high it distorts, or the guitar was sounding.",
+   "t3": "<b>Only one input?</b> Unplug the guitar, use input 1 for the cable and choose 1.",
+   "t4": "<b>Metronome on the computer?</b> It also works: a cable from the computer's headphone jack into the interface. It measures that output, which is the one you hear.",
+   "now_same": "Right now the metronome plays on {{output}}, the same device you record from: the cable goes from its headphone output to input 2.",
+   "now_other": "Right now the metronome plays on {{output}} and you record from {{input}}. Better: choose {{input}} as the metronome output (step 1). If you keep {{output}}, the cable has to come out of it.",
+   "d_interface": "Your audio interface",
+   "d_in1": "input 1",
+   "d_in2": "input 2",
+   "d_phones": "headphones",
+   "d_cable": "cable",
+   "d_guitar": "guitar (volume down)",
+   "d_monitor_off": "direct monitoring: OFF"
   }
  },
  "content": {}

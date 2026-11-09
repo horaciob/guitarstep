@@ -256,6 +256,29 @@
             <select id="cLoopCh"><option value="1">1</option><option value="2" selected>2</option></select></label>
           <button class="btn" id="cLoop" data-i18n="latency.loop_start">Measure with the cable</button>
         </div>
+        <details class="cable-help" id="cableHelp">
+          <summary data-i18n="cable.title">How to connect the cable, step by step</summary>
+          <div class="cable-diagram" id="cableDiagram" aria-hidden="true"></div>
+          <p class="small" id="cableNow"></p>
+          <h4 data-i18n="cable.need_title">What you need</h4>
+          <p class="small" data-i18n-html="cable.need">An instrument cable (6.3 mm plug on both ends, like your guitar's). If the metronome plays from your computer's headphone jack, a 3.5 mm to 6.3 mm cable.</p>
+          <h4 data-i18n="cable.steps_title">Steps</h4>
+          <ol class="small cable-steps">
+            <li data-i18n-html="cable.s1">In <b>Metronome output</b> (above), choose your interface. Then the cable goes from the interface back into itself.</li>
+            <li data-i18n-html="cable.s2">Turn <b>direct monitoring off</b> (the MONITOR / DIRECT button or knob) and take your headphones off: with the cable in, a loop can whistle loudly.</li>
+            <li data-i18n-html="cable.s3">Turn the <b>gain of input 2 all the way down</b>, and the headphone volume to about half.</li>
+            <li data-i18n-html="cable.s4">Plug the cable from the interface's <b>headphone output</b> (or a line output) into <b>input 2</b>. Leave the guitar in input 1, with its volume knob down.</li>
+            <li data-i18n-html="cable.s5">In <b>Input with the cable</b> choose 2 and press <b>Measure with the cable</b>. 13 clicks go out and come back; don't play or touch anything for about 8 seconds.</li>
+            <li data-i18n-html="cable.s6">When it says ✓, unplug the cable, turn the monitoring back on if you use it, and do <b>Playing along</b> with the guitar: that one tells you your own habit.</li>
+          </ol>
+          <h4 data-i18n="cable.trouble_title">If it doesn't work</h4>
+          <ul class="small">
+            <li data-i18n-html="cable.t1"><b>“The clicks didn't come back”</b>: the cable is in another input than the one chosen, the metronome plays on another device (the speakers?), the headphone volume is at zero, or the gain is too low (raise it a little at a time).</li>
+            <li data-i18n-html="cable.t2"><b>“Irregular clicks”</b>: direct monitoring is still on (the click goes round and round), the gain is so high it distorts, or the guitar was sounding.</li>
+            <li data-i18n-html="cable.t3"><b>Only one input?</b> Unplug the guitar, use input 1 for the cable and choose 1.</li>
+            <li data-i18n-html="cable.t4"><b>Metronome on the computer?</b> It also works: a cable from the computer's headphone jack into the interface. It measures that output, which is the one you hear.</li>
+          </ul>
+        </details>
         <h3 data-i18n="latency.play_title">Playing along</h3>
         <p class="muted small" data-i18n-html="settings.calibrate_hint">You'll hear 4 clicks to catch the pulse and then 12 more. Hit the <b>muted</b> strings (a short pick stroke) right on every click. Use headphones.</p>
         <button class="btn primary" id="cStart" data-i18n="settings.calibrate_start">Start calibration</button>

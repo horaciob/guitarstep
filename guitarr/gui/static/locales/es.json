@@ -2094,6 +2094,32 @@
    "slight": "En promedio {{ms}} ms {{dir}} del clic (±{{spread}} ms): es poco. Adelantarse apenas al clic es muy común.",
    "on_time": "A tiempo: {{signed_ms}} ms en promedio, ±{{spread}} ms en {{n}} golpes.",
    "fix_link": "Medir la latencia →"
+  },
+  "cable": {
+   "title": "Cómo conectar el cable, paso a paso",
+   "need_title": "Qué necesitás",
+   "need": "Un cable de instrumento (plug de 6,3 mm en las dos puntas, como el de tu guitarra). Si el metrónomo suena por la salida de auriculares de la compu, un cable de 3,5 mm a 6,3 mm.",
+   "steps_title": "Pasos",
+   "s1": "En <b>Salida para el metrónomo</b> (arriba) elegí tu interfaz. Así el cable va de la interfaz a ella misma.",
+   "s2": "<b>Apagá el monitoreo directo</b> (el botón o perilla MONITOR / DIRECT) y sacate los auriculares: con el cable puesto, un lazo puede silbar fuerte.",
+   "s3": "Bajá <b>al mínimo la ganancia de la entrada 2</b>, y el volumen de auriculares más o menos a la mitad.",
+   "s4": "Enchufá el cable desde la <b>salida de auriculares</b> de la interfaz (o una salida de línea) a la <b>entrada 2</b>. Dejá la guitarra en la entrada 1, con su perilla de volumen abajo.",
+   "s5": "En <b>Entrada con el cable</b> elegí 2 y tocá <b>Medir con el cable</b>. Salen 13 clics y vuelven por el cable; no toques ni muevas nada unos 8 segundos.",
+   "s6": "Cuando diga ✓, desenchufá el cable, volvé a prender el monitoreo si lo usás, y hacé <b>Tocando</b> con la guitarra: esa te dice tu propia costumbre.",
+   "trouble_title": "Si no funciona",
+   "t1": "<b>“Los clics no volvieron”</b>: el cable está en otra entrada que la elegida, el metrónomo suena por otro aparato (¿los parlantes?), el volumen de auriculares está en cero, o la ganancia está demasiado baja (subila de a poco).",
+   "t2": "<b>“Clics irregulares”</b>: el monitoreo directo sigue prendido (el clic da vueltas), la ganancia está tan alta que distorsiona, o la guitarra estaba sonando.",
+   "t3": "<b>¿Una sola entrada?</b> Desenchufá la guitarra, usá la entrada 1 para el cable y elegí 1.",
+   "t4": "<b>¿El metrónomo sale por la compu?</b> También sirve: un cable desde la salida de auriculares de la compu a la interfaz. Mide esa salida, que es la que escuchás.",
+   "now_same": "Ahora el metrónomo suena por {{output}}, el mismo aparato por el que grabás: el cable va de su salida de auriculares a la entrada 2.",
+   "now_other": "Ahora el metrónomo suena por {{output}} y grabás desde {{input}}. Mejor: elegí {{input}} como salida del metrónomo (paso 1). Si dejás {{output}}, el cable tiene que salir de ahí.",
+   "d_interface": "Tu interfaz de audio",
+   "d_in1": "entrada 1",
+   "d_in2": "entrada 2",
+   "d_phones": "auriculares",
+   "d_cable": "cable",
+   "d_guitar": "guitarra (volumen abajo)",
+   "d_monitor_off": "monitoreo directo: APAGADO"
   }
  },
  "content": {

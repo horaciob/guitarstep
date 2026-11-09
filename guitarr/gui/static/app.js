@@ -1024,12 +1024,34 @@ function stopTest() {
 }
 function restartTest() { if (Settings.test) { stopTest(); setTimeout(startTest, 300); } }
 $("#sTest").addEventListener("click", () => (Settings.test ? stopTest() : startTest()));
+/** The cable help's drawing: the metronome output going back into input 2 (labels translated, colors from the theme). */
+function cableDiagram() {
+  const L = k => esc(t(`cable.d_${k}`));   // rebuilt on every visit, so it follows the language
+  return `<svg viewBox="0 0 520 185" role="img">
+    <rect x="150" y="40" width="300" height="115" rx="12" fill="var(--gl-panel-2)" stroke="currentColor" stroke-opacity=".5"/>
+    <text x="300" y="146" text-anchor="middle" font-size="12" fill="currentColor">${L("interface")}</text>
+    <circle cx="200" cy="90" r="14" fill="none" stroke="currentColor" stroke-width="2"/><text x="200" y="122" text-anchor="middle" font-size="11" fill="var(--muted)">${L("in1")}</text>
+    <circle cx="270" cy="90" r="14" fill="none" stroke="var(--gl-accent)" stroke-width="3"/><text x="270" y="122" text-anchor="middle" font-size="11" fill="var(--gl-accent)">${L("in2")}</text>
+    <circle cx="400" cy="90" r="10" fill="none" stroke="var(--gl-accent)" stroke-width="3"/><text x="400" y="122" text-anchor="middle" font-size="11" fill="var(--gl-accent)">${L("phones")}</text>
+    <path d="M400 80 C 400 -5, 270 -5, 270 76" fill="none" stroke="var(--gl-accent)" stroke-width="4" stroke-linecap="round"/>
+    <text x="392" y="26" font-size="12" font-weight="700" fill="var(--gl-accent)">${L("cable")}</text>
+    <path d="M30 90 L 186 90" stroke="currentColor" stroke-opacity=".45" stroke-width="3" stroke-dasharray="6 5"/>
+    <text x="70" y="80" text-anchor="middle" font-size="11" fill="var(--muted)">${L("guitar")}</text>
+    <text x="300" y="177" text-anchor="middle" font-size="11" fill="var(--muted)">${L("monitor_off")}</text>
+  </svg>`;
+}
+
 // latency: how it was measured, your own tendency, and warnings about the devices
 async function loadLatency() {
+  const dg = $("#cableDiagram");
+  if (dg) dg.innerHTML = cableDiagram();
   const box = $("#latStatus");
   if (!box) return;
   let st;
   try { st = await api("/api/latency"); } catch { box.innerHTML = ""; return; }
+  const now = $("#cableNow");
+  if (now) now.textContent = st.current_output ? t(st.current_output === st.current_input ? "cable.now_same" : "cable.now_other",
+    { output: st.current_output, input: st.current_input || "?" }) : "";
   const lines = [];
   if (st.applied_ms != null) lines.push(`<b>${esc(t("latency.applied", { ms: Math.round(st.applied_ms) }))}</b> · ${esc(st.method ? t(`latency.how_${st.method}`, { input: st.input || "?", output: st.output || "?" }) : t("latency.how_manual"))}`);
   if (st.tendency_ms != null) lines.push(esc(t(Math.abs(st.tendency_ms) < 15 ? "latency.tendency_none" : st.tendency_ms < 0 ? "latency.tendency_early" : "latency.tendency_late", { ms: Math.round(Math.abs(st.tendency_ms)) })));
@@ -1064,6 +1086,7 @@ function runCalibration(body, status) {
         } else {
           const known = { too_few_hits: "settings.cal_few_hits", no_loop: "latency.no_loop", loop_unsteady: "latency.loop_unsteady" }[r.code];
           status.innerHTML = `<span style="color:var(--gl-err)">${esc(known ? t(known) : (r.message || t("settings.cal_failed")))}</span>`;
+          if (r.code === "no_loop" || r.code === "loop_unsteady") $("#cableHelp").open = true;   // the guide has the fixes
         }
         loadLatency();
       }, 150);

@@ -72,6 +72,7 @@ def status(input_name: str | None, output_name: str | None) -> dict:
     elif applied is not None and applied < 0 and lat.get("method") != "loopback":
         warnings.append(dict(code="negative", params=dict(ms=applied)))
     return dict(applied_ms=applied, method=lat.get("method"), at=lat.get("at"), input=lat.get("input"),
+                current_input=input_name, current_output=output_name,
                 output=lat.get("output"), system_ms=lat.get("system_ms"), play_ms=lat.get("play_ms"),
                 tendency_ms=tendency, warnings=warnings)
 
