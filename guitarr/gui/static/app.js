@@ -4,7 +4,7 @@
 import { issueText, msgIsError, msgText, t, tc } from "./lib/i18n.js";
 import { $, $$, api, esc, instrument, loadInstrument, noteName, NOTE_NAMES, progressChanged, stringRow, toast } from "./lib/ui.js";
 import { levelVerdict, meterHtml, openInput, setGate, setMeter } from "./lib/input.js";
-import { bindTakePlayers, takePlayer } from "./lib/take.js";
+import { bindTakePlayers, takePlayer, timingVerdictHtml } from "./lib/take.js";
 
 // Reads a color token and normalizes it to #rrggbb (accepts hsl/rgb) so a hex alpha can be appended.
 const _cc = document.createElement("canvas").getContext("2d");
@@ -565,6 +565,7 @@ function renderReport(r) {
     }
     if (s.tuning_cents != null && Math.abs(s.tuning_cents) > 15) html += stat(`${signed(s.tuning_cents)}¢`, t("report.tune"), "warn");
     html += `</div>`;
+    if (s.timing_verdict) html += timingVerdictHtml(s.timing_verdict);
     if (r.passes && r.passes.length > 1) html += `<p class="muted">${esc(t("report.passes"))}: ${r.passes.map(p => `${Math.round(p.score)}%${p.speed ? " @" + Math.round(p.speed * 100) + "%" : ""}`).join(" · ")}</p>`;
   } else {
     html += stat(Math.round(s.score), t("report.score"), s.score >= 85 ? "good" : s.score >= 60 ? "warn" : "bad");
@@ -945,6 +946,7 @@ async function loadSettings() {
   loadReminder();
   loadInstrumentPanel();
   loadSources();
+  loadLatency();
   const [dv, cfg] = await Promise.all([api("/api/devices"), api("/api/config")]);
   if (dv.error) toast(dv.error);
   Settings.devices = dv.inputs;
@@ -984,6 +986,7 @@ function saveSettings() {
       Settings.saved = r.saved;
       $("#sState").innerHTML = `<span class="ok">✓ ${esc(t("settings.saved"))}</span>`;
       refreshDevicePill();
+      loadLatency();
     } catch (e) { $("#sState").textContent = e.message; toast(e.message); }
   }, 350);
 }
@@ -1021,29 +1024,54 @@ function stopTest() {
 }
 function restartTest() { if (Settings.test) { stopTest(); setTimeout(startTest, 300); } }
 $("#sTest").addEventListener("click", () => (Settings.test ? stopTest() : startTest()));
-$("#cStart").addEventListener("click", async () => {
-  stopTest();
-  try {
-    await api("/api/calibrate", { json: {} });
-    $("#cStart").disabled = true;
-    const poll = setInterval(async () => {
-      const s = await api("/api/calibrate");
-      if (s.running) {
-        $("#cStatus").innerHTML = s.warmup
-          ? `<span class="muted">${esc(t("settings.cal_pulse", { beat: s.beat, total: s.total }))}</span>`
-          : `<b style="color:var(--gl-accent)">${esc(t("settings.cal_play", { beat: s.beat, total: s.total }))}</b>`;
-      } else {
+// latency: how it was measured, your own tendency, and warnings about the devices
+async function loadLatency() {
+  const box = $("#latStatus");
+  if (!box) return;
+  let st;
+  try { st = await api("/api/latency"); } catch { box.innerHTML = ""; return; }
+  const lines = [];
+  if (st.applied_ms != null) lines.push(`<b>${esc(t("latency.applied", { ms: Math.round(st.applied_ms) }))}</b> · ${esc(st.method ? t(`latency.how_${st.method}`, { input: st.input || "?", output: st.output || "?" }) : t("latency.how_manual"))}`);
+  if (st.tendency_ms != null) lines.push(esc(t(Math.abs(st.tendency_ms) < 15 ? "latency.tendency_none" : st.tendency_ms < 0 ? "latency.tendency_early" : "latency.tendency_late", { ms: Math.round(Math.abs(st.tendency_ms)) })));
+  const warn = (st.warnings || []).map(w => `<li>${esc(t(`latency.warn_${w.code}`, w.params))}</li>`).join("");
+  box.innerHTML = `<p class="small">${lines.join("<br>")}</p>${warn ? `<ul class="callout warn small lat-warn">${warn}</ul>` : ""}`;
+}
+
+function runCalibration(body, status) {
+  return async () => {
+    stopTest();
+    try {
+      await api("/api/calibrate", { json: body });
+      $("#cStart").disabled = $("#cLoop").disabled = true;
+      const poll = setInterval(async () => {
+        const s = await api("/api/calibrate");
+        if (s.running) {
+          status.innerHTML = s.mode === "loopback"
+            ? `<span class="muted">${esc(t("latency.loop_running", { beat: s.beat, total: s.total }))}</span>`
+            : s.warmup
+              ? `<span class="muted">${esc(t("settings.cal_pulse", { beat: s.beat, total: s.total }))}</span>`
+              : `<b style="color:var(--gl-accent)">${esc(t("settings.cal_play", { beat: s.beat, total: s.total }))}</b>`;
+          return;
+        }
         clearInterval(poll);
-        $("#cStart").disabled = false;
+        $("#cStart").disabled = $("#cLoop").disabled = false;
         const r = s.result || {};
-        $("#cStatus").innerHTML = r.ok
-          ? `<b style="color:var(--gl-ok)">✓ ${esc(t("settings.cal_ok", { ms: Math.round(r.latency_ms), spread: Math.round(r.spread_ms), hits: r.hits }))}</b>`
-          : `<span style="color:var(--gl-err)">${esc(r.code === "too_few_hits" ? t("settings.cal_few_hits") : (r.message || t("settings.cal_failed")))}</span>`;
-        if (r.ok) { $("#sLatency").value = r.latency_ms; Settings.saved.latency_ms = r.latency_ms; }
-      }
-    }, 150);
-  } catch (e) { toast(e.message); }
-});
+        if (r.ok) {
+          const msg = r.method === "loopback" ? t("latency.loop_ok", { ms: Math.round(r.latency_ms), spread: r.spread_ms })
+            : t("settings.cal_ok", { ms: Math.round(r.latency_ms), spread: Math.round(r.spread_ms), hits: r.hits });
+          status.innerHTML = `<b style="color:var(--gl-ok)">✓ ${esc(msg)}</b>`;
+          if (r.status) { $("#sLatency").value = r.status.applied_ms; Settings.saved.latency_ms = r.status.applied_ms; }
+        } else {
+          const known = { too_few_hits: "settings.cal_few_hits", no_loop: "latency.no_loop", loop_unsteady: "latency.loop_unsteady" }[r.code];
+          status.innerHTML = `<span style="color:var(--gl-err)">${esc(known ? t(known) : (r.message || t("settings.cal_failed")))}</span>`;
+        }
+        loadLatency();
+      }, 150);
+    } catch (e) { toast(e.message); }
+  };
+}
+$("#cStart").addEventListener("click", runCalibration({ mode: "play" }, $("#cStatus")));
+$("#cLoop").addEventListener("click", () => runCalibration({ mode: "loopback", channel: +$("#cLoopCh").value }, $("#cStatus"))());
 
 async function refreshDevicePill() {
   try {

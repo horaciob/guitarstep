@@ -122,16 +122,22 @@ def run_tuner_cli(src) -> None:
 
 # ---------------------------------------------------------------- latency calibration
 def calibrate(device, channel: int, output_device=None, bpm: float = 90, beats: int = 12,
-              warmup: int = 4, on_progress=None, stop_event: threading.Event | None = None) -> dict:
+              warmup: int = 4, on_progress=None, stop_event: threading.Event | None = None,
+              loopback: bool = False) -> dict:
     """A click plays; you hit muted strings together with every click. The median of the
     offset (detected onset − click) is the total round-trip latency plus the detector's
-    bias. The first `warmup` clicks are for catching the pulse."""
+    bias. The first `warmup` clicks are for catching the pulse.
+
+    loopback=True: a cable takes the metronome output back into `channel`, and nobody plays, so the
+    offset is the system alone (it can't be negative, and it's very regular)."""
     from .audio_io import Metronome, MicSource
     from .dsp import Detector, Recorder
 
     src = MicSource(device, channel)
     rec = Recorder(src.sr)
-    det = Detector(rec, gate_db=-55, legato=False)
+    det = Detector(rec, gate_db=-60 if loopback else -55, legato=False)
+    if loopback:
+        warmup, bpm = 1, max(bpm, 120)
     beat = 60 / bpm
     t_first = 1.0
     clicks = [(t_first + i * beat, i % 4 == 0) for i in range(warmup + beats)]
@@ -158,14 +164,22 @@ def calibrate(device, channel: int, output_device=None, bpm: float = 90, beats: 
         src.stop()
     offs = []
     for ct, _ in clicks[warmup:]:
-        near = [o - ct for o in onsets if -0.15 <= o - ct <= 0.35]
+        lo, hi = (-0.005, 0.5) if loopback else (-0.15, 0.35)
+        near = [o - ct for o in onsets if lo <= o - ct <= hi]
         if near:
             offs.append(min(near, key=abs))
     if len(offs) < beats // 2:
+        if loopback:
+            return dict(ok=False, code="no_loop", hits=len(offs),
+                        message="The clicks didn't come back. Check the cable, the input channel and its gain.")
         return dict(ok=False, code="too_few_hits", hits=len(offs),
                     message="Not enough hits detected. Raise the gain or play harder, without distortion.")
     offs = np.array(offs)
     med = float(np.median(offs))
     spread = float(np.median(np.abs(offs - med)))
-    return dict(ok=True, code="ok", latency_ms=round(1000 * med, 1), spread_ms=round(1000 * spread, 1), hits=len(offs),
+    if loopback and spread > 0.004:                     # a cable is exact: a wobbly result means it heard something else
+        return dict(ok=False, code="loop_unsteady", hits=len(offs), spread_ms=round(1000 * spread, 1),
+                    message="The returning clicks were irregular. Turn off direct monitoring and lower the input gain.")
+    return dict(ok=True, code="ok", method="loopback" if loopback else "play",
+                latency_ms=round(1000 * med, 1), spread_ms=round(1000 * spread, 1), hits=len(offs),
                 message=f"Latency {1000 * med:.0f} ms (±{1000 * spread:.0f} ms, {len(offs)} hits)")

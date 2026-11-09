@@ -2062,6 +2062,38 @@
    "now_warn": "atención",
    "now_err": "demasiado fuerte",
    "now_low": "muy bajo"
+  },
+  "latency": {
+   "loop_title": "Exacta: con un cable (sin tocar)",
+   "loop_hint": "Conectá un cable desde la salida por donde suena el metrónomo a una entrada libre de tu interfaz. <b>Apagá el monitoreo directo</b> y dejá baja la ganancia de esa entrada (un lazo puede silbar). Mide solo al sistema.",
+   "loop_channel": "Entrada con el cable",
+   "loop_start": "Medir con el cable",
+   "loop_running": "Escuchando volver los clics… {{beat}}/{{total}}",
+   "loop_ok": "Latencia del sistema {{ms}} ms (±{{spread}} ms) — guardada. Ahora “Tocando” te dice tu propia costumbre.",
+   "no_loop": "Los clics no volvieron. Revisá el cable, el canal de entrada y su ganancia.",
+   "loop_unsteady": "Los clics volvieron irregulares. Apagá el monitoreo directo y bajá la ganancia de esa entrada.",
+   "play_title": "Tocando",
+   "applied": "Corrección aplicada: {{ms}} ms",
+   "how_loopback": "medida con cable ({{input}} ← {{output}}): es solo el sistema",
+   "how_play": "medida tocando ({{input}} ← {{output}}): incluye tu propia costumbre",
+   "how_manual": "escrita a mano",
+   "tendency_early": "Tu costumbre: caés {{ms}} ms antes del clic.",
+   "tendency_late": "Tu costumbre: caés {{ms}} ms después del clic.",
+   "tendency_none": "Tu costumbre: justo en el clic.",
+   "warn_two_devices": "El metrónomo suena por {{output}} pero grabás desde {{input}}: dos relojes y más demora. Si podés, elegí la salida de auriculares de tu interfaz para el metrónomo.",
+   "warn_devices_changed": "La latencia se midió con {{input}} ← {{output}}, no con tus aparatos actuales: volvé a medirla.",
+   "warn_never_measured": "La latencia nunca se midió: la calificación del tiempo puede errar por decenas de milisegundos.",
+   "warn_negative": "Una latencia negativa ({{ms}} ms) quiere decir que al calibrar tocaste antes de los clics, y eso esconde tu propia costumbre. Medila con un cable, o calibrá de nuevo esperando cada clic."
+  },
+  "timing_v": {
+   "dir_early": "antes",
+   "dir_late": "después",
+   "steady_system": "Caés {{ms}} ms {{dir}} del clic todas las veces, y muy parejo (±{{spread}} ms en {{n}} golpes). Un desfasaje tan regular suele ser la medición de la latencia, no tu mano.",
+   "steady_you": "Caés {{ms}} ms {{dir}} del clic todas las veces (±{{spread}} ms). La latencia está medida con cable, así que esto es tuyo: escuchá el clic y dejá que él marque.",
+   "unsteady": "Tu tiempo se mueve mucho (±{{spread}} ms en {{n}} golpes): bajá la velocidad hasta que los rasguidos caigan parejos, y después subila.",
+   "slight": "En promedio {{ms}} ms {{dir}} del clic (±{{spread}} ms): es poco. Adelantarse apenas al clic es muy común.",
+   "on_time": "A tiempo: {{signed_ms}} ms en promedio, ±{{spread}} ms en {{n}} golpes.",
+   "fix_link": "Medir la latencia →"
   }
  },
  "content": {

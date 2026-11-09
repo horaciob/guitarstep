@@ -31,3 +31,12 @@ export function bindTakePlayers(root) {
     });
   });
 }
+
+/** "Is it you or the system?": the server's reading of a take's timing, in words, with a way to fix it. */
+export function timingVerdictHtml(v) {
+  if (!v) return "";
+  const p = { ...v.params, dir: t(`timing_v.dir_${v.params.dir}`) };
+  const cls = v.code === "on_time" ? "ok" : v.code === "steady_system" ? "warn" : "";
+  const link = v.code === "steady_system" ? ` <a href="#/settings">${esc(t("timing_v.fix_link"))}</a>` : "";
+  return `<p class="callout small timing-verdict ${cls}">${esc(t(`timing_v.${v.code}`, p))}${link}</p>`;
+}

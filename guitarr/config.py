@@ -59,6 +59,8 @@ def save(data: dict) -> None:
     lines = _table("audio", data.get("audio", {}))
     if data.get("instrument"):
         lines += _table("instrument", data["instrument"])
+    if data.get("latency"):
+        lines += _table("latency", data["latency"])
     if data.get("reminder"):
         lines += _table("reminder", data["reminder"])
     for song, opts in sorted(data.get("songs", {}).items()):

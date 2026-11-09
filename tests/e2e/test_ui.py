@@ -853,3 +853,30 @@ def test_input_meter_has_green_yellow_and_red_zones(app_page):
         expect(meter).to_have_class(re.compile(cls))
         expect(box.locator("[data-lv-now]")).to_contain_text(word)
     expect(meter.locator(".lv-peak")).to_have_class(re.compile("err"))      # the hit that touched the red stays marked
+
+
+def test_latency_status_and_take_timing_verdict(app_page):
+    """Settings say how the latency was measured and warn about the setup; a take says if the offset looks like you."""
+    import json
+    onboarded(app_page)
+    app_page.route("**/api/latency", lambda r: r.fulfill(status=200, content_type="application/json", body=json.dumps({
+        "applied_ms": -13.3, "method": "play", "input": "Volt 2", "output": "MacBook Pro Speakers", "tendency_ms": None,
+        "warnings": [{"code": "two_devices", "params": {"input": "Volt 2", "output": "MacBook Pro Speakers"}},
+                     {"code": "negative", "params": {"ms": -13.3}}]})))
+    go(app_page, "settings")
+    box = app_page.locator("#latStatus")
+    expect(box).to_contain_text("Correction applied: -13 ms")
+    expect(box).to_contain_text("it includes your own habit")
+    expect(box).to_contain_text("two clocks")
+    expect(app_page.locator("#cLoop")).to_be_visible()
+    verdict = {"code": "steady_system", "params": {"ms": 140, "signed_ms": -140, "spread": 22, "n": 8, "dir": "early", "measured": "play"}}
+    _fake_listener(app_page, {"award": {"passed": False, "need": 80}, "summary": {"score": 60, "timing_verdict": verdict}})
+    go(app_page, "lesson/major-scale?ex=g-position")
+    focus = app_page.locator("dialog.ex-focus")
+    expect(focus.locator("#fState")).to_have_text("ready")
+    app_page.keyboard.press(" ")
+    expect(focus.locator("#fState")).to_have_text("playing")
+    app_page.keyboard.press(" ")
+    v = focus.locator(".timing-verdict")
+    expect(v).to_contain_text("140 ms ahead of the click every time")
+    expect(v.locator("a[href='#/settings']")).to_be_visible()

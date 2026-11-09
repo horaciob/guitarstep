@@ -19,7 +19,7 @@ from fastapi import FastAPI, File, Form, HTTPException, UploadFile, WebSocket, W
 from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 
-from .. import __version__, backup, catalog, config, history, plan, progress, reminder, rig, routine, signalcheck
+from .. import __version__, backup, catalog, config, history, latency, plan, progress, reminder, rig, routine, signalcheck
 from ..audio_io import AudioError, FileSource, MicSource, devices
 from ..reference import REFERENCE_EXT, RefOptions, ReferenceError, list_tracks, load_reference
 
@@ -1524,18 +1524,21 @@ def calibrate_start(body: dict | None = None):
     if S.session and S.session.running:
         fail(409, "busy", "Stop practicing first")
     a = audio_settings()
-    bpm = _float((body or {}).get("bpm")) or 90
-    S.calib = dict(running=True, beat=0, total=16, warmup=True, result=None)
+    body = body or {}
+    bpm = _float(body.get("bpm")) or 90
+    loop = body.get("mode") == "loopback"
+    channel = (_int(body.get("channel")) or a.get("channel") or 1) if loop else (a.get("channel") or 1)
+    S.calib = dict(running=True, beat=0, total=13 if loop else 16, warmup=not loop, result=None, mode="loopback" if loop else "play")
 
     def prog(p):
         S.calib.update(p)
 
     def run():
         try:
-            r = calibrate(a.get("device"), a.get("channel") or 1, a.get("output_device"), bpm=bpm,
-                          on_progress=prog)
+            r = calibrate(a.get("device"), channel, a.get("output_device"), bpm=bpm, on_progress=prog, loopback=loop)
             if r["ok"]:
-                config.update_audio(latency_ms=r["latency_ms"])
+                inp, out = _device_names(a)
+                r["status"] = latency.record(r["method"], r["latency_ms"], r["spread_ms"], inp, out)
         except Exception as e:
             r = dict(ok=False, code="error", message=str(e))
         S.calib.update(running=False, result=r)
@@ -1547,6 +1550,24 @@ def calibrate_start(body: dict | None = None):
 @app.get("/api/calibrate")
 def calibrate_state():
     return S.calib
+
+
+def _device_names(a: dict) -> tuple[str | None, str | None]:
+    """The names of the input and of the metronome output (the system default when none is chosen)."""
+    try:
+        import sounddevice as sd
+        from ..audio_io import parse_device
+        inp = sd.query_devices(parse_device(a.get("device")), "input")["name"]
+        out = sd.query_devices(parse_device(a.get("output_device")), "output")["name"]
+        return inp, out
+    except Exception:
+        return None, None
+
+
+@app.get("/api/latency")
+def latency_status():
+    """How the latency correction was measured, your own tendency, and warnings about the current devices."""
+    return latency.status(*_device_names(audio_settings()))
 
 
 # ---------------------------------------------------------------- history

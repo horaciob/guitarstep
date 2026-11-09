@@ -2062,6 +2062,38 @@
    "now_warn": "warning",
    "now_err": "too loud",
    "now_low": "too quiet"
+  },
+  "latency": {
+   "loop_title": "Exact: with a cable (nobody plays)",
+   "loop_hint": "Connect a cable from the output where the metronome sounds into a free input of your interface. Turn <b>off direct monitoring</b> and keep that input's gain low (a loop can whistle). It measures the system alone.",
+   "loop_channel": "Input with the cable",
+   "loop_start": "Measure with the cable",
+   "loop_running": "Listening to the clicks come back… {{beat}}/{{total}}",
+   "loop_ok": "System latency {{ms}} ms (±{{spread}} ms) — saved. Now “Playing along” will tell you your own habit.",
+   "no_loop": "The clicks didn't come back. Check the cable, the input channel and its gain.",
+   "loop_unsteady": "The returning clicks were irregular. Turn off direct monitoring and lower that input's gain.",
+   "play_title": "Playing along",
+   "applied": "Correction applied: {{ms}} ms",
+   "how_loopback": "measured with a cable ({{input}} ← {{output}}): it's the system alone",
+   "how_play": "measured playing along ({{input}} ← {{output}}): it includes your own habit",
+   "how_manual": "typed by hand",
+   "tendency_early": "Your habit: you land {{ms}} ms ahead of the click.",
+   "tendency_late": "Your habit: you land {{ms}} ms behind the click.",
+   "tendency_none": "Your habit: right on the click.",
+   "warn_two_devices": "The metronome plays on {{output}} but you record from {{input}}: two clocks and more delay. If you can, choose your interface's headphone output for the metronome.",
+   "warn_devices_changed": "The latency was measured with {{input}} ← {{output}}, not your current devices: measure again.",
+   "warn_never_measured": "The latency was never measured: timing grades may be off by tens of milliseconds.",
+   "warn_negative": "A negative latency ({{ms}} ms) means you played ahead of the clicks while calibrating, so it hides your own habit. Measure with a cable, or calibrate again waiting for each click."
+  },
+  "timing_v": {
+   "dir_early": "ahead of",
+   "dir_late": "behind",
+   "steady_system": "You land {{ms}} ms {{dir}} the click every time, and very evenly (±{{spread}} ms over {{n}} hits). An offset this regular is usually the latency measurement, not your hand.",
+   "steady_you": "You land {{ms}} ms {{dir}} the click every time (±{{spread}} ms). The latency was measured with a cable, so this one is yours: listen for the click and let it lead.",
+   "unsteady": "Your timing moves around a lot (±{{spread}} ms over {{n}} hits): slow down until the strums land evenly, then speed up.",
+   "slight": "On average {{ms}} ms {{dir}} the click (±{{spread}} ms): small. Landing slightly ahead of a click is very common.",
+   "on_time": "On time: {{signed_ms}} ms on average, ±{{spread}} ms over {{n}} hits.",
+   "fix_link": "Measure the latency →"
   }
  },
  "content": {}

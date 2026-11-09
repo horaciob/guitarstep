@@ -248,7 +248,16 @@
       </div>
       <div class="panel">
         <h2 data-i18n="settings.calibrate_title">Calibrate latency</h2>
-        <p class="muted" data-i18n-html="settings.calibrate_hint">You'll hear 4 clicks to catch the pulse and then 12 more. Hit the <b>muted</b> strings (a short pick stroke) right on every click. Use headphones.</p>
+        <div id="latStatus" class="lat-status" aria-live="polite"></div>
+        <h3 data-i18n="latency.loop_title">Exact: with a cable (nobody plays)</h3>
+        <p class="muted small" data-i18n-html="latency.loop_hint">Connect a cable from the output where the metronome sounds into a free input of your interface. Turn <b>off direct monitoring</b> and keep that input's gain low (a loop can whistle). It measures the system alone.</p>
+        <div class="row left wrap">
+          <label class="field" style="margin:0"><span data-i18n="latency.loop_channel">Input with the cable</span>
+            <select id="cLoopCh"><option value="1">1</option><option value="2" selected>2</option></select></label>
+          <button class="btn" id="cLoop" data-i18n="latency.loop_start">Measure with the cable</button>
+        </div>
+        <h3 data-i18n="latency.play_title">Playing along</h3>
+        <p class="muted small" data-i18n-html="settings.calibrate_hint">You'll hear 4 clicks to catch the pulse and then 12 more. Hit the <b>muted</b> strings (a short pick stroke) right on every click. Use headphones.</p>
         <button class="btn primary" id="cStart" data-i18n="settings.calibrate_start">Start calibration</button>
         <div id="cStatus" style="margin-top:14px;font-size:16px"></div>
         <h3 data-i18n="settings.tips">Tips</h3>

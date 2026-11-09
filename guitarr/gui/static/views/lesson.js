@@ -6,7 +6,7 @@ import { runAnswers, say } from "../lib/answer.js";
 import { neck } from "../lib/fretboard.js";
 import { linkTerms, loadGlossary, metersHtml, openTerms, stepperHtml } from "../lib/flow.js";
 import { chipsHtml } from "../lib/chips.js";
-import { bindTakePlayers, takePlayer } from "../lib/take.js";
+import { bindTakePlayers, takePlayer, timingVerdictHtml } from "../lib/take.js";
 import { hearBar, rhythmSvg } from "../lib/notation.js";
 import { staffSvg } from "../lib/staff.js";
 import { tabText } from "../lib/tab.js";
@@ -460,7 +460,8 @@ function showOutcome(el, segs, ls, ex, chordData, exTitle, rep) {
   if (score != null) showResult($(".f-result", dlg), Math.round(score), !!a.passed, a.need ?? ex.min, a.xp);
   const take = $(".f-take", dlg);
   if (take) {
-    take.innerHTML = rep.take ? `<span class="muted small">${esc(t("take.listen"))}</span>${takePlayer(rep.take.split("/").pop(), rep.take_info)}` : "";
+    take.innerHTML = timingVerdictHtml(rep.summary && rep.summary.timing_verdict)
+      + (rep.take ? `<span class="muted small">${esc(t("take.listen"))}</span>${takePlayer(rep.take.split("/").pop(), rep.take_info)}` : "");
     bindTakePlayers(take);
   }
   if (a.passed && focus && (a.variant || a.tested_out)) {   // not the plain exercise: no "next", just refresh later
