@@ -241,7 +241,7 @@ bass world and bass drills stay out). The text is ours, rewritten in English wit
 99. **CAGED** ✅. The five shapes of one chord, connecting them, and the minor shapes.
 100. **Harmonic function by ear** ✅. Tonic, subdominant and dominant; hear the degree after the tonic;
      cadences by ear and by name; secondary dominants and borrowed chords.
-101. **Guitar technique** (M). Alternate picking, palm mute, economy picking and string skipping, legato, a
+101. **Guitar technique** ✅. Alternate picking, palm mute, economy picking and string skipping, legato, a
      tuned bend, sweep arpeggios, barre shapes on E and A, tapping.
 102. **The neck, note by note** (S). Name the marked note, the 12th fret repeat, octaves as a shortcut.
 103. **Daily warm-up** (M). Spider, pentatonic boxes, three-notes-per-string major, arpeggios, octaves, CAGED,

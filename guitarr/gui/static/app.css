@@ -948,6 +948,7 @@ body.is-setup #main { margin: 0 auto; max-width: 760px; padding-top: 48px; }
 .gl .rhythm-svg .rs-tuplet { fill: none; stroke: currentColor; stroke-width: 1.4; }
 .gl .rhythm-svg .rs-tnum, .gl .rhythm-svg .rs-count, .gl .rhythm-svg .rs-mark { fill: currentColor; font-size: 13px; text-anchor: middle; font-weight: 700; }
 .gl .rhythm-svg .rs-count { fill: var(--muted); font-weight: 600; }
+.gl .rhythm-svg .rs-tech { fill: currentColor; font-size: 15px; font-weight: 800; text-anchor: middle; }
 .gl .rhythm-svg .rs-ts { fill: currentColor; font-size: 24px; font-weight: 800; text-anchor: middle; }
 .gl .rhythm-svg .nt.on { color: var(--gl-accent); }
 .gl .rhythm-svg .nt.g-perfect, .gl .rhythm-svg .nt.g-good { color: var(--gl-ok); }

@@ -26,10 +26,11 @@ export const onsetsOf = pattern => parseRhythm(pattern).filter(e => !e.rest).map
 const EPS = 1e-6;
 
 /**
- * The SVG for one bar. opts: { width, label, beatNumbers } — every note is a <g class="nt" data-k>
- * (k = index among notes) so a take can mark it later with markHits().
+ * The SVG for one bar. opts: { width, label, beatNumbers, marks } — every note is a <g class="nt" data-k>
+ * (k = index among notes) so a take can mark it later with markHits(). marks: one technique sign per note
+ * (⊓ down, V up, PM palm mute, "" none), written above it.
  */
-export function rhythmSvg(pattern, { width = 520, label = "", beatNumbers = true, timeSig = true } = {}) {
+export function rhythmSvg(pattern, { width = 520, label = "", beatNumbers = true, timeSig = true, marks = null } = {}) {
   const evs = parseRhythm(pattern);
   const H = 120, mid = 70, left = timeSig ? 58 : 22, right = 18;
   const span = width - left - right;
@@ -66,6 +67,7 @@ export function rhythmSvg(pattern, { width = 520, label = "", beatNumbers = true
       if (e.fig === "s") s += flag(cx + 7.6, stemTop + 9);
     }
     if (e.dotted) s += `<circle cx="${cx + 16}" cy="${mid - 3}" r="2.6" class="rs-dot"/>`;
+    if (marks && marks[k]) s += `<text x="${cx + 4}" y="${stemTop - 8}" class="rs-tech">${esc(marks[k])}</text>`;
     s += `<text x="${cx}" y="${mid + 30}" class="rs-mark"></text></g>`;
     k++;
   });

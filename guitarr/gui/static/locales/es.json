@@ -1542,7 +1542,112 @@
    "secondary_of": "En {{key}} mayor, ¿cuál es el V7 de {{chord}} ({{roman}})?",
    "secondary_goes": "En {{key}} mayor, ¿adónde quiere ir {{chord}}?",
    "borrowed_which": "En {{key}} mayor, ¿qué acorde es el {{roman}} prestado?",
-   "progression_of": "En {{key}}: {{chords}}. ¿Qué grados son?"
+   "progression_of": "En {{key}}: {{chords}}. ¿Qué grados son?",
+   "tech_economy": "Púa económica: después de un golpe hacia abajo pasás a la cuerda siguiente (más aguda). El próximo golpe es…",
+   "tech_economy_up": "Hacia arriba",
+   "tech_economy_down": "Hacia abajo, siguiendo el mismo movimiento",
+   "tech_economy_finger": "Con un dedo",
+   "tech_economy_either": "Da igual",
+   "tech_third_sixteenth": "Semicorcheas con púa alternada: el \"y\" (la 3ª semicorchea del tiempo) va…",
+   "tech_third_sixteenth_down": "Hacia abajo",
+   "tech_third_sixteenth_up": "Hacia arriba",
+   "tech_third_sixteenth_muted": "Apagada",
+   "tech_third_sixteenth_hammer": "Con hammer-on",
+   "tech_skip_care": "Al saltar cuerdas, lo que más hay que cuidar es…",
+   "tech_skip_care_silent": "Que la cuerda saltada no suene",
+   "tech_skip_care_upstrokes": "Usar solo golpes hacia arriba",
+   "tech_skip_care_harder": "Tocar más fuerte",
+   "tech_skip_care_retune": "Afinar en el medio",
+   "tech_rests_moving": "¿Por qué la mano de la púa sigue moviéndose en los silencios?",
+   "tech_rests_moving_noise": "Para hacer ruido",
+   "tech_rests_moving_direction": "Para no perder la dirección de la púa",
+   "tech_rests_moving_rest": "Para descansar la mano",
+   "tech_rests_moving_no_need": "No hace falta",
+   "tech_motion": "¿Qué movimiento es el más eficiente para la púa?",
+   "tech_motion_shoulder": "Todo el brazo, desde el hombro",
+   "tech_motion_wrist": "Chico, desde la muñeca",
+   "tech_motion_fingers": "Solo los dedos",
+   "tech_motion_big": "Grande y lento",
+   "tech_strokes": "En \"5h7p5\", ¿cuántos golpes de púa hay?",
+   "tech_strokes_one": "Uno",
+   "tech_strokes_two": "Dos",
+   "tech_strokes_three": "Tres",
+   "tech_strokes_none": "Ninguno",
+   "tech_hammer_where": "¿Dónde cae el dedo en un hammer-on?",
+   "tech_hammer_where_middle": "En el medio del traste",
+   "tech_hammer_where_behind": "Justo detrás del traste",
+   "tech_hammer_where_on_top": "Encima del traste",
+   "tech_hammer_where_anywhere": "En cualquier lado",
+   "tech_pull_where": "¿Hacia dónde tira el dedo en un pull-off?",
+   "tech_pull_where_straight": "Derecho hacia arriba, soltando",
+   "tech_pull_where_sideways": "Un poco de costado (hacia el piso)",
+   "tech_pull_where_away": "Lejos del mástil",
+   "tech_pull_where_none": "No tira",
+   "tech_enemy": "¿Cuál es el peor enemigo de un legato limpio?",
+   "tech_enemy_ringing": "Las cuerdas vecinas sonando",
+   "tech_enemy_thick_pick": "Una púa gruesa",
+   "tech_enemy_metronome": "El metrónomo",
+   "tech_enemy_tuning": "La afinación",
+   "tech_volume": "Las notas ligadas tienen que sonar…",
+   "tech_volume_quieter": "Mucho más bajo",
+   "tech_volume_even": "Más o menos tan fuerte como las tocadas con púa",
+   "tech_volume_muted": "Apagadas",
+   "tech_volume_end": "Solo al final de la frase",
+   "tech_whole_step": "Un bend de un tono en el traste 7 de la cuerda Sol tiene que sonar como…",
+   "tech_whole_step_f8": "El traste 8",
+   "tech_whole_step_f9": "El traste 9",
+   "tech_whole_step_f10": "El traste 10",
+   "tech_whole_step_f7": "El traste 7",
+   "tech_half_step": "Un bend de medio tono en el traste 10 suena como el traste…",
+   "tech_half_step_f10": "10",
+   "tech_half_step_f11": "11",
+   "tech_half_step_f12": "12",
+   "tech_half_step_f9": "9",
+   "tech_check": "¿Cómo comprobás que un bend está afinado?",
+   "tech_check_size": "Por cuánto se mueve la cuerda",
+   "tech_check_compare": "Tocando la nota objetivo pisada y comparando",
+   "tech_check_no_need": "No hace falta",
+   "tech_check_metronome": "Con el metrónomo",
+   "tech_force": "¿De dónde sale la fuerza del bend?",
+   "tech_force_finger3": "Solo del dedo 3",
+   "tech_force_wrist": "Del giro de la muñeca, con los dedos ayudando",
+   "tech_force_arm": "De todo el brazo",
+   "tech_force_thumb": "Del pulgar de la mano derecha",
+   "tech_vibrato": "El vibrato es…",
+   "tech_vibrato_small_bends": "Un bend chico repetido a tiempo",
+   "tech_vibrato_slide": "Un slide rápido",
+   "tech_vibrato_harmonic": "Un armónico",
+   "tech_vibrato_ghost": "Una ghost note",
+   "tech_tap_sounds": "En el tapping, la nota que golpea la mano derecha suena como…",
+   "tech_tap_sounds_hammer": "Un hammer-on",
+   "tech_tap_sounds_bend": "Un bend",
+   "tech_tap_sounds_mute": "Un palm mute",
+   "tech_tap_sounds_upstroke": "Un golpe hacia arriba",
+   "tech_middle_finger": "¿Por qué mucha gente hace tapping con el dedo mayor?",
+   "tech_middle_finger_stronger": "Es más fuerte",
+   "tech_middle_finger_keep_pick": "La púa sigue entre el pulgar y el índice",
+   "tech_middle_finger_brighter": "Suena más brillante",
+   "tech_middle_finger_habit": "Pura tradición",
+   "tech_speed": "La mejor forma de ganar velocidad es…",
+   "tech_speed_max": "Tocar siempre lo más rápido posible",
+   "tech_speed_step_up": "Subir de a poco desde el tempo en que sale limpio",
+   "tech_speed_no_click": "Practicar sin metrónomo",
+   "tech_speed_legato": "Tocar solo legato",
+   "tech_chug": "¿Qué técnica le da el \"chug\" a un riff de metal?",
+   "tech_chug_vibrato": "Vibrato",
+   "tech_chug_palm_mute": "Palm mute",
+   "tech_chug_sweep": "Sweep",
+   "tech_chug_slide": "Slide",
+   "tech_sweep_notes": "En un arpegio barrido, cada nota tiene que…",
+   "tech_sweep_notes_together": "Sonar junto con las demás",
+   "tech_sweep_notes_separate": "Sonar sola, como en una melodía",
+   "tech_sweep_notes_muted": "Estar apagada",
+   "tech_sweep_notes_bent": "Llevar bend",
+   "tech_barre_finger": "En una cejilla, el dedo 1 funciona mejor…",
+   "tech_barre_finger_middle": "En el medio del traste",
+   "tech_barre_finger_near_fret": "Cerca del traste, de costado",
+   "tech_barre_finger_on_fret": "Encima del traste",
+   "tech_barre_finger_tip": "Con la punta"
   },
   "flow": {
    "label": "Los pasos de esta lección",
@@ -2058,6 +2163,10 @@
    "n20": {
     "title": "Función armónica",
     "subtitle": "Qué hace cada acorde, por nombre y de oído: cadencias, dominantes secundarias, acordes prestados."
+   },
+   "n21": {
+    "title": "Técnica de guitarra",
+    "subtitle": "Púa alternada y económica, palm mute, legato, bends, sweep y tapping."
    }
   },
   "lessons": {
@@ -3590,6 +3699,109 @@
      "¿Ves un acorde con bemol en un tono de sostenidos (o un acorde menor en el IV)? Pensá en un préstamo de la menor paralela."
     ],
     "tutorials": []
+   },
+   "alternate-picking": {
+    "title": "Púa alternada",
+    "theory": [
+     "Con púa alternada cada nota cambia la dirección de la púa: hacia abajo (⊓) y hacia arriba (V). En semicorcheas la regla es simple: en el tiempo y en el \"y\" la púa baja; en la \"e\" y la \"a\" (las semicorcheas de adentro) sube.",
+     "Agarrá la púa entre el pulgar y el costado del índice, con poca punta afuera. El movimiento es chico y sale de la muñeca, como sacudir una gota de agua."
+    ],
+    "tips": [
+     "Cuando hay un silencio, la mano sigue subiendo y bajando en el aire: así nunca perdés la dirección de la nota siguiente."
+    ],
+    "tutorials": [
+     "ejercicios púa alternada guitarra principiante"
+    ],
+    "captions": [
+     "Semicorcheas: ⊓ V ⊓ V ⊓ V ⊓ V."
+    ]
+   },
+   "palm-mute": {
+    "title": "Palm mute",
+    "theory": [
+     "En el palm mute (P.M.) el costado de la mano de la púa se apoya suave sobre las cuerdas, justo encima del puente. La nota sale corta y grave, con ese \"chug\". Muy adelante, la nota desaparece; muy atrás, no apaga nada.",
+     "El contraste entre notas apagadas y abiertas es lo que le da peso a un riff: las abiertas salen como acentos."
+    ],
+    "tips": [
+     "Usá golpes hacia abajo en las corcheas apagadas: el sonido queda más firme y parejo."
+    ],
+    "tutorials": [
+     "técnica palm mute guitarra"
+    ],
+    "captions": [
+     "Corcheas apagadas (PM) y una negra abierta al final."
+    ]
+   },
+   "economy-skipping": {
+    "title": "Púa económica y salto de cuerdas",
+    "theory": [
+     "Púa económica: cuando cambiás de cuerda en la misma dirección del golpe, la púa sigue de largo a la cuerda siguiente en vez de volver. Bajando de la 5ª cuerda a la 4ª, la última nota de la 5ª y la primera de la 4ª salen las dos hacia abajo, en un solo movimiento.",
+     "Saltar cuerdas es pasar por encima de una cuerda (o más) entre notas. Pide puntería con la púa y apagado: la cuerda saltada no puede sonar."
+    ],
+    "tips": [
+     "Con púa alternada estricta la mano nunca cambia el patrón; con la económica se desliza. Las dos sirven; lo que importa es saber cuál estás usando."
+    ],
+    "tutorials": [],
+    "captions": []
+   },
+   "legato": {
+    "title": "Legato",
+    "theory": [
+     "Legato es tocar varias notas con un solo golpe de púa y hacer el resto con la mano izquierda: hammer-on (h) para subir, pull-off (p) para bajar. El sonido fluye, como una voz cantando.",
+     "Hammer-on: bajá el dedo con firmeza, justo detrás del traste. Pull-off: al salir, tirá la cuerda un poco de costado (hacia el piso). Las notas ligadas tienen que sonar tan fuerte como la tocada con púa."
+    ],
+    "tips": [
+     "Apagá las cuerdas vecinas: en el legato cualquier cuerda suelta que roce suena junto."
+    ],
+    "tutorials": [
+     "ejercicios legato hammer on pull off guitarra"
+    ],
+    "captions": [
+     "Tresillos: púa solo en la primera de cada grupo, las otras dos ligadas."
+    ]
+   },
+   "bends-vibrato": {
+    "title": "Bends y vibrato",
+    "theory": [
+     "Un bend empuja (o tira) la cuerda de costado hasta que la nota sube. Un bend de un tono tiene que llegar justo a la nota dos trastes arriba; uno de medio tono, a la nota un traste arriba. Probalo: tocá la nota objetivo pisada, después hacé el bend y compará.",
+     "Usá más de un dedo: el dedo 3 empuja y los dedos 1 y 2 ayudan detrás, en la misma cuerda. La fuerza sale del giro de la muñeca, no de los dedos.",
+     "El vibrato es un bend chico repetido: sube y vuelve a la nota, con un ritmo parejo. Ancho y lento o angosto y rápido, es la firma de cada guitarrista."
+    ],
+    "tips": [
+     "Dejá que el oyente sea el juez: solo cuenta el bend cuando llega a la altura objetivo."
+    ],
+    "tutorials": [],
+    "captions": []
+   },
+   "sweep-picking": {
+    "title": "Sweep picking",
+    "theory": [
+     "El sweep es la púa económica llevada al extremo: un arpegio con una nota por cuerda tocado con un solo movimiento de la púa, barriendo las cuerdas. Hacia las agudas todo va hacia abajo; de vuelta, todo hacia arriba.",
+     "El truco está en la mano izquierda: cada dedo pisa su nota solo mientras suena y la suelta enseguida (rodando el dedo cuando dos notas comparten traste). Si no, el arpegio se vuelve un acorde."
+    ],
+    "tips": [
+     "Empezá con tres cuerdas, muy despacio, comprobando que cada nota suene sola."
+    ],
+    "tutorials": [
+     "sweep picking para principiantes arpegios de tres cuerdas"
+    ],
+    "captions": [
+     "Lam en el traste 5: las notas del arpegio para barrer."
+    ]
+   },
+   "tapping-speed": {
+    "title": "Tapping y velocidad",
+    "theory": [
+     "En el tapping, un dedo de la mano de la púa (casi siempre el mayor, para que la púa quede en su lugar) golpea un traste alto y hace pull-off a una nota de la mano izquierda. Así aparecen saltos grandes que una sola mano no alcanza.",
+     "La velocidad se construye así: encontrá el tempo en que sale limpio, tocalo perfecto varias veces y subí 4 o 5 BPM. Si se ensucia, volvé un paso."
+    ],
+    "tips": [
+     "El entrenador de velocidad en Practicar sube el tempo por vos: lo aumenta después de cada pasada limpia."
+    ],
+    "tutorials": [
+     "tapping guitarra para principiantes"
+    ],
+    "captions": []
    }
   },
   "exercises": {
@@ -3844,7 +4056,20 @@
    "secondary-dominants/a7-dm": "A7 → Dm: una dominante que resuelve",
    "secondary-dominants/e7-am": "E7 → Am",
    "borrowed-chords/borrowed-quiz": "¿Qué acorde es prestado?",
-   "borrowed-chords/f-fm": "F → Fm: el iv menor"
+   "borrowed-chords/f-fm": "F → Fm: el iv menor",
+   "alternate-picking/alt-pick-play": "Púa alternada en el Mi grave",
+   "alternate-picking/picking-quiz": "Cómo trabaja la mano de la púa",
+   "palm-mute/pm-play": "Chug en el Mi grave",
+   "economy-skipping/skip-octaves": "Octavas, saltando una cuerda",
+   "economy-skipping/economy-quiz": "Económica, alternada y saltos",
+   "legato/legato-lick": "Hammer y pull en la pentatónica menor de La",
+   "legato/legato-quiz": "Legato limpio",
+   "bends-vibrato/bends-quiz": "Bends afinados",
+   "bends-vibrato/half-bend": "Bend de medio tono: cuerda Si, traste 10 → Si♭",
+   "sweep-picking/sweep-am": "Barré Lam en tres cuerdas, ida y vuelta",
+   "sweep-picking/sweep-g": "Barré Sol en tres cuerdas, ida y vuelta",
+   "tapping-speed/tap-lick": "Golpeá el 12, pull al 5, hammer al 8",
+   "tapping-speed/tech-review": "¿Qué técnica, cuándo?"
   },
   "charts": {
    "01-em-am": {

@@ -522,6 +522,41 @@ def q_progression(rng, ex):
     return _q(L("progression_of", key=key + ("m" if mode == "minor" else ""), chords=" – ".join(chords)), ch, ans)
 
 
+# ---------------------------------------------------------------- technique
+# (question, its options, the right one): the text lives in quiz.tech_<question> and quiz.tech_<question>_<option>
+TECHNIQUE = {
+    "picking": [("economy", ["up", "down", "finger", "either"], "down"),
+                ("third_sixteenth", ["down", "up", "muted", "hammer"], "down"),
+                ("skip_care", ["silent", "upstrokes", "harder", "retune"], "silent"),
+                ("rests_moving", ["noise", "direction", "rest", "no_need"], "direction"),
+                ("motion", ["shoulder", "wrist", "fingers", "big"], "wrist")],
+    "legato": [("strokes", ["one", "two", "three", "none"], "one"),
+               ("hammer_where", ["middle", "behind", "on_top", "anywhere"], "behind"),
+               ("pull_where", ["straight", "sideways", "away", "none"], "sideways"),
+               ("enemy", ["ringing", "thick_pick", "metronome", "tuning"], "ringing"),
+               ("volume", ["quieter", "even", "muted", "end"], "even")],
+    "bends": [("whole_step", ["f8", "f9", "f10", "f7"], "f9"),
+              ("half_step", ["f10", "f11", "f12", "f9"], "f11"),
+              ("check", ["size", "compare", "no_need", "metronome"], "compare"),
+              ("force", ["finger3", "wrist", "arm", "thumb"], "wrist"),
+              ("vibrato", ["small_bends", "slide", "harmonic", "ghost"], "small_bends")],
+    "tapping": [("tap_sounds", ["hammer", "bend", "mute", "upstroke"], "hammer"),
+                ("middle_finger", ["stronger", "keep_pick", "brighter", "habit"], "keep_pick"),
+                ("speed", ["max", "step_up", "no_click", "legato"], "step_up"),
+                ("chug", ["vibrato", "palm_mute", "sweep", "slide"], "palm_mute"),
+                ("sweep_notes", ["together", "separate", "muted", "bent"], "separate"),
+                ("barre_finger", ["middle", "near_fret", "on_fret", "tip"], "near_fret")],
+}
+
+
+def q_technique(rng, ex):
+    """How the hands do it: picking, legato, bends, tapping (or a mix of topics)."""
+    topics = ex.get("topics") or list(TECHNIQUE)
+    code, opts, right = rng.choice([f for tp in topics for f in TECHNIQUE[tp]])
+    ch, ans = _choices(rng, right, opts, label=lambda x: L(f"tech_{code}_{x}"))
+    return _q(L(f"tech_{code}"), ch, ans)
+
+
 # ---------------------------------------------------------------- CAGED
 def q_caged(rng, ex):
     """The order of the shapes, which chord a moved shape makes, and which string holds each root."""
@@ -542,7 +577,7 @@ def q_caged(rng, ex):
     return _q(L("caged_string", shape=shape), ch, ans)
 
 
-QUIZ = {f.__name__[2:]: f for f in [q_function, q_hear_degree, q_cadence, q_secondary, q_borrowed, q_progression, q_caged, q_read_note, q_staff_fact, q_figure_value, q_rhythm_dictation, q_tritone_sub, q_shared_tones, q_ii_v_i, q_turnaround,q_interval_frets, q_interval_ear, q_enharmonic, q_half_step, q_tab_read, q_open_string,
+QUIZ = {f.__name__[2:]: f for f in [q_technique, q_function, q_hear_degree, q_cadence, q_secondary, q_borrowed, q_progression, q_caged, q_read_note, q_staff_fact, q_figure_value, q_rhythm_dictation, q_tritone_sub, q_shared_tones, q_ii_v_i, q_turnaround,q_interval_frets, q_interval_ear, q_enharmonic, q_half_step, q_tab_read, q_open_string,
                                      q_scale_degree, q_relative_minor, q_hear_quality, q_mode_color, q_chord_tones,
                                      q_chord_formula, q_inversion, q_roman, q_pentatonic, q_symmetric, q_bebop, q_altered,
                                      q_guide_tones, q_drop, q_extension, q_voice_lead]}
@@ -686,12 +721,14 @@ def play_items(rng, ex) -> list[dict]:
         out.append(echo_phrase(rng, ex))
     elif ex["kind"] == "rhythm":                          # read the bars, play them on one open string
         pats, k = list(ex["patterns"]), int(ex.get("count", 4))
-        bars = (pats * (k // len(pats) + 1))[:k] if ex.get("in_order") else [rng.choice(pats) for _ in range(k)]
+        idx = [i % len(pats) for i in range(k)] if ex.get("in_order") else [rng.randrange(len(pats)) for _ in range(k)]
+        bars = [pats[i] for i in idx]
         pitch, timed = int(ex.get("pitch", 40)), []
         for i, p in enumerate(bars):
             timed += rh.timed(p, pitch, start=4.0 * i)
         out.append(dict(prompt=L("rhythm_play", count=len(bars), string=6), notes=[x["pitch"] for x in timed], timed=timed,
-                        bars=bars, reveal=L("rhythm_bars", count=len(bars))))
+                        bars=bars, reveal=L("rhythm_bars", count=len(bars)),
+                        marks=[ex["marks"][i] for i in idx] if ex.get("marks") else None))
     elif ex["kind"] == "read_play":                       # read it on the staff, play it at that exact height
         last = None
         for _ in range(n):
@@ -749,8 +786,9 @@ def draw(lid: str, ex: dict, need: float, seed: int | None = None) -> dict:
                                           **({"staff": it["staff"]} if it.get("staff") else {})) for it in items])
         if timed and kind == "echo":                      # the phrase the app plays for you to echo
             out.update(phrase=timed, bpm=float(ex.get("bpm", 80)))
-        if kind == "rhythm":                              # the bars to read while you play
-            out.update(bars=[b for it in items for b in it["bars"]], bpm=float(ex.get("bpm", 70)))
+        if kind == "rhythm":                              # the bars to read while you play (and how to pick them)
+            out.update(bars=[b for it in items for b in it["bars"]], bpm=float(ex.get("bpm", 70)),
+                       marks=[m for it in items for m in (it["marks"] or [])] or None)
         return out
     else:
         raise QuizError(f"Exercise kind '{kind}' isn't drawn")

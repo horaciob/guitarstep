@@ -546,7 +546,9 @@ def test_lesson_steps_glossary_guidance_and_review_link(app_page):
 def test_level_recap_and_test_out_entry(app_page):
     onboarded(app_page)
     go(app_page, "course")
-    expect(app_page.locator(".lesson", has_text="Level 9 recap")).to_be_visible()
+    from guitarr import catalog
+    number = next(lv["number"] for lv in catalog.course()["levels"] if lv["id"] == "n8")   # levels get inserted
+    expect(app_page.locator(".lesson", has_text=f"Level {number} recap")).to_be_visible()
     go(app_page, "lesson/recap-n8")
     expect(app_page.locator(".exercise").first).to_contain_text("Half steps, whole steps and two names")
     expect(app_page.locator("#testOut")).to_have_count(0)                   # a recap can't be skipped

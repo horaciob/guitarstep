@@ -83,3 +83,14 @@ def test_reading_rhythm_levels_sit_in_the_course():
     ids = [ls["id"] for ls in catalog.lessons()]
     assert ids.index("pulse") < ids.index("blues")
     assert ids.index("sixteenths") > ids.index("degree-map")
+
+
+def test_technique_marks_follow_the_bars_you_read():
+    ls = catalog.get_lesson("alternate-picking")
+    ex = ls["exercises"][0]
+    d = quiz.draw(ls["id"], ex, 70, seed=4)
+    assert len(d["marks"]) == len(d["bars"])
+    for bar, marks in zip(d["bars"], d["marks"]):
+        assert marks == ex["marks"][ex["patterns"].index(bar)] and len(marks) == len(rh.onsets(bar))
+    for e in (x for lv in catalog.course()["levels"] for l in lv["lessons"] for x in l["exercises"] if x.get("marks")):
+        assert all(len(m) == len(rh.onsets(p)) for p, m in zip(e["patterns"], e["marks"]))

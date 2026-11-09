@@ -177,7 +177,7 @@ export async function mount(el, { segs, params = {} }) {
     else if (f.type === "fretboard") neck(box, { lo: f.lo, hi: f.hi, marks: f.marks, label: captions[+fig.dataset.fig] || "" });
     else if (f.type === "staff") box.innerHTML = staffSvg(f.notes, { names: true, label: captions[+fig.dataset.fig] || "" });
     else if (f.type === "rhythm") {                    // a bar of rhythm you can hear, each note lighting up in time
-      box.innerHTML = `<div class="rhythm-fig">${rhythmSvg(f.pattern, { label: captions[+fig.dataset.fig] || "" })}</div>
+      box.innerHTML = `<div class="rhythm-fig">${rhythmSvg(f.pattern, { label: captions[+fig.dataset.fig] || "", marks: f.marks })}</div>
         <button class="btn small" data-hear-rhythm>♪ ${esc(t("rhythm.hear_bar"))}</button>`;
       $("[data-hear-rhythm]", box).onclick = () => hearBar($(".rhythm-fig", box), f.pattern, f.bpm || 70);
     }
@@ -589,7 +589,8 @@ async function run(el, segs, ls, ex, chordData, exTitle) {
     catch (e) { return toast(e.message); }
     now.setItems(d.items);
     const barsBox = $(".rhythm-bars", dlg);
-    if (barsBox && d.bars) barsBox.innerHTML = d.bars.map((b, k) => rhythmSvg(b, { width: 360, timeSig: k === 0, label: t("rhythm.bar_n", { n: k + 1 }) })).join("");
+    if (barsBox && d.bars) barsBox.innerHTML = d.bars.map((b, k) => rhythmSvg(b, { width: 360, timeSig: k === 0, label: t("rhythm.bar_n", { n: k + 1 }),
+      marks: d.marks && d.marks[k] })).join("");
     if (d.phrase) {                               // melodic echo: hear the phrase first, then play it back
       const goBtn = $("[data-f=go]", dlg), m = $(".ex-msg", dlg);
       goBtn.disabled = true;
