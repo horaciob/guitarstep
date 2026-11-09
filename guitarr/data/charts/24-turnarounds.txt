@@ -1,5 +1,4 @@
 title: Three turnarounds in C
-level: 8
 bpm: 100
 swing: light
 voicing: drop2

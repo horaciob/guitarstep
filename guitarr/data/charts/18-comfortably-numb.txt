@@ -1,6 +1,5 @@
 title: Comfortably Numb
 artist: Pink Floyd
-level: 5
 bpm: 64
 time: 4/4
 strum: D...D.DU

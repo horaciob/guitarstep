@@ -517,7 +517,8 @@
    "not_heard": "I didn't hear {{chord}}. Check the input in Settings and try again.",
    "diagram_label": "{{chord}} chord",
    "camera_link": "Check with the camera",
-   "standard_note": "These diagrams are in standard tuning (your instrument is set to another tuning)."
+   "standard_note": "These diagrams are in standard tuning (your instrument is set to another tuning).",
+   "taught_in": "Taught in level {{n}}: {{lesson}}"
   },
   "charts": {
    "title": "Charts",

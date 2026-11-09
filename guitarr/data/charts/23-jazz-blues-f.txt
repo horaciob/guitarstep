@@ -1,5 +1,4 @@
 title: Jazz blues in F
-level: 8
 bpm: 110
 swing: light
 voicing: shell

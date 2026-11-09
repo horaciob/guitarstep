@@ -1,5 +1,4 @@
 title: Three choruses in A, with an ending
-level: 6
 bpm: 92
 time: 4/4
 strum: D.DUD.DU

@@ -1,5 +1,4 @@
 title: Power-chord rock
-level: 3
 bpm: 116
 time: 4/4
 strum: DDDDDDDD

@@ -1,5 +1,4 @@
 title: Three major chords: D, A and E
-level: 1
 bpm: 76
 time: 4/4
 strum: D.D.DUDU

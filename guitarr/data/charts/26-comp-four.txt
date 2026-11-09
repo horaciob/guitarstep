@@ -1,5 +1,4 @@
 title: Comping: four to the bar
-level: 8
 bpm: 110
 swing: light
 voicing: drop2

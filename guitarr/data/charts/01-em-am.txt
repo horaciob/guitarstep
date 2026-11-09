@@ -1,5 +1,4 @@
 title: First change: Em and Am
-level: 1
 bpm: 70
 time: 4/4
 strum: D.D.D.D.

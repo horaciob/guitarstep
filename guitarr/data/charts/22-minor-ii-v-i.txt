@@ -1,5 +1,4 @@
 title: Minor ii–V–i in A, D and G minor
-level: 8
 bpm: 96
 swing: light
 voicing: drop2

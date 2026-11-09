@@ -1,5 +1,4 @@
 title: Pop in G: I–V–vi–IV
-level: 2
 bpm: 90
 time: 4/4
 strum: D.DU.UDU

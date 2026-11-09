@@ -1,5 +1,4 @@
 title: Eight-bar blues in A
-level: 6
 bpm: 88
 time: 4/4
 strum: D.DUD.DU

@@ -1,5 +1,4 @@
 title: Comping: anticipations
-level: 8
 bpm: 104
 swing: light
 voicing: drop2

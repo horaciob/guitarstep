@@ -1,5 +1,4 @@
 title: Andalusian cadence (rumba)
-level: 3
 bpm: 112
 time: 4/4
 strum: D.DUD.DU

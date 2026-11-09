@@ -1,5 +1,4 @@
 title: Comping: leave space
-level: 8
 bpm: 104
 swing: light
 voicing: shell

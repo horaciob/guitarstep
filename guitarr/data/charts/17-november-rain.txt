@@ -1,6 +1,5 @@
 title: November Rain
 artist: Guns N' Roses
-level: 5
 bpm: 78
 time: 4/4
 strum: D...D.DU

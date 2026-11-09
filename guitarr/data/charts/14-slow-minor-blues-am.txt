@@ -1,5 +1,4 @@
 title: Slow minor blues in A minor
-level: 6
 bpm: 60
 time: 4/4
 strum: D...D.DU

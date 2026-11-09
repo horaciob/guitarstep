@@ -1,5 +1,4 @@
 title: Comping: the Charleston figure
-level: 8
 bpm: 110
 swing: light
 voicing: drop2

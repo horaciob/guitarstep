@@ -1,5 +1,4 @@
 title: Waltz in A minor (3/4)
-level: 3
 bpm: 108
 time: 3/4
 strum: D.D.D.

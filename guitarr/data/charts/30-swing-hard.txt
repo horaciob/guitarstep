@@ -1,5 +1,4 @@
 title: Hard swing
-level: 8
 bpm: 120
 swing: hard
 voicing: shell

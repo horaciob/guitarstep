@@ -176,7 +176,7 @@
    "id": "n2",
    "number": 2,
    "title": "Open chords",
-   "subtitle": "The chords behind thousands of songs.",
+   "subtitle": "The chords behind thousands of songs, and the color chords one finger away from them.",
    "lessons": [
     {
      "id": "d-a-e",
@@ -261,6 +261,61 @@
        "min": 80
       }
      ]
+    },
+    {
+     "id": "color-chords",
+     "title": "Color chords: one finger changes everything",
+     "minutes": 15,
+     "theory": [
+      "Many chords are a shape you already know with one finger added, lifted or moved: Dsus4 adds the pinky to D, Dsus2 lifts a finger off it, Em7 adds a finger to Em.",
+      "sus means suspended: the third (the note that makes a chord major or minor) is swapped for the 2nd or the 4th. It sounds open, waiting, and it usually goes back to the plain chord.",
+      "Fmaj7 is F without the barre: the same 3-2-1 fingers on the top four strings. Cadd9 is C with a high D on top."
+     ],
+     "tips": [
+      "Keep the fingers that don't move pressed down: the anchor is what makes these changes fast."
+     ],
+     "chords": [
+      "Em7",
+      "Cadd9",
+      "Dsus4",
+      "Dsus2",
+      "Asus2",
+      "Asus4",
+      "Fmaj7"
+     ],
+     "tutorials": [
+      "sus2 sus4 chords guitar beginner",
+      "anchor finger chord changes guitar"
+     ],
+     "exercises": [
+      {
+       "id": "d-sus-change",
+       "kind": "change",
+       "title": "D ↔ Dsus4",
+       "chords": [
+        "D",
+        "Dsus4"
+       ],
+       "times": 4,
+       "min": 75
+      },
+      {
+       "id": "folk-chart",
+       "kind": "chart",
+       "title": "Folk in D with suspended chords",
+       "chart": "08-folk-in-d",
+       "speed": 0.75,
+       "min": 80
+      },
+      {
+       "id": "anchor-chart",
+       "kind": "chart",
+       "title": "Anchor fingers: Em7, G, Dsus4, Cadd9",
+       "chart": "09-anchor-fingers",
+       "speed": 0.75,
+       "min": 80
+      }
+     ]
     }
    ]
   },
@@ -324,9 +379,9 @@
   },
   {
    "id": "n16",
+   "number": 4,
    "title": "Reading rhythm",
    "subtitle": "Note values, rests and the pulse, tapped and then played.",
-   "number": 4,
    "lessons": [
     {
      "id": "pulse",
@@ -605,7 +660,7 @@
    "id": "n4",
    "number": 5,
    "title": "Color",
-   "subtitle": "Sevenths, blues and power chords.",
+   "subtitle": "Blues, seventh chords and power chords.",
    "lessons": [
     {
      "id": "blues",
@@ -647,18 +702,67 @@
      ]
     },
     {
+     "id": "sevenths",
+     "title": "Seventh chords",
+     "minutes": 15,
+     "theory": [
+      "A seventh chord is a triad plus one more note, the 7th. It adds color and, above all, direction: it wants to go somewhere.",
+      "Three families: dominant 7 (G7, C7) is tense and falls a fifth down; minor 7 (Am7, Dm7) is soft; major 7 (Cmaj7) is calm and dreamy.",
+      "Dm7 → G7 → Cmaj7 is the ii–V–I: the most common chord move in jazz, and in a lot of pop too."
+     ],
+     "tips": [
+      "Most open sevenths are a chord you know with one finger lifted or added: look for the shape you already have."
+     ],
+     "chords": [
+      "Am7",
+      "Dm7",
+      "G7",
+      "C7",
+      "Cmaj7"
+     ],
+     "tutorials": [
+      "seventh chords guitar beginner open",
+      "ii V I guitar open chords"
+     ],
+     "exercises": [
+      {
+       "id": "g7-c-change",
+       "kind": "change",
+       "title": "G7 → C",
+       "chords": [
+        "G7",
+        "C"
+       ],
+       "times": 4,
+       "min": 75
+      },
+      {
+       "id": "ii-v-i-chart",
+       "kind": "chart",
+       "title": "ii–V–I in C",
+       "chart": "11-ii-v-i",
+       "speed": 0.75,
+       "min": 80
+      }
+     ]
+    },
+    {
      "id": "power-chords",
      "title": "Power chords",
      "minutes": 15,
      "theory": [
       "A power chord is root plus fifth: neither major nor minor, which is why it sounds great with distortion.",
-      "It's a movable shape: the same fingering on any fret."
+      "It's a movable shape: the same fingering on any fret.",
+      "With the root on the 6th string (E5, G5, F5) or on the 5th (A5, C5, B5, D5): learn where the notes are on those two strings and you can play any power chord."
      ],
      "chords": [
       "E5",
       "A5",
       "G5",
-      "C5"
+      "C5",
+      "D5",
+      "F5",
+      "B5"
      ],
      "tutorials": [
       "power chords guitar beginner",
@@ -681,7 +785,7 @@
    "id": "n5",
    "number": 6,
    "title": "Barre chords and melody",
-   "subtitle": "F with a barre and your first scale.",
+   "subtitle": "F with a barre, moving shapes, barre sevenths and your first scale.",
    "lessons": [
     {
      "id": "barre",
@@ -718,6 +822,97 @@
        "chart": "10-andalusian-cadence",
        "speed": 0.75,
        "min": 80
+      }
+     ]
+    },
+    {
+     "id": "moving-barres",
+     "title": "Moving barre chords",
+     "minutes": 20,
+     "theory": [
+      "A barre shape has no open strings, so it moves: slide it along the neck and the chord changes name, not fingering.",
+      "E shape (root on the 6th string): F at fret 1, F#m at fret 2 in its minor form, Gm at 3. A shape (root on the 5th string): Bb at fret 1, B and Bm at 2, C#m at 4.",
+      "To name a barre chord, find its root: the note under your index on the 6th or 5th string."
+     ],
+     "tips": [
+      "Between two barres, ease the pressure while you move and squeeze again only when you land."
+     ],
+     "chords": [
+      "Gm",
+      "Fm",
+      "Bb",
+      "B",
+      "F#m",
+      "C#m"
+     ],
+     "tutorials": [
+      "moving barre chords guitar",
+      "e shape a shape barre chords"
+     ],
+     "exercises": [
+      {
+       "id": "f-gm-change",
+       "kind": "change",
+       "title": "F ↔ Gm: the same hand two frets up",
+       "chords": [
+        "F",
+        "Gm"
+       ],
+       "times": 4,
+       "min": 75
+      },
+      {
+       "id": "moving-chart",
+       "kind": "chart",
+       "title": "Moving barre chords",
+       "chart": "12-moving-barres",
+       "speed": 0.7,
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "barre-sevenths",
+     "title": "Barre sevenths",
+     "minutes": 15,
+     "theory": [
+      "The sevenths you know in open position also move: F7 is the E7 shape with a barre, Bb7 the A7 shape, Bm7 the Am7 shape and F#m7 the Em7 shape.",
+      "With these four shapes you can play a dominant 7 and a minor 7 with the root on the 6th or 5th string, in any key: the basis of blues in any key and of jazz comping."
+     ],
+     "tips": [
+      "Lift a finger from a barre chord you know and see which seventh appears: the barre stays where it was."
+     ],
+     "chords": [
+      "F7",
+      "Bb7",
+      "Bm7",
+      "F#m7"
+     ],
+     "tutorials": [
+      "barre seventh chords guitar e shape a shape"
+     ],
+     "exercises": [
+      {
+       "id": "f7-bb7-change",
+       "kind": "change",
+       "title": "F7 ↔ Bb7",
+       "chords": [
+        "F7",
+        "Bb7"
+       ],
+       "times": 4,
+       "min": 75
+      },
+      {
+       "id": "bm7-fsm7-change",
+       "kind": "change",
+       "title": "Bm7 ↔ F#m7",
+       "chords": [
+        "Bm7",
+        "F#m7"
+       ],
+       "times": 4,
+       "min": 75
       }
      ]
     },
@@ -778,8 +973,342 @@
    ]
   },
   {
-   "id": "n6",
+   "id": "n21",
    "number": 7,
+   "title": "Guitar technique",
+   "subtitle": "Alternate and economy picking, palm mute, legato, bends and vibrato.",
+   "lessons": [
+    {
+     "id": "alternate-picking",
+     "title": "Alternate picking",
+     "minutes": 12,
+     "theory": [
+      "With alternate picking every note switches the pick direction: down (⊓) and up (V). In sixteenths the rule is simple: on the beat and on the \"and\" the pick goes down; on the \"e\" and the \"a\" (the inner sixteenths) it goes up.",
+      "Hold the pick between the thumb and the side of the index finger, with little tip showing. The motion is small and comes from the wrist, like shaking off a drop of water."
+     ],
+     "tips": [
+      "When there's a rest, keep the hand moving up and down in the air: that way the direction of the next note is never lost."
+     ],
+     "tutorials": [
+      "alternate picking exercises guitar beginner"
+     ],
+     "figures": [
+      {
+       "type": "rhythm",
+       "pattern": "s s s s s s s s q q",
+       "bpm": 60,
+       "marks": [
+        "⊓",
+        "V",
+        "⊓",
+        "V",
+        "⊓",
+        "V",
+        "⊓",
+        "V",
+        "⊓",
+        "⊓"
+       ]
+      }
+     ],
+     "captions": [
+      "Sixteenths: ⊓ V ⊓ V ⊓ V ⊓ V."
+     ],
+     "exercises": [
+      {
+       "id": "alt-pick-play",
+       "kind": "rhythm",
+       "title": "Alternate picking on the low E",
+       "bpm": 60,
+       "count": 4,
+       "pitch": 40,
+       "min": 70,
+       "patterns": [
+        "s s s s s s s s q q",
+        "e e s s s s e e s s s s",
+        "q s s s s q s s s s",
+        "s s s s q s s s s q"
+       ],
+       "marks": [
+        [
+         "⊓",
+         "V",
+         "⊓",
+         "V",
+         "⊓",
+         "V",
+         "⊓",
+         "V",
+         "⊓",
+         "⊓"
+        ],
+        [
+         "⊓",
+         "⊓",
+         "⊓",
+         "V",
+         "⊓",
+         "V",
+         "⊓",
+         "⊓",
+         "⊓",
+         "V",
+         "⊓",
+         "V"
+        ],
+        [
+         "⊓",
+         "⊓",
+         "V",
+         "⊓",
+         "V",
+         "⊓",
+         "⊓",
+         "V",
+         "⊓",
+         "V"
+        ],
+        [
+         "⊓",
+         "V",
+         "⊓",
+         "V",
+         "⊓",
+         "⊓",
+         "V",
+         "⊓",
+         "V",
+         "⊓"
+        ]
+       ]
+      },
+      {
+       "id": "picking-quiz",
+       "kind": "quiz",
+       "title": "How the picking hand works",
+       "quiz": "technique",
+       "topics": [
+        "picking"
+       ],
+       "count": 5,
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "palm-mute",
+     "title": "Palm mute",
+     "minutes": 10,
+     "theory": [
+      "In palm muting (P.M.) the side of the picking hand rests lightly on the strings, right over the bridge. The note comes out short and low, with that chug. Too far forward and the note disappears; too far back and nothing is muted.",
+      "The contrast between muted and open notes is what gives a riff its weight: the open ones come out as accents."
+     ],
+     "tips": [
+      "Use downstrokes on the muted eighths: the sound gets firmer and more even."
+     ],
+     "tutorials": [
+      "palm muting guitar technique"
+     ],
+     "figures": [
+      {
+       "type": "rhythm",
+       "pattern": "e e e e e e q",
+       "bpm": 80,
+       "marks": [
+        "PM",
+        "PM",
+        "PM",
+        "PM",
+        "PM",
+        "PM",
+        ""
+       ]
+      }
+     ],
+     "captions": [
+      "Muted eighths (PM) and an open quarter at the end."
+     ],
+     "exercises": [
+      {
+       "id": "pm-play",
+       "kind": "rhythm",
+       "title": "Chug on the low E",
+       "bpm": 80,
+       "count": 4,
+       "pitch": 40,
+       "min": 70,
+       "patterns": [
+        "e e e e e e q",
+        "e e q e e q",
+        "s s e s s e e e q",
+        "e e re e e e re e"
+       ],
+       "marks": [
+        [
+         "PM",
+         "PM",
+         "PM",
+         "PM",
+         "PM",
+         "PM",
+         ""
+        ],
+        [
+         "PM",
+         "PM",
+         "",
+         "PM",
+         "PM",
+         ""
+        ],
+        [
+         "PM",
+         "PM",
+         "PM",
+         "PM",
+         "PM",
+         "PM",
+         "PM",
+         "PM",
+         ""
+        ],
+        [
+         "PM",
+         "PM",
+         "PM",
+         "PM",
+         "PM",
+         "PM"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "id": "economy-skipping",
+     "title": "Economy picking and string skipping",
+     "minutes": 12,
+     "theory": [
+      "Economy picking: when you change strings in the same direction as the stroke, the pick goes straight on to the next string instead of coming back. Moving down from the 5th string to the 4th, the last note on the 5th and the first on the 4th are both downstrokes, in one motion.",
+      "String skipping means jumping over a string (or more) between notes. It takes aim with the pick and muting: the skipped string must not ring."
+     ],
+     "tips": [
+      "With strict alternate picking the hand never changes its pattern; with economy picking it slides. Both work; what matters is knowing which one you're using."
+     ],
+     "tutorials": [],
+     "figures": [],
+     "captions": [],
+     "exercises": [
+      {
+       "id": "skip-octaves",
+       "kind": "lick",
+       "title": "Octaves, skipping a string",
+       "tab": "6:5 4:7 5:7 3:9 4:7 2:10 3:9 1:12",
+       "min": 80
+      },
+      {
+       "id": "economy-quiz",
+       "kind": "quiz",
+       "title": "Economy, alternate and skipping",
+       "quiz": "technique",
+       "topics": [
+        "picking"
+       ],
+       "count": 5,
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "legato",
+     "title": "Legato",
+     "minutes": 12,
+     "theory": [
+      "Legato means playing several notes with a single pick stroke and doing the rest with the fretting hand: hammer-on (h) to go up, pull-off (p) to come down. The sound flows, like a voice singing.",
+      "Hammer-on: bring the finger down firmly, right behind the fret. Pull-off: as you leave, pull the string slightly sideways (toward the floor). The slurred notes have to sound as loud as the picked one."
+     ],
+     "tips": [
+      "Mute the neighboring strings: with legato any loose string touching ringing along gets in."
+     ],
+     "tutorials": [
+      "hammer on pull off legato exercises guitar"
+     ],
+     "figures": [
+      {
+       "type": "rhythm",
+       "pattern": "te te te q te te te q",
+       "bpm": 60
+      }
+     ],
+     "captions": [
+      "Triplets: pick only the first of each group, slur the other two."
+     ],
+     "exercises": [
+      {
+       "id": "legato-lick",
+       "kind": "lick",
+       "title": "Hammer and pull in A minor pentatonic",
+       "tab": "4:5h7p5 3:5h7p5 2:5h8p5 1:5h8p5",
+       "min": 75
+      },
+      {
+       "id": "legato-quiz",
+       "kind": "quiz",
+       "title": "Clean legato",
+       "quiz": "technique",
+       "topics": [
+        "legato"
+       ],
+       "count": 5,
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "bends-vibrato",
+     "title": "Bends and vibrato",
+     "minutes": 12,
+     "theory": [
+      "A bend pushes (or pulls) the string sideways until the note goes up. A whole-step bend has to land exactly on the note two frets up; a half-step bend, on the note one fret up. Test it: play the target note fretted, then bend and compare.",
+      "Use more than one finger: finger 3 pushes while fingers 1 and 2 help behind it on the same string. The strength comes from turning the wrist, not from the fingers.",
+      "Vibrato is a small bend repeated: up and back to the note, in a steady rhythm. Wide and slow or narrow and fast, it's every guitarist's signature."
+     ],
+     "tips": [
+      "Let the listener be the judge: it only counts the bend once it reaches the target pitch."
+     ],
+     "tutorials": [],
+     "figures": [],
+     "captions": [],
+     "exercises": [
+      {
+       "id": "bends-quiz",
+       "kind": "quiz",
+       "title": "Bends in tune",
+       "quiz": "technique",
+       "topics": [
+        "bends"
+       ],
+       "count": 5,
+       "min": 80
+      },
+      {
+       "id": "half-bend",
+       "kind": "bend",
+       "title": "Half-step bend: B string, fret 10 → B♭",
+       "string": 2,
+       "fret": 10,
+       "bend": 1,
+       "tries": 6,
+       "hold": 1.0,
+       "min": 70
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "n6",
+   "number": 8,
    "title": "The blues",
    "subtitle": "Shuffle, thirds that follow the chords, bends with a target, phrases that answer, and a story in three choruses.",
    "lessons": [
@@ -1181,424 +1710,6 @@
        "title": "Three choruses in A, with an ending",
        "chart": "16-three-choruses-a",
        "speed": 0.9,
-       "min": 80
-      }
-     ]
-    }
-   ]
-  },
-  {
-   "id": "n21",
-   "title": "Guitar technique",
-   "subtitle": "Alternate and economy picking, palm mute, legato, bends, sweep and tapping.",
-   "number": 8,
-   "lessons": [
-    {
-     "id": "alternate-picking",
-     "title": "Alternate picking",
-     "minutes": 12,
-     "theory": [
-      "With alternate picking every note switches the pick direction: down (⊓) and up (V). In sixteenths the rule is simple: on the beat and on the \"and\" the pick goes down; on the \"e\" and the \"a\" (the inner sixteenths) it goes up.",
-      "Hold the pick between the thumb and the side of the index finger, with little tip showing. The motion is small and comes from the wrist, like shaking off a drop of water."
-     ],
-     "tips": [
-      "When there's a rest, keep the hand moving up and down in the air: that way the direction of the next note is never lost."
-     ],
-     "tutorials": [
-      "alternate picking exercises guitar beginner"
-     ],
-     "figures": [
-      {
-       "type": "rhythm",
-       "pattern": "s s s s s s s s q q",
-       "bpm": 60,
-       "marks": [
-        "⊓",
-        "V",
-        "⊓",
-        "V",
-        "⊓",
-        "V",
-        "⊓",
-        "V",
-        "⊓",
-        "⊓"
-       ]
-      }
-     ],
-     "captions": [
-      "Sixteenths: ⊓ V ⊓ V ⊓ V ⊓ V."
-     ],
-     "exercises": [
-      {
-       "id": "alt-pick-play",
-       "kind": "rhythm",
-       "title": "Alternate picking on the low E",
-       "bpm": 60,
-       "count": 4,
-       "pitch": 40,
-       "min": 70,
-       "patterns": [
-        "s s s s s s s s q q",
-        "e e s s s s e e s s s s",
-        "q s s s s q s s s s",
-        "s s s s q s s s s q"
-       ],
-       "marks": [
-        [
-         "⊓",
-         "V",
-         "⊓",
-         "V",
-         "⊓",
-         "V",
-         "⊓",
-         "V",
-         "⊓",
-         "⊓"
-        ],
-        [
-         "⊓",
-         "⊓",
-         "⊓",
-         "V",
-         "⊓",
-         "V",
-         "⊓",
-         "⊓",
-         "⊓",
-         "V",
-         "⊓",
-         "V"
-        ],
-        [
-         "⊓",
-         "⊓",
-         "V",
-         "⊓",
-         "V",
-         "⊓",
-         "⊓",
-         "V",
-         "⊓",
-         "V"
-        ],
-        [
-         "⊓",
-         "V",
-         "⊓",
-         "V",
-         "⊓",
-         "⊓",
-         "V",
-         "⊓",
-         "V",
-         "⊓"
-        ]
-       ]
-      },
-      {
-       "id": "picking-quiz",
-       "kind": "quiz",
-       "title": "How the picking hand works",
-       "quiz": "technique",
-       "topics": [
-        "picking"
-       ],
-       "count": 5,
-       "min": 80
-      }
-     ]
-    },
-    {
-     "id": "palm-mute",
-     "title": "Palm mute",
-     "minutes": 10,
-     "theory": [
-      "In palm muting (P.M.) the side of the picking hand rests lightly on the strings, right over the bridge. The note comes out short and low, with that chug. Too far forward and the note disappears; too far back and nothing is muted.",
-      "The contrast between muted and open notes is what gives a riff its weight: the open ones come out as accents."
-     ],
-     "tips": [
-      "Use downstrokes on the muted eighths: the sound gets firmer and more even."
-     ],
-     "tutorials": [
-      "palm muting guitar technique"
-     ],
-     "figures": [
-      {
-       "type": "rhythm",
-       "pattern": "e e e e e e q",
-       "bpm": 80,
-       "marks": [
-        "PM",
-        "PM",
-        "PM",
-        "PM",
-        "PM",
-        "PM",
-        ""
-       ]
-      }
-     ],
-     "captions": [
-      "Muted eighths (PM) and an open quarter at the end."
-     ],
-     "exercises": [
-      {
-       "id": "pm-play",
-       "kind": "rhythm",
-       "title": "Chug on the low E",
-       "bpm": 80,
-       "count": 4,
-       "pitch": 40,
-       "min": 70,
-       "patterns": [
-        "e e e e e e q",
-        "e e q e e q",
-        "s s e s s e e e q",
-        "e e re e e e re e"
-       ],
-       "marks": [
-        [
-         "PM",
-         "PM",
-         "PM",
-         "PM",
-         "PM",
-         "PM",
-         ""
-        ],
-        [
-         "PM",
-         "PM",
-         "",
-         "PM",
-         "PM",
-         ""
-        ],
-        [
-         "PM",
-         "PM",
-         "PM",
-         "PM",
-         "PM",
-         "PM",
-         "PM",
-         "PM",
-         ""
-        ],
-        [
-         "PM",
-         "PM",
-         "PM",
-         "PM",
-         "PM",
-         "PM"
-        ]
-       ]
-      }
-     ]
-    },
-    {
-     "id": "economy-skipping",
-     "title": "Economy picking and string skipping",
-     "minutes": 12,
-     "theory": [
-      "Economy picking: when you change strings in the same direction as the stroke, the pick goes straight on to the next string instead of coming back. Moving down from the 5th string to the 4th, the last note on the 5th and the first on the 4th are both downstrokes, in one motion.",
-      "String skipping means jumping over a string (or more) between notes. It takes aim with the pick and muting: the skipped string must not ring."
-     ],
-     "tips": [
-      "With strict alternate picking the hand never changes its pattern; with economy picking it slides. Both work; what matters is knowing which one you're using."
-     ],
-     "tutorials": [],
-     "figures": [],
-     "captions": [],
-     "exercises": [
-      {
-       "id": "skip-octaves",
-       "kind": "lick",
-       "title": "Octaves, skipping a string",
-       "tab": "6:5 4:7 5:7 3:9 4:7 2:10 3:9 1:12",
-       "min": 80
-      },
-      {
-       "id": "economy-quiz",
-       "kind": "quiz",
-       "title": "Economy, alternate and skipping",
-       "quiz": "technique",
-       "topics": [
-        "picking"
-       ],
-       "count": 5,
-       "min": 80
-      }
-     ]
-    },
-    {
-     "id": "legato",
-     "title": "Legato",
-     "minutes": 12,
-     "theory": [
-      "Legato means playing several notes with a single pick stroke and doing the rest with the fretting hand: hammer-on (h) to go up, pull-off (p) to come down. The sound flows, like a voice singing.",
-      "Hammer-on: bring the finger down firmly, right behind the fret. Pull-off: as you leave, pull the string slightly sideways (toward the floor). The slurred notes have to sound as loud as the picked one."
-     ],
-     "tips": [
-      "Mute the neighboring strings: with legato any loose string touching ringing along gets in."
-     ],
-     "tutorials": [
-      "hammer on pull off legato exercises guitar"
-     ],
-     "figures": [
-      {
-       "type": "rhythm",
-       "pattern": "te te te q te te te q",
-       "bpm": 60
-      }
-     ],
-     "captions": [
-      "Triplets: pick only the first of each group, slur the other two."
-     ],
-     "exercises": [
-      {
-       "id": "legato-lick",
-       "kind": "lick",
-       "title": "Hammer and pull in A minor pentatonic",
-       "tab": "4:5h7p5 3:5h7p5 2:5h8p5 1:5h8p5",
-       "min": 75
-      },
-      {
-       "id": "legato-quiz",
-       "kind": "quiz",
-       "title": "Clean legato",
-       "quiz": "technique",
-       "topics": [
-        "legato"
-       ],
-       "count": 5,
-       "min": 80
-      }
-     ]
-    },
-    {
-     "id": "bends-vibrato",
-     "title": "Bends and vibrato",
-     "minutes": 12,
-     "theory": [
-      "A bend pushes (or pulls) the string sideways until the note goes up. A whole-step bend has to land exactly on the note two frets up; a half-step bend, on the note one fret up. Test it: play the target note fretted, then bend and compare.",
-      "Use more than one finger: finger 3 pushes while fingers 1 and 2 help behind it on the same string. The strength comes from turning the wrist, not from the fingers.",
-      "Vibrato is a small bend repeated: up and back to the note, in a steady rhythm. Wide and slow or narrow and fast, it's every guitarist's signature."
-     ],
-     "tips": [
-      "Let the listener be the judge: it only counts the bend once it reaches the target pitch."
-     ],
-     "tutorials": [],
-     "figures": [],
-     "captions": [],
-     "exercises": [
-      {
-       "id": "bends-quiz",
-       "kind": "quiz",
-       "title": "Bends in tune",
-       "quiz": "technique",
-       "topics": [
-        "bends"
-       ],
-       "count": 5,
-       "min": 80
-      },
-      {
-       "id": "half-bend",
-       "kind": "bend",
-       "title": "Half-step bend: B string, fret 10 → B♭",
-       "string": 2,
-       "fret": 10,
-       "bend": 1,
-       "tries": 6,
-       "hold": 1.0,
-       "min": 70
-      }
-     ]
-    },
-    {
-     "id": "sweep-picking",
-     "title": "Sweep picking",
-     "minutes": 12,
-     "theory": [
-      "Sweeping is economy picking taken to the limit: an arpeggio with one note per string played with a single motion of the pick, sweeping across the strings. Going toward the high strings everything is down; coming back, everything is up.",
-      "The trick is in the fretting hand: each finger holds its note only while it sounds and lets go right after (rolling the finger when two notes share a fret). Otherwise the arpeggio turns into a chord."
-     ],
-     "tips": [
-      "Start with three strings, very slowly, checking that every note sounds on its own."
-     ],
-     "tutorials": [
-      "sweep picking for beginners three string arpeggios"
-     ],
-     "figures": [
-      {
-       "type": "fretboard",
-       "chord": "Am",
-       "frets": [
-        5,
-        8
-       ]
-      }
-     ],
-     "captions": [
-      "Am at the 5th fret: the notes of the arpeggio to sweep."
-     ],
-     "exercises": [
-      {
-       "id": "sweep-am",
-       "kind": "lick",
-       "title": "Sweep Am on three strings, up and back",
-       "tab": "3:5 2:5 1:5h8p5 2:5 3:5",
-       "min": 75
-      },
-      {
-       "id": "sweep-g",
-       "kind": "lick",
-       "title": "Sweep G on three strings, up and back",
-       "tab": "3:7 2:8 1:7h10p7 2:8 3:7",
-       "min": 75
-      }
-     ]
-    },
-    {
-     "id": "tapping-speed",
-     "title": "Tapping and speed",
-     "minutes": 12,
-     "theory": [
-      "In tapping a finger of the picking hand (usually the middle one, so the pick stays in place) taps a high fret and pulls off to a note of the fretting hand. That opens up wide jumps that one hand alone can't reach.",
-      "Speed is built like this: find the tempo where it comes out clean, play it perfectly several times, and go up 4 or 5 BPM. If it gets messy, step back."
-     ],
-     "tips": [
-      "The speed trainer in Practice does the stepping up for you: it raises the tempo after each clean pass."
-     ],
-     "tutorials": [
-      "guitar tapping for beginners"
-     ],
-     "figures": [],
-     "captions": [],
-     "exercises": [
-      {
-       "id": "tap-lick",
-       "kind": "lick",
-       "title": "Tap 12, pull to 5, hammer 8",
-       "tab": "1:12p5h8 1:12p5h8 1:12p5h8 1:12p5h8",
-       "min": 75
-      },
-      {
-       "id": "tech-review",
-       "kind": "quiz",
-       "title": "Which technique, when?",
-       "quiz": "technique",
-       "topics": [
-        "picking",
-        "legato",
-        "bends",
-        "tapping"
-       ],
-       "count": 6,
        "min": 80
       }
      ]
@@ -2412,9 +2523,9 @@
   },
   {
    "id": "n17",
+   "number": 11,
    "title": "Reading rhythm II",
    "subtitle": "Sixteenths, dotted notes, triplets, syncopation and dictation.",
-   "number": 11,
    "lessons": [
     {
      "id": "sixteenths",
@@ -2695,9 +2806,9 @@
   },
   {
    "id": "n18",
+   "number": 12,
    "title": "Reading notation",
    "subtitle": "From tab to the staff: the treble clef, position by position.",
-   "number": 12,
    "lessons": [
     {
      "id": "staff-clef",
@@ -4367,10 +4478,102 @@
    ]
   },
   {
+   "id": "n22",
+   "number": 16,
+   "title": "Advanced technique",
+   "subtitle": "Sweeping triads and tapping, once you know the shapes they come from.",
+   "lessons": [
+    {
+     "id": "sweep-picking",
+     "title": "Sweep picking",
+     "minutes": 12,
+     "theory": [
+      "Sweeping is economy picking taken to the limit: an arpeggio with one note per string played with a single motion of the pick, sweeping across the strings. Going toward the high strings everything is down; coming back, everything is up.",
+      "The trick is in the fretting hand: each finger holds its note only while it sounds and lets go right after (rolling the finger when two notes share a fret). Otherwise the arpeggio turns into a chord."
+     ],
+     "tips": [
+      "Start with three strings, very slowly, checking that every note sounds on its own."
+     ],
+     "tutorials": [
+      "sweep picking for beginners three string arpeggios"
+     ],
+     "figures": [
+      {
+       "type": "fretboard",
+       "chord": "Am",
+       "frets": [
+        5,
+        8
+       ]
+      }
+     ],
+     "captions": [
+      "Am at the 5th fret: the notes of the arpeggio to sweep."
+     ],
+     "exercises": [
+      {
+       "id": "sweep-am",
+       "kind": "lick",
+       "title": "Sweep Am on three strings, up and back",
+       "tab": "3:5 2:5 1:5h8p5 2:5 3:5",
+       "min": 75
+      },
+      {
+       "id": "sweep-g",
+       "kind": "lick",
+       "title": "Sweep G on three strings, up and back",
+       "tab": "3:7 2:8 1:7h10p7 2:8 3:7",
+       "min": 75
+      }
+     ]
+    },
+    {
+     "id": "tapping-speed",
+     "title": "Tapping and speed",
+     "minutes": 12,
+     "theory": [
+      "In tapping a finger of the picking hand (usually the middle one, so the pick stays in place) taps a high fret and pulls off to a note of the fretting hand. That opens up wide jumps that one hand alone can't reach.",
+      "Speed is built like this: find the tempo where it comes out clean, play it perfectly several times, and go up 4 or 5 BPM. If it gets messy, step back."
+     ],
+     "tips": [
+      "The speed trainer in Practice does the stepping up for you: it raises the tempo after each clean pass."
+     ],
+     "tutorials": [
+      "guitar tapping for beginners"
+     ],
+     "figures": [],
+     "captions": [],
+     "exercises": [
+      {
+       "id": "tap-lick",
+       "kind": "lick",
+       "title": "Tap 12, pull to 5, hammer 8",
+       "tab": "1:12p5h8 1:12p5h8 1:12p5h8 1:12p5h8",
+       "min": 75
+      },
+      {
+       "id": "tech-review",
+       "kind": "quiz",
+       "title": "Which technique, when?",
+       "quiz": "technique",
+       "topics": [
+        "picking",
+        "legato",
+        "bends",
+        "tapping"
+       ],
+       "count": 6,
+       "min": 80
+      }
+     ]
+    }
+   ]
+  },
+  {
    "id": "n19",
+   "number": 17,
    "title": "CAGED",
    "subtitle": "Five chord shapes that fit together and cover the whole neck.",
-   "number": 16,
    "lessons": [
     {
      "id": "caged-idea",
@@ -4692,7 +4895,7 @@
   },
   {
    "id": "n12",
-   "number": 17,
+   "number": 18,
    "title": "Harmony",
    "subtitle": "The chords that live in a key, written as roman numerals, in major and minor.",
    "lessons": [
@@ -4881,9 +5084,9 @@
   },
   {
    "id": "n20",
+   "number": 19,
    "title": "Harmonic function",
    "subtitle": "What each chord does, by name and by ear: cadences, secondary dominants, borrowed chords.",
-   "number": 18,
    "lessons": [
     {
      "id": "functions",
@@ -5142,7 +5345,7 @@
   },
   {
    "id": "n13",
-   "number": 19,
+   "number": 20,
    "title": "Voicings",
    "subtitle": "Shells, drop-2, drop-3, voice leading and guide tones: chords the way jazz guitarists play them.",
    "lessons": [
@@ -5481,7 +5684,7 @@
   },
   {
    "id": "n14",
-   "number": 20,
+   "number": 21,
    "title": "Jazz foundations",
    "subtitle": "ii–V–I in every key, minor ii–V–i, turnarounds, tritone subs, the jazz blues, song form and comping.",
    "lessons": [
@@ -5898,7 +6101,7 @@
   },
   {
    "id": "n15",
-   "number": 21,
+   "number": 22,
    "title": "Jazz language",
    "subtitle": "Swing, walking bass, arpeggios, approach notes, enclosures, eighth-note lines and etudes.",
    "lessons": [

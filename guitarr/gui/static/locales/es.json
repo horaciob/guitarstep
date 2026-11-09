@@ -517,7 +517,8 @@
    "not_heard": "No escuché {{chord}}. Revisá la entrada en Ajustes y probá de nuevo.",
    "diagram_label": "Acorde {{chord}}",
    "camera_link": "Revisar con la cámara",
-   "standard_note": "Estos diagramas están en afinación estándar (tu instrumento tiene otra afinación)."
+   "standard_note": "Estos diagramas están en afinación estándar (tu instrumento tiene otra afinación).",
+   "taught_in": "Se enseña en el nivel {{n}}: {{lesson}}"
   },
   "charts": {
    "title": "Cifrados",
@@ -2198,15 +2199,31 @@
    "B5": {
     "name": "Si quinta",
     "tip": "Tónica en el traste 2 de la 5ta."
+   },
+   "F7": {
+    "name": "Fa 7",
+    "tip": "La cejilla de F levantando el meñique: la forma de E7 un traste más arriba."
+   },
+   "Bb7": {
+    "name": "Si♭ 7",
+    "tip": "La forma de A7 con cejilla en el traste 1. No toques la 6ta cuerda."
+   },
+   "Bm7": {
+    "name": "Si menor 7",
+    "tip": "Bm levantando el meñique: la forma de Am7 dos trastes más arriba."
+   },
+   "F#m7": {
+    "name": "Fa♯ menor 7",
+    "tip": "La forma de Em7 con cejilla en el traste 2: dos dedos y la cejilla."
    }
   },
   "groups": {
-   "open-minor": "Abiertos menores",
-   "open-major": "Abiertos mayores",
+   "major": "Mayores",
+   "minor": "Menores",
    "sevenths": "Séptimas",
    "color": "Color (maj7, add9, sus)",
-   "barre": "Con cejilla",
-   "power": "Quintas (power chords)"
+   "power": "Quintas (power chords)",
+   "barre": "Con cejilla"
   },
   "levels": {
    "n1": {
@@ -2215,7 +2232,7 @@
    },
    "n2": {
     "title": "Acordes abiertos",
-    "subtitle": "Los acordes con los que se tocan miles de canciones."
+    "subtitle": "Los acordes detrás de miles de canciones, y los acordes de color que están a un dedo de distancia."
    },
    "n3": {
     "title": "Ritmo",
@@ -2223,11 +2240,11 @@
    },
    "n4": {
     "title": "Color",
-    "subtitle": "Séptimas, blues y quintas."
+    "subtitle": "Blues, acordes de séptima y quintas."
    },
    "n5": {
     "title": "Cejilla y melodía",
-    "subtitle": "F con cejilla y tu primera escala."
+    "subtitle": "F con cejilla, formas que se mueven, séptimas con cejilla y tu primera escala."
    },
    "n6": {
     "title": "El blues",
@@ -2291,7 +2308,11 @@
    },
    "n21": {
     "title": "Técnica de guitarra",
-    "subtitle": "Púa alternada y económica, palm mute, legato, bends, sweep y tapping."
+    "subtitle": "Púa alternada y económica, palm mute, legato, bends y vibrato."
+   },
+   "n22": {
+    "title": "Técnica avanzada",
+    "subtitle": "Sweep de tríadas y tapping, una vez que conocés las formas de las que salen."
    }
   },
   "lessons": {
@@ -2402,7 +2423,8 @@
     "title": "Quintas (power chords)",
     "theory": [
      "Una quinta es tónica + quinta: ni mayor ni menor, por eso suena tan bien con distorsión.",
-     "Es una forma móvil: la misma figura en cualquier traste."
+     "Es una forma móvil: la misma figura en cualquier traste.",
+     "Con la fundamental en la 6ta cuerda (E5, G5, F5) o en la 5ta (A5, C5, B5, D5): aprendé dónde están las notas en esas dos cuerdas y podés tocar cualquier quinta."
     ],
     "tips": [],
     "tutorials": [
@@ -3969,6 +3991,64 @@
     "captions": [
      "Las notas naturales en la 6ª y la 5ª cuerda."
     ]
+   },
+   "color-chords": {
+    "title": "Acordes de color: un dedo lo cambia todo",
+    "theory": [
+     "Muchos acordes son una forma que ya conocés con un dedo agregado, levantado o movido: Dsus4 suma el meñique a D, Dsus2 le saca un dedo, Em7 le agrega uno a Em.",
+     "sus quiere decir suspendido: la tercera (la nota que hace mayor o menor a un acorde) se cambia por la 2da o la 4ta. Suena abierto, en espera, y casi siempre vuelve al acorde común.",
+     "Fmaj7 es F sin cejilla: los mismos dedos 3-2-1 en las cuatro cuerdas agudas. Cadd9 es C con un Re agudo arriba."
+    ],
+    "tips": [
+     "Dejá apretados los dedos que no se mueven: el ancla es lo que hace rápidos estos cambios."
+    ],
+    "tutorials": [
+     "acordes sus2 sus4 guitarra principiante",
+     "cambios de acordes dedo ancla guitarra"
+    ]
+   },
+   "sevenths": {
+    "title": "Acordes de séptima",
+    "theory": [
+     "Un acorde de séptima es una tríada más una nota, la 7ma. Suma color y, sobre todo, dirección: quiere ir a algún lado.",
+     "Tres familias: la séptima de dominante (G7, C7) es tensa y cae una quinta abajo; la menor 7 (Am7, Dm7) es suave; la mayor 7 (Cmaj7) es tranquila y soñadora.",
+     "Dm7 → G7 → Cmaj7 es el ii–V–I: el movimiento de acordes más común del jazz, y de mucho pop también."
+    ],
+    "tips": [
+     "Casi todas las séptimas abiertas son un acorde que ya sabés con un dedo levantado o agregado: buscá la forma que ya tenés."
+    ],
+    "tutorials": [
+     "acordes de septima guitarra principiante",
+     "ii V I guitarra acordes abiertos"
+    ]
+   },
+   "moving-barres": {
+    "title": "Cejillas que se mueven",
+    "theory": [
+     "Una forma con cejilla no tiene cuerdas al aire, así que se mueve: deslizala por el mástil y el acorde cambia de nombre, no de digitación.",
+     "Forma de E (fundamental en la 6ta cuerda): F en el traste 1, F#m en el 2 en su forma menor, Gm en el 3. Forma de A (fundamental en la 5ta): Bb en el traste 1, B y Bm en el 2, C#m en el 4.",
+     "Para nombrar un acorde con cejilla buscá su fundamental: la nota bajo el índice en la 6ta o la 5ta cuerda."
+    ],
+    "tips": [
+     "Entre dos cejillas aflojá la presión mientras te movés y volvé a apretar recién cuando llegás."
+    ],
+    "tutorials": [
+     "acordes con cejilla moviles guitarra",
+     "cejilla forma de mi forma de la"
+    ]
+   },
+   "barre-sevenths": {
+    "title": "Séptimas con cejilla",
+    "theory": [
+     "Las séptimas que conocés en posición abierta también se mueven: F7 es la forma de E7 con cejilla, Bb7 la de A7, Bm7 la de Am7 y F#m7 la de Em7.",
+     "Con estas cuatro formas tocás una séptima de dominante y una menor 7 con la fundamental en la 6ta o en la 5ta cuerda, en cualquier tonalidad: la base del blues en cualquier tono y del acompañamiento de jazz."
+    ],
+    "tips": [
+     "Levantá un dedo de un acorde con cejilla que ya sabés y fijate qué séptima aparece: la cejilla se queda donde estaba."
+    ],
+    "tutorials": [
+     "acordes de septima con cejilla guitarra"
+    ]
    }
   },
   "exercises": {
@@ -4241,7 +4321,16 @@
    "twelfth-fret/name-twelve": "Nombrá las notas en los trastes 0 y 12",
    "twelfth-fret/name-upper": "Nombrala entre los trastes 12 y 17",
    "name-the-note/name-low": "Nombrala en las cuerdas graves",
-   "name-the-note/name-all": "Nombrala en cualquier lado, también con sostenidos y bemoles"
+   "name-the-note/name-all": "Nombrala en cualquier lado, también con sostenidos y bemoles",
+   "color-chords/d-sus-change": "D ↔ Dsus4",
+   "color-chords/folk-chart": "Folk en D con acordes suspendidos",
+   "color-chords/anchor-chart": "Dedos ancla: Em7, G, Dsus4, Cadd9",
+   "sevenths/g7-c-change": "G7 → C",
+   "sevenths/ii-v-i-chart": "ii–V–I en C",
+   "moving-barres/f-gm-change": "F ↔ Gm: la misma mano dos trastes más arriba",
+   "moving-barres/moving-chart": "Acordes con cejilla que se mueven",
+   "barre-sevenths/f7-bb7-change": "F7 ↔ Bb7",
+   "barre-sevenths/bm7-fsm7-change": "Bm7 ↔ F#m7"
   },
   "charts": {
    "01-em-am": {

@@ -1,5 +1,4 @@
 title: 12-bar blues in A
-level: 3
 bpm: 92
 time: 4/4
 strum: D.DUD.DU

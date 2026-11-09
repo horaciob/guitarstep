@@ -1,5 +1,4 @@
 title: Shuffle in E, quick change
-level: 6
 bpm: 84
 time: 4/4
 strum: D.DUD.DU

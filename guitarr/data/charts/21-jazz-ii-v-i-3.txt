@@ -1,5 +1,4 @@
 title: Major ii–V–I in E, A, D and G
-level: 8
 bpm: 100
 swing: light
 voicing: shell

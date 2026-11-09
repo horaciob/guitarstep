@@ -25,8 +25,8 @@ export async function mount(el, { params }) {
 
   const render = () => {
     $$("#groups button", el).forEach(b => b.classList.toggle("active", b.dataset.g === group));
-    const list = data.chords.filter(c => (group === "all" || c.group === group) &&
-      (!q || (c.id + " " + c.name + " " + tc(`chords.${c.id}.name`, c.name) + " " + c.group).toLowerCase().includes(q)));
+    const list = data.chords.filter(c => (group === "all" || c.groups.includes(group)) &&
+      (!q || (c.id + " " + c.name + " " + tc(`chords.${c.id}.name`, c.name) + " " + c.groups.join(" ")).toLowerCase().includes(q)));
     $("#grid", el).innerHTML = list.map(c => {
       const m = data.mastered[c.id] || {};
       const badges = (m.ear ? `<span class="pill ok" title="${esc(t("chords.mastered_ear"))}">🎧</span>` : "") +
@@ -36,6 +36,7 @@ export async function mount(el, { params }) {
         <div class="diagram">${chordSvg(c, { size: 112 })}</div>
         <div class="chord-notes muted">${c.notes.join(" · ")}</div>
         <p class="chord-tip">${esc(tc(`chords.${c.id}.tip`, c.tip))}</p>
+        ${c.lesson ? `<a class="small chord-lesson" href="#/lesson/${encodeURIComponent(c.lesson)}">${esc(t("chords.taught_in", { n: c.level, lesson: tc(`lessons.${c.lesson}.title`, c.lesson_title) }))}</a>` : ""}
         <div class="row">
           <button class="btn small" data-act="strum" title="${esc(t("chords.listen_hint"))}" aria-label="${esc(t("chords.listen_hint"))}">▶</button>
           <button class="btn small primary" data-act="check">${esc(t("chords.check"))}</button>

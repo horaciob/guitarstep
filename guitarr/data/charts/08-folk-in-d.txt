@@ -1,5 +1,4 @@
 title: Folk in D with suspended chords
-level: 2
 bpm: 96
 time: 4/4
 strum: D.DU.UDU

@@ -1,5 +1,4 @@
 title: Major ii–V–I in C, F, B♭ and E♭
-level: 8
 bpm: 100
 swing: light
 voicing: shell

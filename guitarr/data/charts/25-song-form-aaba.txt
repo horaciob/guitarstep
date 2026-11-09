@@ -1,5 +1,4 @@
 title: A 32-bar song form (AABA)
-level: 8
 bpm: 120
 swing: light
 voicing: drop2

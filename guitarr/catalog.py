@@ -22,7 +22,7 @@ Chart format (plain text):
     strum: D.DU.UDU      # optional: D down, U up, . rest, _ hold (tie), ^ next chord early (anticipation)
     swing: light         # optional: light, medium, hard or a ratio 0.5–0.75 (offbeat eighths come later)
     voicing: shell       # optional: shell, drop2, drop3 or triad voices every chord (any chord symbol)
-    level: 2             # optional
+    level: 2             # optional (built-in charts take it from the lesson that uses them)
     note: a tip          # optional
 
     [Verse]
@@ -57,8 +57,33 @@ def chord_groups() -> list[dict]:
     return _chords_data()["groups"]
 
 
+@lru_cache(maxsize=None)
 def chords() -> list[dict]:
-    return _chords_data()["chords"]
+    """The chord library. A chord is in its quality group (major, minor, sevenths...) and also in "barre" when it is
+    played with a barre, so F shows up with the major chords and with the barre chords. `level` and `lesson` say where
+    the course teaches it (None if no lesson does)."""
+    taught = taught_at()["chords"]
+    out = []
+    for c in _chords_data()["chords"]:
+        level, lesson, title = taught.get(c["id"], (None, None, None))
+        out.append({**c, "groups": [c["group"]] + (["barre"] if c.get("barre") else []), "level": level, "lesson": lesson,
+                    "lesson_title": title})
+    return out
+
+
+@lru_cache(maxsize=None)
+def taught_at() -> dict:
+    """Where the course first teaches each chord (a lesson's "chords") and first uses each built-in chart: the course
+    is the one source of truth for levels, so reordering levels never leaves a chord or a chart behind."""
+    chords_at, charts_at = {}, {}
+    for lvl in course()["levels"]:
+        for ls in lvl["lessons"]:
+            for c in ls.get("chords") or []:
+                chords_at.setdefault(c, (lvl["number"], ls["id"], ls["title"]))
+            for ex in ls["exercises"]:
+                if ex["kind"] == "chart":
+                    charts_at.setdefault(ex["chart"], lvl["number"])
+    return dict(chords=chords_at, charts=charts_at)
 
 
 def get_chord(cid: str) -> dict | None:
@@ -216,7 +241,8 @@ def charts() -> list[dict]:
             rows.append(dict(id=cid, title=cid, mine=mine, error=str(e)))
             continue
         chords_used = list(dict.fromkeys(b["chord"] for b in c["bars"] if b["chord"]))
-        rows.append(dict(id=cid, title=c["title"], artist=c["artist"], level=c["level"], bpm=c["bpm"],
+        level = c["level"] if mine else taught_at()["charts"].get(cid, c["level"])     # built-in: the course decides
+        rows.append(dict(id=cid, title=c["title"], artist=c["artist"], level=level, bpm=c["bpm"],
                          capo=c["capo"], beats_per_bar=c["beats_per_bar"], strum=c["strum"], note=c["note"],
                          chords=chords_used, bars=len(c["bars"]), missing=c["missing"], mine=mine, tuning=c["tuning"]))
     rows.sort(key=lambda r: (r.get("mine", False), r.get("level") or 0, r["id"]))

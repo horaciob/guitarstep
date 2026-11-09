@@ -1,5 +1,4 @@
 title: Ballad in C with Fmaj7
-level: 2
 bpm: 72
 time: 4/4
 strum: D..UD.DU

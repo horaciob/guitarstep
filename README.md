@@ -59,7 +59,7 @@ retakes them in both themes.
 - **Legato detection**: hammer-ons, pull-offs and slides are caught even without a pick attack.
 
 **Learn**
-- **Course**: 5 levels, 11 lessons and 20 exercises, from open strings to barre chords and the minor pentatonic. Every exercise is passed by playing it.
+- **Course**: 22 levels, 121 lessons and 279 exercises, from open strings to barre chords, the blues, reading, scales, harmony and jazz. Every exercise is passed by playing it, and nothing is used before a lesson teaches it (a test checks the order).
 - **Tutorials**: each lesson suggests video searches, and you can pin your favorite video (YouTube links play inline).
 - **Chord dictionary**: 39 chords with clickable diagrams. **Check** listens to you strum and tells you what was missing ("missing C# (major 3rd), extra C").
 - **Camera**: hand tracking (MediaPipe, fully local) checks that each finger is on the right string and fret.
@@ -223,7 +223,7 @@ bpm: 90
 time: 4/4            # optional (default 4/4)
 capo: 2              # optional
 strum: D.DU.UDU      # optional: D down, U up, . rest (one slot per eighth note)
-level: 2             # optional
+level: 2             # optional (built-in charts take it from the lesson that uses them)
 note: a tip          # optional
 
 [Verse]
@@ -242,7 +242,7 @@ G | D | C G | %      # "C G" = two chords in one bar; % repeats; - is a silent b
   - `chart`: play a chart with the metronome at a given speed.
 
   Each has a minimum score. A lesson is complete when all its exercises pass.
-- **Chord dictionary** (`guitarr/data/chords.json`): fingerings from the 6th to the 1st string, finger numbers, barres, notes and a tip.
+- **Chord dictionary** (`guitarr/data/chords.json`): fingerings from the 6th to the 1st string, finger numbers, barres, notes and a tip. Each chord has a quality group (major, minor, sevenths, color, power) and barre chords are also listed under *Barre chords*; the level and lesson that teach it come from the course.
 - **Progress** (`~/.guitarr/progress.json`): XP is earned by passing exercises (15) and completing lessons (40). Mastering a chord, by ear or with the camera, gives 20. Practice sessions give up to 20, based on the score. The chord-change minute gives 1 XP per 2 clean changes. Levels: *First strings → Accompanist → Strummer → Blues player → Guitarist*. The streak counts consecutive days with practice.
 
 ## Languages

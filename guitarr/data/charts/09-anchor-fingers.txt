@@ -1,5 +1,4 @@
 title: Anchor fingers: Em7, G, Dsus4, Cadd9
-level: 2
 bpm: 88
 time: 4/4
 capo: 2
