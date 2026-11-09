@@ -1647,7 +1647,8 @@
    "tech_barre_finger_middle": "En el medio del traste",
    "tech_barre_finger_near_fret": "Cerca del traste, de costado",
    "tech_barre_finger_on_fret": "Encima del traste",
-   "tech_barre_finger_tip": "Con la punta"
+   "tech_barre_finger_tip": "Con la punta",
+   "name_note": "¿Qué nota está marcada?"
   },
   "flow": {
    "label": "Los pasos de esta lección",
@@ -3802,6 +3803,48 @@
      "tapping guitarra para principiantes"
     ],
     "captions": []
+   },
+   "octave-shapes": {
+    "title": "Octavas: el atajo",
+    "theory": [
+     "La misma nota aparece por todo el mástil en octavas, siempre con las mismas formas. Desde una nota en la 6ª o la 5ª cuerda: dos cuerdas arriba y dos trastes adelante. Desde la 4ª o la 3ª: dos cuerdas arriba y tres trastes adelante (la cuerda Si está afinada un traste más abajo).",
+     "Sabiendo una nota y sus formas de octava, la encontrás en todos lados."
+    ],
+    "tips": [
+     "Tocá las dos notas de una octava juntas, apagando la cuerda del medio: es el sonido de octavas de tanto jazz y funk."
+    ],
+    "tutorials": [],
+    "captions": [
+     "Las notas de la pentatónica mayor de Sol: buscá cada Sol y sus octavas."
+    ]
+   },
+   "twelfth-fret": {
+    "title": "Traste 12: el mástil vuelve a empezar",
+    "theory": [
+     "En el traste 12 cada cuerda suena su nota al aire una octava más arriba. De ahí para arriba el mástil se repite: el traste 13 es otra vez el 1, el 15 es el 3, y así.",
+     "Por eso la marca doble está en el traste 12: es la mitad de la cuerda."
+    ],
+    "tips": [
+     "Para encontrar una nota arriba del traste 12, buscala abajo y sumá 12."
+    ],
+    "tutorials": [],
+    "captions": []
+   },
+   "name-the-note": {
+    "title": "Nombrá la nota marcada",
+    "theory": [
+     "El alfabeto musical tiene siete letras: A B C D E F G (La Si Do Re Mi Fa Sol), y vuelve a empezar. En una cuerda cada traste es un semitono, así que las notas naturales están a dos trastes, salvo Mi–Fa y Si–Do, que están a un traste.",
+     "Aprendé primero las dos cuerdas graves: ahí viven las fundamentales de casi todas las formas de acorde. Decí cada nota en voz alta cuando la encontrás."
+    ],
+    "tips": [
+     "Usá las marcas del mástil como referencia: en la 6ª cuerda, los trastes 3, 5, 7 y 9 son Sol, La, Si y Do♯."
+    ],
+    "tutorials": [
+     "memorizar notas en el mástil de la guitarra"
+    ],
+    "captions": [
+     "Las notas naturales en la 6ª y la 5ª cuerda."
+    ]
    }
   },
   "exercises": {
@@ -4069,7 +4112,12 @@
    "sweep-picking/sweep-am": "Barré Lam en tres cuerdas, ida y vuelta",
    "sweep-picking/sweep-g": "Barré Sol en tres cuerdas, ida y vuelta",
    "tapping-speed/tap-lick": "Golpeá el 12, pull al 5, hammer al 8",
-   "tapping-speed/tech-review": "¿Qué técnica, cuándo?"
+   "tapping-speed/tech-review": "¿Qué técnica, cuándo?",
+   "octave-shapes/all-octaves": "Marcá todas las octavas de la nota",
+   "twelfth-fret/name-twelve": "Nombrá las notas en los trastes 0 y 12",
+   "twelfth-fret/name-upper": "Nombrala entre los trastes 12 y 17",
+   "name-the-note/name-low": "Nombrala en las cuerdas graves",
+   "name-the-note/name-all": "Nombrala en cualquier lado, también con sostenidos y bemoles"
   },
   "charts": {
    "01-em-am": {

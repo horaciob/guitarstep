@@ -1647,7 +1647,8 @@
    "tech_barre_finger_middle": "In the middle of the fret space",
    "tech_barre_finger_near_fret": "Close to the fret, on its side",
    "tech_barre_finger_on_fret": "On top of the fret",
-   "tech_barre_finger_tip": "With the tip"
+   "tech_barre_finger_tip": "With the tip",
+   "name_note": "What's the marked note?"
   },
   "flow": {
    "label": "The steps of this lesson",

@@ -363,6 +363,22 @@ def q_rhythm_dictation(rng, ex):
     return _q(L("rhythm_dictation"), ch, str(opts.index(pat)), hear_rhythm=dict(pattern=pat, bpm=float(ex.get("bpm", 70))))
 
 
+# ---------------------------------------------------------------- the neck, note by note
+def q_name_note(rng, ex):
+    """A dot on the neck: what note is it?"""
+    lo, hi = ex.get("frets", [0, 12])
+    strings = ex.get("strings", [6, 5, 4, 3, 2, 1])
+    naturals = ex.get("notes", "naturals") == "naturals"
+    pool = [(s_, f) for s_ in strings for f in range(lo, hi + 1) if not naturals or th.plain_name(th.fret_pitch(s_, f)) in NATURALS]
+    s_, f = rng.choice(pool)
+    name = th.plain_name(th.fret_pitch(s_, f))
+    names = NATURALS if naturals else NATURALS + ["C#", "Eb", "F#", "Ab", "Bb"]
+    ch, ans = _choices(rng, name, names, label=lambda x: x)
+    view_lo = max(0, min(lo, f - 2)) if hi - lo > 12 else lo
+    return _q(L("name_note"), ch, ans,
+              neck=dict(lo=view_lo, hi=max(hi, view_lo + 4), marks=[dict(string=s_, fret=f, text="?", kind="mark")]))
+
+
 # ---------------------------------------------------------------- reading standard notation
 SHARPS = ["C#", "D#", "F#", "G#", "A#"]
 FLATS = ["Db", "Eb", "Gb", "Ab", "Bb"]
@@ -577,7 +593,7 @@ def q_caged(rng, ex):
     return _q(L("caged_string", shape=shape), ch, ans)
 
 
-QUIZ = {f.__name__[2:]: f for f in [q_technique, q_function, q_hear_degree, q_cadence, q_secondary, q_borrowed, q_progression, q_caged, q_read_note, q_staff_fact, q_figure_value, q_rhythm_dictation, q_tritone_sub, q_shared_tones, q_ii_v_i, q_turnaround,q_interval_frets, q_interval_ear, q_enharmonic, q_half_step, q_tab_read, q_open_string,
+QUIZ = {f.__name__[2:]: f for f in [q_name_note, q_technique, q_function, q_hear_degree, q_cadence, q_secondary, q_borrowed, q_progression, q_caged, q_read_note, q_staff_fact, q_figure_value, q_rhythm_dictation, q_tritone_sub, q_shared_tones, q_ii_v_i, q_turnaround,q_interval_frets, q_interval_ear, q_enharmonic, q_half_step, q_tab_read, q_open_string,
                                      q_scale_degree, q_relative_minor, q_hear_quality, q_mode_color, q_chord_tones,
                                      q_chord_formula, q_inversion, q_roman, q_pentatonic, q_symmetric, q_bebop, q_altered,
                                      q_guide_tones, q_drop, q_extension, q_voice_lead]}

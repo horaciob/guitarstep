@@ -63,6 +63,7 @@ function ask(box, token, item, i, n, isStopped, setCancel, onReveal) {
       <p class="q-prompt">${esc(say(item.prompt))}</p>
       ${item.tab ? `<pre class="tab q-tab" aria-label="${esc(t("lesson.tab_label"))}">${esc(tabFigure(item.tab))}</pre>` : ""}
       ${item.staff ? `<div class="q-staff">${staffSvg(item.staff)}</div>` : ""}
+      ${item.neck && item.type !== "pick" ? `<div class="q-neck q-neck-view"></div>` : ""}
       ${item.rhythm && item.type !== "tap" ? `<div class="q-rhythm">${rhythmSvg(item.rhythm.pattern, { width: 420, beatNumbers: false, timeSig: false })}</div>` : ""}
       ${item.play || item.hear_rhythm || item.play_chords ? `<button class="btn" data-q="replay">♪ ${esc(t("quiz.play_again"))}</button>` : ""}`;
     const nextBtn = `<div class="row center q-actions"><button class="btn primary" data-q="next" hidden>${esc(t(i + 1 < n ? "quiz.next" : "quiz.see_result"))} →</button></div>`;
@@ -106,6 +107,7 @@ function ask(box, token, item, i, n, isStopped, setCancel, onReveal) {
           `<button class="btn q-choice${c.rhythm ? " q-choice-rhythm" : ""}" data-id="${esc(c.id)}"><kbd>${k + 1}</kbd> ${c.rhythm
             ? rhythmSvg(c.rhythm.pattern, { width: 360, label: t("rhythm.choice_label", { n: k + 1 }) }) : esc(say(c.label))}</button>`).join("")}</div>
         <p class="q-feedback" aria-live="polite"></p>${nextBtn}</div>`;
+      if (item.neck) neck(box.querySelector(".q-neck-view"), { lo: item.neck.lo, hi: item.neck.hi, marks: item.neck.marks, label: say(item.prompt) });
       const choose = async b => {
         if (answered) return;
         answered = true;

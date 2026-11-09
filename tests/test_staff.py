@@ -67,3 +67,13 @@ def test_staff_figures_come_from_the_theory_engine():
     course = TestClient(app).get("/api/course").json()
     ls = next(x for lv in course["levels"] for x in lv["lessons"] if x["id"] == "naturals-low")
     assert [n["name"] for n in ls["figures"][0]["notes"]] == ["E", "F", "G", "A"]
+
+
+def test_name_the_marked_note_on_the_neck():
+    d = quiz.draw("l", dict(id="n", kind="quiz", quiz="name_note", frets=[12, 17], strings=[6, 5], count=12), 80, seed=3)
+    for i, it in enumerate(d["items"]):
+        (m,) = it["neck"]["marks"]
+        assert 12 <= m["fret"] <= 17 and it["neck"]["lo"] <= m["fret"] <= it["neck"]["hi"]
+        right = next(c for c in it["choices"] if c["label"] == th.plain_name(th.fret_pitch(m["string"], m["fret"])))
+        assert quiz.check(d["token"], i, right["id"])["correct"]
+    quiz.finish(d["token"])

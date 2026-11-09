@@ -2146,6 +2146,181 @@
      ]
     },
     {
+     "id": "name-the-note",
+     "title": "Name the marked note",
+     "minutes": 10,
+     "theory": [
+      "The musical alphabet has seven letters: A B C D E F G, and then A again. On one string each fret is a half step, so the natural notes are two frets apart, except E–F and B–C, which are one fret apart.",
+      "Learn the low two strings first: that's where the roots of almost every chord shape live. Name each note out loud as you find it."
+     ],
+     "tips": [
+      "Use the fret markers as landmarks: on the 6th string, frets 3, 5, 7 and 9 are G, A, B and C♯."
+     ],
+     "tutorials": [
+      "memorize notes on the guitar fretboard"
+     ],
+     "figures": [
+      {
+       "type": "fretboard",
+       "key": "C",
+       "scale": "major",
+       "frets": [
+        0,
+        12
+       ],
+       "strings": [
+        6,
+        5
+       ],
+       "labels": "notes"
+      }
+     ],
+     "captions": [
+      "The natural notes on the 6th and 5th strings."
+     ],
+     "exercises": [
+      {
+       "id": "name-low",
+       "kind": "quiz",
+       "title": "Name it on the low strings",
+       "quiz": "name_note",
+       "frets": [
+        0,
+        12
+       ],
+       "strings": [
+        6,
+        5
+       ],
+       "count": 10,
+       "min": 80
+      },
+      {
+       "id": "name-all",
+       "kind": "quiz",
+       "title": "Name it anywhere, sharps and flats too",
+       "quiz": "name_note",
+       "frets": [
+        0,
+        12
+       ],
+       "strings": [
+        6,
+        5,
+        4,
+        3,
+        2,
+        1
+       ],
+       "notes": "all",
+       "count": 10,
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "twelfth-fret",
+     "title": "Fret 12: the neck starts over",
+     "minutes": 8,
+     "theory": [
+      "At the 12th fret every string sounds its open note an octave higher. From there up, the neck repeats: fret 13 is fret 1 again, fret 15 is fret 3, and so on.",
+      "That's why the double dot sits at the 12th fret: it's the halfway point of the string."
+     ],
+     "tips": [
+      "To find a note above the 12th fret, find it below and add 12."
+     ],
+     "figures": [],
+     "captions": [],
+     "exercises": [
+      {
+       "id": "name-twelve",
+       "kind": "quiz",
+       "title": "Name the notes at frets 0 and 12",
+       "quiz": "name_note",
+       "frets": [
+        0,
+        0
+       ],
+       "strings": [
+        6,
+        5,
+        4,
+        3,
+        2,
+        1
+       ],
+       "count": 6,
+       "min": 80
+      },
+      {
+       "id": "name-upper",
+       "kind": "quiz",
+       "title": "Name it between frets 12 and 17",
+       "quiz": "name_note",
+       "frets": [
+        12,
+        17
+       ],
+       "strings": [
+        6,
+        5,
+        4
+       ],
+       "count": 8,
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "octave-shapes",
+     "title": "Octaves: the shortcut",
+     "minutes": 10,
+     "theory": [
+      "The same note shows up all over the neck in octaves, always in the same shapes. From a note on the 6th or 5th string: two strings up and two frets up. From the 4th or 3rd string: two strings up and three frets up (the B string is tuned one fret lower).",
+      "Knowing one note and its octave shapes is enough to find it everywhere."
+     ],
+     "tips": [
+      "Play the two notes of an octave together, muting the string in between: that's the octave sound of so much jazz and funk."
+     ],
+     "figures": [
+      {
+       "type": "fretboard",
+       "key": "G",
+       "scale": "major_pentatonic",
+       "frets": [
+        0,
+        12
+       ],
+       "labels": "notes"
+      }
+     ],
+     "captions": [
+      "The notes of G major pentatonic: find each G and its octaves."
+     ],
+     "exercises": [
+      {
+       "id": "all-octaves",
+       "kind": "pick",
+       "title": "Click every octave of the note",
+       "pick": "note",
+       "frets": [
+        0,
+        12
+       ],
+       "strings": [
+        6,
+        5,
+        4,
+        3,
+        2,
+        1
+       ],
+       "count": 6,
+       "min": 80
+      }
+     ]
+    },
+    {
      "id": "degree-map",
      "title": "Degrees: a map that moves with the key",
      "minutes": 15,
