@@ -5,7 +5,7 @@ import { $, $$, api, esc, toast } from "../lib/ui.js";
 import { icon } from "../lib/icons.js";
 import { rig } from "../lib/rig/engine.js";
 import { AMP_KNOBS, AMPS, CABS, EFFECT_GROUPS, EFFECTS, GUITARS, MICS } from "../lib/rig/effects.js";
-import { ARTIST_STYLE, ARTIST_STYLES, ARTISTS, FACTORY, factory, makeEffect } from "../lib/rig/presets.js";
+import { ARTIST_INFO, ARTIST_STYLE, ARTIST_STYLES, ARTISTS, FACTORY, factory, makeEffect } from "../lib/rig/presets.js";
 import { knob } from "../lib/rig/knob.js";
 import { RIFFS, VOICES } from "../lib/rig/synth.js";
 import { clipPlot, comparePlots, isDrive, stackCurve } from "../lib/rig/visuals.js";
@@ -87,43 +87,93 @@ function renderAll() {
 const STYLE_KEY = "guitarr.rig.artistStyle";
 let artistStyle = (() => { try { return localStorage.getItem(STYLE_KEY) || "all"; } catch { return "all"; } })();
 
-function renderQuick() {
+/** Lowercase, no accents, no punctuation: "Keb' Mo'" matches "keb mo", "Andrés" matches "andres". */
+const fold = x => String(x || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+let presetQuery = "";
+
+/** What a card can be found by: its name, and for artist tones the player, bands, genres and style. */
+function searchText(id, kind) {
+  if (kind === "user") return fold(id);
+  const parts = [t(`rig.preset.${id}`)];
+  const info = ARTIST_INFO[id];
+  if (info) {
+    parts.push(info.artist, ...info.bands, ...info.genres.map(g => `${t(`rig.genre.${g}`)} ${g.replace(/_/g, " ")}`));
+    if (ARTIST_STYLE[id]) parts.push(t(`rig.artist_style.${ARTIST_STYLE[id]}`));
+  }
+  return fold(parts.join(" "));
+}
+
+/** Shows the cards that match the search (and, with no search, the chosen artist style). */
+function applySearch() {
   const box = $("#rigQuick", root);
   if (!box) return;
+  const words = fold(presetQuery).split(" ").filter(Boolean);
+  let shown = 0;
+  $$(".quick[data-q]", box).forEach(c => {
+    const byStyle = words.length || !c.dataset.style || artistStyle === "all" || c.dataset.style === artistStyle;
+    const ok = byStyle && words.every(w => c.dataset.q.includes(w));
+    c.hidden = !ok;
+    if (ok) shown++;
+  });
+  $$(".quick-group", box).forEach(g => { g.hidden = !!words.length && !$$(".quick[data-q]:not([hidden])", g).length; });
+  const add = $("#mySave", box);
+  if (add) add.hidden = !!words.length;
+  const styles = $(".artist-styles", box);
+  if (styles) styles.hidden = !!words.length;                 // a search looks through every style
+  const none = $("#searchNone", box), count = $("#searchCount", box);
+  none.hidden = !words.length || shown > 0;
+  none.textContent = t("rig.search_none", { q: presetQuery.trim() });
+  count.textContent = words.length ? t("rig.search_count", { count: shown }) : "";
+}
+
+function renderQuick() {
+  const outer = $("#rigQuick", root);
+  if (!outer) return;
+  if (!$("#presetSearch", outer)) {
+    outer.innerHTML = `<div class="rig-search"><label class="sr-only" for="presetSearch">${esc(t("rig.search_label"))}</label>
+        <input type="search" id="presetSearch" placeholder="${esc(t("rig.search_placeholder"))}" autocomplete="off">
+        <small class="muted" id="searchCount" aria-live="polite"></small></div>
+      <p class="muted" id="searchNone" hidden></p><div id="quickBody"></div>`;
+    const input = $("#presetSearch", outer);
+    input.value = presetQuery;
+    input.oninput = () => { presetQuery = input.value; applySearch(); };
+  }
+  const box = $("#quickBody", outer);
   const cur = rig.preset && rig.preset.kind === "factory" ? rig.preset.id : "";
   const card = id => {
     const s = factory(id), n = [...s.pedals, ...s.post].filter(e => e.on).length;
-    return `<button class="quick${id === cur ? " on" : ""}" data-id="${id}" aria-pressed="${id === cur}">${ampThumb(s.amp.type)}
+    return `<button class="quick${id === cur ? " on" : ""}" data-id="${id}" data-q="${esc(searchText(id))}"${ARTIST_STYLE[id] ? ` data-style="${ARTIST_STYLE[id]}"` : ""} aria-pressed="${id === cur}">${ampThumb(s.amp.type)}
         <b>${esc(t(`rig.preset.${id}`))}</b>
         <small>${esc(t(`rig.amp_${s.amp.type}`))} · ${esc(t("rig.quick_fx", { count: n }))}</small>
         ${id === cur ? `<span class="quick-on">✓ ${esc(t("rig.quick_active"))}</span>` : ""}</button>`;
   };
   const mineId = rig.preset && rig.preset.kind === "user" ? rig.preset.id : "";
   const fxCount = s => [...(s.pedals || []), ...(s.post || [])].filter(e => e.on).length;
-  box.innerHTML = `<h2 class="sub">${esc(t("rig.my_sounds"))}</h2>
+  box.innerHTML = `<div class="quick-group"><h2 class="sub">${esc(t("rig.my_sounds"))}</h2>
     <div class="quick-row" id="mySounds">
       <button class="quick quick-add" id="mySave">${icon("plus", 22)}<b>${esc(t("rig.save_current"))}</b><small>${esc(t("rig.save_current_hint"))}</small></button>
       ${(rig.userPresets || []).map(p => {
         const on = p.id === mineId, amp = p.rig && p.rig.amp ? p.rig.amp.type : "";
-        return `<button class="quick${on ? " on" : ""}" data-user="${esc(p.id)}" aria-pressed="${on}">${amp ? ampThumb(amp) : ""}
+        return `<button class="quick${on ? " on" : ""}" data-user="${esc(p.id)}" data-q="${esc(searchText(p.name, "user"))}" aria-pressed="${on}">${amp ? ampThumb(amp) : ""}
           <b>${esc(p.name)}</b>
           <small>${amp ? `${esc(t(`rig.amp_${amp}`))} · ` : ""}${esc(t("rig.quick_fx", { count: fxCount(p.rig || {}) }))}</small>
           ${on ? `<span class="quick-on">✓ ${esc(t("rig.quick_active"))}</span>` : ""}</button>`;
       }).join("")}
-    </div>
-    <h2 id="quickTitle" class="sub">${esc(t("rig.quick_title"))}</h2>
-    <div class="quick-row">${Object.keys(FACTORY).map(card).join("")}</div>
-    <h2 class="sub">${esc(t("rig.artists_title"))}</h2>
+    </div></div>
+    <div class="quick-group"><h2 id="quickTitle" class="sub">${esc(t("rig.quick_title"))}</h2>
+    <div class="quick-row">${Object.keys(FACTORY).map(card).join("")}</div></div>
+    <div class="quick-group"><h2 class="sub">${esc(t("rig.artists_title"))}</h2>
     <p class="muted small artists-hint">${esc(t("rig.artists_hint"))}</p>
     <div class="seg mini artist-styles" role="group" aria-label="${esc(t("rig.artist_filter"))}">${["all", ...ARTIST_STYLES].map(st =>
       `<button data-style="${st}" class="${st === artistStyle ? "active" : ""}" aria-pressed="${st === artistStyle}">${esc(t(`rig.artist_style.${st}`))}</button>`).join("")}</div>
-    <div class="quick-row" id="artistSounds">${Object.keys(ARTISTS).filter(id => artistStyle === "all" || ARTIST_STYLE[id] === artistStyle).map(card).join("")}</div>`;
+    <div class="quick-row" id="artistSounds">${Object.keys(ARTISTS).map(card).join("")}</div></div>`;
   $$(".quick[data-id]", box).forEach(b => b.onclick = () => loadPreset(`factory:${b.dataset.id}`));
   $$(".artist-styles button", box).forEach(b => b.onclick = () => {
     artistStyle = b.dataset.style;
     try { localStorage.setItem(STYLE_KEY, artistStyle); } catch { /* ok */ }
     renderQuick();
   });
+  applySearch();
   $$(".quick[data-user]", box).forEach(b => b.onclick = () => loadPreset(`user:${b.dataset.user}`));
   $("#mySave", box).onclick = savePreset;
 }

@@ -948,8 +948,8 @@ def test_exercise_theory_and_the_optional_metal_course(app_page):
 def test_rig_artist_tones(app_page):
     onboarded(app_page)
     go(app_page, "rig")
-    row = app_page.locator("#artistSounds .quick")
-    expect(row).to_have_count(70)
+    row = app_page.locator("#artistSounds .quick:not([hidden])")
+    expect(row).to_have_count(93)
     app_page.locator('.artist-styles button[data-style="acoustic"]').click()     # filter by style
     expect(row).to_have_count(6)
     expect(app_page.locator('#artistSounds .quick[data-id="segovia_classical"]')).to_be_visible()
@@ -960,3 +960,30 @@ def test_rig_artist_tones(app_page):
     expect(gilmour).to_contain_text("active")
     expect(app_page.locator("#rigPreset")).to_have_value("factory:gilmour_lead")
     expect(app_page.locator("#sec-pedals .pedal[data-uid]")).to_have_count(2)      # compressor + fuzz
+
+
+def test_rig_preset_search(app_page):
+    onboarded(app_page)
+    go(app_page, "rig")
+    search = app_page.locator("#presetSearch")
+    visible = app_page.locator("#rigQuick .quick[data-q]:not([hidden])")
+    search.fill("pink floyd")                                   # by band
+    expect(visible).to_have_count(2)
+    expect(visible.first).to_contain_text("Gilmour")
+    search.fill("grunge")                                       # by genre
+    expect(app_page.locator('#artistSounds .quick[data-id="cobain_grunge"]')).to_be_visible()
+    expect(app_page.locator('#artistSounds .quick[data-id="segovia_classical"]')).to_be_hidden()
+    search.fill("keb mo")                                       # by name, without the apostrophes
+    expect(visible).to_have_count(1)
+    search.fill("andres")                                       # without the accent
+    expect(app_page.locator('#artistSounds .quick[data-id="segovia_classical"]')).to_be_visible()
+    search.fill("chicago slide")                                # every word must match
+    expect(visible).to_have_count(1)
+    expect(visible.first).to_contain_text("Muddy Waters")
+    search.fill("surf")                                         # factory sounds too
+    expect(app_page.locator('.quick[data-id="surf"]')).to_be_visible()
+    search.fill("zzzz")
+    expect(app_page.locator("#searchNone")).to_be_visible()
+    search.fill("")
+    expect(app_page.locator("#searchNone")).to_be_hidden()
+    expect(app_page.locator("#mySave")).to_be_visible()
