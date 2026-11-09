@@ -407,6 +407,121 @@ def q_staff_fact(rng, ex):
     return _q(L(code), ch, ans)
 
 
+# ---------------------------------------------------------------- harmonic function
+FUNCTION = {1: "tonic", 3: "tonic", 6: "tonic", 2: "subdominant", 4: "subdominant", 5: "dominant", 7: "dominant"}
+MAJOR_KEYS = ["C", "G", "D", "A", "E", "F", "Bb"]
+MINOR_KEYS = ["A", "E", "D", "B", "G", "C"]
+
+
+def _minor_name(mode: str) -> str:
+    return "natural_minor" if mode == "minor" else "major"
+
+
+def _voiced(root: int, quality: str) -> list[int]:
+    """A chord to listen to: the root low, then the triad close above it."""
+    ivs = th.CHORDS[quality][1]
+    return [root - 12] + [root + th.INTERVALS[iv][1] for iv in ivs]
+
+
+def q_function(rng, ex):
+    """Tonic (home), subdominant (away) or dominant (tension) for a chord of the key."""
+    key = rng.choice(ex.get("keys", MAJOR_KEYS))
+    hz = th.harmonize(key, "major")
+    c = rng.choice(hz)
+    by_name = rng.random() < 0.5
+    ch, ans = _choices(rng, FUNCTION[c["degree"]], ["tonic", "subdominant", "dominant"], n=3, label=lambda x: L(f"fn_{x}"))
+    return _q(L("function_of", key=key, chord=c["symbol"] if by_name else c["roman"]), ch, ans)
+
+
+def q_hear_degree(rng, ex):
+    """The tonic chord, then another chord of the key: which degree is it?"""
+    mode = ex.get("mode", "major")
+    hz = th.harmonize("C", _minor_name(mode))
+    degrees = ex.get("degrees", [1, 4, 5])
+    d = rng.choice(degrees)
+    tonic = rng.randint(52, 59)
+    seq = [_voiced(tonic, hz[0]["quality"])]
+    c = hz[d - 1]
+    r = tonic + (th.pc(c["notes"][0]) - th.pc(hz[0]["notes"][0])) % 12
+    if r > 60:
+        r -= 12
+    seq.append(_voiced(r, c["quality"]))
+    ch, ans = _choices(rng, c["roman"], [hz[k - 1]["roman"] for k in degrees], n=min(4, len(degrees)), label=lambda x: x)
+    return _q(L("hear_degree_minor" if mode == "minor" else "hear_degree"), ch, ans, play_chords=seq)
+
+
+CADENCES = {"authentic": (5, 1), "plagal": (4, 1), "half": (2, 5), "deceptive": (5, 6)}
+
+
+def q_cadence(rng, ex):
+    """Name the cadence: V→I authentic, IV→I plagal, ending on V half, V→vi deceptive. With `ear`, you hear it."""
+    key = rng.choice(ex.get("keys", MAJOR_KEYS))
+    name = rng.choice(list(CADENCES))
+    a, b = CADENCES[name]
+    if name == "half":
+        a = rng.choice([1, 2, 4])
+    hz = th.harmonize(key, "major")
+    sym = lambda k: hz[k - 1]["symbol"] + ("7" if k == 5 and hz[k - 1]["quality"] == "maj" else "")
+    ch, ans = _choices(rng, name, list(CADENCES), label=lambda x: L(f"cad_{x}"))
+    if ex.get("ear"):
+        tonic = rng.randint(52, 59)
+        off = lambda k: (th.pc(hz[k - 1]["notes"][0]) - th.pc(key)) % 12
+        chord_at = lambda k: _voiced(tonic + off(k) - (12 if off(k) > 6 else 0), hz[k - 1]["quality"])
+        return _q(L("cadence_ear"), ch, ans, play_chords=[chord_at(1), chord_at(a), chord_at(b)])
+    return _q(L("cadence_name", key=key, a=sym(a), b=sym(b)), ch, ans)
+
+
+def _simple(note: str) -> str:
+    """No double sharps or flats in a chord symbol (E## → F#)."""
+    return th.plain_name(th.pc(note)) if abs(th.parse_note(note)[1]) > 1 else note
+
+
+def q_secondary(rng, ex):
+    """V7 of a chord of the key: the dominant seventh a fifth above it, or where a dominant wants to go."""
+    key = rng.choice(ex.get("keys", MAJOR_KEYS))
+    hz = th.harmonize(key, "major")
+    target = rng.choice([hz[k] for k in (1, 2, 3, 4, 5)])           # ii iii IV V vi
+    dom = _simple(th.transpose(target["notes"][0], "P5")) + "7"
+    if rng.random() < 0.5:
+        pool = [_simple(th.transpose(c["notes"][0], "P5")) + "7" for c in hz[:6]] + [c["notes"][0] + "7" for c in hz[:6]]
+        ch, ans = _choices(rng, dom, pool, label=lambda x: x)
+        return _q(L("secondary_of", key=key, roman=target["roman"], chord=target["symbol"]), ch, ans)
+    ch, ans = _choices(rng, target["symbol"], [c["symbol"] for c in hz[:6]], label=lambda x: x)
+    return _q(L("secondary_goes", key=key, chord=dom), ch, ans)
+
+
+BORROWED = {"iv": 3, "bVII": 6, "bVI": 5, "bIII": 2}
+
+
+def q_borrowed(rng, ex):
+    """Chords borrowed from the parallel minor: iv, ♭VII, ♭VI, ♭III."""
+    key = rng.choice(ex.get("keys", MAJOR_KEYS))
+    roman_ = rng.choice(list(BORROWED))
+    minor = th.harmonize(key, "natural_minor")
+    major = th.harmonize(key, "major")
+    k = BORROWED[roman_]
+    right = minor[k]["symbol"]
+    pool = [right, major[k]["symbol"], major[(k + 1) % 7]["symbol"], minor[(k + 2) % 7]["symbol"], major[(k + 3) % 7]["symbol"]]
+    ch, ans = _choices(rng, right, pool, label=lambda x: x)
+    return _q(L("borrowed_which", key=key, roman=roman_), ch, ans)
+
+
+PROGRESSIONS = {"major": ["I–V–vi–IV", "I–IV–V–I", "ii–V–I", "I–vi–IV–V", "vi–IV–I–V"],
+                "minor": ["i–VI–III–VII", "i–iv–v–i", "i–VII–VI–VII", "i–iv–VII–III"]}
+
+
+def q_progression(rng, ex):
+    """Chords in a key → the degrees they are (the progressions half the songs you know are made of)."""
+    mode = rng.choice(ex.get("modes", ["major", "minor"]))
+    key = rng.choice(MAJOR_KEYS if mode == "major" else MINOR_KEYS)
+    hz = th.harmonize(key, _minor_name(mode))
+    romans = [c["roman"] for c in hz]
+    prog = rng.choice(PROGRESSIONS[mode])
+    chords = [hz[romans.index(r)]["symbol"] for r in prog.split("–")]
+    ch, ans = _choices(rng, prog, PROGRESSIONS[mode], label=lambda x: x)
+    return _q(L("progression_of", key=key + ("m" if mode == "minor" else ""), chords=" – ".join(chords)), ch, ans)
+
+
 # ---------------------------------------------------------------- CAGED
 def q_caged(rng, ex):
     """The order of the shapes, which chord a moved shape makes, and which string holds each root."""
@@ -427,7 +542,7 @@ def q_caged(rng, ex):
     return _q(L("caged_string", shape=shape), ch, ans)
 
 
-QUIZ = {f.__name__[2:]: f for f in [q_caged, q_read_note, q_staff_fact, q_figure_value, q_rhythm_dictation, q_tritone_sub, q_shared_tones, q_ii_v_i, q_turnaround,q_interval_frets, q_interval_ear, q_enharmonic, q_half_step, q_tab_read, q_open_string,
+QUIZ = {f.__name__[2:]: f for f in [q_function, q_hear_degree, q_cadence, q_secondary, q_borrowed, q_progression, q_caged, q_read_note, q_staff_fact, q_figure_value, q_rhythm_dictation, q_tritone_sub, q_shared_tones, q_ii_v_i, q_turnaround,q_interval_frets, q_interval_ear, q_enharmonic, q_half_step, q_tab_read, q_open_string,
                                      q_scale_degree, q_relative_minor, q_hear_quality, q_mode_color, q_chord_tones,
                                      q_chord_formula, q_inversion, q_roman, q_pentatonic, q_symmetric, q_bebop, q_altered,
                                      q_guide_tones, q_drop, q_extension, q_voice_lead]}

@@ -239,7 +239,7 @@ bass world and bass drills stay out). The text is ours, rewritten in English wit
 98. **Reading standard notation** ✅. Treble clef (guitar sounds an octave lower): name the note, find it on
     the neck or play it, in 1st, 5th and 7th position.
 99. **CAGED** ✅. The five shapes of one chord, connecting them, and the minor shapes.
-100. **Harmonic function by ear** (M). Tonic, subdominant and dominant; hear the degree after the tonic;
+100. **Harmonic function by ear** ✅. Tonic, subdominant and dominant; hear the degree after the tonic;
      cadences by ear and by name; secondary dominants and borrowed chords.
 101. **Guitar technique** (M). Alternate picking, palm mute, economy picking and string skipping, legato, a
      tuned bend, sweep arpeggios, barre shapes on E and A, tapping.

@@ -4287,8 +4287,269 @@
    ]
   },
   {
-   "id": "n13",
+   "id": "n20",
+   "title": "Harmonic function",
+   "subtitle": "What each chord does, by name and by ear: cadences, secondary dominants, borrowed chords.",
    "number": 17,
+   "lessons": [
+    {
+     "id": "functions",
+     "title": "Tonic, subdominant, dominant",
+     "minutes": 10,
+     "theory": [
+      "Every chord of the key has a job. The tonic (I, and also iii and vi) is home: rest. The subdominant (IV and ii) moves away from home. The dominant (V and vii°) builds tension and asks to go back to the tonic.",
+      "Chords that share notes tend to share their job: C, Em and Am all have E in them; F and Dm share F and A; G7 and B° share B, D and F."
+     ],
+     "tips": [
+      "Almost every song tells this story in cycles: it leaves the tonic, passes the subdominant, reaches the dominant and comes back."
+     ],
+     "tutorials": [
+      "tonic subdominant dominant explained guitar"
+     ],
+     "exercises": [
+      {
+       "id": "function-quiz",
+       "kind": "quiz",
+       "title": "What's this chord's job?",
+       "quiz": "function",
+       "count": 8,
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "ear-one-four-five",
+     "title": "By ear: I, IV and V",
+     "minutes": 10,
+     "theory": [
+      "I, IV and V are the major chords of the key and they hold up thousands of songs. The app plays the tonic and then another chord: you say which degree it is."
+     ],
+     "tips": [
+      "The IV sounds like opening a door; the V sounds like something is missing. Sing the tonic over it: on the V it feels uncomfortable."
+     ],
+     "tutorials": [],
+     "exercises": [
+      {
+       "id": "ear-145",
+       "kind": "quiz",
+       "title": "Which degree did you hear?",
+       "quiz": "hear_degree",
+       "count": 10,
+       "min": 75,
+       "mode": "major",
+       "degrees": [
+        1,
+        4,
+        5
+       ]
+      }
+     ]
+    },
+    {
+     "id": "ear-two-six",
+     "title": "By ear: ii and vi join in",
+     "minutes": 10,
+     "theory": [
+      "Now the minor chords of the key join in: ii (subdominant) and vi (the relative tonic). The vi sounds like the sad side of home; the ii like a softer IV."
+     ],
+     "tips": [],
+     "tutorials": [],
+     "exercises": [
+      {
+       "id": "ear-12456",
+       "kind": "quiz",
+       "title": "I, ii, IV, V or vi?",
+       "quiz": "hear_degree",
+       "count": 10,
+       "min": 70,
+       "mode": "major",
+       "degrees": [
+        1,
+        2,
+        4,
+        5,
+        6
+       ]
+      }
+     ]
+    },
+    {
+     "id": "ear-minor-key",
+     "title": "By ear in a minor key",
+     "minutes": 10,
+     "theory": [
+      "In a minor key the major chords VI and VII give that epic sound of so much rock and metal. The app plays the i and then another chord of the minor key."
+     ],
+     "tips": [
+      "In practice many minor songs swap the minor v for a major V, borrowed from harmonic minor, for a stronger pull home."
+     ],
+     "tutorials": [],
+     "exercises": [
+      {
+       "id": "ear-minor",
+       "kind": "quiz",
+       "title": "i, iv, VI or VII?",
+       "quiz": "hear_degree",
+       "count": 10,
+       "min": 70,
+       "mode": "minor",
+       "degrees": [
+        1,
+        4,
+        6,
+        7
+       ]
+      }
+     ]
+    },
+    {
+     "id": "famous-progressions",
+     "title": "Progressions everybody uses",
+     "minutes": 10,
+     "theory": [
+      "Some sequences of degrees show up in so many songs that they became clichés: I–V–vi–IV (all of pop), I–IV–V–I (rock and blues), ii–V–I (jazz and bossa) and, in minor, i–VI–III–VII (epic rock).",
+      "Thinking in degrees is what lets you play the same song in any key, or spot the progression of a new song in seconds."
+     ],
+     "tips": [],
+     "tutorials": [],
+     "exercises": [
+      {
+       "id": "progression-quiz",
+       "kind": "quiz",
+       "title": "Name the progression",
+       "quiz": "progression",
+       "count": 8,
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "cadences",
+     "title": "Cadences",
+     "minutes": 12,
+     "theory": [
+      "A cadence is how a phrase ends. Authentic: V → I, the strongest ending. Plagal: IV → I, the softer \"amen\". Half cadence: the phrase stops on V, like a comma asking for more. Deceptive: V → vi, the ear expected I and got something else.",
+      "Think of the last chord's job: ending on I is conclusive (authentic or plagal); ending on V is suspended (half); a V that goes elsewhere is deceptive."
+     ],
+     "tips": [],
+     "tutorials": [
+      "cadences explained authentic plagal half deceptive"
+     ],
+     "exercises": [
+      {
+       "id": "cadence-names",
+       "kind": "quiz",
+       "title": "Name the cadence",
+       "quiz": "cadence",
+       "count": 8,
+       "min": 80
+      },
+      {
+       "id": "cadence-ear",
+       "kind": "quiz",
+       "title": "Name the cadence by ear",
+       "quiz": "cadence",
+       "count": 8,
+       "min": 70,
+       "ear": true
+      }
+     ]
+    },
+    {
+     "id": "secondary-dominants",
+     "title": "Secondary dominants",
+     "minutes": 12,
+     "theory": [
+      "Any chord of the key (except vii°) can get its own dominant: the seventh chord a fifth above it. In C major, A7 is the V7 of Dm (written V7/ii); E7 is the V7 of Am (V7/vi); D7 is the V7 of G (V7/V).",
+      "That chord brings one note from outside the key, a half step under the chord it wants to reach: E7 brings G♯, which leads up to A."
+     ],
+     "tips": [
+      "See a 7 chord that isn't the V of the key? Look a 4th above it (or a 5th below): that's where it wants to go."
+     ],
+     "tutorials": [],
+     "exercises": [
+      {
+       "id": "secondary-quiz",
+       "kind": "quiz",
+       "title": "V7 of what?",
+       "quiz": "secondary",
+       "count": 8,
+       "min": 80
+      },
+      {
+       "id": "a7-dm",
+       "kind": "change",
+       "title": "A7 → Dm: a dominant resolving",
+       "chords": [
+        "A7",
+        "Dm"
+       ],
+       "times": 4,
+       "min": 75
+      },
+      {
+       "id": "e7-am",
+       "kind": "change",
+       "title": "E7 → Am",
+       "chords": [
+        "E7",
+        "Am"
+       ],
+       "times": 4,
+       "min": 75
+      }
+     ],
+     "chords": [
+      "A7",
+      "Dm",
+      "E7",
+      "Am"
+     ]
+    },
+    {
+     "id": "borrowed-chords",
+     "title": "Borrowed chords",
+     "minutes": 12,
+     "theory": [
+      "A major key can borrow chords from the minor key with the same tonic. In C major the usual ones are Fm (iv), B♭ (♭VII), A♭ (♭VI) and E♭ (♭III). The minor iv gives that nostalgic squeeze (F → Fm → C); the ♭VII, a rock flavor."
+     ],
+     "tips": [
+      "See a chord with a flat in a sharp key (or a minor chord on IV)? Think of a loan from the parallel minor."
+     ],
+     "tutorials": [],
+     "exercises": [
+      {
+       "id": "borrowed-quiz",
+       "kind": "quiz",
+       "title": "Which chord is borrowed?",
+       "quiz": "borrowed",
+       "count": 8,
+       "min": 80
+      },
+      {
+       "id": "f-fm",
+       "kind": "change",
+       "title": "F → Fm: the minor iv",
+       "chords": [
+        "F",
+        "Fm"
+       ],
+       "times": 4,
+       "min": 75
+      }
+     ],
+     "chords": [
+      "F",
+      "Fm",
+      "Bb",
+      "C"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "n13",
+   "number": 18,
    "title": "Voicings",
    "subtitle": "Shells, drop-2, drop-3, voice leading and guide tones: chords the way jazz guitarists play them.",
    "lessons": [
@@ -4627,7 +4888,7 @@
   },
   {
    "id": "n14",
-   "number": 18,
+   "number": 19,
    "title": "Jazz foundations",
    "subtitle": "ii–V–I in every key, minor ii–V–i, turnarounds, tritone subs, the jazz blues, song form and comping.",
    "lessons": [
@@ -5044,7 +5305,7 @@
   },
   {
    "id": "n15",
-   "number": 19,
+   "number": 20,
    "title": "Jazz language",
    "subtitle": "Swing, walking bass, arpeggios, approach notes, enclosures, eighth-note lines and etudes.",
    "lessons": [

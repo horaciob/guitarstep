@@ -1526,7 +1526,23 @@
    "caged_chord": "La forma de {{shape}} con la fundamental en el traste {{fret}} de la cuerda {{string}}, ¿qué acorde forma?",
    "caged_string": "¿En qué cuerda está la fundamental de la forma de {{shape}}?",
    "shape_of": "Forma de {{shape}}",
-   "string_n": "Cuerda {{n}}"
+   "string_n": "Cuerda {{n}}",
+   "function_of": "En {{key}} mayor, ¿qué papel tiene {{chord}}?",
+   "fn_tonic": "Tónica: la casa",
+   "fn_subdominant": "Subdominante: alejarse",
+   "fn_dominant": "Dominante: tensión",
+   "hear_degree": "Primero la tónica, después otro acorde del tono mayor. ¿Qué grado es?",
+   "hear_degree_minor": "Primero la tónica, después otro acorde del tono menor. ¿Qué grado es?",
+   "cadence_name": "En {{key}} mayor, {{a}} → {{b}} es una…",
+   "cadence_ear": "Primero la tónica, después un final de frase. ¿Qué cadencia es?",
+   "cad_authentic": "Auténtica (V → I)",
+   "cad_plagal": "Plagal (IV → I)",
+   "cad_half": "Semicadencia (termina en V)",
+   "cad_deceptive": "Rota (V → vi)",
+   "secondary_of": "En {{key}} mayor, ¿cuál es el V7 de {{chord}} ({{roman}})?",
+   "secondary_goes": "En {{key}} mayor, ¿adónde quiere ir {{chord}}?",
+   "borrowed_which": "En {{key}} mayor, ¿qué acorde es el {{roman}} prestado?",
+   "progression_of": "En {{key}}: {{chords}}. ¿Qué grados son?"
   },
   "flow": {
    "label": "Los pasos de esta lección",
@@ -2038,6 +2054,10 @@
    "n19": {
     "title": "CAGED",
     "subtitle": "Cinco formas de acorde que encajan entre sí y cubren todo el mástil."
+   },
+   "n20": {
+    "title": "Función armónica",
+    "subtitle": "Qué hace cada acorde, por nombre y de oído: cadencias, dominantes secundarias, acordes prestados."
    }
   },
   "lessons": {
@@ -3488,6 +3508,88 @@
     "captions": [
      "Lam en la forma de Em, fundamental en el traste 5."
     ]
+   },
+   "functions": {
+    "title": "Tónica, subdominante, dominante",
+    "theory": [
+     "Cada acorde del tono tiene un papel. La tónica (I, y también iii y vi) es la casa: reposo. La subdominante (IV y ii) se aleja de casa. La dominante (V y vii°) crea tensión y pide volver a la tónica.",
+     "Los acordes que comparten notas suelen compartir el papel: C, Em y Am tienen Mi; F y Dm comparten Fa y La; G7 y B° comparten Si, Re y Fa."
+    ],
+    "tips": [
+     "Casi toda canción cuenta esta historia en ciclos: sale de la tónica, pasa por la subdominante, llega a la dominante y vuelve."
+    ],
+    "tutorials": [
+     "tónica subdominante dominante explicado guitarra"
+    ]
+   },
+   "ear-one-four-five": {
+    "title": "De oído: I, IV y V",
+    "theory": [
+     "I, IV y V son los acordes mayores del tono y sostienen miles de canciones. La app toca la tónica y después otro acorde: vos decís qué grado es."
+    ],
+    "tips": [
+     "El IV suena a abrir una puerta; el V suena a que falta algo. Cantá la tónica encima: sobre el V se siente incómoda."
+    ],
+    "tutorials": []
+   },
+   "ear-two-six": {
+    "title": "De oído: entran ii y vi",
+    "theory": [
+     "Ahora entran los menores del tono: ii (subdominante) y vi (la tónica relativa). El vi suena al lado triste de la casa; el ii, a un IV más suave."
+    ],
+    "tips": [],
+    "tutorials": []
+   },
+   "ear-minor-key": {
+    "title": "De oído en tono menor",
+    "theory": [
+     "En tono menor, los acordes mayores VI y VII dan ese sonido épico de tanto rock y metal. La app toca el i y después otro acorde del tono menor."
+    ],
+    "tips": [
+     "En la práctica, muchas canciones menores cambian el v menor por un V mayor, prestado de la menor armónica, para tener una vuelta a casa más fuerte."
+    ],
+    "tutorials": []
+   },
+   "famous-progressions": {
+    "title": "Las progresiones que usa todo el mundo",
+    "theory": [
+     "Algunas secuencias de grados aparecen en tantas canciones que se volvieron clichés: I–V–vi–IV (todo el pop), I–IV–V–I (rock y blues), ii–V–I (jazz y bossa) y, en menor, i–VI–III–VII (rock épico).",
+     "Pensar en grados es lo que te deja tocar la misma canción en cualquier tono, o reconocer la progresión de una canción nueva en segundos."
+    ],
+    "tips": [],
+    "tutorials": []
+   },
+   "cadences": {
+    "title": "Cadencias",
+    "theory": [
+     "Una cadencia es cómo termina una frase. Auténtica: V → I, el final más fuerte. Plagal: IV → I, el \"amén\", más suave. Semicadencia: la frase se detiene en el V, como una coma que pide más. Rota: V → vi, el oído esperaba el I y recibió otra cosa.",
+     "Pensá en el papel del último acorde: terminar en el I es conclusivo (auténtica o plagal); terminar en el V queda en suspenso (semicadencia); un V que va a otro lado es rota."
+    ],
+    "tips": [],
+    "tutorials": [
+     "cadencias explicadas auténtica plagal rota"
+    ]
+   },
+   "secondary-dominants": {
+    "title": "Dominantes secundarias",
+    "theory": [
+     "Cualquier acorde del tono (menos el vii°) puede tener su propia dominante: el acorde con séptima una quinta arriba de él. En Do mayor, A7 es el V7 de Dm (se escribe V7/ii); E7 es el V7 de Am (V7/vi); D7 es el V7 de G (V7/V).",
+     "Ese acorde trae una nota de fuera del tono, medio tono debajo del acorde al que quiere llegar: E7 trae el Sol♯, que sube al La."
+    ],
+    "tips": [
+     "¿Ves un acorde con 7 que no es el V del tono? Buscá una 4ª arriba (o una 5ª abajo): ahí quiere ir."
+    ],
+    "tutorials": []
+   },
+   "borrowed-chords": {
+    "title": "Acordes prestados",
+    "theory": [
+     "Un tono mayor puede pedir prestados acordes al tono menor con la misma tónica. En Do mayor los más comunes son Fm (iv), B♭ (♭VII), A♭ (♭VI) y E♭ (♭III). El iv menor da ese apretón nostálgico (F → Fm → C); el ♭VII, un sabor a rock."
+    ],
+    "tips": [
+     "¿Ves un acorde con bemol en un tono de sostenidos (o un acorde menor en el IV)? Pensá en un préstamo de la menor paralela."
+    ],
+    "tutorials": []
    }
   },
   "exercises": {
@@ -3730,7 +3832,19 @@
    "caged-connect/connect-pick": "Cualquier acorde, cualquier forma",
    "caged-connect/connect-play": "Las cinco formas de Sol, subiendo el mástil",
    "caged-minor/minor-pick": "Encontrá el acorde menor en la forma de Em, Am o Dm",
-   "caged-minor/minor-play": "Tocá Lam en las formas de Em y Am"
+   "caged-minor/minor-play": "Tocá Lam en las formas de Em y Am",
+   "functions/function-quiz": "¿Qué papel tiene este acorde?",
+   "ear-one-four-five/ear-145": "¿Qué grado escuchaste?",
+   "ear-two-six/ear-12456": "¿I, ii, IV, V o vi?",
+   "ear-minor-key/ear-minor": "¿i, iv, VI o VII?",
+   "famous-progressions/progression-quiz": "Nombrá la progresión",
+   "cadences/cadence-names": "Nombrá la cadencia",
+   "cadences/cadence-ear": "Nombrá la cadencia de oído",
+   "secondary-dominants/secondary-quiz": "¿V7 de qué?",
+   "secondary-dominants/a7-dm": "A7 → Dm: una dominante que resuelve",
+   "secondary-dominants/e7-am": "E7 → Am",
+   "borrowed-chords/borrowed-quiz": "¿Qué acorde es prestado?",
+   "borrowed-chords/f-fm": "F → Fm: el iv menor"
   },
   "charts": {
    "01-em-am": {

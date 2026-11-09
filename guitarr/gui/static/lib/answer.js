@@ -29,6 +29,10 @@ const tabFigure = ({ string, fret }) => ["e", "B", "G", "D", "A", "E"]
 /** Plays what a question asks you to hear: a melodic pair/run, a chord (notes together) or a bar of rhythm. */
 function play(item) {
   if (item.hear_rhythm) return playBar(item.hear_rhythm.onsets, item.hear_rhythm.bpm);
+  if (item.play_chords) {                                 // a short progression: one chord every 1.2 s, lightly strummed
+    item.play_chords.forEach((ch, i) => ch.forEach((p, k) => pluck(p, i * 1.2 + k * 0.025, 0.28)));
+    return;
+  }
   (item.play || []).forEach((p, k) => pluck(p, item.melodic ? k * 0.55 : k * 0.02));
 }
 
@@ -60,7 +64,7 @@ function ask(box, token, item, i, n, isStopped, setCancel, onReveal) {
       ${item.tab ? `<pre class="tab q-tab" aria-label="${esc(t("lesson.tab_label"))}">${esc(tabFigure(item.tab))}</pre>` : ""}
       ${item.staff ? `<div class="q-staff">${staffSvg(item.staff)}</div>` : ""}
       ${item.rhythm && item.type !== "tap" ? `<div class="q-rhythm">${rhythmSvg(item.rhythm.pattern, { width: 420, beatNumbers: false, timeSig: false })}</div>` : ""}
-      ${item.play || item.hear_rhythm ? `<button class="btn" data-q="replay">♪ ${esc(t("quiz.play_again"))}</button>` : ""}`;
+      ${item.play || item.hear_rhythm || item.play_chords ? `<button class="btn" data-q="replay">♪ ${esc(t("quiz.play_again"))}</button>` : ""}`;
     const nextBtn = `<div class="row center q-actions"><button class="btn primary" data-q="next" hidden>${esc(t(i + 1 < n ? "quiz.next" : "quiz.see_result"))} →</button></div>`;
     let answered = false;
     const next = () => { if (answered) resolve(); };
