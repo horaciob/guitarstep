@@ -349,8 +349,9 @@ def mark_seen(lid: str) -> None:
 SECTION_STATES = ("not_started", "learning", "unsure", "solid", "ready")
 
 
-def set_section(chart: str, section: str, state: str | None = None, bpm: float | None = None) -> dict:
-    """A song section's state (one of SECTION_STATES) and target tempo."""
+def set_section(chart: str, section: str, state: str | None = None, bpm: float | None = None, preset: str | None = None) -> dict:
+    """A song section's state (one of SECTION_STATES), target tempo and tone recipe (a rig preset:
+    "factory:<id>" or "user:<id>"; "" clears it)."""
     if state is not None and state not in SECTION_STATES:
         raise ValueError("bad_state")
     if bpm is not None and not 20 <= bpm <= 300:
@@ -362,6 +363,10 @@ def set_section(chart: str, section: str, state: str | None = None, bpm: float |
             rec["state"] = state
         if bpm is not None:
             rec["bpm"] = bpm
+        if preset is not None:
+            if preset and not preset.startswith(("factory:", "user:")):
+                raise ValueError("bad_preset")
+            rec["preset"] = preset or None
         _write(d)
         return d["sections"][chart]
 

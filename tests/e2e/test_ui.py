@@ -94,7 +94,7 @@ def test_rig_effects_and_presets(app_page):
     expect(app_page.get_by_role("heading", name="Amp & effects")).to_be_visible()
     before = app_page.locator("#sec-pedals .pedal[data-uid]").count()
     app_page.locator("[data-add=pedals]").click()
-    app_page.locator("#fxDialog .pick", has_text="Fuzz").click()
+    app_page.locator("#fxDialog .pick[data-id=fuzz]").click()
     expect(app_page.locator("#sec-pedals .pedal[data-uid]")).to_have_count(before + 1)
 
     app_page.get_by_role("button", name="Save", exact=True).click()
@@ -679,3 +679,55 @@ def test_song_page_from_a_guitar_pro_file(app_page):
     app_page.locator("#vidForm button").click()
     expect(app_page.locator("#vidErr")).to_contain_text("http")
     expect(app_page.locator("#vidUrl")).to_have_value("not a link")          # what you typed stays
+
+
+def test_rig_new_pedals_how_it_works_stack_and_recipes(app_page):
+    onboarded(app_page)
+    go(app_page, "rig")                                                       # the rig stays off: nothing plays
+    app_page.locator("[data-add=pedals]").click()
+    for name in ["Optical compressor", "Mid-hump drive", "Octave-up fuzz", "Envelope filter", "Rotary speaker", "Ring modulator"]:
+        expect(app_page.locator("#fxDialog .pick", has_text=name)).to_be_visible()
+    app_page.locator("#fxDialog .pick", has_text="Mid-hump drive").click()
+    pedal = app_page.locator("#sec-pedals .pedal.stomp", has_text="Mid-hump drive")
+    pedal.locator('[data-act="how"]').click()
+    expect(app_page.locator("#fxDialog")).to_contain_text("asymmetric")
+    expect(app_page.locator("#fxDialog .clip-plot")).to_have_count(4)          # this pedal + soft/hard/asym
+    app_page.keyboard.press("Escape")
+    app_page.locator(".stack-box summary").click()
+    expect(app_page.locator("#stackCurve svg.stack-curve path")).to_be_visible()
+    app_page.locator("#capForm button[type=submit]").click()
+    expect(app_page.locator("#capErr")).to_contain_text("both recordings")
+    go(app_page, "chart/01-em-am")
+    sel = app_page.locator(".sec-row [data-preset]").first
+    sel.select_option("factory:blues_crunch")
+    expect(app_page.locator(".sec-row .recipe-chain").first).to_contain_text("Tweed")
+    expect(app_page.locator(".sec-row [data-load]").first).to_be_visible()
+
+
+def test_new_pedals_render_offline(app_page):
+    """Every new pedal builds and passes signal (rendered offline: nothing reaches the speakers)."""
+    onboarded(app_page)
+    go(app_page, "home")
+    out = app_page.evaluate("""async () => {
+      const { EFFECTS } = await import('/static/lib/rig/effects.js');
+      const ids = ['opto_comp', 'transparent', 'asym_drive', 'octave_fuzz', 'envelope', 'ring_mod', 'rotary', 'harmonic_trem', 'capture'];
+      const res = {};
+      for (const id of ids) {
+        const ctx = new OfflineAudioContext(2, 22050, 44100);
+        await ctx.audioWorklet.addModule('/static/lib/rig/worklets.js');
+        const params = Object.fromEntries(EFFECTS[id].params.map(p => [p.id, p.def]));
+        const fx = EFFECTS[id].build(ctx, params);
+        const osc = ctx.createOscillator(); osc.frequency.value = 196;
+        const g = ctx.createGain(); g.gain.value = 0.3;
+        osc.connect(g).connect(fx.input); fx.output.connect(ctx.destination);
+        osc.start();
+        const buf = await ctx.startRendering();
+        const d = buf.getChannelData(0);
+        let peak = 0, finite = true;
+        for (const v of d) { if (!Number.isFinite(v)) finite = false; peak = Math.max(peak, Math.abs(v)); }
+        res[id] = { peak, finite };
+      }
+      return res;
+    }""")
+    for pid, r in out.items():
+        assert r["finite"] and r["peak"] > 0.001, (pid, r)

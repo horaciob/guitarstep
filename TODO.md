@@ -177,7 +177,7 @@ Sizes: **S** ≈ an afternoon, **M** ≈ a few days, **L** ≈ a week or more.
 74. **Song readiness ring** (S). One number per song (the average of its sections), the same ring style
     as the exercise result.
 
-## G. Tone rig
+## G. Tone rig — ✅ done
 
 75. **More generic pedals** (L). Ring modulator, envelope filter, rotary speaker, harmonic tremolo, optical
     compressor, octave-up fuzz, transparent overdrive and mid-hump asymmetric overdrive. Each one is

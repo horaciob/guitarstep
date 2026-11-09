@@ -8,6 +8,7 @@ import { AMP_KNOBS, AMPS, CABS, EFFECT_GROUPS, EFFECTS, GUITARS, MICS } from "..
 import { FACTORY, factory, makeEffect } from "../lib/rig/presets.js";
 import { knob } from "../lib/rig/knob.js";
 import { RIFFS, VOICES } from "../lib/rig/synth.js";
+import { clipPlot, comparePlots, isDrive, stackCurve } from "../lib/rig/visuals.js";
 
 const HP_KEY = "guitarr.rig.headphones";
 let root = null, raf = 0, onChange = null, onLoop = null, onParam = null, onMidi = null, onRec = null, confirmDelete = false;
@@ -22,7 +23,7 @@ const fmt = (unit, v) => {
   if (unit === "s") return `${(+v).toFixed(1)} s`;
   return (+v).toFixed(1);
 };
-const paramLabel = id => /^b\d+$/.test(id) ? (+id.slice(1) >= 1000 ? `${+id.slice(1) / 1000}k` : id.slice(1)) : t(`rig.param.${id}`);
+const paramLabel = id => /^[bc]\d+$/.test(id) ? (+id.slice(1) >= 1000 ? `${+id.slice(1) / 1000}k` : id.slice(1)) : t(`rig.param.${id}`);
 const ackHeadphones = () => { try { return localStorage.getItem(HP_KEY) === "1"; } catch { return false; } };
 
 export async function mount(el) {
@@ -40,6 +41,7 @@ export async function mount(el) {
     <section class="rig-sec" id="sec-pedals"></section>
     <section class="rig-sec" id="sec-amp"></section>
     <section class="rig-sec" id="sec-cab"></section>
+    <section class="rig-sec" id="sec-capture"></section>
     <section class="rig-sec" id="sec-post"></section>
     <section class="rig-sec" id="sec-looper"></section>
     <dialog class="rig-dialog" id="fxDialog"></dialog>
@@ -78,7 +80,7 @@ export function unmount() {
 }
 
 function renderAll() {
-  renderBar(); renderQuick(); renderSource(); renderTools(); renderFlow(); renderGuitar(); renderBoard("pedals"); renderAmp(); renderCab(); renderBoard("post"); renderLooper();
+  renderBar(); renderQuick(); renderSource(); renderTools(); renderFlow(); renderGuitar(); renderBoard("pedals"); renderAmp(); renderCab(); renderCapture(); renderBoard("post"); renderLooper();
 }
 
 // ------------------------------------------------------------------ quick sounds: the factory presets, one click each
@@ -412,6 +414,7 @@ function pedal(e, where) {
         <button class="ib" data-act="left" ${i === 0 ? "disabled" : ""} title="${esc(t("rig.move_left"))}" aria-label="${esc(t("rig.move_left"))}">‹</button>
         <button class="ib" data-act="right" ${i === list.length - 1 ? "disabled" : ""} title="${esc(t("rig.move_right"))}" aria-label="${esc(t("rig.move_right"))}">›</button>
         <button class="ib" data-act="swap" title="${esc(t(where === "pedals" ? "rig.to_post" : "rig.to_pedals"))}" aria-label="${esc(t(where === "pedals" ? "rig.to_post" : "rig.to_pedals"))}">⇄</button>
+        <button class="ib" data-act="how" title="${esc(t("rig.how"))}" aria-label="${esc(t("rig.how"))}">ⓘ</button>
         <button class="ib" data-act="remove" title="${esc(t("rig.remove"))}" aria-label="${esc(t("rig.remove"))}">✕</button>
       </span>
       <span class="stomp-led"><span class="led"></span><small>${esc(t(e.on ? "rig.led_on" : "rig.led_off"))}</small></span></div>
@@ -446,6 +449,7 @@ function pedal(e, where) {
     $(".stomp-led small", el).textContent = t(e.on ? "rig.led_on" : "rig.led_off");
   };
   $$(".ib", el).forEach(b => b.onclick = () => {
+    if (b.dataset.act === "how") return openHow(e);
     const act = b.dataset.act, idx = rig.state[where].indexOf(e);
     if (act === "left") rig.moveEffect(e.uid, where, idx - 1);
     if (act === "right") rig.moveEffect(e.uid, where, idx + 1);
@@ -489,6 +493,7 @@ function renderAmp() {
       <div class="amp-panel">
         <span class="amp-jewel" aria-hidden="true"></span><small class="amp-state">${esc(t(a.on ? "rig.led_on" : "rig.led_off"))}</small>
         <div class="knobs" id="ampKnobs"></div>
+        <details class="stack-box"><summary class="small">${esc(t("rig.stack_title"))}</summary><p class="muted small">${esc(t("rig.stack_hint"))}</p><div id="stackCurve"></div></details>
       </div>
     </div>`;
   $$("#ampTypes .pick", sec).forEach(b => b.onclick = () => {
@@ -500,8 +505,9 @@ function renderAmp() {
   const box = $("#ampKnobs", sec);
   for (const p of AMP_KNOBS) {
     box.append(knob({ label: t(`rig.amp_knob_${p.id}`), min: p.min, max: p.max, step: p.step, value: a.params[p.id], def: defaultsOf(a.type)[p.id], size: 58,
-      skin: CHICKEN_AMPS.has(a.type) ? "chicken" : "pedal", format: v => (+v).toFixed(1), onInput: v => rig.setAmpParam(p.id, v) }));
+      skin: CHICKEN_AMPS.has(a.type) ? "chicken" : "pedal", format: v => (+v).toFixed(1), onInput: v => { rig.setAmpParam(p.id, v); drawStack(sec); } }));
   }
+  drawStack(sec);
 }
 // amps whose panel uses pointer ("chicken-head") knobs; the rest use round caps
 const CHICKEN_AMPS = new Set(["tweed", "chime", "crunch", "lead"]);
@@ -645,4 +651,49 @@ function renderLooper() {
   $("#lpPos", sec).style.width = pct.toFixed(1) + "%";
   $("#lpPos", sec).className = st;
   $("#lpState", sec).textContent = !running ? t("rig.lp_off") : t(`rig.lp_${st}`, { len: L.len.toFixed(1), pos: L.pos.toFixed(1) });
+}
+
+// ------------------------------------------------------------------ how it works, clipping and the tone stack
+function openHow(e) {
+  const dlg = $("#fxDialog", root), name = t(`rig.fx_${e.type}`);
+  dlg.innerHTML = `<form method="dialog" class="dlg-head"><h2>${esc(t("rig.how_title", { name }))}</h2>
+      <button class="btn small ghost" value="close" aria-label="${esc(t("rig.close"))}">✕</button></form>
+    <p>${esc(t(`rig.how_${e.type}`))}</p>
+    ${isDrive(e.type) ? `<h3>${esc(t("rig.clip_title"))}</h3><div class="clip-box">${clipPlot(e.type, e.params)}</div>
+      <h3>${esc(t("rig.clip_compare"))}</h3><div class="cp-row">${comparePlots()}</div>` : ""}`;
+  dlg.showModal();
+}
+
+function drawStack(sec) {
+  const box = $("#stackCurve", sec);
+  if (box) box.innerHTML = stackCurve(rig.state.amp.type, rig.state.amp.params);
+}
+
+// ------------------------------------------------------------------ capture your amp (experimental)
+function renderCapture() {
+  const sec = $("#sec-capture", root);
+  if (!sec) return;
+  sec.innerHTML = `<div class="sec-head"><h2>${icon("mic")} ${esc(t("rig.capture_title"))}</h2><p class="muted small">${esc(t("rig.capture_hint"))}</p></div>
+    <form class="panel row wrap" id="capForm">
+      <label class="field"><span>${esc(t("rig.capture_di"))}</span><input type="file" id="capDi" accept="audio/*,.wav,.flac,.ogg"></label>
+      <label class="field"><span>${esc(t("rig.capture_amp"))}</span><input type="file" id="capAmp" accept="audio/*,.wav,.flac,.ogg"></label>
+      <button class="btn primary" type="submit">${esc(t("rig.capture_go"))}</button>
+      <p class="field-error" id="capErr" hidden></p>
+      <div id="capOut"></div>
+    </form>`;
+  $("#capForm", sec).onsubmit = async ev => {
+    ev.preventDefault();
+    const err = $("#capErr", sec), out = $("#capOut", sec), di = $("#capDi", sec).files[0], amp = $("#capAmp", sec).files[0];
+    err.hidden = true;
+    if (!di || !amp) { err.textContent = t("rig.capture_need_both"); err.hidden = false; return; }
+    const fd = new FormData();
+    fd.append("di", di); fd.append("amp", amp);
+    try {
+      const r = await api("/api/rig/capture", { method: "POST", body: fd });
+      out.innerHTML = `<p class="ex-msg ok">${esc(t("rig.capture_done", { drive: r.params.drive, match: r.match }))}</p>
+        <p class="small muted">${Object.entries(r.bands).map(([f, g]) => `${+f >= 1000 ? f / 1000 + "k" : f}: ${g > 0 ? "+" : ""}${g} dB`).join(" · ")}</p>
+        <button class="btn" type="button" id="capAdd">${esc(t("rig.capture_add"))}</button>`;
+      $("#capAdd", sec).onclick = () => { rig.addEffect("pedals", makeEffect("capture", r.params)); renderBoard("pedals"); toast(t("rig.fx_capture"), true); };
+    } catch (e) { err.textContent = e.message; err.hidden = false; }
+  };
 }

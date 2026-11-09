@@ -13,6 +13,9 @@ function disposer(...sources) {
   return () => sources.forEach(s => { try { s.stop(); } catch { /* not started */ } try { s.disconnect(); } catch { /* gone */ } });
 }
 
+// bands of the captured-amp EQ (the server fits one gain per band)
+const CAPTURE_BANDS = [80, 160, 320, 640, 1250, 2500, 5000, 8000];
+
 // ================================================================== pedals and effects
 export const EFFECTS = {
   // ---------------------------------------------------------------- dynamics
@@ -339,7 +342,177 @@ export const EFFECTS = {
       return { input: dw.input, output: dw.output, set, dispose: () => clearTimeout(timer) };
     },
   },
+  // ---------------------------------------------------------------- more pedals (generic designs, by behavior)
+  opto_comp: {
+    group: "dynamics", color: "#d8c3a5",
+    params: [ten("peak", 5), ten("level", 6)],
+    build(ctx, p) {
+      // a light-sensor style compressor: slow, smooth attack and a long, program-dependent release
+      const c = ctx.createDynamicsCompressor(), make = gainNode(ctx), out = gainNode(ctx);
+      c.knee.value = 24; c.ratio.value = 4; c.attack.value = 0.012; c.release.value = 0.6;
+      series(c, make, out);
+      const set = (k, v) => {
+        if (k === "peak") { c.threshold.value = lerp(-6, -40, v / 10); ramp(ctx, make.gain, dbToGain(lerp(0, 9, v / 10))); }
+        if (k === "level") ramp(ctx, out.gain, dbToGain((v - 6) * 2));
+      };
+      Object.entries(p).forEach(([k, v]) => set(k, v));
+      return { input: c, output: out, set, dispose: disposer(c) };
+    },
+  },
+  transparent: {
+    group: "drive", color: "#b8c4d6",
+    params: [ten("gain", 4), ten("treble", 5), ten("level", 5)],
+    build(ctx, p) {
+      // clean signal blended with a gently clipped copy: the low end and the attack stay as they were
+      const input = gainNode(ctx), clean = gainNode(ctx, 0.6), pre = gainNode(ctx), clip = shaper(ctx, "soft", 1.2);
+      const dirty = gainNode(ctx, 0.5), sum = gainNode(ctx), treble = biquad(ctx, "highshelf", 2200, 0.7, 0), level = gainNode(ctx);
+      series(input, clean, sum);
+      series(input, pre, clip, dirty, sum);
+      series(sum, treble, level);
+      const set = (k, v) => {
+        if (k === "gain") { ramp(ctx, pre.gain, dbToGain(lerp(0, 30, v / 10))); ramp(ctx, clean.gain, lerp(0.8, 0.35, v / 10)); }
+        if (k === "treble") treble.gain.value = lerp(-6, 6, v / 10);
+        if (k === "level") ramp(ctx, level.gain, dbToGain(lerp(-18, 6, v / 10)));
+      };
+      Object.entries(p).forEach(([k, v]) => set(k, v));
+      return { input, output: level, set, dispose: () => {} };
+    },
+  },
+  asym_drive: {
+    group: "drive", color: "#7fae3f",
+    params: [ten("drive", 6), ten("tone", 5), ten("level", 5)],
+    build(ctx, p) {
+      // mids pushed before an asymmetric clipper: thick, vocal, with even harmonics
+      const hp = biquad(ctx, "highpass", 200, 0.7), hump = biquad(ctx, "peaking", 750, 0.9, 8), pre = gainNode(ctx);
+      const clip = shaper(ctx, "asym", 1.5), tone = biquad(ctx, "lowpass", 3000, 0.7), level = gainNode(ctx);
+      series(hp, hump, pre, clip, tone, level);
+      const set = (k, v) => {
+        if (k === "drive") ramp(ctx, pre.gain, dbToGain(lerp(6, 36, v / 10)));
+        if (k === "tone") tone.frequency.value = logMap(1000, 7000, v / 10);
+        if (k === "level") ramp(ctx, level.gain, dbToGain(lerp(-26, 2, v / 10)));
+      };
+      Object.entries(p).forEach(([k, v]) => set(k, v));
+      return { input: hp, output: level, set, dispose: () => {} };
+    },
+  },
+  octave_fuzz: {
+    group: "drive", color: "#9b3d8f",
+    params: [ten("fuzz", 7), ten("tone", 6), ten("level", 5)],
+    build(ctx, p) {
+      // full-wave rectifying doubles the pitch (an octave up), then the fuzz squares it off
+      const pre = gainNode(ctx), rect = shaper(ctx, "rect", 1), hp = biquad(ctx, "highpass", 120), drive = gainNode(ctx);
+      const clip = shaper(ctx, "fuzz", 5), tone = biquad(ctx, "lowpass", 3500, 0.8), level = gainNode(ctx);
+      series(pre, rect, hp, drive, clip, tone, level);
+      const set = (k, v) => {
+        if (k === "fuzz") { ramp(ctx, pre.gain, dbToGain(lerp(0, 18, v / 10))); ramp(ctx, drive.gain, dbToGain(lerp(6, 30, v / 10))); }
+        if (k === "tone") tone.frequency.value = logMap(800, 7000, v / 10);
+        if (k === "level") ramp(ctx, level.gain, dbToGain(lerp(-32, -2, v / 10)));
+      };
+      Object.entries(p).forEach(([k, v]) => set(k, v));
+      return { input: pre, output: level, set, dispose: () => {} };
+    },
+  },
+  envelope: {
+    group: "filter", color: "#e07a5f",
+    params: [ten("sensitivity", 6), ten("range", 6), ten("resonance", 6), choice("direction", ["up", "down"])],
+    build(ctx, p) {
+      // how hard you pick opens (or closes) a resonant low-pass filter
+      const input = gainNode(ctx), lp = biquad(ctx, "lowpass", 400, 6), out = gainNode(ctx, 0.8);
+      const env = new AudioWorkletNode(ctx, "rig-envelope", { outputChannelCount: [1] }), depth = gainNode(ctx, 0);
+      series(input, lp, out);
+      input.connect(env); env.connect(depth); depth.connect(lp.frequency);
+      const st = { sensitivity: 6, range: 6, direction: "up" };
+      const apply = () => {
+        const span = logMap(600, 4000, st.range / 10);
+        lp.frequency.value = st.direction === "up" ? 250 : 250 + span;
+        depth.gain.value = st.direction === "up" ? span : -span;
+        env.parameters.get("sensitivity").value = lerp(1, 18, st.sensitivity / 10);
+      };
+      const set = (k, v) => {
+        if (k === "resonance") lp.Q.value = lerp(1, 14, v / 10); else st[k] = v;
+        apply();
+      };
+      Object.entries(p).forEach(([k, v]) => set(k, v));
+      return { input, output: out, set, dispose: disposer(env) };
+    },
+  },
+  ring_mod: {
+    group: "modulation", color: "#4e5d6c",
+    params: [knob("freq", 30, 2000, 440, "Hz", 1), ten("mix", 6)],
+    build(ctx, p) {
+      // the signal multiplied by a sine: bell-like, inharmonic sum and difference tones
+      const dw = dryWet(ctx, 0.6), ring = gainNode(ctx, 0), osc = lfo(ctx, 440, "sine");
+      osc.connect(ring.gain);
+      dw.wetIn.connect(ring).connect(dw.wetOut);
+      const set = (k, v) => { if (k === "freq") osc.frequency.value = v; if (k === "mix") dw.setMix(v / 10); };
+      Object.entries(p).forEach(([k, v]) => set(k, v));
+      return { input: dw.input, output: dw.output, set, dispose: disposer(osc) };
+    },
+  },
+  rotary: {
+    group: "modulation", color: "#8c6b4f",
+    params: [choice("speed", ["slow", "fast"]), ten("depth", 6), ten("mix", 8)],
+    build(ctx, p) {
+      // a spinning horn (highs: pitch wobble + volume) and a slower drum (lows: volume), as in a rotating cabinet
+      const dw = dryWet(ctx, 0.8), split = 800;
+      const hi = biquad(ctx, "highpass", split, 0.7), lo = biquad(ctx, "lowpass", split, 0.7);
+      const delay = ctx.createDelay(0.02); delay.delayTime.value = 0.004;
+      const hiAmp = gainNode(ctx, 0.75), loAmp = gainNode(ctx, 0.8), sum = gainNode(ctx);
+      const horn = lfo(ctx, 0.8), drum = lfo(ctx, 0.7), hornPitch = gainNode(ctx, 0.0015), hornVol = gainNode(ctx, 0.25), drumVol = gainNode(ctx, 0.2);
+      horn.connect(hornPitch).connect(delay.delayTime); horn.connect(hornVol).connect(hiAmp.gain); drum.connect(drumVol).connect(loAmp.gain);
+      dw.wetIn.connect(hi); hi.connect(delay).connect(hiAmp).connect(sum);
+      dw.wetIn.connect(lo); lo.connect(loAmp).connect(sum);
+      sum.connect(dw.wetOut);
+      const set = (k, v) => {
+        if (k === "speed") {
+          const fast = v === "fast", t = ctx.currentTime;     // the rotors speed up and slow down gradually
+          horn.frequency.setTargetAtTime(fast ? 6.7 : 0.8, t, 0.5); drum.frequency.setTargetAtTime(fast ? 5.8 : 0.7, t, 1.5);
+        }
+        if (k === "depth") { hornPitch.gain.value = lerp(0, 0.003, v / 10); hornVol.gain.value = lerp(0, 0.4, v / 10); drumVol.gain.value = lerp(0, 0.3, v / 10); }
+        if (k === "mix") dw.setMix(v / 10);
+      };
+      Object.entries(p).forEach(([k, v]) => set(k, v));
+      return { input: dw.input, output: dw.output, set, dispose: disposer(horn, drum) };
+    },
+  },
+  harmonic_trem: {
+    group: "modulation", color: "#c2a14d",
+    params: [knob("rate", 0.5, 10, 4, "Hz", 0.1), ten("depth", 6)],
+    build(ctx, p) {
+      // lows and highs swell in turns (opposite phase): a softer, more vocal pulse than plain tremolo
+      const input = gainNode(ctx), lo = biquad(ctx, "lowpass", 700, 0.7), hi = biquad(ctx, "highpass", 700, 0.7);
+      const loG = gainNode(ctx, 0.7), hiG = gainNode(ctx, 0.7), out = gainNode(ctx);
+      const osc = lfo(ctx, 4), toLo = gainNode(ctx, 0.3), toHi = gainNode(ctx, -0.3);
+      osc.connect(toLo).connect(loG.gain); osc.connect(toHi).connect(hiG.gain);
+      series(input, lo, loG, out); series(input, hi, hiG, out);
+      const set = (k, v) => {
+        if (k === "rate") osc.frequency.value = v;
+        if (k === "depth") { const d = v / 10 / 2; toLo.gain.value = d; toHi.gain.value = -d; loG.gain.value = 1 - d; hiG.gain.value = 1 - d; }
+      };
+      Object.entries(p).forEach(([k, v]) => set(k, v));
+      return { input, output: out, set, dispose: disposer(osc) };
+    },
+  },
+  capture: {
+    group: "drive", color: "#5b6c8a",
+    params: [ten("drive", 4), ...CAPTURE_BANDS.map(f => knob(`c${f}`, -12, 12, 0, "dB", 0.5)), ten("level", 5)],
+    build(ctx, p) {
+      // a captured amp (see Capture in the rig): a drive curve and an 8-band EQ fitted from your recordings
+      const pre = gainNode(ctx), clip = shaper(ctx, "soft", 1);
+      const bands = CAPTURE_BANDS.map((f, i, a) => biquad(ctx, i === 0 ? "lowshelf" : i === a.length - 1 ? "highshelf" : "peaking", f, 1.0, 0));
+      const level = gainNode(ctx);
+      series(pre, clip, ...bands, level);
+      const set = (k, v) => {
+        if (k === "drive") ramp(ctx, pre.gain, dbToGain(lerp(0, 30, v / 10)));
+        else if (k === "level") ramp(ctx, level.gain, dbToGain(lerp(-24, 6, v / 10)));
+        else { const i = CAPTURE_BANDS.indexOf(+k.slice(1)); if (i >= 0) bands[i].gain.value = v; }
+      };
+      Object.entries(p).forEach(([k, v]) => set(k, v));
+      return { input: pre, output: level, set, dispose: () => {} };
+    },
+  },
 };
+export { CAPTURE_BANDS };
 
 export const EFFECT_GROUPS = ["dynamics", "drive", "filter", "modulation", "pitch", "time"];
 

@@ -385,8 +385,8 @@ def chart_sections_get(cid: str):
     except catalog.CatalogError as e:
         fail(404, "catalog", str(e))
     saved = progress.get()["sections"].get(cid, {})
-    secs = [dict(s, state=saved.get(s["key"], {}).get("state", "not_started"), bpm=saved.get(s["key"], {}).get("bpm"))
-            for s in catalog.chart_sections(chart)]
+    secs = [dict(s, state=saved.get(s["key"], {}).get("state", "not_started"), bpm=saved.get(s["key"], {}).get("bpm"),
+                 preset=saved.get(s["key"], {}).get("preset")) for s in catalog.chart_sections(chart)]
     return dict(sections=secs, states=list(progress.SECTION_STATES), mastery=progress.section_mastery([s["state"] for s in secs]))
 
 
@@ -399,9 +399,9 @@ def chart_sections_set(cid: str, body: dict):
     if body.get("key") not in {s["key"] for s in catalog.chart_sections(chart)}:
         fail(400, "bad_section", "That chart has no such section")
     try:
-        progress.set_section(cid, body["key"], body.get("state"), _float(body.get("bpm")))
+        progress.set_section(cid, body["key"], body.get("state"), _float(body.get("bpm")), body.get("preset"))
     except ValueError as e:
-        fail(400, str(e), "Invalid state or tempo (20–300 BPM)" if str(e) == "bad_bpm" else "Invalid state")
+        fail(400, str(e), "Invalid state or tempo (20–300 BPM)" if str(e) == "bad_bpm" else "Invalid state or tone")
     return chart_sections_get(cid)
 
 
@@ -862,6 +862,27 @@ def api_rig_ir_delete(name: str):
     return dict(ok=True)
 
 
+@app.post("/api/rig/capture")
+async def rig_capture(di: UploadFile = File(...), amp: UploadFile = File(...)):
+    """Fits the capture pedal from a direct recording and the same playing through an amp (experimental)."""
+    import io
+
+    import soundfile as sf
+
+    from .. import capture
+
+    try:
+        x, sr_x = sf.read(io.BytesIO(await di.read(50 * 1024 * 1024)))
+        y, sr_y = sf.read(io.BytesIO(await amp.read(50 * 1024 * 1024)))
+    except Exception:
+        fail(400, "bad_audio", "Both files must be audio recordings (WAV, FLAC or OGG)")
+    try:
+        return capture.fit(x, y, sr_x, sr_y)
+    except capture.CaptureError as e:
+        fail(400, f"capture_{e}", {"too_short": "Record at least half a second of playing",
+                                    "silent": "One of the recordings is silent"}.get(str(e), str(e)))
+
+
 @app.delete("/api/rig/presets/{pid}")
 def api_rig_preset_delete(pid: str):
     if not rig.delete_preset(pid):
@@ -909,8 +930,8 @@ def song_facts(name: str):
 @app.get("/api/songs/{name}/sections")
 def song_sections_get(name: str):
     saved = progress.get()["sections"].get(f"song:{name}", {})
-    secs = [dict(s, state=saved.get(s["key"], {}).get("state", "not_started"), bpm=saved.get(s["key"], {}).get("bpm"))
-            for s in _song_sections(name)]
+    secs = [dict(s, state=saved.get(s["key"], {}).get("state", "not_started"), bpm=saved.get(s["key"], {}).get("bpm"),
+                 preset=saved.get(s["key"], {}).get("preset")) for s in _song_sections(name)]
     return dict(sections=secs, states=list(progress.SECTION_STATES), mastery=progress.section_mastery([s["state"] for s in secs]))
 
 
@@ -919,9 +940,9 @@ def song_sections_set(name: str, body: dict):
     if body.get("key") not in {s["key"] for s in _song_sections(name)}:
         fail(400, "bad_section", "That song has no such section")
     try:
-        progress.set_section(f"song:{name}", body["key"], body.get("state"), _float(body.get("bpm")))
+        progress.set_section(f"song:{name}", body["key"], body.get("state"), _float(body.get("bpm")), body.get("preset"))
     except ValueError as e:
-        fail(400, str(e), "Invalid state or tempo (20–300 BPM)" if str(e) == "bad_bpm" else "Invalid state")
+        fail(400, str(e), "Invalid state or tempo (20–300 BPM)" if str(e) == "bad_bpm" else "Invalid state or tone")
     return song_sections_get(name)
 
 

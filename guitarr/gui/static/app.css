@@ -1101,3 +1101,19 @@ body.is-stage #main { max-width: none; padding: 12px 18px; }
 .gl .stage-sections { font-size: calc(22px * var(--stage-size)); line-height: 1.6; }
 .gl .stage-speed { display: inline-flex; align-items: center; gap: 8px; }
 .gl .stage-next b { color: var(--gl-accent); }
+
+/* ---------- rig: how it works, clipping, tone stack, capture, recipes */
+.clip-plot, .stack-curve { display: block; max-width: 100%; color: var(--text); }
+.stack-curve { width: 100%; max-width: 560px; }
+.cp-axis { stroke: var(--border); }
+.cp-in { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.cp-out { fill: none; stroke: var(--gl-accent); stroke-width: 2.5; }
+.sc-line { fill: none; stroke: var(--gl-accent); stroke-width: 2.5; }
+.cp-l { font-size: 11px; fill: var(--muted); }
+.cp-l.out { fill: var(--gl-accent); font-weight: 700; }
+.rig-dialog .cp-row { display: flex; gap: 12px; flex-wrap: wrap; }
+.rig-dialog .cp-mini { margin: 0; text-align: center; }
+.gl .stack-box { margin-top: 10px; color: var(--panel-ink, var(--text)); }
+.gl .stack-box summary { cursor: pointer; font-weight: 700; }
+.gl .stack-box .muted { color: inherit; opacity: .8; }
+.gl .recipe-chain { flex-basis: 100%; }
