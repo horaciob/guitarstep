@@ -1263,7 +1263,10 @@
    "t_dadgad": "DADGAD",
    "t_seven_string": "7 cuerdas",
    "t_bass_4": "Bajo (4 cuerdas)",
-   "saving": "Guardando…"
+   "saving": "Guardando…",
+   "tab_order": "Tab y mástil",
+   "tab_low_top": "6ta cuerda (Mi grave) arriba",
+   "tab_high_top": "1ra cuerda (Mi agudo) arriba, como la mayoría de los tabs impresos"
   },
   "signal": {
    "title": "Chequeo de señal",
@@ -1951,7 +1954,8 @@
    "k_output_device": "Salida del metrónomo",
    "k_latency_ms": "Latencia (ms)",
    "k_tuning": "Afinación",
-   "k_left_handed": "Zurdo"
+   "k_left_handed": "Zurdo",
+   "k_tab_low_on_top": "Tab y mástil"
   },
   "staff": {
    "label": "Notas en el pentagrama, clave de sol con un 8 chiquito (la guitarra suena una octava más grave)"
@@ -2639,7 +2643,8 @@
     "theory": [
      "El clavijero tiene las clavijas, el mástil tiene los trastes y el cuerpo tiene el puente (y, en una eléctrica, los micrófonos).",
      "Los trastes se cuentan desde la cejuela: el traste 1 es el más cercano al clavijero. En la tab, 0 es la cuerda al aire.",
-     "La tab dibuja las seis cuerdas como líneas, con la más fina (1ª cuerda, Mi agudo) arriba. Un número sobre una línea te dice qué traste pisar.",
+     "La tab dibuja las seis cuerdas como seis líneas, y un número sobre una línea te dice qué traste pisar. Cada línea empieza con el nombre de su cuerda (E A D G B e), así siempre sabés cuál es cuál.",
+     "Acá la 6ª cuerda (Mi grave) va en la línea de arriba, como ves la guitarra cuando mirás hacia abajo. La mayoría de los tabs impresos ponen la 1ª cuerda (Mi agudo) arriba: podés cambiarlo en Ajustes → Instrumento, y todos los tabs y mástiles lo siguen.",
      "La tab se lee de izquierda a derecha, como un texto. Los números apilados en la misma columna se tocan juntos."
     ],
     "tips": [
@@ -4574,7 +4579,7 @@
     "aliases": [
      "tablatura"
     ],
-    "text": "Notación para guitarra con seis líneas para las cuerdas (Mi agudo arriba) y números para los trastes."
+    "text": "Notación para guitarra con seis líneas para las cuerdas, cada una con su nombre al principio, y números para los trastes."
    },
    "triad": {
     "term": "tríada",

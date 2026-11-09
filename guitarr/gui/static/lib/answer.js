@@ -1,7 +1,7 @@
 // Exercises you pass by answering: multiple-choice questions and picking notes on the fretboard.
 // The server draws the questions, keeps the answers and grades them; this module only shows them.
 import { t } from "./i18n.js";
-import { api, esc, pluck } from "./ui.js";
+import { api, esc, pluck, stringRow } from "./ui.js";
 import { neck } from "./fretboard.js";
 import { hearBar, markHits, onsetsOf, playBar, rhythmSvg } from "./notation.js";
 import { staffSvg } from "./staff.js";
@@ -23,8 +23,12 @@ export function say(label) {
 }
 
 /** A one-note tab (for "read the tab" questions). */
-const tabFigure = ({ string, fret }) => ["e", "B", "G", "D", "A", "E"]
-  .map((s, i) => `${s}|---${i === string - 1 ? String(fret).padEnd(2, "-") : "--"}---|`).join("\n");
+const tabFigure = ({ string, fret }) => {
+  const lines = [];
+  ["e", "B", "G", "D", "A", "E"].forEach((s, i) =>
+    lines[stringRow(i + 1, 6)] = `${s}|---${i === string - 1 ? String(fret).padEnd(2, "-") : "--"}---|`);
+  return lines.join("\n");
+};
 
 /** Plays what a question asks you to hear: a melodic pair/run, a chord (notes together) or a bar of rhythm. */
 function play(item) {

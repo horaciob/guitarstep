@@ -785,3 +785,21 @@ def test_practice_states_and_next_step(app_page):
     expect(focus.locator(".f-next")).to_contain_text("less help")
     focus.locator(".f-next button").click()
     expect(focus.locator('#fGuide button[data-g="1"]')).to_have_attribute("aria-pressed", "true")
+
+
+def test_tab_order_follows_the_setting(app_page):
+    """The 6th string is the top line by default; switching in Settings flips every tab and the fretboard."""
+    onboarded(app_page)
+    go(app_page, "lesson/reading-tab")
+    tab = app_page.locator("pre.tab").first
+    expect(tab).to_be_visible()
+    assert tab.inner_text().splitlines()[0].startswith("E|")
+    assert tab.inner_text().splitlines()[-1].startswith("e|")
+    go(app_page, "settings")
+    app_page.locator("#iTabOrder").select_option("high")
+    expect(app_page.locator("#iStatus")).to_contain_text("saved")
+    go(app_page, "lesson/reading-tab")
+    lines = app_page.locator("pre.tab").first.inner_text().splitlines()
+    assert lines[0].startswith("e|") and lines[-1].startswith("E|")
+    assert "6:0" not in lines[0]
+    assert lines[-1].startswith("E|-0")                        # the lick starts on the open 6th string, now at the bottom

@@ -103,3 +103,15 @@ def test_references_and_upload(tmp_path):
     assert len(pv["notes"]) > 5 and all(n["string"] for n in pv["notes"])
     assert c.post("/api/songs", files=dict(file=("notes.txt", b"buy milk"))).json()["detail"]["code"] == "bad_format"
     assert c.post("/api/songs", files=dict(file=("t.musicxml", XML.encode()))).status_code == 200
+
+
+def test_tab_with_the_6th_string_on_top():
+    """The same music written low string first reads the same (string names decide the order)."""
+    flipped = "\n".join(reversed([ln for ln in TAB.splitlines() if "|" in ln]))
+    a, b = parse_tab(TAB, bpm=60), parse_tab(flipped, bpm=60)
+    assert [(n.string, n.fret, n.pitch) for n in a.notes] == [(n.string, n.fret, n.pitch) for n in b.notes]
+    upper = "\n".join(["E|---|", "A|-3-|", "D|---|", "G|---|", "B|---|", "E|---|"])     # no lowercase e
+    n = parse_tab(upper).notes[0]
+    assert (n.string, n.pitch) == (5, 48)
+    drop = "\n".join(["D|-0-|", "A|---|", "D|---|", "G|---|", "B|---|", "e|---|"])
+    assert parse_tab(drop).notes[0].pitch == 38

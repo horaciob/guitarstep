@@ -61,7 +61,8 @@
      "theory": [
       "The headstock holds the tuners, the neck holds the frets, and the body holds the bridge (and, on an electric, the pickups).",
       "Frets are counted from the nut: fret 1 is the one closest to the headstock. In tab, 0 means the open string.",
-      "Tab draws the six strings as lines with the thinnest (1st string, high E) on top. A number on a line tells you which fret to press.",
+      "Tab draws the six strings as six lines and a number on a line tells you which fret to press. Each line starts with its string's name (E A D G B e), so you always know which is which.",
+      "Here the 6th string (low E) is on the top line, like the guitar as you look down at it. Most printed tab puts the 1st string (high e) on top instead: you can switch to that in Settings → Instrument, and every tab and fretboard follows.",
       "Read tab from left to right, like text. Numbers stacked in the same column are played together."
      ],
      "tips": [

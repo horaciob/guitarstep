@@ -59,6 +59,19 @@ def _tuning_from_names(names: list[str]) -> list[int]:
     return out
 
 
+def _low_string_on_top(names: list[str]) -> bool:
+    """Tab is usually written with the 1st string on top, but some (and guitarr, by default) put the 6th string
+    there. Guitar strings go up by fourths (and one third) from low to high: read the names both ways and keep the
+    order where that holds. A lowercase "e" marks the high string either way."""
+    if names[0] == "e" or names[-1] == "e":
+        return names[-1] == "e"
+    pcs = [_PC.get(n[0].upper() + n[1:]) for n in names]
+    if None in pcs:
+        return False
+    up = lambda seq: sum((b - a) % 12 in (3, 4, 5) for a, b in zip(seq, seq[1:]))
+    return up(pcs) > up(pcs[::-1])
+
+
 def parse_tab(text: str, bpm: float = DEFAULT_BPM, name: str = "tab") -> Reference:
     blocks, cur = [], []
     for ln in text.splitlines():
@@ -73,6 +86,8 @@ def parse_tab(text: str, bpm: float = DEFAULT_BPM, name: str = "tab") -> Referen
     blocks = [b for b in blocks if len(b) >= 4]
     if not blocks:
         raise ImportError_("No tablature found (lines like e|---0---|)")
+    if _low_string_on_top([s for s, _ in blocks[0]]):
+        blocks = [list(reversed(b)) for b in blocks]
     names = [s for s, _ in blocks[0]]
     tuning_low_first = _tuning_from_names(names)
     nstr = len(names)

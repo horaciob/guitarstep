@@ -7,7 +7,11 @@ export const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;"
 export const NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 export const OPEN = [40, 45, 50, 55, 59, 64];            // 6th … 1st
 // Your instrument (Settings → Instrument): open strings from string 1 down, and handedness.
-export const instrument = { tuning: "standard", left_handed: false, strings: [64, 59, 55, 50, 45, 40] };
+export const instrument = { tuning: "standard", left_handed: false, tab_low_on_top: true, strings: [64, 59, 55, 50, 45, 40] };
+
+/** The line (0 = top) a string goes on in tab and in the sideways fretboard: the 6th string on top by default,
+ *  or the 1st, as most printed tab does (Settings → Instrument). Strings are numbered from the 1st (highest). */
+export const stringRow = (string, n = instrument.strings.length) => instrument.tab_low_on_top ? n - string : string - 1;
 export async function loadInstrument() {
   try { Object.assign(instrument, await api("/api/instrument")); } catch { /* defaults */ }
   return instrument;

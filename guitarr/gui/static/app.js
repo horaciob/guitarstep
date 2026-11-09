@@ -2,7 +2,7 @@
    Dependency-free ES module: vanilla JS + canvas + SVG. The router (main.js) calls
    showListenerView / hideListenerViews. All user-facing text goes through i18n. */
 import { issueText, msgIsError, msgText, t, tc } from "./lib/i18n.js";
-import { $, $$, api, esc, instrument, loadInstrument, noteName, NOTE_NAMES, progressChanged, toast } from "./lib/ui.js";
+import { $, $$, api, esc, instrument, loadInstrument, noteName, NOTE_NAMES, progressChanged, stringRow, toast } from "./lib/ui.js";
 import { levelVerdict, meterHtml, openInput, setGate, setMeter } from "./lib/input.js";
 
 // Reads a color token and normalizes it to #rrggbb (accepts hsl/rgb) so a hex alpha can be appended.
@@ -413,7 +413,7 @@ function drawTab() {
   g.font = "600 11px ui-monospace, Menlo, monospace";
   g.fillStyle = css("--muted");
   for (let s = 0; s < strings; s++) {
-    const y = top + s * gap;
+    const y = top + stringRow(s + 1, strings) * gap;
     g.beginPath(); g.moveTo(34, y); g.lineTo(W - 8, y); g.stroke();
     g.fillText(NOTE_NAMES[tun[s] % 12] || "", 10, y + 4);
   }
@@ -438,7 +438,7 @@ function drawTab() {
     const tab = (e.tab || []).filter(tb => tb && tb[0]);
     if (tab.length) {
       for (const [s, f] of tab) {
-        const y = top + (s - 1) * gap;
+        const y = top + stringRow(s, strings) * gap;
         const txt = String(f);
         g.font = (e.current ? "800 " : "700 ") + "15px ui-monospace, Menlo, monospace";
         const w = Math.max(18, g.measureText(txt).width + 10);
@@ -795,14 +795,15 @@ const Settings = { devices: [], saved: {}, test: null, timer: null };
 // ------------------------------------------------------------------ instrument: tuning and handedness
 async function loadInstrumentPanel() {
   // until it's loaded you can't change it (a late load would undo your change)
-  $("#iTuning").disabled = $("#iLefty").disabled = true;
+  $("#iTuning").disabled = $("#iLefty").disabled = $("#iTabOrder").disabled = true;
   $("#iStatus").textContent = "";
   const inst = await loadInstrument();
   $("#iTuning").innerHTML = Object.entries(inst.tunings || {}).map(([id, ms]) =>
     `<option value="${id}">${esc(t(`instrument.t_${id}`))} · ${ms.slice().reverse().map(m => NOTE_NAMES[m % 12]).join(" ")}</option>`).join("");
   $("#iTuning").value = inst.tuning;
   $("#iLefty").checked = inst.left_handed;
-  $("#iTuning").disabled = $("#iLefty").disabled = false;
+  $("#iTabOrder").value = inst.tab_low_on_top === false ? "high" : "low";
+  $("#iTuning").disabled = $("#iLefty").disabled = $("#iTabOrder").disabled = false;
 }
 // saves run one after another, and the status says "Saving…" until the last one is done
 let instSaving = Promise.resolve(), instPending = 0;
@@ -816,7 +817,7 @@ function saveInstrument() {
 }
 async function doSaveInstrument() {
   try {
-    await api("/api/instrument", { method: "PUT", json: { tuning: $("#iTuning").value, left_handed: $("#iLefty").checked } });
+    await api("/api/instrument", { method: "PUT", json: { tuning: $("#iTuning").value, left_handed: $("#iLefty").checked, tab_low_on_top: $("#iTabOrder").value === "low" } });
     await loadInstrument();
     initTuner();
     delete $("#iStatus").dataset.err;
@@ -825,6 +826,7 @@ async function doSaveInstrument() {
 }
 $("#iTuning").addEventListener("change", saveInstrument);
 $("#iLefty").addEventListener("change", saveInstrument);
+$("#iTabOrder").addEventListener("change", saveInstrument);
 
 async function loadReminder() {
   try {
@@ -866,8 +868,9 @@ async function loadSources() {
   if (!box) return;
   let r;
   try { r = await api("/api/settings/sources"); } catch { box.hidden = true; return; }
-  const rows = ["home", "device", "channel", "output_device", "latency_ms", "tuning", "left_handed"];
-  const val = (k, v) => v == null || v === "" ? "—" : k === "tuning" ? t(`instrument.t_${v}`) : k === "left_handed" ? t(v ? "common.yes" : "common.no") : String(v);
+  const rows = ["home", "device", "channel", "output_device", "latency_ms", "tuning", "left_handed", "tab_low_on_top"];
+  const val = (k, v) => v == null || v === "" ? "—" : k === "tuning" ? t(`instrument.t_${v}`) : k === "left_handed" ? t(v ? "common.yes" : "common.no")
+    : k === "tab_low_on_top" ? t(v ? "instrument.tab_low_top" : "instrument.tab_high_top") : String(v);
   box.innerHTML = `<h2>${esc(t("sources.title"))}</h2><p class="muted small">${esc(t("sources.hint"))}</p>
     <table class="sources"><tbody>${rows.map(k => `<tr><th scope="row">${esc(t(`sources.k_${k}`))}</th><td class="mono small">${esc(val(k, r[k].value))}</td>
       <td><span class="how-chip src-${r[k].source}">${esc(t(`sources.${r[k].source}`, { env: r[k].env || "" }))}</span></td></tr>`).join("")}</tbody></table>`;

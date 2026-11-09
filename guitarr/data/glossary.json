@@ -88,7 +88,7 @@
    "aliases": [
     "tablature"
    ],
-   "text": "Guitar notation with six lines for the strings (high E on top) and numbers for the frets."
+   "text": "Guitar notation with six lines for the strings, each named at its start, and numbers for the frets."
   },
   "triad": {
    "term": "triad",

@@ -1,9 +1,12 @@
 // Plain-text tab for a run of notes (lessons, licks, the daily warm-up).
-const STRINGS = ["e", "B", "G", "D", "A", "E"];   // tab lines, 1st string on top
+import { stringRow } from "./ui.js";
+
+const NAMES = ["e", "B", "G", "D", "A", "E"];     // 1st string → 6th; the line order follows your setting
 
 /** Tab for lick and bend steps: one column per note, with h p / \ b r ~ as in written tab. */
 export function tabText(steps) {
-  const lines = STRINGS.map(s => `${s}|-`);
+  const lines = [];
+  NAMES.forEach((s, i) => { lines[stringRow(i + 1, NAMES.length)] = `${s}|-`; });
   steps.forEach(st => {
     const from = st.glide_from;
     const cell = st.tech === "bend" ? `${st.fret}b${st.fret + st.pitch - from}`
@@ -11,7 +14,8 @@ export function tabText(steps) {
       : st.tech === "hammer" ? `h${st.fret}` : st.tech === "pull" ? `p${st.fret}`
       : st.tech === "slide" ? `${st.pitch > from ? "/" : "\\"}${st.fret}` : `${st.fret}`;
     const txt = cell + (st.vibrato ? "~" : "");
-    lines.forEach((l, i) => { lines[i] += (i === st.string - 1 ? txt : "-".repeat(txt.length)) + "--"; });
+    const row = stringRow(st.string, NAMES.length);
+    lines.forEach((l, i) => { lines[i] += (i === row ? txt : "-".repeat(txt.length)) + "--"; });
   });
   return lines.map(l => l + "|").join("\n");
 }

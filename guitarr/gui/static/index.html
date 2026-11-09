@@ -261,6 +261,11 @@
         <h2 data-i18n="instrument.title">Instrument</h2>
         <label class="field"><span data-i18n="instrument.tuning">Tuning</span><select id="iTuning"></select></label>
         <label class="check"><input type="checkbox" id="iLefty"> <span data-i18n="instrument.lefty">Left-handed (mirrors chord diagrams and the fretboard)</span></label>
+        <label class="field"><span data-i18n="instrument.tab_order">Tab and fretboard</span>
+          <select id="iTabOrder">
+            <option value="low" data-i18n="instrument.tab_low_top">6th string (low E) on top</option>
+            <option value="high" data-i18n="instrument.tab_high_top">1st string (high e) on top, like most printed tab</option>
+          </select></label>
         <p class="muted small" data-i18n="instrument.hint">The tuners, the tablature of your songs and the fretboard follow your tuning. Chord charts and the chord dictionary stay in standard tuning.</p>
         <p class="small" id="iStatus" aria-live="polite"></p>
       </div>

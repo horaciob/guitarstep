@@ -693,6 +693,7 @@ def settings_sources():
         latency_ms=dict(value=audio.get("latency_ms") or 0, source=src(audio, "latency_ms")),
         tuning=dict(value=config.instrument()["tuning"], source=src(inst, "tuning")),
         left_handed=dict(value=config.instrument()["left_handed"], source=src(inst, "left_handed")),
+        tab_low_on_top=dict(value=config.instrument()["tab_low_on_top"], source=src(inst, "tab_low_on_top")),
     )
 
 
@@ -796,8 +797,9 @@ def api_instrument_set(body: dict):
     tuning = body.get("tuning")
     if tuning is not None and tuning not in TUNINGS:
         fail(400, "bad_tuning", "Unknown tuning")
-    lefty = body.get("left_handed")
-    config.save_instrument(tuning=tuning, left_handed=None if lefty is None else bool(lefty))
+    lefty, low_top = body.get("left_handed"), body.get("tab_low_on_top")
+    config.save_instrument(tuning=tuning, left_handed=None if lefty is None else bool(lefty),
+                           tab_low_on_top=None if low_top is None else bool(low_top))
     return api_instrument()
 
 

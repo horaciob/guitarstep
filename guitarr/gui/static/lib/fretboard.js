@@ -1,6 +1,6 @@
 // A fretboard drawing: a window of frets with marks (notes, degrees, chord tones), optionally clickable.
 // Used by lessons (pick the notes, show a scale) and tools. Marks always carry a label, never color alone.
-import { esc, instrument, pluck } from "./ui.js";
+import { esc, instrument, pluck, stringRow } from "./ui.js";
 
 /**
  * neck(box, { lo, hi, marks, selectable, onToggle, label })
@@ -18,20 +18,22 @@ export function neck(box, { lo = 0, hi = 12, marks = [], selectable = false, onT
   const fx = n => (instrument.left_handed ? W - fx0(n) : fx0(n));
   const nutX = instrument.left_handed ? W - (x0 - 22) : x0 - 22;
   const cx = n => n === 0 ? nutX : (fx(n - 1) + fx(n)) / 2;
-  const cy = i => top + i * gap;
+  const cy = i => top + stringRow(i + 1, NS) * gap;          // i: 0 = 1st string
+  const rowY = r => top + r * gap;                          // r: a line on screen, 0 = top
   let sel = new Set(), cur = marks, locked = false;
   const key = (s, f) => `${s}:${f}`;
 
   const draw = () => {
     let s = "";
     const f0 = first === 0 ? 0 : first - 1;
-    for (let n = f0; n <= last; n++) s += `<line x1="${fx(n)}" x2="${fx(n)}" y1="${top}" y2="${cy(NS - 1)}" stroke="currentColor" stroke-opacity="${n === 0 ? 1 : .3}" stroke-width="${n === 0 ? 6 : 2}"/>`;
+    for (let n = f0; n <= last; n++) s += `<line x1="${fx(n)}" x2="${fx(n)}" y1="${top}" y2="${rowY(NS - 1)}" stroke="currentColor" stroke-opacity="${n === 0 ? 1 : .3}" stroke-width="${n === 0 ? 6 : 2}"/>`;
     [3, 5, 7, 9, 15, 17].filter(n => n >= Math.max(1, first) && n <= last).forEach(n =>
-      s += `<circle cx="${cx(n)}" cy="${cy((NS - 1) / 2)}" r="6" fill="currentColor" opacity=".12"/>`);
-    if (12 >= Math.max(1, first) && 12 <= last) s += `<circle cx="${cx(12)}" cy="${cy(1.5)}" r="6" fill="currentColor" opacity=".12"/><circle cx="${cx(12)}" cy="${cy(NS - 2.5)}" r="6" fill="currentColor" opacity=".12"/>`;
+      s += `<circle cx="${cx(n)}" cy="${rowY((NS - 1) / 2)}" r="6" fill="currentColor" opacity=".12"/>`);
+    if (12 >= Math.max(1, first) && 12 <= last) s += `<circle cx="${cx(12)}" cy="${rowY(1.5)}" r="6" fill="currentColor" opacity=".12"/><circle cx="${cx(12)}" cy="${rowY(NS - 2.5)}" r="6" fill="currentColor" opacity=".12"/>`;
     for (let i = 0; i < NS; i++) s += `<line x1="${fx(f0)}" x2="${fx(last)}" y1="${cy(i)}" y2="${cy(i)}" stroke="currentColor" stroke-opacity=".5" stroke-width="${1 + i * 0.35}"/>`;
     const byPos = new Map(cur.map(m => [key(m.string, m.fret), m]));
-    for (let i = 0; i < NS; i++) {
+    const rows = [...Array(NS).keys()].sort((a, b) => stringRow(a + 1, NS) - stringRow(b + 1, NS));   // keyboard order = screen order
+    for (const i of rows) {
       const string = i + 1;
       for (let n = first; n <= last; n++) {
         const m = byPos.get(key(string, n)), on = sel.has(key(string, n));
@@ -47,7 +49,7 @@ export function neck(box, { lo = 0, hi = 12, marks = [], selectable = false, onT
         s += `</g>`;
       }
     }
-    for (let n = Math.max(1, first); n <= last; n++) s += `<text x="${cx(n)}" y="${cy(NS - 1) + 26}" text-anchor="middle" font-size="12" fill="var(--muted)">${n}</text>`;
+    for (let n = Math.max(1, first); n <= last; n++) s += `<text x="${cx(n)}" y="${rowY(NS - 1) + 26}" text-anchor="middle" font-size="12" fill="var(--muted)">${n}</text>`;
     box.innerHTML = `<div class="neck-wrap"><svg class="fb" viewBox="0 0 ${W} ${H}" role="${selectable ? "group" : "img"}" aria-label="${esc(label)}">${s}</svg></div>`;
     box.querySelectorAll(".fb-pos").forEach(g => {
       const act = () => {

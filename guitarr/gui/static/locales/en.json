@@ -1263,7 +1263,10 @@
    "t_dadgad": "DADGAD",
    "t_seven_string": "7-string",
    "t_bass_4": "Bass (4 strings)",
-   "saving": "Saving…"
+   "saving": "Saving…",
+   "tab_order": "Tab and fretboard",
+   "tab_low_top": "6th string (low E) on top",
+   "tab_high_top": "1st string (high e) on top, like most printed tab"
   },
   "signal": {
    "title": "Signal check",
@@ -1951,7 +1954,8 @@
    "k_output_device": "Metronome output",
    "k_latency_ms": "Latency (ms)",
    "k_tuning": "Tuning",
-   "k_left_handed": "Left-handed"
+   "k_left_handed": "Left-handed",
+   "k_tab_low_on_top": "Tab and fretboard"
   },
   "staff": {
    "label": "Notes on the staff, treble clef with a small 8 (guitar sounds an octave lower)"

@@ -59,3 +59,13 @@ def test_stats_totals_and_queue():
     assert c.post("/api/today/queue", json=dict(ref="chart:25-song-form-aaba", section="extra")).json()["detail"]["code"] == "queue_full"
     assert c.delete("/api/today/queue").json()["steps"][0]["kind"] == "tune"
     assert progress.get()["queue"] == []
+
+
+def test_tab_order_setting():
+    c = TestClient(app)
+    assert c.get("/api/instrument").json()["tab_low_on_top"] is True                    # 6th string on top by default
+    assert c.get("/api/settings/sources").json()["tab_low_on_top"] == dict(value=True, source="default")
+    r = c.put("/api/instrument", json=dict(tab_low_on_top=False)).json()
+    assert r["tab_low_on_top"] is False and r["tuning"] == "standard" and r["left_handed"] is False
+    assert c.get("/api/settings/sources").json()["tab_low_on_top"]["source"] == "saved"
+    assert c.put("/api/instrument", json=dict(left_handed=True)).json()["tab_low_on_top"] is False   # kept

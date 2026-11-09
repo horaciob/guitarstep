@@ -20,10 +20,10 @@ def test_tunings_are_highest_string_first():
 
 
 def test_instrument_settings_round_trip():
-    assert config.instrument() == dict(tuning="standard", left_handed=False)
+    assert config.instrument() == dict(tuning="standard", left_handed=False, tab_low_on_top=True)
     config.save_instrument(tuning="drop_d", left_handed=True)
     config.update_audio(latency_ms=5.0)                       # other sections keep it
-    assert config.instrument() == dict(tuning="drop_d", left_handed=True)
+    assert config.instrument() == dict(tuning="drop_d", left_handed=True, tab_low_on_top=True)
     assert config.instrument_tuning() == TUNINGS["drop_d"]
 
 
