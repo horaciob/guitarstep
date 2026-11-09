@@ -1,0 +1,13 @@
+title: Down-picked riff in E minor
+bpm: 120
+time: 4/4
+strum: DDDDDDDD
+note: All downstrokes, palm-muted. Let the last chord of each line ring.
+
+[Riff]
+E5 | E5 | C5 | D5
+E5 | E5 | G5 A5 | B5
+
+[Riff]
+E5 | E5 | C5 | D5
+E5 | G5 | A5 | E5

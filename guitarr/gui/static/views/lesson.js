@@ -67,7 +67,9 @@ const shapesHtml = (ex, size = 84) => `<div class="mini-chords ex-shapes">${ex.s
 export async function mount(el, { segs, params = {} }) {
   const id = decodeURIComponent(segs[0] || "");
   const [course, chordData, terms] = await Promise.all([api("/api/course"), api("/api/chords"), loadGlossary()]);
-  const all = course.levels.flatMap(l => l.lessons.map(ls => ({ ...ls, level: l })));
+  const flat = lvs => lvs.flatMap(l => l.lessons.map(ls => ({ ...ls, level: l })));
+  const tracks = [course.levels, ...[...new Set((course.optional || []).map(l => l.track))].map(tr => course.optional.filter(l => l.track === tr))];
+  const all = flat(tracks.find(g => flat(g).some(l => l.id === id)) || course.levels);   // "next" stays in the same course
   const idx = all.findIndex(l => l.id === id);
   if (idx < 0) { el.innerHTML = `<div class="gl-head"><h1>${esc(t("lesson.not_found"))}</h1></div><p><a href="#/course">${esc(t("lesson.back"))}</a></p>`; return; }
   const ls = all[idx], next = all[idx + 1];
@@ -75,17 +77,20 @@ export async function mount(el, { segs, params = {} }) {
   const chords = (ls.chords || []).map(c => chordData.chords.find(x => x.id === c)).filter(Boolean);
   const vid = ls.pinned && youtubeId(ls.pinned);
   const levelName = tc(`levels.${ls.level.id}.title`, ls.level.title);
-  const lt = (k, fb) => ls.recap ? (k === "title" ? t("lesson.recap_title", { n: ls.level.number, level: levelName })
+  const levelNo = ls.level.badge || ls.level.number;
+  const lt = (k, fb) => ls.recap ? (k === "title" ? t("lesson.recap_title", { n: levelNo, level: levelName })
     : k === "theory" ? [t("lesson.recap_theory_1"), t("lesson.recap_theory_2")] : fb) : tc(`lessons.${ls.id}.${k}`, fb);
   const theory = lt("theory", ls.theory), tips = lt("tips", ls.tips || []), tutorials = lt("tutorials", ls.tutorials || []);
   const captions = lt("captions", ls.captions || []);
   const exTitle = ex => ex.from ? tc(`exercises.${ex.from}`, ex.title) : tc(`exercises.${ls.id}/${ex.id}`, ex.title);
+  // a short piece of theory for each exercise (plain sentences, so a voice can read them later)
+  const exTheory = ex => ex.theory ? tc(`ex_theory.${ex.from || `${ls.id}/${ex.id}`}`, ex.theory) : "";
   const upNext = ls.exercises.find(e => !e.passed);   // the first exercise you haven't passed yet
   const used = new Set();                              // glossary terms already linked on this page
 
   el.innerHTML = `
     <a class="btn small" href="#/course">← ${esc(t("nav.course"))}</a>
-    <div class="gl-head lesson-head" style="margin-top:12px"><div><small class="muted">${esc(t("lesson.meta", { n: ls.level.number, level: levelName, min: ls.minutes }))}</small>
+    <div class="gl-head lesson-head" style="margin-top:12px"><div><small class="muted">${esc(t("lesson.meta", { n: levelNo, level: levelName, min: ls.minutes }))}</small>
       <h1>${esc(lt("title", ls.title))} ${ls.done ? `<span class="pill ok">${esc(t(ls.tested_out ? "lesson.tested_out" : "lesson.complete"))}</span>` : ""}</h1></div>
       ${!ls.done && !ls.recap ? `<button class="btn" id="testOut">${esc(t("lesson.testout_button"))}</button>` : ""}</div>
     ${stepperHtml(ls.flow)}
@@ -106,8 +111,10 @@ export async function mount(el, { segs, params = {} }) {
             <div class="exercise${ex.passed ? " passed" : ""}" data-id="${esc(ex.id)}">
               <div class="ex-head"><span class="state">${ex.passed ? "✓" : "○"}</span>
                 <div><b>${esc(exTitle(ex))}</b><small class="muted">${esc(exerciseTarget(ex))} · ${esc(t("lesson.pass_with", { min: ex.min }))}${ex.best != null ? ` · ${esc(t("lesson.your_best", { best: Math.round(ex.best) }))}` : ""}</small></div>
+                ${exTheory(ex) ? `<button class="btn small ex-theory-btn" data-act="theory" aria-expanded="false" title="${esc(t("lesson.theory_btn"))}" aria-label="${esc(t("lesson.theory_btn"))}">📖</button>` : ""}
                 ${hearable(ex) ? `<button class="btn small" data-act="hear" title="${esc(t(ex.kind === "chart" ? "lesson.demo_hint" : "lesson.hear_hint"))}" aria-label="${esc(t(ex.kind === "chart" ? "lesson.demo_hint" : "lesson.hear_hint"))}">♪</button>` : ""}
                 <button class="btn small primary" data-act="go">${esc(t(ex.how === "answer" ? "lesson.start_answer" : "lesson.listen"))}</button></div>
+              ${exTheory(ex) ? `<p class="ex-theory" hidden><b>${esc(t("lesson.theory_short"))}:</b> ${linkTerms(exTheory(ex), terms, used)}</p>` : ""}
               <div class="ex-chips"><span class="how-chip">${esc(t(`flow.${ex.stage}`))}</span>
                 ${ex.how === "answer" ? `<span class="how-chip">${esc(t("lesson.how_answer"))}</span>` : ""}
                 ${ex.fadeable ? [0, 1, 2].map(g => `<span class="how-chip${ex.guidance != null && ex.guidance >= g ? " ok" : ""}">${ex.guidance != null && ex.guidance >= g ? "✓ " : ""}${esc(t(`flow.guide_${g}`))}</span>`).join("") : ""}
@@ -136,6 +143,7 @@ export async function mount(el, { segs, params = {} }) {
       <div class="focus-top"><button class="btn small" data-f="back">← ${esc(t("lesson.focus_back"))}</button>
         <small class="muted">${esc(lt("title", ls.title))}</small></div>
       <div class="focus-head"><span class="f-state" id="fState" aria-live="polite"></span><h1 id="fTitle"></h1><p class="muted" id="fTarget"></p>
+        <details class="f-theory" id="fTheory" hidden><summary>📖 ${esc(t("lesson.theory_short"))}</summary><p></p></details>
         <div class="seg mini f-guide" id="fGuide" role="group" aria-label="${esc(t("flow.guide_label"))}" hidden></div></div>
       <div class="focus-body"></div>
       <div class="focus-foot">
@@ -189,7 +197,12 @@ export async function mount(el, { segs, params = {} }) {
   }));
   $$(".exercise", el).forEach(box => {
     const ex = ls.exercises.find(e => e.id === box.dataset.id);
-    const hear = $("[data-act=hear]", box);
+    const hear = $("[data-act=hear]", box), thBtn = $("[data-act=theory]", box);
+    if (thBtn) thBtn.onclick = () => {
+      const p = $(".ex-theory", box), open = p.hidden;
+      p.hidden = !open;
+      thBtn.setAttribute("aria-expanded", String(open));
+    };
     if (hear) hear.onclick = () => ex.kind === "chart" ? toggleDemo(ex, hear, [guides.get(ex.id).guide]) : preview(ex, chordData);
     $("[data-act=go]", box).onclick = () => openFocus(el, segs, ls, ex, chordData, exTitle, true);
     const vary = $("[data-act=vary]", box);
@@ -299,6 +312,9 @@ async function openFocus(el, segs, ls, ex, chordData, exTitle, start = false, mo
   const guidance = mode.testout ? 0 : focus?.ex === ex && focus.guidance != null ? focus.guidance
     : ex.fadeable && ex.passed ? Math.min(2, (ex.guidance ?? 0) + 1) : 0;
   $("#fTitle", dlg).textContent = (mode.testout ? `${t("lesson.testout_title")} · ` : "") + exTitle(ex) + suffix;
+  const fth = $("#fTheory", dlg), thText = !mode.testout && ex.theory ? tc(`ex_theory.${ex.from || `${ls.id}/${ex.id}`}`, ex.theory) : "";
+  fth.hidden = !thText;
+  $("p", fth).textContent = thText;
   const need = mode.testout ? Math.max(ex.min, 90) : ex.min;
   $("#fTarget", dlg).textContent = `${exerciseTarget(view)} · ${t("lesson.pass_with", { min: need })}`
     + (!mode.variant && ex.best != null ? ` · ${t("lesson.your_best", { best: Math.round(ex.best) })}` : "");

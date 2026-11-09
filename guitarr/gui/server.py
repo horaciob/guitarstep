@@ -641,8 +641,8 @@ def _lesson_flow(lid: str, exs: list[dict], p: dict) -> dict:
 @app.get("/api/course")
 def api_course():
     p = progress.get()
-    levels = []
-    for lvl in catalog.course()["levels"]:
+
+    def level_dict(lvl):
         ls = []
         for x in lvl["lessons"]:
             exs = []
@@ -656,9 +656,12 @@ def api_course():
             ls.append(dict(x, exercises=exs, chords=catalog.lesson_chords(x), figures=[_figure(f) for f in x.get("figures", [])],
                            done=x["id"] in p["lessons"], pinned=p["tutorials"].get(x["id"]),
                            tested_out=x["id"] in p["tested_out"], **_lesson_flow(x["id"], exs, p)))
-        levels.append(dict(lvl, lessons=ls))
+        return dict(lvl, lessons=ls)
+
+    levels = [level_dict(lv) for lv in catalog.course()["levels"]]
+    optional = [level_dict(lv) for lv in catalog.course()["optional"]]
     nxt = next((x for lv in levels for x in lv["lessons"] if not x["done"]), None)
-    return dict(levels=levels, next=nxt and dict(id=nxt["id"], title=nxt["title"]))
+    return dict(levels=levels, optional=optional, next=nxt and dict(id=nxt["id"], title=nxt["title"]))
 
 
 @app.get("/api/progress")

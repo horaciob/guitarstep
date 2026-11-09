@@ -71,15 +71,21 @@ def test_spanish_translations_cover_all_content():
     from pathlib import Path
 
     es = json.loads((Path(catalog.__file__).parent / "gui/static/locales/es.json").read_text())["content"]
-    written = [ls for ls in catalog.lessons() if not ls.get("recap")]     # level recaps are generated (UI strings)
+    written = [ls for ls in catalog.all_lessons() if not ls.get("recap")]  # level recaps are generated (UI strings)
     assert set(es["chords"]) == {c["id"] for c in catalog.chords()}
     assert set(es["lessons"]) == {ls["id"] for ls in written}
     assert set(es["exercises"]) == {f"{ls['id']}/{e['id']}" for ls in written for e in ls["exercises"]}
     assert set(es["charts"]) == {c["id"] for c in catalog.charts()}
     glossary = json.loads((Path(catalog.__file__).parent / "data/glossary.json").read_text())["terms"]
     assert set(es["glossary"]) == set(glossary)
+    # every exercise has a short theory note, in English and in Spanish (a voice can read it later)
+    assert all(e.get("theory") for ls in written for e in ls["exercises"])
+    assert set(es["ex_theory"]) == {f"{ls['id']}/{e['id']}" for ls in written for e in ls["exercises"]}
+    assert set(es["levels"]) == {lv["id"] for lv in catalog.all_levels()}
+    for ls in written:                                  # the lesson's theory has the same number of points in both
+        assert len(es["lessons"][ls["id"]]["theory"]) == len(ls.get("theory", [])), ls["id"]
     # every recap exercise points at a real exercise, so its title translates
-    for ls in catalog.lessons():
+    for ls in catalog.all_lessons():
         if ls.get("recap"):
             assert all(e["from"] in es["exercises"] for e in ls["exercises"])
 
@@ -388,3 +394,29 @@ def test_live_messages_are_structured():
     assert last["code"] == "wrong" and last["params"]["detail"]["kind"] == "chord_wrong"
     assert last["text"].startswith("✗ chord: missing G (minor 3rd)")
     assert rep["issues"][0]["detail"]["kind"] == "chord_wrong"
+
+
+def test_key_signature_quiz_is_right():
+    import random
+    from guitarr import quiz
+    rng = random.Random(3)
+    for _ in range(40):
+        q = quiz.q_key_signature(rng, {})
+        key = q["fact"]["label"]
+        right = q["choices"][int(q["answer"])]["label"]
+        if q["prompt"]["code"] == "keysig_key":
+            assert right == key
+        else:
+            n = quiz.KEY_SIGNATURES[key]
+            assert right == (quiz.L("keysig_none") if n == 0 else quiz.L("keysig_sharps" if n > 0 else "keysig_flats", count=abs(n)))
+
+
+def test_next_lesson_stays_in_its_own_course():
+    main, metal = catalog.lessons(), catalog.track_lessons("metal-chug")
+    assert metal[0]["id"] == "metal-chug" and all(ls["id"] not in {m["id"] for m in main} for ls in metal)
+    prog = {"guidance": {}, "variations": {}, "exercises": {}}
+    last_main = [ls for ls in main if not ls.get("recap")][-1]
+    nxt = catalog.next_step(last_main["id"], last_main["exercises"][-1]["id"], {"passed": True, "lesson_done": True, "score": 100}, prog)
+    assert nxt["code"] in ("next_lesson", "all_done") and (nxt["code"] == "all_done" or nxt["params"]["lesson"] in {m["id"] for m in main})
+    nxt = catalog.next_step("metal-chug", "reverse-gallop", {"passed": True, "lesson_done": True, "score": 100}, prog)
+    assert nxt == {"code": "next_lesson", "params": {"lesson": "pedal-riffs", "title": "Pedal-point riffs"}}

@@ -584,6 +584,19 @@ TECHNIQUE = {
                 ("chug", ["vibrato", "palm_mute", "sweep", "slide"], "palm_mute"),
                 ("sweep_notes", ["together", "separate", "muted", "bent"], "separate"),
                 ("barre_finger", ["middle", "near_fret", "on_fret", "tip"], "near_fret")],
+    "clean": [
+              ("buzz", ["far_fret", "too_hard", "pick_soft", "tuning"], "far_fret"),
+              ("dead_note", ["leaning", "too_close", "thumb_low", "new_strings"], "leaning"),
+              ("on_fret", ["muted", "sharp", "louder", "fine"], "muted"),
+              ("order", ["fret_first", "together", "pick_first", "either"], "fret_first"),
+              ("stuck", ["slow_isolate", "faster", "skip", "whole_again"], "slow_isolate")],
+    "metal": [
+              ("pm_place", ["bridge", "neck", "pickup", "middle"], "bridge"),
+              ("gallop", ["e_ss", "ss_e", "eee", "dotted"], "e_ss"),
+              ("downpick", ["weight", "only_fast", "quieter", "bends"], "weight"),
+              ("tritone", ["f6", "f5", "f7", "f4"], "f6"),
+              ("pinch", ["thumb", "bend", "tap", "slide"], "thumb"),
+              ("tremolo", ["wrist", "arm", "fingers", "legato"], "wrist")],
 }
 
 
@@ -593,6 +606,29 @@ def q_technique(rng, ex):
     code, opts, right = rng.choice([f for tp in topics for f in TECHNIQUE[tp]])
     ch, ans = _choices(rng, right, opts, label=lambda x: L(f"tech_{code}_{x}"))
     return _q(L(f"tech_{code}"), ch, ans)
+
+
+# ---------------------------------------------------------------- key signatures
+KEY_SIGNATURES = {"C": 0, "G": 1, "D": 2, "A": 3, "E": 4, "B": 5, "F#": 6,
+                  "F": -1, "Bb": -2, "Eb": -3, "Ab": -4, "Db": -5, "Gb": -6}   # + sharps, - flats
+
+
+def _sig_label(n: int) -> dict:
+    return L("keysig_none") if n == 0 else L("keysig_sharps" if n > 0 else "keysig_flats", count=abs(n))
+
+
+def q_key_signature(rng, ex):
+    """How many sharps or flats a major key has, or which major key a signature belongs to."""
+    keys = ex.get("keys", list(KEY_SIGNATURES))
+    key = rng.choice(keys)
+    n = KEY_SIGNATURES[key]
+    if rng.random() < 0.5:
+        near = [m for m in range(-6, 7) if m != n and abs(m - n) <= 3]
+        ch, ans = _choices(rng, n, near, label=_sig_label)
+        return _fact(_q(L("keysig_count", key=key), ch, ans), f"keysig:{key}", key)
+    ch, ans = _choices(rng, key, list(KEY_SIGNATURES))
+    sig = f"{abs(n)} ♯" if n > 0 else f"{abs(n)} ♭" if n < 0 else "0 ♯/♭"
+    return _fact(_q(L("keysig_key", sig=sig), ch, ans), f"keysig:{key}", key)
 
 
 # ---------------------------------------------------------------- CAGED
@@ -615,7 +651,7 @@ def q_caged(rng, ex):
     return _q(L("caged_string", shape=shape), ch, ans)
 
 
-QUIZ = {f.__name__[2:]: f for f in [q_name_note, q_technique, q_function, q_hear_degree, q_cadence, q_secondary, q_borrowed, q_progression, q_caged, q_read_note, q_staff_fact, q_figure_value, q_rhythm_dictation, q_tritone_sub, q_shared_tones, q_ii_v_i, q_turnaround,q_interval_frets, q_interval_ear, q_enharmonic, q_half_step, q_tab_read, q_open_string,
+QUIZ = {f.__name__[2:]: f for f in [q_name_note, q_technique, q_key_signature, q_function, q_hear_degree, q_cadence, q_secondary, q_borrowed, q_progression, q_caged, q_read_note, q_staff_fact, q_figure_value, q_rhythm_dictation, q_tritone_sub, q_shared_tones, q_ii_v_i, q_turnaround,q_interval_frets, q_interval_ear, q_enharmonic, q_half_step, q_tab_read, q_open_string,
                                      q_scale_degree, q_relative_minor, q_hear_quality, q_mode_color, q_chord_tones,
                                      q_chord_formula, q_inversion, q_roman, q_pentatonic, q_symmetric, q_bebop, q_altered,
                                      q_guide_tones, q_drop, q_extension, q_voice_lead]}

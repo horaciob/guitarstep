@@ -6,17 +6,18 @@ export async function mount(el) {
   const r = await api("/api/course");
   const all = r.levels.flatMap(l => l.lessons);
   const done = all.filter(l => l.done).length;
-  const title = (ls, lv) => ls.recap ? t("lesson.recap_title", { n: lv.number, level: tc(`levels.${lv.id}.title`, lv.title) }) : tc(`lessons.${ls.id}.title`, ls.title);
+  const title = (ls, lv) => ls.recap ? t("lesson.recap_title", { n: lv.badge || lv.number, level: tc(`levels.${lv.id}.title`, lv.title) }) : tc(`lessons.${ls.id}.title`, ls.title);
   el.innerHTML = `
     <div class="gl-head"><h1>${esc(t("course.title"))}</h1>
       <p class="muted">${esc(t("course.subtitle", { done, total: all.length }))}</p></div>
     ${r.next ? `<a class="callout" href="#/lesson/${encodeURIComponent(r.next.id)}"><span>${t("course.continue_html", { title: esc(tc(`lessons.${r.next.id}.title`, r.next.title)), interpolation: { escapeValue: false } })}</span><span class="btn small primary">${esc(t("course.continue"))}</span></a>`
               : `<div class="callout"><span>${esc(t("course.finished"))}</span></div>`}
-    ${r.levels.map(lv => {
+    ${[...r.levels, ...(r.optional || [])].map((lv, k) => {
       const n = lv.lessons.length, d = lv.lessons.filter(l => l.done).length, full = d === n;
-      return `
-      <section class="level${full ? " complete" : ""}">
-        <div class="level-head"><h2><span class="lvl-num">${full ? "✓" : lv.number}</span> ${esc(tc(`levels.${lv.id}.title`, lv.title))}</h2>
+      const first = k === r.levels.length;                 // the optional courses start here
+      return `${first ? `<div class="gl-head optional-head"><h2>${esc(t("course.optional_title"))}</h2><p class="muted">${esc(t("course.optional_hint"))}</p></div>` : ""}
+      <section class="level${full ? " complete" : ""}${lv.track ? " optional" : ""}">
+        <div class="level-head"><h2><span class="lvl-num">${full ? "✓" : esc(String(lv.badge || lv.number))}</span> ${esc(tc(`levels.${lv.id}.title`, lv.title))}</h2>
           <span class="lvl-prog"><span class="small">${esc(t(full ? "course.level_done" : "course.level_progress", { done: d, total: n }))}</span>
             <span class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="${n}" aria-valuenow="${d}" aria-label="${esc(t("course.level_progress", { done: d, total: n }))}"><i style="width:${Math.round(100 * d / n)}%"></i></span></span></div>
         <p class="muted">${esc(tc(`levels.${lv.id}.subtitle`, lv.subtitle))}</p>

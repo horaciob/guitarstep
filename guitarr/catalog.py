@@ -76,7 +76,7 @@ def taught_at() -> dict:
     """Where the course first teaches each chord (a lesson's "chords") and first uses each built-in chart: the course
     is the one source of truth for levels, so reordering levels never leaves a chord or a chart behind."""
     chords_at, charts_at = {}, {}
-    for lvl in course()["levels"]:
+    for lvl in all_levels():
         for ls in lvl["lessons"]:
             for c in ls.get("chords") or []:
                 chords_at.setdefault(c, (lvl["number"], ls["id"], ls["title"]))
@@ -456,7 +456,8 @@ def chart_from_shapes(shapes: list[dict], times: int) -> dict:
 @lru_cache(maxsize=None)
 def course() -> dict:
     data = json.loads((DATA_DIR / "course.json").read_text(encoding="utf-8"))
-    for lvl in data["levels"]:
+    data.setdefault("optional", [])
+    for lvl in data["levels"] + data["optional"]:
         recap = _recap(lvl)
         if recap:
             lvl["lessons"].append(recap)
@@ -481,7 +482,7 @@ def _recap(lvl: dict) -> dict | None:
     if len(picks) > RECAP_MAX:                       # spread the picks over the whole level
         step = len(picks) / RECAP_MAX
         picks = [picks[int(i * step)] for i in range(RECAP_MAX)]
-    return dict(id=f"recap-{lvl['id']}", title=f"Level {lvl['number']} recap", minutes=5 + 3 * len(picks), recap=True,
+    return dict(id=f"recap-{lvl['id']}", title=f"Level {lvl.get('badge') or lvl['number']} recap", minutes=5 + 3 * len(picks), recap=True,
                 theory=[], tips=[], tutorials=[], exercises=picks)
 
 
@@ -584,7 +585,27 @@ def chart_sections(chart: dict) -> list[dict]:
 
 
 def lessons() -> list[dict]:
+    """The main course, in order (what progress, the plan and "next lesson" count)."""
     return [ls for lvl in course()["levels"] for ls in lvl["lessons"]]
+
+
+def all_levels() -> list[dict]:
+    """The main course, then the optional courses (each optional level has a "track", like "metal")."""
+    return course()["levels"] + course()["optional"]
+
+
+def all_lessons() -> list[dict]:
+    return [ls for lvl in all_levels() for ls in lvl["lessons"]]
+
+
+def track_lessons(lid: str) -> list[dict]:
+    """The lessons of the course (main or one optional track) that `lid` belongs to, in order."""
+    for group in [course()["levels"]] + [[lv for lv in course()["optional"] if lv.get("track") == t]
+                                         for t in dict.fromkeys(lv.get("track") for lv in course()["optional"])]:
+        out = [ls for lvl in group for ls in lvl["lessons"]]
+        if any(ls["id"] == lid for ls in out):
+            return out
+    return lessons()
 
 
 def lesson_chords(ls: dict) -> list[str]:
@@ -601,7 +622,7 @@ def lesson_chords(ls: dict) -> list[str]:
 
 
 def get_lesson(lid: str) -> dict:
-    ls = next((x for x in lessons() if x["id"] == lid), None)
+    ls = next((x for x in all_lessons() if x["id"] == lid), None)
     if ls is None:
         raise CatalogError(f"Lesson '{lid}' not found")
     return ls
@@ -702,7 +723,7 @@ def next_step(lid: str, eid: str, award: dict, prog: dict) -> dict:
             return dict(code="retry_slower" if ex["kind"] == "chart" else "retry_with_help")
         return dict(code="almost", params=dict(missing=round(need - score)))
     if award.get("lesson_done"):
-        lessons_ = lessons()
+        lessons_ = track_lessons(lid)
         i = next(k for k, x in enumerate(lessons_) if x["id"] == lid)
         nxt = lessons_[i + 1] if i + 1 < len(lessons_) else None
         return dict(code="next_lesson", params=dict(lesson=nxt["id"], title=nxt["title"])) if nxt else dict(code="all_done")

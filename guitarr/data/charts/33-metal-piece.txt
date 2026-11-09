@@ -1,0 +1,22 @@
+title: A full metal piece
+bpm: 132
+time: 4/4
+strum: DDDDDDDD
+note: Intro and verse down-picked and palm-muted; the chorus lets the chords ring; the breakdown is half time.
+
+[Intro]
+E5 | E5 | F5 | E5
+
+[Verse]
+E5 | E5 | C5 | D5
+E5 | E5 | G5 A5 | B5
+
+[Chorus]
+C5 | D5 | E5 | E5
+C5 | D5 | B5 | B5
+
+[Breakdown]
+E5 | F5 | E5 | G5 F5
+
+[Ending]
+C5 | D5 | E5 | E5

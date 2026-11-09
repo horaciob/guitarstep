@@ -9,7 +9,8 @@ ES = json.loads((catalog.DATA_DIR.parent / "gui/static/locales/es.json").read_te
 
 
 def ordered_lessons():
-    for lvl in catalog.course()["levels"]:
+    """The main course, then the optional courses (which come after it in teaching order)."""
+    for lvl in catalog.all_levels():
         for ls in lvl["lessons"]:
             if not ls.get("recap"):
                 yield lvl, ls
@@ -23,6 +24,16 @@ def test_levels_and_ids():
     assert len(ids) == len(set(ids)), "duplicate lesson ids"
     for lv in levels:
         assert lv["lessons"], f"level {lv['id']} is empty"
+
+
+def test_optional_courses_follow_the_main_one():
+    main, optional = catalog.course()["levels"], catalog.course()["optional"]
+    assert optional, "the heavy-metal course is there"
+    assert all(lv.get("track") and lv.get("badge") and lv["lessons"] for lv in optional)
+    assert len({lv["badge"] for lv in optional}) == len(optional)
+    assert len({lv["id"] for lv in main + optional}) == len(main + optional)
+    assert min(lv["number"] for lv in optional) > len(main)          # their charts sit above every main level
+    assert not {ls["id"] for ls in catalog.lessons()} & {ls["id"] for lv in optional for ls in lv["lessons"]}
 
 
 def test_every_chord_is_taught_before_it_is_used():

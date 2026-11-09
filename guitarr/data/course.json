@@ -13,7 +13,8 @@
      "theory": [
       "Strings are numbered from the thinnest (1st, high E) to the thickest (6th, low E).",
       "Open, from low to high: E – A – D – G – B – E.",
-      "Tune before every session: an out-of-tune guitar makes even good playing sound wrong."
+      "Tune before every session: an out-of-tune guitar makes even good playing sound wrong.",
+      "Before you play, check the basics: sit up, the guitar's waist on your leg, the neck tilted slightly up. A relaxed body plays cleaner and longer."
      ],
      "tips": [
       "Rest the pick on the string and let it go: a firm attack without brushing the neighbors.",
@@ -36,7 +37,8 @@
         59,
         64
        ],
-       "min": 80
+       "min": 80,
+       "theory": "The open strings, low to high, spell E A D G B E. Each one is a fourth above the last, except G to B, which is a major third: that's why one string \"breaks\" every pattern on the guitar."
       },
       {
        "id": "open-strings-back",
@@ -50,7 +52,8 @@
         45,
         40
        ],
-       "min": 80
+       "min": 80,
+       "theory": "Going down from the 1st to the 6th string, the pitch drops each time. Let each string ring until the next one sounds: that's the first step toward a clean, connected sound."
       }
      ]
     },
@@ -82,14 +85,68 @@
         "tab_read"
        ],
        "count": 6,
-       "min": 80
+       "min": 80,
+       "theory": "Tab is a map of the neck, not of the music's rhythm: lines are strings, numbers are frets. Knowing which line is which string is half of reading it."
       },
       {
        "id": "play-the-tab",
        "kind": "lick",
        "title": "Play what the tab says",
        "tab": "6:0 6:3 5:0 5:2 4:0 4:2 3:0 3:2",
-       "min": 80
+       "min": 80,
+       "theory": "This tab climbs string by string: open, then a fretted note on the same string. Read one column at a time and say the string and fret before you play it."
+      }
+     ]
+    },
+    {
+     "id": "fingers",
+     "title": "One finger per fret",
+     "minutes": 8,
+     "theory": [
+      "One finger per fret: in a four-fret span, finger 1 plays the first fret, finger 2 the second, and so on. The hand stays still and the fingers do the walking.",
+      "Press with the fingertip right behind the fret, not on top of it. Behind is clean; too far back buzzes; on top sounds muted.",
+      "Press first, then pick: if the pick gets there before the finger is down, the note buzzes.",
+      "Slow and even beats fast and messy. This chromatic walk is the classic warm-up: it wakes up both hands and teaches them to work together."
+     ],
+     "tutorials": [
+      "guitar chromatic finger exercise 1 2 3 4"
+     ],
+     "exercises": [
+      {
+       "id": "chromatic-up",
+       "kind": "lick",
+       "title": "1-2-3-4 up four strings",
+       "tab": "6:1 6:2 6:3 6:4 5:1 5:2 5:3 5:4 4:1 4:2 4:3 4:4 3:1 3:2 3:3 3:4",
+       "min": 75,
+       "theory": "Each fret is a half step, so this walk plays every note in order: the chromatic scale. It's not about music yet; it's about each finger owning its fret."
+      },
+      {
+       "id": "chromatic-down",
+       "kind": "lick",
+       "title": "4-3-2-1 back down",
+       "tab": "3:4 3:3 3:2 3:1 4:4 4:3 4:2 4:1 5:4 5:3 5:2 5:1 6:4 6:3 6:2 6:1",
+       "min": 75,
+       "theory": "Coming down, keep the lower fingers ready but relaxed, lifting each finger only as the next note sounds. That small overlap is what makes notes connect."
+      },
+      {
+       "id": "finger-independence",
+       "kind": "lick",
+       "title": "1-3-2-4: finger independence",
+       "tab": "6:1 6:3 6:2 6:4 5:1 5:3 5:2 5:4 4:1 4:3 4:2 4:4 3:1 3:3 3:2 3:4",
+       "min": 75,
+       "theory": "Changing the finger order breaks the habit of moving fingers in a row. Fingers 3 and 4 share tendons, so they learn to move on their own slowly."
+      },
+      {
+       "id": "clean-quiz",
+       "kind": "quiz",
+       "title": "Buzzes and dead notes: causes and cures",
+       "quiz": "technique",
+       "topics": [
+        "clean"
+       ],
+       "count": 5,
+       "min": 80,
+       "theory": "Most bad notes have a short list of causes: the finger's distance from the fret, a finger touching a neighbour string, or picking before pressing."
       }
      ]
     },
@@ -100,7 +157,8 @@
      "theory": [
       "A chord is several notes at once. Em uses only two fingers and all six strings ring.",
       "Middle finger on fret 2 of the 5th string, ring finger on fret 2 of the 4th string.",
-      "Press with the fingertip, right behind the metal fret, with the thumb behind the neck."
+      "Press with the fingertip, right behind the metal fret, with the thumb behind the neck.",
+      "If a note buzzes, the finger is too far from the fret or not pressing yet: slide it right behind the fret, and pick only once it's down. If a note sounds dead, a finger is lying on that string: arch the finger more."
      ],
      "tips": [
       "If a string sounds muted, a finger is touching it: arch your knuckles more."
@@ -119,7 +177,8 @@
        "title": "Strum Em four times, clean",
        "chord": "Em",
        "times": 4,
-       "min": 75
+       "min": 75,
+       "theory": "Em is a minor triad (E, G, B) spread over six strings: the open strings already give you E, G and B, your two fingers add the B and E an octave up. Every string has to ring: if one is dead, a finger is touching it."
       }
      ]
     },
@@ -129,7 +188,8 @@
      "minutes": 12,
      "theory": [
       "Am has the same shape as E, one string lower. Don't play the 6th string.",
-      "In the Em→Am change, the middle and ring fingers travel together one string toward the floor."
+      "In the Em→Am change, the middle and ring fingers travel together one string toward the floor.",
+      "When a change won't come: play only the two chords, slowly, and practice just the move between them. Then put it back in the song."
      ],
      "tips": [
       "Practice the change slowly without strumming: look at the shape, then close your eyes."
@@ -148,7 +208,8 @@
        "title": "Strum Am four times",
        "chord": "Am",
        "times": 4,
-       "min": 75
+       "min": 75,
+       "theory": "Am is A, C and E. The open A string is the root, so start the strum on the 5th string: the low E would put the fifth in the bass and blur the chord."
       },
       {
        "id": "em-am-change",
@@ -159,7 +220,8 @@
         "Am"
        ],
        "times": 4,
-       "min": 75
+       "min": 75,
+       "theory": "Em and Am use the same two-finger shape, one string apart, and both contain the note E. Move the fingers as a block and watch where they land, not where they leave."
       },
       {
        "id": "em-am-chart",
@@ -167,7 +229,8 @@
        "title": "With the metronome at 70%",
        "chart": "01-em-am",
        "speed": 0.7,
-       "min": 80
+       "min": 80,
+       "theory": "Each chord lasts a whole bar of four beats. Change on beat 1: start moving during beat 4 of the previous bar so the new chord sounds right on the click."
       }
      ]
     }
@@ -202,7 +265,8 @@
        "title": "Strum D four times",
        "chord": "D",
        "times": 4,
-       "min": 75
+       "min": 75,
+       "theory": "D is D, F# and A. Its root is the open 4th string, so the two lowest strings stay out. The 3rd (F#) is on top: press it well, it's what makes the chord major."
       },
       {
        "id": "d-a-change",
@@ -213,7 +277,8 @@
         "A"
        ],
        "times": 4,
-       "min": 75
+       "min": 75,
+       "theory": "D and A are the I and V of D major: the V wants to go back to the I. Change without stopping the strumming hand; a late chord is better than a broken pulse."
       },
       {
        "id": "dae-chart",
@@ -221,7 +286,8 @@
        "title": "Three major chords at 80%",
        "chart": "02-d-a-e",
        "speed": 0.8,
-       "min": 80
+       "min": 80,
+       "theory": "D, A and E are three major chords; in A major they're IV, I and V, the three chords of countless songs. Hear which one feels like home."
       }
      ]
     },
@@ -251,7 +317,8 @@
         "C"
        ],
        "times": 4,
-       "min": 75
+       "min": 75,
+       "theory": "G and C are I and IV in G (or V and I in C). The open G string sounds in both chords: let it ring as a bridge between them."
       },
       {
        "id": "pop-chart",
@@ -259,7 +326,8 @@
        "title": "Pop in G at 75%",
        "chart": "03-pop-in-g",
        "speed": 0.75,
-       "min": 80
+       "min": 80,
+       "theory": "I–V–vi–IV in G is G–D–Em–C. Three of its four chords are major; the vi (Em) is the relative minor and gives the progression its bittersweet turn."
       }
      ]
     },
@@ -298,7 +366,8 @@
         "Dsus4"
        ],
        "times": 4,
-       "min": 75
+       "min": 75,
+       "theory": "Dsus4 replaces the 3rd (F#) with the 4th (G). The 4th sits a half step above the 3rd and wants to fall back: that's the classic sus4 → major release."
       },
       {
        "id": "folk-chart",
@@ -306,7 +375,8 @@
        "title": "Folk in D with suspended chords",
        "chart": "08-folk-in-d",
        "speed": 0.75,
-       "min": 80
+       "min": 80,
+       "theory": "Suspended chords decorate the plain ones without changing the harmony: the bass stays, only the top note moves. Keep the strum steady and let that one finger do the talking."
       },
       {
        "id": "anchor-chart",
@@ -314,7 +384,8 @@
        "title": "Anchor fingers: Em7, G, Dsus4, Cadd9",
        "chart": "09-anchor-fingers",
        "speed": 0.75,
-       "min": 80
+       "min": 80,
+       "theory": "Em7, G, Dsus4 and Cadd9 keep fingers 3 and 4 on the same frets of the top two strings. Those anchors stay down while the rest moves: fewer fingers to move, faster changes."
       }
      ]
     }
@@ -333,7 +404,8 @@
      "theory": [
       "The strumming hand swings like a pendulum, always in time, even when it misses the strings.",
       "Down strums land on the numbers (1, 2, 3, 4) and up strums on the \"ands\".",
-      "The pattern D.DU.UDU is counted: 1, 2 and, and 4 and."
+      "The pattern D.DU.UDU is counted: 1, 2 and, and 4 and.",
+      "Practice slow first. Speed is a result: once a pattern is even and relaxed at a slow tempo, raise the metronome a few BPM at a time."
      ],
      "tutorials": [
       "basic strumming pattern guitar down up",
@@ -346,7 +418,8 @@
        "title": "Ballad in C with the metronome",
        "chart": "04-ballad-in-c",
        "speed": 0.85,
-       "min": 80
+       "min": 80,
+       "theory": "The pendulum never stops: the hand moves down on every number and up on every \"and\", and simply misses the strings on the rests. The pattern comes from which strokes touch the strings."
       }
      ]
     },
@@ -356,7 +429,8 @@
      "minutes": 12,
      "theory": [
       "In 3/4 you count ONE-two-three: the first beat is heavier.",
-      "E7 is E without the ring finger: the tension that resolves back to Am."
+      "E7 is E without the ring finger: the tension that resolves back to Am.",
+      "The first beat of each bar carries the accent. In 3/4 that gives the ONE-two-three sway of a waltz; in 4/4 the accent falls on 1 and, more lightly, on 3."
      ],
      "chords": [
       "E7",
@@ -372,7 +446,8 @@
        "title": "Waltz in A minor",
        "chart": "05-waltz",
        "speed": 0.8,
-       "min": 80
+       "min": 80,
+       "theory": "In 3/4 the bar has three beats and the first is the strong one: a bass-heavy strum on 1 and lighter strums on 2 and 3 make it sound like a waltz."
       }
      ]
     }
@@ -390,7 +465,8 @@
      "minutes": 10,
      "theory": [
       "The pulse is the steady beat you tap with your foot. BPM says how many beats fit in a minute: 60 BPM is one per second.",
-      "Most music counts in groups of four (4/4 time). The first beat of each group is the strongest, and the metronome marks it with a higher click."
+      "Most music counts in groups of four (4/4 time). The first beat of each group is the strongest, and the metronome marks it with a higher click.",
+      "Tap with the foot and play with the hands: the body keeps the pulse while the hands do the rest."
      ],
      "tips": [
       "Tap Space (or the pad) with each note. The first bar is only the count-in: listen before you play."
@@ -422,7 +498,8 @@
         "q q q q"
        ],
        "count": 4,
-       "min": 70
+       "min": 70,
+       "theory": "The pulse is a grid of equal beats. Tapping with the click trains you to land exactly on it, not just near it."
       }
      ]
     },
@@ -475,7 +552,8 @@
        "title": "How long does it last?",
        "quiz": "figure_value",
        "count": 6,
-       "min": 80
+       "min": 80,
+       "theory": "Note values are proportions: each one is half of the one before. Once you know the quarter note is one beat, every other value is a multiplication or a division."
       }
      ]
     },
@@ -484,7 +562,9 @@
      "title": "Long notes",
      "minutes": 10,
      "theory": [
-      "With long notes you play once and keep counting while the note rings. The hard part is not rushing the next one."
+      "With long notes you play once and keep counting while the note rings. The hard part is not rushing the next one.",
+      "Ties join two notes of the same pitch into one longer note: you play the first and keep counting through the second.",
+      "A dot after a note adds half its value: a dotted half lasts three beats, perfect for a full bar of 3/4."
      ],
      "tips": [],
      "tutorials": [],
@@ -512,7 +592,8 @@
         "q h q"
        ],
        "count": 5,
-       "min": 70
+       "min": 70,
+       "theory": "A half note lasts two clicks and a whole note four. Count the beats out loud while the note lasts: the next attack must land on its own click, not before."
       }
      ]
     },
@@ -521,7 +602,8 @@
      "title": "Eighth notes",
      "minutes": 10,
      "theory": [
-      "Eighth notes split each beat in two. Count \"one-and, two-and\": the note on the \"and\" falls right between two clicks."
+      "Eighth notes split each beat in two. Count \"one-and, two-and\": the note on the \"and\" falls right between two clicks.",
+      "When strumming eighths the hand goes down on the numbers and up on the \"ands\". Keep the hand moving even when a stroke is silent."
      ],
      "tips": [
       "A lot of rock rhythm guitar is steady eighths. Get them even and half the songs get easier."
@@ -551,7 +633,8 @@
         "e e e e e e e e"
        ],
        "count": 5,
-       "min": 70
+       "min": 70,
+       "theory": "Two eighths fill one beat: the first lands on the click, the second exactly halfway to the next one. Say \"one-and\" to place it."
       }
      ]
     },
@@ -560,7 +643,8 @@
      "title": "Rests",
      "minutes": 10,
      "theory": [
-      "A rest is time you count in silence. On the guitar, muting the strings at the right moment matters as much as playing."
+      "A rest is time you count in silence. On the guitar, muting the strings at the right moment matters as much as playing.",
+      "Every value has a matching rest: whole, half, quarter, eighth and sixteenth. Same length, but in silence."
      ],
      "tips": [],
      "tutorials": [],
@@ -588,7 +672,8 @@
         "rq e e q rq"
        ],
        "count": 5,
-       "min": 70
+       "min": 70,
+       "theory": "A rest has a length, just like a note. Keep counting through it; the note after a rest is where most people rush."
       }
      ]
     },
@@ -597,7 +682,8 @@
      "title": "Mixing it all",
      "minutes": 10,
      "theory": [
-      "Now at 80 BPM. Read the whole bar during the count-in, before you start."
+      "Now at 80 BPM. Read the whole bar during the count-in, before you start.",
+      "Count every beat, even the ones without a note. Most mistakes happen on a beat nobody played."
      ],
      "tips": [],
      "tutorials": [],
@@ -618,7 +704,8 @@
         "rq q e e q"
        ],
        "count": 6,
-       "min": 70
+       "min": 70,
+       "theory": "Reading rhythm means grouping: see each beat as a block (one quarter, two eighths, a rest) instead of reading note by note."
       }
      ]
     },
@@ -627,7 +714,8 @@
      "title": "Rhythm on the guitar",
      "minutes": 10,
      "theory": [
-      "Now swap the tap for the guitar: play the open low E string in the rhythm. guitarr hears every attack and its timing."
+      "Now swap the tap for the guitar: play the open low E string in the rhythm. guitarr hears every attack and its timing.",
+      "Timing is measured at the attack, the moment the pick hits. A clean attack on time matters more than a long sustain."
      ],
      "tips": [
       "Mute the string on the rests: if it keeps ringing, the next attack is harder to hear.",
@@ -651,7 +739,8 @@
        ],
        "count": 4,
        "pitch": 40,
-       "min": 70
+       "min": 70,
+       "theory": "On the guitar a rest needs an action: lift the fretting fingers or touch the string with the picking hand so the note stops on time."
       }
      ]
     }
@@ -690,7 +779,8 @@
         "D7"
        ],
        "times": 4,
-       "min": 75
+       "min": 75,
+       "theory": "A7 and D7 are the I7 and IV7 of a blues in A. In the blues even the I chord is a dominant 7: that tension that never fully resolves is the style's color."
       },
       {
        "id": "blues-chart",
@@ -698,7 +788,8 @@
        "title": "Blues in A",
        "chart": "06-blues-in-a",
        "speed": 0.8,
-       "min": 80
+       "min": 80,
+       "theory": "Twelve bars in three groups of four: I for four, IV for two and back to I, then V–IV–I and the turnaround. Count the bars and you never get lost."
       }
      ]
     },
@@ -735,7 +826,8 @@
         "C"
        ],
        "times": 4,
-       "min": 75
+       "min": 75,
+       "theory": "G7 holds B and F, a tritone apart. B rises a half step to C and F falls a half step to E: that pull is why a dominant 7 resolves so strongly to its I."
       },
       {
        "id": "ii-v-i-chart",
@@ -743,7 +835,8 @@
        "title": "ii–V–I in C",
        "chart": "11-ii-v-i",
        "speed": 0.75,
-       "min": 80
+       "min": 80,
+       "theory": "Dm7 → G7 → Cmaj7: the roots move up a fourth each time, and the 7th of each chord falls by step to the 3rd of the next."
       }
      ]
     },
@@ -754,7 +847,8 @@
      "theory": [
       "A power chord is root plus fifth: neither major nor minor, which is why it sounds great with distortion.",
       "It's a movable shape: the same fingering on any fret.",
-      "With the root on the 6th string (E5, G5, F5) or on the 5th (A5, C5, B5, D5): learn where the notes are on those two strings and you can play any power chord."
+      "With the root on the 6th string (E5, G5, F5) or on the 5th (A5, C5, B5, D5): learn where the notes are on those two strings and you can play any power chord.",
+      "Drop D tuning lowers the 6th string to D: power chords with the root on the 6th string become a single finger barring three strings, a staple of heavy riffs."
      ],
      "chords": [
       "E5",
@@ -776,7 +870,8 @@
        "title": "Power-chord rock",
        "chart": "07-power-chord-rock",
        "speed": 0.75,
-       "min": 80
+       "min": 80,
+       "theory": "A power chord has no 3rd, so distortion doesn't turn it into mud: the root and fifth produce a clean, strong combination even when the signal is clipped."
       }
      ]
     }
@@ -794,7 +889,8 @@
      "minutes": 20,
      "theory": [
       "A barre is the index pressing every string on one fret: lay it on its side, not flat.",
-      "F is the E shape barred at fret 1. Move it and you get any major chord."
+      "F is the E shape barred at fret 1. Move it and you get any major chord.",
+      "If the barre buzzes, check one string at a time and move the index closer to the fret. Most barres need less force than you think, but in the right place."
      ],
      "tips": [
       "Don't squeeze harder: pull your arm back and let its weight do the pressing."
@@ -814,7 +910,8 @@
        "title": "F four times, all six strings ringing",
        "chord": "F",
        "times": 4,
-       "min": 75
+       "min": 75,
+       "theory": "F is the open E shape moved up one fret, with the index doing the job of the nut. Roll the index slightly onto its bony side and keep it close to the fret; pull with the arm's weight rather than squeezing with the thumb."
       },
       {
        "id": "andalusian-chart",
@@ -822,7 +919,8 @@
        "title": "Andalusian cadence",
        "chart": "10-andalusian-cadence",
        "speed": 0.75,
-       "min": 80
+       "min": 80,
+       "theory": "The Andalusian cadence walks down in minor: i–VII–VI–V (Am–G–F–E). The E at the end is major, borrowed from harmonic minor, and it pulls straight back to Am."
       }
      ]
     },
@@ -860,7 +958,8 @@
         "Gm"
        ],
        "times": 4,
-       "min": 75
+       "min": 75,
+       "theory": "F and Gm both use the E-shape barre, two frets apart. Only the middle finger changes: lift it and Gm's minor 3rd appears. Same hand, new chord."
       },
       {
        "id": "moving-chart",
@@ -868,7 +967,8 @@
        "title": "Moving barre chords",
        "chart": "12-moving-barres",
        "speed": 0.7,
-       "min": 80
+       "min": 80,
+       "theory": "Name each barre by the note under the index on the 6th or 5th string. If you know the notes on those two strings, you can play any major or minor chord."
       }
      ]
     },
@@ -902,7 +1002,8 @@
         "Bb7"
        ],
        "times": 4,
-       "min": 75
+       "min": 75,
+       "theory": "F7 to Bb7 is I7 to IV7 of a blues in F. The two shapes sit at the same fret, root on the 6th string and then on the 5th: one jump across strings, no slide."
       },
       {
        "id": "bm7-fsm7-change",
@@ -913,7 +1014,8 @@
         "F#m7"
        ],
        "times": 4,
-       "min": 75
+       "min": 75,
+       "theory": "Bm7 and F#m7 are minor 7 chords a fourth apart. A minor 7 is a minor triad plus a flat 7: softer than a dominant, and very common in pop and soul."
       }
      ]
     },
@@ -923,7 +1025,8 @@
      "minutes": 20,
      "theory": [
       "The pentatonic scale has 5 notes: most rock and blues solos are improvised with it.",
-      "Position 1 at fret 5: index on 5, ring or pinky on 7/8."
+      "Position 1 at fret 5: index on 5, ring or pinky on 7/8.",
+      "Practice scales slowly and evenly with a metronome, saying the root each time you pass it. Speed comes after the fingering is automatic."
      ],
      "tutorials": [
       "a minor pentatonic scale guitar position 1"
@@ -947,7 +1050,8 @@
         69,
         72
        ],
-       "min": 80
+       "min": 80,
+       "theory": "A minor pentatonic is A C D E G: the minor scale without its 2nd and 6th. With no half steps, almost any note sounds fine over a minor or blues backing."
       },
       {
        "id": "pentatonic-down",
@@ -967,7 +1071,8 @@
         48,
         45
        ],
-       "min": 80
+       "min": 80,
+       "theory": "Coming down, lead with the same fingering: two notes per string, index on fret 5. Say the root (A) out loud each time you pass it: it's your home base."
       }
      ]
     }
@@ -1081,7 +1186,8 @@
          "V",
          "⊓"
         ]
-       ]
+       ],
+       "theory": "Down on the beats and the \"ands\", up on the \"e\" and \"a\". If the hand always moves in time, the direction of each note is decided by the rhythm, never by guessing."
       },
       {
        "id": "picking-quiz",
@@ -1092,7 +1198,8 @@
         "picking"
        ],
        "count": 5,
-       "min": 80
+       "min": 80,
+       "theory": "Picking is a small, relaxed wrist motion. Tension is the enemy of speed: the less you squeeze the pick, the faster and more even you can play."
       }
      ]
     },
@@ -1181,7 +1288,8 @@
          "PM",
          "PM"
         ]
-       ]
+       ],
+       "theory": "Rest the edge of the picking hand right where the strings leave the bridge. Move it a few millimeters toward the neck for more mute, toward the bridge for more tone."
       }
      ]
     },
@@ -1205,7 +1313,8 @@
        "kind": "lick",
        "title": "Octaves, skipping a string",
        "tab": "6:5 4:7 5:7 3:9 4:7 2:10 3:9 1:12",
-       "min": 80
+       "min": 80,
+       "theory": "Octaves two strings apart: two strings up and two frets up (three frets once you cross the B string). The string in between must stay silent: let the fretting finger touch it lightly."
       },
       {
        "id": "economy-quiz",
@@ -1216,7 +1325,48 @@
         "picking"
        ],
        "count": 5,
-       "min": 80
+       "min": 80,
+       "theory": "Economy picking saves motion on string changes; alternate picking keeps the rhythm locked. Most players mix both depending on the line."
+      }
+     ]
+    },
+    {
+     "id": "fingerstyle",
+     "title": "Fingerstyle: p, i, m, a",
+     "minutes": 10,
+     "theory": [
+      "In fingerstyle the picking-hand fingers have names from Spanish: p (pulgar, thumb), i (índice), m (medio), a (anular). The thumb plays the bass strings (6, 5, 4); i, m and a usually take strings 3, 2 and 1.",
+      "In an arpeggio the fretting hand holds a chord while the picking hand plays its notes one by one, never using the same finger twice in a row.",
+      "Rest the wrist relaxed above the strings and move from the knuckles. Keep every note the same volume: listen to the thumb against the fingers.",
+      "Where you pluck changes the tone: near the bridge it's bright and crisp; over the end of the neck it's round and sweet. Electric players use the pickup switch for the same thing."
+     ],
+     "tutorials": [
+      "fingerstyle arpeggio pima beginner"
+     ],
+     "exercises": [
+      {
+       "id": "c-arpeggio",
+       "kind": "lick",
+       "title": "C: p i m a m i",
+       "tab": "5:3 3:0 2:1 1:0 2:1 3:0",
+       "min": 75,
+       "theory": "The thumb plays the root on the 5th string, then i-m-a climb the top three strings and come back. Hold the whole C chord so every note keeps ringing."
+      },
+      {
+       "id": "am-arpeggio",
+       "kind": "lick",
+       "title": "Am: the same pattern",
+       "tab": "5:0 3:2 2:1 1:0 2:1 3:2",
+       "min": 75,
+       "theory": "Same right-hand pattern, new chord: in fingerstyle the pattern stays and the chords change underneath it."
+      },
+      {
+       "id": "g-arpeggio",
+       "kind": "lick",
+       "title": "G: thumb on the 6th string",
+       "tab": "6:3 3:0 2:0 1:3 2:0 3:0",
+       "min": 75,
+       "theory": "When the root is on the 6th string, the thumb moves there. The thumb follows the bass note; the fingers stay on their strings."
       }
      ]
     },
@@ -1250,7 +1400,8 @@
        "kind": "lick",
        "title": "Hammer and pull in A minor pentatonic",
        "tab": "4:5h7p5 3:5h7p5 2:5h8p5 1:5h8p5",
-       "min": 75
+       "min": 75,
+       "theory": "One pick stroke per string, then the fretting hand does the rest: hammer up, pull back down. Aim for three notes of equal volume."
       },
       {
        "id": "legato-quiz",
@@ -1261,7 +1412,8 @@
         "legato"
        ],
        "count": 5,
-       "min": 80
+       "min": 80,
+       "theory": "In legato the other strings tend to ring when you pull off. Mute them with the fretting fingers and the side of the picking hand."
       }
      ]
     },
@@ -1290,7 +1442,8 @@
         "bends"
        ],
        "count": 5,
-       "min": 80
+       "min": 80,
+       "theory": "Bending is tuning while you play: the target pitch is fixed, your ear checks it. A bend that stops short sounds out of tune, not expressive."
       },
       {
        "id": "half-bend",
@@ -1301,7 +1454,8 @@
        "bend": 1,
        "tries": 6,
        "hold": 1.0,
-       "min": 70
+       "min": 70,
+       "theory": "A half-step bend raises the note by one fret's worth. Play fret 11 first to hear the target, then bend fret 10 until it matches."
       }
      ]
     }
@@ -1343,14 +1497,16 @@
        "kind": "lick",
        "title": "Boogie bass line in A",
        "tab": "5:0 5:4 4:2 4:4 4:5 4:4 4:2 5:4",
-       "min": 80
+       "min": 80,
+       "theory": "The boogie line moves between the root, 3rd, 5th, 6th and flat 7th of the chord: it spells out an A7 in the bass. Play it with a long-short shuffle feel."
       },
       {
        "id": "boogie-e",
        "kind": "lick",
        "title": "The same line in E, on the low string",
        "tab": "6:0 6:4 5:2 5:4 5:5 5:4 5:2 6:4",
-       "min": 80
+       "min": 80,
+       "theory": "The same intervals from E: the shape on the guitar is identical, just one string lower. That's the power of patterns: learn it once, play it in any key."
       },
       {
        "id": "shuffle-e",
@@ -1358,7 +1514,8 @@
        "title": "Shuffle in E, quick change",
        "chart": "13-shuffle-in-e",
        "speed": 0.8,
-       "min": 80
+       "min": 80,
+       "theory": "The quick change visits the IV in bar 2 and comes back to the I in bar 3. Listen for it before playing: the form is the same, only that bar changes."
       }
      ]
     },
@@ -1392,21 +1549,24 @@
        "kind": "lick",
        "title": "C to C# over A7",
        "tab": "4:7 3:5h6 3:7 2:5 3:5h6 4:7",
-       "min": 80
+       "min": 80,
+       "theory": "C is the minor 3rd of A, C# the major 3rd. Sliding or hammering from one to the other is the most typical gesture of blues guitar."
       },
       {
        "id": "curl-d7",
        "kind": "lick",
        "title": "F to F# over D7",
        "tab": "2:6h7 2:5 3:7",
-       "min": 80
+       "min": 80,
+       "theory": "Over D7 the same move happens from F to F#. Every chord of the blues has its own minor-to-major third: follow the chord, not just the scale."
       },
       {
        "id": "curl-e7",
        "kind": "lick",
        "title": "G to G# over E7",
        "tab": "4:5h6 5:7 5:5 4:5h6 5:7",
-       "min": 80
+       "min": 80,
+       "theory": "Over E7 it's G to G#. Landing on G# right when the E7 arrives makes the V chord sound unmistakable."
       },
       {
        "id": "thirds",
@@ -1418,7 +1578,8 @@
         56,
         61
        ],
-       "min": 80
+       "min": 80,
+       "theory": "Chord tones on the change: C# for A7, F# for D7, G# for E7. Target notes like these make a solo follow the harmony instead of just floating over it."
       }
      ]
     },
@@ -1452,7 +1613,8 @@
        "bend": 2,
        "tries": 10,
        "hold": 1.0,
-       "min": 70
+       "min": 70,
+       "theory": "A whole-step bend from fret 7 on the G string reaches the pitch of fret 9 (E). Fingers 1, 2 and 3 push together; the wrist turns."
       },
       {
        "id": "bend-b8",
@@ -1463,7 +1625,8 @@
        "bend": 2,
        "tries": 10,
        "hold": 1.0,
-       "min": 70
+       "min": 70,
+       "theory": "On the B string the bend goes toward the floor or the ceiling; pushing up toward the G string is the common choice. Target: the pitch of fret 10 (A)."
       },
       {
        "id": "bend-curl",
@@ -1474,7 +1637,8 @@
        "bend": 1,
        "tries": 10,
        "hold": 1.0,
-       "min": 70
+       "min": 70,
+       "theory": "A quarter or half bend on the minor 3rd (C) toward C# is the \"curl\": the blue note pushed toward the major 3rd without arriving all the way."
       }
      ]
     },
@@ -1486,7 +1650,8 @@
       "The blues talks: one phrase asks, the next one answers. The voice asks and the guitar answers, or your guitar does both.",
       "A phrase has five parts: where it starts, its rhythm, its direction, the note it lands on and how it ends.",
       "A good answer keeps one thing from the question (the rhythm, the direction or the last note) and changes another.",
-      "Leave space after each phrase: the silence lets the answer be heard."
+      "Leave space after each phrase: the silence lets the answer be heard.",
+      "Your tone lives in the attack: picking hard or soft, near the bridge or the neck, with the pick or the fingers. The same notes can sound like different players."
      ],
      "tips": [
       "Questions end open (on the 5th or the 4th); answers come home (to the root, or to the major third).",
@@ -1503,14 +1668,16 @@
        "kind": "lick",
        "title": "The question: it ends open, on E",
        "tab": "2:5 2:8 1:5 2:8b10 2:8 2:5",
-       "min": 80
+       "min": 80,
+       "theory": "A phrase that ends on the 5th (E in A) sounds open, like a question. Where a phrase ends changes its meaning more than the notes before it."
       },
       {
        "id": "answer",
        "kind": "lick",
        "title": "The answer: it comes home to A",
        "tab": "2:8b10r8 2:5 3:7 3:5h6 4:7",
-       "min": 80
+       "min": 80,
+       "theory": "Ending on the root (A) closes the idea. The answer reuses the question's bend, so the two phrases sound related."
       },
       {
        "id": "answer-e",
@@ -1518,7 +1685,8 @@
        "title": "The same answer in E",
        "tab": "2:8b10r8 2:5 3:7 3:5h6 4:7",
        "min": 80,
-       "shift": -5
+       "shift": -5,
+       "theory": "Moved down five frets, the same phrase answers in E. Transposing a phrase you know is the fastest way to have vocabulary in every key."
       }
      ]
     },
@@ -1549,7 +1717,8 @@
        "kind": "lick",
        "title": "Turnaround in A",
        "tab": "1:5 2:8 2:7 2:6 2:5 4:6 5:7",
-       "min": 80
+       "min": 80,
+       "theory": "The descending line G–F#–F–E moves by half steps from the flat 7 to the 5th of A, right after the high root. The chromatic motion pulls the ear toward the V."
       },
       {
        "id": "turn-e",
@@ -1557,7 +1726,8 @@
        "title": "The same turnaround in E",
        "tab": "1:5 2:8 2:7 2:6 2:5 4:6 5:7",
        "min": 80,
-       "shift": -5
+       "shift": -5,
+       "theory": "The same turnaround five frets lower works in E. Learn it as a shape, then say the notes: knowing what you play makes it movable."
       },
       {
        "id": "turn-chart",
@@ -1565,7 +1735,8 @@
        "title": "Blues in A at full speed",
        "chart": "06-blues-in-a",
        "speed": 1.0,
-       "min": 80
+       "min": 80,
+       "theory": "At full speed the chart tests the form more than the fingers: know where bars 5, 9 and 11 are without counting every beat."
       }
      ]
     },
@@ -1603,14 +1774,16 @@
        "bend": 2,
        "tries": 10,
        "hold": 1.5,
-       "min": 70
+       "min": 70,
+       "theory": "Holding a bend in tune for a second and a half is harder than reaching it. Listen to the pitch while it sustains and correct it with tiny wrist moves."
       },
       {
        "id": "long-answer",
        "kind": "lick",
        "title": "A long answer that lands on C",
        "tab": "1:5 1:8b10 1:8 1:5 2:8 2:5 3:7 3:5~",
-       "min": 80
+       "min": 80,
+       "theory": "Landing on C, the minor 3rd, sounds like home in a minor blues: it's a chord tone of Am. Add vibrato at the end so the long note stays alive."
       },
       {
        "id": "minor-chart",
@@ -1618,7 +1791,8 @@
        "title": "Slow minor blues in A minor",
        "chart": "14-slow-minor-blues-am",
        "speed": 1.0,
-       "min": 80
+       "min": 80,
+       "theory": "Slow tempos expose timing: every chord change and every rest is easy to hear. Feel the beat subdivided in three to keep the shuffle steady."
       }
      ]
     },
@@ -1650,7 +1824,8 @@
        "title": "Eight-bar blues at 80%",
        "chart": "15-eight-bar-blues-a",
        "speed": 0.8,
-       "min": 80
+       "min": 80,
+       "theory": "In eight bars the chords change faster than in twelve: there's less time on each, so anticipate the next chord earlier."
       },
       {
        "id": "eight-full",
@@ -1658,7 +1833,8 @@
        "title": "Eight-bar blues at full speed",
        "chart": "15-eight-bar-blues-a",
        "speed": 1.0,
-       "min": 80
+       "min": 80,
+       "theory": "At full speed, feel the form in two halves of four bars. The second half ends with the turnaround that takes you back to the top."
       }
      ]
     },
@@ -1669,7 +1845,8 @@
      "theory": [
       "Chorus 1 states a motif, low and with few notes. Chorus 2 repeats it with a change. Chorus 3 goes higher or louder, then ends clearly.",
       "Develop it by changing one thing at a time: the ending, the register, the rhythm or the dynamics. Change everything and nobody recognizes the motif.",
-      "More and faster isn't the only way to build: space, repetition and register build too."
+      "More and faster isn't the only way to build: space, repetition and register build too.",
+      "Turn a scale into music: add rests, repeat a rhythm, and hold the notes that belong to the chord. A scale played note after note sounds like an exercise; the same notes with space and repetition sound like a phrase."
      ],
      "tips": [
       "Record the three choruses without stopping. If you make a mistake, keep going: that's practice too."
@@ -1689,21 +1866,24 @@
        "kind": "lick",
        "title": "The motif",
        "tab": "3:7 2:5 2:8 2:5 3:7 3:5",
-       "min": 80
+       "min": 80,
+       "theory": "A motif is a short idea that can be repeated and changed. Six notes are enough: the shorter the motif, the easier it is to recognize when it comes back."
       },
       {
        "id": "variation",
        "kind": "lick",
        "title": "The same motif, a new ending",
        "tab": "3:7 2:5 2:8 2:5 3:7b9 4:7",
-       "min": 80
+       "min": 80,
+       "theory": "Same beginning, new ending: the listener recognizes the motif and enjoys the surprise. Change one thing, keep the rest."
       },
       {
        "id": "higher",
        "kind": "lick",
        "title": "The motif an octave up",
        "tab": "1:10 1:12 1:15 1:12 1:10 1:8",
-       "min": 80
+       "min": 80,
+       "theory": "Moving a motif up an octave raises the energy without new notes. Register is one of the simplest ways to build a solo."
       },
       {
        "id": "story-chart",
@@ -1711,7 +1891,8 @@
        "title": "Three choruses in A, with an ending",
        "chart": "16-three-choruses-a",
        "speed": 0.9,
-       "min": 80
+       "min": 80,
+       "theory": "Three choruses: present the idea, develop it, peak and close. Plan the ending before you start: a clear last note makes the whole solo sound intentional."
       }
      ]
     }
@@ -1757,7 +1938,8 @@
        "title": "Ring the F barre four times",
        "chord": "F",
        "times": 4,
-       "min": 70
+       "min": 70,
+       "theory": "The F barre needs every string clean. Check them one by one, slowly; the strings that don't ring tell you which finger to adjust."
       },
       {
        "id": "f-dm",
@@ -1768,7 +1950,8 @@
         "Dm"
        ],
        "times": 4,
-       "min": 75
+       "min": 75,
+       "theory": "F and Dm share F and A: Dm is the relative minor of F. Two chords with the same notes but a different bass sound close yet different in mood."
       },
       {
        "id": "dm-g-c",
@@ -1780,7 +1963,8 @@
         "C"
        ],
        "times": 3,
-       "min": 75
+       "min": 75,
+       "theory": "ii–V–I in C: Dm prepares, G pulls, C resolves. The most common cadence in Western music, here in a rock ballad."
       },
       {
        "id": "bend-c",
@@ -1791,14 +1975,16 @@
        "bend": 2,
        "tries": 8,
        "hold": 1.5,
-       "min": 70
+       "min": 70,
+       "theory": "In a ballad a bend is a sung note: slow, in tune and held. Reach the target pitch, then let it ring before adding vibrato."
       },
       {
        "id": "melody-c",
        "kind": "lick",
        "title": "A slow phrase in C, ending with vibrato",
        "tab": "2:5 2:8 1:5 2:8 2:5 3:7b9 3:5~",
-       "min": 80
+       "min": 80,
+       "theory": "This phrase uses the C major pentatonic and ends with vibrato. Phrasing (where you breathe, what you hold) matters more than the number of notes."
       },
       {
        "id": "nr-chart-slow",
@@ -1806,7 +1992,8 @@
        "title": "The whole chart at 70%",
        "chart": "17-november-rain",
        "speed": 0.7,
-       "min": 80
+       "min": 80,
+       "theory": "At 70% you have time to listen to each chord ring. Use it to make every change land exactly on beat 1."
       },
       {
        "id": "nr-chart",
@@ -1814,7 +2001,8 @@
        "title": "The whole chart at full speed",
        "chart": "17-november-rain",
        "speed": 1.0,
-       "min": 80
+       "min": 80,
+       "theory": "At full speed the slow ballad still asks for patience: one chord per bar, let it breathe, don't rush the changes."
       }
      ]
     },
@@ -1857,7 +2045,8 @@
         "A"
        ],
        "times": 4,
-       "min": 75
+       "min": 75,
+       "theory": "Bm to A is i to VII in B minor: a whole step down. That step is one of the most typical moves of rock in minor keys."
       },
       {
        "id": "g-em",
@@ -1868,7 +2057,8 @@
         "Em"
        ],
        "times": 4,
-       "min": 75
+       "min": 75,
+       "theory": "G and Em are VI and iv in B minor. Em shares two notes with G (G and B): that's why the change feels so smooth."
       },
       {
        "id": "d-a-c-g",
@@ -1881,7 +2071,8 @@
         "G"
        ],
        "times": 2,
-       "min": 75
+       "min": 75,
+       "theory": "In D major, C is the borrowed flat VII: a whole step below the I. It adds a floating, open color before the progression comes home."
       },
       {
        "id": "bend-b",
@@ -1892,21 +2083,24 @@
        "bend": 2,
        "tries": 8,
        "hold": 2.0,
-       "min": 70
+       "min": 70,
+       "theory": "A long bend held for two seconds: listen to the pitch the whole time. A slow, wide vibrato at the end is the signature of this style."
       },
       {
        "id": "pent-b",
        "kind": "lick",
        "title": "B minor pentatonic at fret 7, down and up",
        "tab": "1:10 1:7 2:10 2:7 3:9 3:7 3:9 2:7 2:10 1:7 1:10",
-       "min": 80
+       "min": 80,
+       "theory": "B minor pentatonic at fret 7 is the same box as A minor at fret 5, two frets higher. One shape, any key: just move the root."
       },
       {
        "id": "bend-phrase",
        "kind": "lick",
        "title": "Bend, release and answer with vibrato",
        "tab": "3:9b11r9 3:7 4:9 2:10b12 1:7~",
-       "min": 80
+       "min": 80,
+       "theory": "Bend, release, then answer: a bend up and back down is a complete gesture. Make the release in time, as if it were a written note."
       },
       {
        "id": "cn-chart-slow",
@@ -1914,7 +2108,8 @@
        "title": "The whole chart at 70%",
        "chart": "18-comfortably-numb",
        "speed": 0.7,
-       "min": 80
+       "min": 80,
+       "theory": "The verse is in B minor and the chorus in D major, its relative major. Notice how the same notes feel darker or brighter depending on the home chord."
       },
       {
        "id": "cn-chart",
@@ -1922,7 +2117,8 @@
        "title": "The whole chart at full speed",
        "chart": "18-comfortably-numb",
        "speed": 1.0,
-       "min": 80
+       "min": 80,
+       "theory": "At full speed, keep the strumming relaxed and the changes on time: the song's power comes from steadiness, not from force."
       }
      ]
     }
@@ -1984,7 +2180,8 @@
         "enharmonic"
        ],
        "count": 6,
-       "min": 80
+       "min": 80,
+       "theory": "A half step is the smallest distance in Western music: one fret. Two half steps make a whole step. E–F and B–C are natural half steps, with no note between them."
       },
       {
        "id": "naturals-pick",
@@ -2000,7 +2197,8 @@
         12
        ],
        "count": 3,
-       "min": 80
+       "min": 80,
+       "theory": "Natural notes on one string are two frets apart, except E–F and B–C, which are one fret apart. Start from the open string's name and walk up."
       },
       {
        "id": "naturals-play",
@@ -2015,7 +2213,8 @@
         12
        ],
        "count": 5,
-       "min": 80
+       "min": 80,
+       "theory": "Knowing a note's name and playing it are different skills. Here you go from the name to the fret: the reverse of reading tab."
       }
      ]
     },
@@ -2059,7 +2258,8 @@
        "title": "Name the interval by its frets",
        "quiz": "interval_frets",
        "count": 6,
-       "min": 80
+       "min": 80,
+       "theory": "Count the half steps between the two notes: 3 is a minor 3rd, 4 a major 3rd, 5 a perfect 4th, 7 a perfect 5th, 12 an octave."
       },
       {
        "id": "play-3-5-8",
@@ -2071,7 +2271,8 @@
         "P8"
        ],
        "count": 4,
-       "min": 80
+       "min": 80,
+       "theory": "The 3rd, 5th and octave are the skeleton of every major chord. On adjacent strings: the 5th is one string up and two frets up; the octave, two strings up and two frets up."
       },
       {
        "id": "play-m3-4-6",
@@ -2083,7 +2284,8 @@
         "M6"
        ],
        "count": 4,
-       "min": 80
+       "min": 80,
+       "theory": "The minor 3rd (3 frets) makes a chord minor; the 4th (5 frets) is the distance between most open strings; the major 6th (9 frets) is the minor 3rd turned upside down."
       }
      ]
     },
@@ -2115,7 +2317,8 @@
         "P8"
        ],
        "count": 6,
-       "min": 80
+       "min": 80,
+       "theory": "The octave sounds like the same note, higher. The 5th sounds hollow and stable. The major 3rd sounds bright and sweet. Start by telling these three apart."
       },
       {
        "id": "ear-thirds-fourths",
@@ -2129,7 +2332,8 @@
         "P5"
        ],
        "count": 8,
-       "min": 75
+       "min": 75,
+       "theory": "Thirds sound like a chord; the 4th sounds open and slightly unresolved, as if it wanted to fall to the 3rd; the 5th sounds stable. Sing them to feel the difference."
       },
       {
        "id": "ear-play",
@@ -2140,7 +2344,8 @@
         "P5"
        ],
        "count": 4,
-       "min": 80
+       "min": 80,
+       "theory": "Hearing an interval and finding it on the neck links the ear to the hand. Sing the target note before you play it."
       },
       {
        "id": "ear-echo",
@@ -2155,7 +2360,8 @@
        "bpm": 72,
        "max_notes": 4,
        "count": 1,
-       "min": 75
+       "min": 75,
+       "theory": "Echoing a phrase is how musicians learn by ear: listen, sing, then find. Keep it short, and find the first note before worrying about the rest."
       }
      ]
     },
@@ -2209,7 +2415,8 @@
         12
        ],
        "count": 4,
-       "min": 80
+       "min": 80,
+       "theory": "The notes of the 6th and 5th strings are the roots of most barre chords and power chords. Mark them all and look for landmarks like the 5th, 7th and 12th frets."
       },
       {
        "id": "find-6",
@@ -2223,7 +2430,8 @@
         12
        ],
        "count": 5,
-       "min": 80
+       "min": 80,
+       "theory": "On the 6th string: F at 1, G at 3, A at 5, B at 7, C at 8, D at 10, E at 12. Learn these seven and the sharps and flats are the frets in between."
       },
       {
        "id": "find-5",
@@ -2237,7 +2445,8 @@
         12
        ],
        "count": 5,
-       "min": 80
+       "min": 80,
+       "theory": "On the 5th string: B at 2, C at 3, D at 5, E at 7, F at 8, G at 10, A at 12. It's the 6th string's map moved five frets."
       },
       {
        "id": "find-mixed",
@@ -2253,7 +2462,8 @@
         12
        ],
        "count": 6,
-       "min": 80
+       "min": 80,
+       "theory": "The 4th string is the 5th string's pattern five frets further, just as the 5th was the 6th's. Use what you know from the string below."
       }
      ]
     },
@@ -2263,7 +2473,8 @@
      "minutes": 10,
      "theory": [
       "The musical alphabet has seven letters: A B C D E F G, and then A again. On one string each fret is a half step, so the natural notes are two frets apart, except E–F and B–C, which are one fret apart.",
-      "Learn the low two strings first: that's where the roots of almost every chord shape live. Name each note out loud as you find it."
+      "Learn the low two strings first: that's where the roots of almost every chord shape live. Name each note out loud as you find it.",
+      "A quick method: memorize the notes at frets 5, 7 and 12 on every string, then count a fret or two from there."
      ],
      "tips": [
       "Use the fret markers as landmarks: on the 6th string, frets 3, 5, 7 and 9 are G, A, B and C♯."
@@ -2305,7 +2516,8 @@
         5
        ],
        "count": 10,
-       "min": 80
+       "min": 80,
+       "theory": "Name each marked note by counting from the nearest landmark you know, not from the open string every time."
       },
       {
        "id": "name-all",
@@ -2326,7 +2538,8 @@
        ],
        "notes": "all",
        "count": 10,
-       "min": 80
+       "min": 80,
+       "theory": "A fret between two naturals has two names: the lower note sharp or the upper note flat. Either is correct here; in a key, only one is."
       }
      ]
     },
@@ -2336,7 +2549,8 @@
      "minutes": 8,
      "theory": [
       "At the 12th fret every string sounds its open note an octave higher. From there up, the neck repeats: fret 13 is fret 1 again, fret 15 is fret 3, and so on.",
-      "That's why the double dot sits at the 12th fret: it's the halfway point of the string."
+      "That's why the double dot sits at the 12th fret: it's the halfway point of the string.",
+      "Natural harmonics at fret 12 sound the same octave: touch the string lightly right over the fret wire and pick."
      ],
      "tips": [
       "To find a note above the 12th fret, find it below and add 12."
@@ -2362,7 +2576,8 @@
         1
        ],
        "count": 6,
-       "min": 80
+       "min": 80,
+       "theory": "Fret 12 divides the string in half, so it sounds exactly one octave above the open string: same name, double frequency."
       },
       {
        "id": "name-upper",
@@ -2379,7 +2594,8 @@
         4
        ],
        "count": 8,
-       "min": 80
+       "min": 80,
+       "theory": "Above fret 12 subtract 12 and use the map you already know: fret 15 is fret 3, fret 17 is fret 5."
       }
      ]
     },
@@ -2389,7 +2605,8 @@
      "minutes": 10,
      "theory": [
       "The same note shows up all over the neck in octaves, always in the same shapes. From a note on the 6th or 5th string: two strings up and two frets up. From the 4th or 3rd string: two strings up and three frets up (the B string is tuned one fret lower).",
-      "Knowing one note and its octave shapes is enough to find it everywhere."
+      "Knowing one note and its octave shapes is enough to find it everywhere.",
+      "Octaves are also a sound: playing the same melody in two octaves at once thickens it, a classic in jazz and rock."
      ],
      "tips": [
       "Play the two notes of an octave together, muting the string in between: that's the octave sound of so much jazz and funk."
@@ -2428,7 +2645,8 @@
         1
        ],
        "count": 6,
-       "min": 80
+       "min": 80,
+       "theory": "One note, many places: octave shapes connect them. From any note you can jump two strings and two frets, or two strings and three frets past the B string."
       }
      ]
     },
@@ -2481,7 +2699,8 @@
         7
        ],
        "count": 3,
-       "min": 80
+       "min": 80,
+       "theory": "The root (1) is the note that names the key or chord. Find every root first; every other degree is measured from it."
       },
       {
        "id": "thirds-pick",
@@ -2502,7 +2721,8 @@
         7
        ],
        "count": 3,
-       "min": 80
+       "min": 80,
+       "theory": "The major 3rd is four frets above the root on the same string, or one string up and one fret back. It's the note that makes a chord major."
       },
       {
        "id": "degree-quiz",
@@ -2516,7 +2736,8 @@
         "C"
        ],
        "count": 6,
-       "min": 80
+       "min": 80,
+       "theory": "A degree is a position in the scale: in D major, 3 is F# and 5 is A. Thinking in degrees lets you move any idea to any key."
       }
      ]
     }
@@ -2533,7 +2754,8 @@
      "title": "Sixteenth notes",
      "minutes": 12,
      "theory": [
-      "A sixteenth note is a quarter of a beat: four of them fit in every click. It's written with two beams (or two flags). Count \"1 e and a\" quietly, without speeding up."
+      "A sixteenth note is a quarter of a beat: four of them fit in every click. It's written with two beams (or two flags). Count \"1 e and a\" quietly, without speeding up.",
+      "Pick sixteenths with strict alternate picking: down on \"1\" and \"and\", up on \"e\" and \"a\". The hand never changes its rhythm."
      ],
      "tips": [
       "Pick down-up-down-up, one stroke per sixteenth. The hand keeps moving even when it doesn't play."
@@ -2569,7 +2791,8 @@
         "q q s s s s q"
        ],
        "count": 5,
-       "min": 70
+       "min": 70,
+       "theory": "Four sixteenths fill one beat. Keep them even: the most common mistake is to rush the middle two."
       }
      ]
     },
@@ -2578,7 +2801,8 @@
      "title": "The dotted eighth",
      "minutes": 12,
      "theory": [
-      "A dot next to a note adds half its value. A dotted eighth lasts ¾ of a beat, and it almost always comes with a sixteenth that completes the beat: the limping feel of many riffs."
+      "A dot next to a note adds half its value. A dotted eighth lasts ¾ of a beat, and it almost always comes with a sixteenth that completes the beat: the limping feel of many riffs.",
+      "The dotted-eighth-plus-sixteenth figure gives the bouncing, limping feel of many rock and blues riffs."
      ],
      "tips": [
       "Think in sixteenths: the dotted eighth lasts three of them, the sixteenth one. \"1 – – a 2 – – a\"."
@@ -2607,7 +2831,8 @@
         "q q e. s e. s"
        ],
        "count": 4,
-       "min": 70
+       "min": 70,
+       "theory": "A dotted eighth plus a sixteenth fill one beat: long (three quarters) and short (one quarter). Count \"1 e and a\" and play on \"1\" and \"a\"."
       }
      ]
     },
@@ -2616,7 +2841,8 @@
      "title": "Triplets",
      "minutes": 12,
      "theory": [
-      "A triplet splits the beat in three equal parts instead of two or four. It's written with a 3 over the group. Count \"trip-o-let\" or \"1-2-3\" inside every click."
+      "A triplet splits the beat in three equal parts instead of two or four. It's written with a 3 over the group. Count \"trip-o-let\" or \"1-2-3\" inside every click.",
+      "A shuffle is a triplet with the first two notes tied: long-short. Practice straight triplets first, then tie them."
      ],
      "tips": [
       "Lots of blues and 12/8 ballads live on triplets. The shuffle is a triplet with the middle note left out."
@@ -2645,7 +2871,8 @@
         "q te te te q q"
        ],
        "count": 4,
-       "min": 70
+       "min": 70,
+       "theory": "Three equal notes in one beat: they sound rounder than eighths. Say \"tri-po-let\" without stretching the first syllable."
       }
      ]
     },
@@ -2654,7 +2881,8 @@
      "title": "Syncopation",
      "minutes": 12,
      "theory": [
-      "Syncopation is when a note starts on a weak spot (on the \"and\") and holds over the next strong beat. That's the push that makes funk and so much else move forward."
+      "Syncopation is when a note starts on a weak spot (on the \"and\") and holds over the next strong beat. That's the push that makes funk and so much else move forward.",
+      "Syncopation only works if the pulse is clear. Tap the beat with your foot while your hands play off it."
      ],
      "tips": [
       "Tap your foot on every beat and play only where it's written. The foot doesn't follow the hand."
@@ -2691,7 +2919,8 @@
         "e q e e q e"
        ],
        "count": 6,
-       "min": 70
+       "min": 70,
+       "theory": "A syncopated note starts on a weak part of the beat and lasts through the next strong one. Keep counting the beat underneath: that's what makes the push felt."
       }
      ]
     },
@@ -2700,7 +2929,8 @@
      "title": "Dictation I",
      "minutes": 10,
      "theory": [
-      "In a dictation it goes the other way: the app plays a bar and you choose the notation. It's what happens when you figure out a song by ear."
+      "In a dictation it goes the other way: the app plays a bar and you choose the notation. It's what happens when you figure out a song by ear.",
+      "Write what you hear one beat at a time. Most bars are made of a few common groups: one quarter, two eighths, four sixteenths, an eighth and two sixteenths."
      ],
      "tips": [
       "Listen once all the way through, then again paying attention to one beat at a time."
@@ -2726,7 +2956,8 @@
         "q q e e q",
         "e e e e q q",
         "h e e q"
-       ]
+       ],
+       "theory": "Listen once for the beat, then once for the rhythm inside it. Match the groups of each beat before looking at the whole bar."
       }
      ]
     },
@@ -2735,7 +2966,8 @@
      "title": "Dictation II",
      "minutes": 10,
      "theory": [
-      "Now with the new values. A triplet sounds round, rolling; a dotted eighth sounds like it limps; a syncopation sounds early, ahead of the beat."
+      "Now with the new values. A triplet sounds round, rolling; a dotted eighth sounds like it limps; a syncopation sounds early, ahead of the beat.",
+      "If a beat sounds uneven, ask: is it long-short (dotted) or three equal notes (triplet)?"
      ],
      "tips": [],
      "tutorials": [],
@@ -2765,7 +2997,8 @@
         "q. e q q",
         "q. e q. e",
         "e q e e q e"
-       ]
+       ],
+       "theory": "Triplets roll, dotted rhythms limp, syncopations arrive early. Name the character first, then check the exact figures."
       }
      ]
     },
@@ -2774,7 +3007,8 @@
      "title": "Rhythm II on the guitar",
      "minutes": 12,
      "theory": [
-      "Close the level playing for real: the open low E string, the new rhythms, and the listener measuring every attack in milliseconds."
+      "Close the level playing for real: the open low E string, the new rhythms, and the listener measuring every attack in milliseconds.",
+      "Use a metronome at a tempo where everything is clean, then speed up in small steps."
      ],
      "tips": [
       "If your notes always come out early or late, run guitarr calibrate once."
@@ -2799,7 +3033,8 @@
        ],
        "count": 4,
        "pitch": 40,
-       "min": 70
+       "min": 70,
+       "theory": "Fast values need a small, relaxed picking motion. Alternate picking keeps sixteenths even: down on the beat and the \"and\", up in between."
       }
      ]
     }
@@ -2842,7 +3077,8 @@
        "title": "How the staff works",
        "quiz": "staff_fact",
        "count": 5,
-       "min": 80
+       "min": 80,
+       "theory": "The staff measures pitch vertically: each line and space is one letter. The treble clef curls around the second line from the bottom, which is G."
       }
      ]
     },
@@ -2851,7 +3087,8 @@
      "title": "Open strings on the staff",
      "minutes": 8,
      "theory": [
-      "Start with the open strings: they're the landmarks for everything else. Notice where each one sits, on a line or in a space, and how many ledger lines it needs."
+      "Start with the open strings: they're the landmarks for everything else. Notice where each one sits, on a line or in a space, and how many ledger lines it needs.",
+      "Guitar music sounds an octave lower than written: the written E on the top space is the open 1st string."
      ],
      "tips": [],
      "tutorials": [],
@@ -2884,7 +3121,8 @@
        ],
        "notes": "naturals",
        "count": 8,
-       "min": 80
+       "min": 80,
+       "theory": "The low E sits three ledger lines below the staff; the high E on the top space. The four strings in between climb through the lines and spaces."
       }
      ]
     },
@@ -2893,7 +3131,8 @@
      "title": "Natural notes on the low strings",
      "minutes": 10,
      "theory": [
-      "Now the natural notes (no sharps or flats) of the two lowest strings, up to the 5th fret. Each letter of the musical alphabet moves the note one step on the staff, from a line to a space or the other way round."
+      "Now the natural notes (no sharps or flats) of the two lowest strings, up to the 5th fret. Each letter of the musical alphabet moves the note one step on the staff, from a line to a space or the other way round.",
+      "Ledger lines extend the staff below and above it. The low E string needs three ledger lines; the A string, two."
      ],
      "tips": [],
      "tutorials": [],
@@ -2939,7 +3178,8 @@
        ],
        "notes": "naturals",
        "count": 10,
-       "min": 80
+       "min": 80,
+       "theory": "Each step up the musical alphabet moves the note from a line to the next space, or from a space to the next line."
       }
      ]
     },
@@ -2948,7 +3188,8 @@
      "title": "Natural notes on every string",
      "minutes": 10,
      "theory": [
-      "With every string, the first position covers more than two octaves. Use the open strings as anchors: find the nearest open string and count steps from it."
+      "With every string, the first position covers more than two octaves. Use the open strings as anchors: find the nearest open string and count steps from it.",
+      "Group the notes you know by string: E string F G, B string C D, and so on. Two or three notes per string cover all of first position."
      ],
      "tips": [],
      "tutorials": [],
@@ -2974,7 +3215,8 @@
        ],
        "notes": "naturals",
        "count": 10,
-       "min": 80
+       "min": 80,
+       "theory": "Use the open strings as anchors: E, A, D, G, B, E. A fretted note in first position is never more than four frets from one of them."
       }
      ]
     },
@@ -2983,7 +3225,8 @@
      "title": "From the staff to the neck",
      "minutes": 10,
      "theory": [
-      "Reading means knowing where to play. The app shows a note on the staff and you click it on the neck at the exact height: the same note an octave up or down doesn't count."
+      "Reading means knowing where to play. The app shows a note on the staff and you click it on the neck at the exact height: the same note an octave up or down doesn't count.",
+      "In first position each fret is played by the finger with its number: fret 1 by finger 1, fret 2 by finger 2, and so on."
      ],
      "tips": [
       "Some notes exist on two strings (the 5th fret of one string = the next open string). Both count: it's the same pitch."
@@ -3011,7 +3254,8 @@
        ],
        "notes": "naturals",
        "count": 8,
-       "min": 80
+       "min": 80,
+       "theory": "A written note has one exact pitch, but on the guitar it may live on two or three strings. In first position choose the lowest fret available."
       }
      ]
     },
@@ -3020,7 +3264,8 @@
      "title": "Sharps and flats on the staff",
      "minutes": 10,
      "theory": [
-      "A sharp (♯) before a note raises it a half step; a flat (♭) lowers it a half step. On the staff the note stays in the same place and just gets the sign in front. On the neck it's the next fret."
+      "A sharp (♯) before a note raises it a half step; a flat (♭) lowers it a half step. On the staff the note stays in the same place and just gets the sign in front. On the neck it's the next fret.",
+      "Key signatures put the sharps or flats at the start of each line, so you don't have to write them on every note."
      ],
      "tips": [],
      "tutorials": [],
@@ -3071,7 +3316,8 @@
        ],
        "notes": "all",
        "count": 10,
-       "min": 80
+       "min": 80,
+       "theory": "An accidental lasts until the end of the bar. A natural sign (♮) cancels it."
       }
      ]
     },
@@ -3080,7 +3326,8 @@
      "title": "Reading in 5th position",
      "minutes": 10,
      "theory": [
-      "Readers don't stay stuck in first position. In 5th position, finger 1 sits on fret 5 and each finger takes care of one fret (5 to 8). The notes on the staff are the same; only where they live on the neck changes."
+      "Readers don't stay stuck in first position. In 5th position, finger 1 sits on fret 5 and each finger takes care of one fret (5 to 8). The notes on the staff are the same; only where they live on the neck changes.",
+      "Positions are named after the fret under finger 1. Knowing several positions lets you play a melody where it sounds and fits best."
      ],
      "tips": [
       "Use the string above as a shortcut: the 5th fret of one string is the next open string (except G→B, which is the 4th fret)."
@@ -3120,7 +3367,8 @@
        ],
        "notes": "naturals",
        "count": 8,
-       "min": 80
+       "min": 80,
+       "theory": "In 5th position each finger owns a fret: 1 on fret 5, 2 on 6, 3 on 7, 4 on 8. The hand stays still and only the fingers move."
       }
      ]
     },
@@ -3129,7 +3377,8 @@
      "title": "Reading in 7th position",
      "minutes": 10,
      "theory": [
-      "In 7th position (frets 7 to 10), many notes that were open strings in first position become fretted. It's a great position to read scales in sharp keys such as D and A major."
+      "In 7th position (frets 7 to 10), many notes that were open strings in first position become fretted. It's a great position to read scales in sharp keys such as D and A major.",
+      "When reading in a new position, say the note and the finger out loud for the first few bars."
      ],
      "tips": [
       "Choose a position before you start reading and stay in it: a still hand makes every note easier to find."
@@ -3156,7 +3405,8 @@
        ],
        "notes": "naturals",
        "count": 8,
-       "min": 80
+       "min": 80,
+       "theory": "7th position covers frets 7 to 10. Many keys with sharps fit well here, so it's a favorite spot for reading melodies."
       }
      ]
     },
@@ -3165,7 +3415,8 @@
      "title": "Reading on the guitar",
      "minutes": 10,
      "theory": [
-      "The finish: the note shows up on the staff and you play it on the guitar. It's the first step to reading real notation note by note, the way you read tab."
+      "The finish: the note shows up on the staff and you play it on the guitar. It's the first step to reading real notation note by note, the way you read tab.",
+      "Read slowly but without stopping: a steady pulse with a few wrong notes trains reading better than a perfect stop-and-go."
      ],
      "tips": [
       "Play it at the written height: the listener wants that exact note, not the same name an octave away."
@@ -3192,7 +3443,8 @@
        ],
        "notes": "naturals",
        "count": 8,
-       "min": 80
+       "min": 80,
+       "theory": "Read, find, play: say the note name, picture its place on the neck, then play it. Speed comes from repetition, not from guessing."
       }
      ]
     }
@@ -3248,7 +3500,8 @@
         3,
         15
        ],
-       "min": 80
+       "min": 80,
+       "theory": "On one string the step pattern is visible: two frets for a whole step, one for a half. From C on the 5th string: 2-2-1-2-2-2-1 frets."
       },
       {
        "id": "g-position",
@@ -3260,7 +3513,8 @@
         2,
         5
        ],
-       "min": 80
+       "min": 80,
+       "theory": "In one position the same scale fits under the hand across all six strings. Fingers 1 to 4 each take a fret; the stretches come from the half steps."
       },
       {
        "id": "major-degree-quiz",
@@ -3274,7 +3528,8 @@
         "D"
        ],
        "count": 6,
-       "min": 80
+       "min": 80,
+       "theory": "Degrees are counted from the key's root: in G major, 4 is C and 7 is F#. The 3rd and 7th are the notes that change most between scales."
       }
      ]
     },
@@ -3286,7 +3541,8 @@
       "A major scale uses each letter from A to G exactly once. So F♯ major has E♯, not F, and G♭ major has C♭, not B.",
       "Keys with sharps go up in fifths: G (1♯), D (2), A (3), E (4), B (5), F♯ (6).",
       "Keys with flats go the other way: F (1♭), B♭ (2), E♭ (3), A♭ (4), D♭ (5), G♭ (6).",
-      "The shape on the guitar doesn't care about names: the same fingering works in every key. Spelling matters when you read, write and talk about music."
+      "The shape on the guitar doesn't care about names: the same fingering works in every key. Spelling matters when you read, write and talk about music.",
+      "To find a sharp key from its signature: the last sharp is the 7th degree, so go up a half step. For flat keys, the second-to-last flat names the key (F major has a single flat, B♭)."
      ],
      "tips": [
       "Write a scale's letters first (one of each), then add the sharps or flats the pattern needs."
@@ -3312,7 +3568,8 @@
         "A"
        ],
        "count": 8,
-       "min": 80
+       "min": 80,
+       "theory": "Every letter appears once in a major scale. To find a key's sharps, use the order F C G D A E B; flats go the other way: B E A D G C F."
       },
       {
        "id": "a-major",
@@ -3324,7 +3581,8 @@
         4,
         7
        ],
-       "min": 80
+       "min": 80,
+       "theory": "A major has three sharps: F#, C# and G#. On the guitar the pattern is the same as G major, two frets higher."
       },
       {
        "id": "eb-major",
@@ -3336,7 +3594,59 @@
         5,
         8
        ],
-       "min": 80
+       "min": 80,
+       "theory": "E♭ major has three flats: B♭, E♭ and A♭. The fingering pattern is the same as any other major scale; find the root E♭ first and build from it."
+      }
+     ]
+    },
+    {
+     "id": "key-signatures",
+     "title": "Key signatures",
+     "minutes": 10,
+     "theory": [
+      "A key signature is the set of sharps or flats a key uses, written once at the start of each line instead of before every note.",
+      "Sharps are always added in the same order: F C G D A E B. Flats go the opposite way: B E A D G C F.",
+      "Reading a sharp signature: the last sharp is the 7th degree, so the key is a half step above it (three sharps, last one G#: A major). Reading a flat signature: the second-to-last flat names the key (three flats: E♭ major). One flat alone is F major.",
+      "Each signature is shared by a major key and its relative minor: three sharps is A major or F# minor. The song's home chord tells you which."
+     ],
+     "tutorials": [
+      "key signatures explained circle of fifths guitar"
+     ],
+     "exercises": [
+      {
+       "id": "keysig-quiz",
+       "kind": "quiz",
+       "title": "How many sharps or flats?",
+       "quiz": "key_signature",
+       "count": 8,
+       "min": 80,
+       "theory": "Moving a fifth up adds one sharp (C, G, D, A…); moving a fifth down adds one flat (C, F, B♭, E♭…). That chain is the circle of fifths."
+      },
+      {
+       "id": "d-major",
+       "kind": "scale",
+       "title": "D major (two sharps)",
+       "key": "D",
+       "scale": "major",
+       "frets": [
+        2,
+        5
+       ],
+       "min": 80,
+       "theory": "D major has F# and C#, the first two sharps in the order. Say each sharp out loud as you play it."
+      },
+      {
+       "id": "f-major",
+       "kind": "scale",
+       "title": "F major (one flat)",
+       "key": "F",
+       "scale": "major",
+       "frets": [
+        0,
+        3
+       ],
+       "min": 80,
+       "theory": "F major has a single flat, B♭: the 4th degree. Without it, the scale would sound like F Lydian."
       }
      ]
     },
@@ -3378,7 +3688,8 @@
        "title": "Relative minor and major",
        "quiz": "relative_minor",
        "count": 6,
-       "min": 80
+       "min": 80,
+       "theory": "The relative minor starts on the 6th degree of the major scale, three frets below its root. Same key signature, different home."
       },
       {
        "id": "which-one",
@@ -3387,7 +3698,8 @@
        "quiz": "hear_quality",
        "as_scale": true,
        "count": 6,
-       "min": 80
+       "min": 80,
+       "theory": "Major scales have a major 3rd (bright); minor scales have a minor 3rd (dark). Listen to the third note: it decides the mood."
       },
       {
        "id": "a-minor",
@@ -3399,7 +3711,8 @@
         5,
         8
        ],
-       "min": 80
+       "min": 80,
+       "theory": "A natural minor uses only white-key notes, like C major, but it starts and ends on A. Lean on A, C and E: the notes of the Am chord."
       }
      ]
     },
@@ -3410,7 +3723,8 @@
      "theory": [
       "One position covers four or five frets, one finger per fret. Five positions connect to cover the whole neck.",
       "Each position starts on a different degree on the 6th string, and the end of one is the start of the next.",
-      "Learn them one at a time, saying the root out loud. Then link two neighbors."
+      "Learn them one at a time, saying the root out loud. Then link two neighbors.",
+      "A position is named after the fret where finger 1 plays: in 5th position, finger 1 covers fret 5. Learning a scale in several positions is what frees you from a single box."
      ],
      "tips": [
       "Stay in one position for a whole session before you add the next one."
@@ -3458,7 +3772,8 @@
         5
        ],
        "count": 1,
-       "min": 80
+       "min": 80,
+       "theory": "Marking the scale on the diagram before playing it builds a mental map. Notice where the roots fall: they hold the pattern together."
       },
       {
        "id": "position-1",
@@ -3471,7 +3786,8 @@
         5
        ],
        "direction": "updown",
-       "min": 80
+       "min": 80,
+       "theory": "Up and down without stopping at the top: the turnaround at the highest note is where the rhythm usually breaks."
       },
       {
        "id": "position-2",
@@ -3483,7 +3799,8 @@
         4,
         8
        ],
-       "min": 80
+       "min": 80,
+       "theory": "The next position starts where the last one ended. Overlapping notes are the bridges that connect the patterns along the neck."
       },
       {
        "id": "position-3",
@@ -3495,7 +3812,8 @@
         7,
         10
        ],
-       "min": 80
+       "min": 80,
+       "theory": "Higher positions use the same notes, an octave or a different string set away. Recognizing the root in each one is what keeps you oriented."
       }
      ]
     },
@@ -3528,7 +3846,8 @@
         15
        ],
        "octaves": 2,
-       "min": 80
+       "min": 80,
+       "theory": "Three notes per string means a regular picking pattern: down-up-down on one string, up-down-up on the next. That's why shredders love it."
       },
       {
        "id": "g-3nps-back",
@@ -3543,7 +3862,8 @@
        ],
        "octaves": 2,
        "direction": "updown",
-       "min": 80
+       "min": 80,
+       "theory": "Coming down, the stretch is the same in reverse. Keep the thumb behind the neck, around the middle finger, so the hand can open."
       },
       {
        "id": "a-minor-3nps",
@@ -3557,7 +3877,8 @@
         17
        ],
        "octaves": 2,
-       "min": 80
+       "min": 80,
+       "theory": "A minor in three notes per string has the same notes as C major: a pattern you know with a new home. Accent every A."
       }
      ]
     },
@@ -3608,7 +3929,8 @@
        "title": "Which major pentatonic is it?",
        "quiz": "pentatonic",
        "count": 6,
-       "min": 80
+       "min": 80,
+       "theory": "Every minor pentatonic is also the major pentatonic of the note a minor 3rd above it: A minor = C major, E minor = G major."
       },
       {
        "id": "c-major-penta",
@@ -3620,7 +3942,8 @@
         5,
         8
        ],
-       "min": 80
+       "min": 80,
+       "theory": "C major pentatonic is C D E G A: no 4th and no 7th, the two notes that create half steps. That's why it sounds open and never clashes."
       },
       {
        "id": "penta-pick",
@@ -3637,7 +3960,8 @@
         8
        ],
        "count": 2,
-       "min": 80
+       "min": 80,
+       "theory": "The minor pentatonic box sits with the index on the root on the 6th string. Move the box and the key changes: A at fret 5, E at fret 12 (or open)."
       }
      ]
     },
@@ -3682,7 +4006,8 @@
         4,
         8
        ],
-       "min": 80
+       "min": 80,
+       "theory": "The raised 7th (G#) creates a wide step of three frets between F and G#: that exotic gap is the sound of harmonic minor, loved by classical and metal players."
       },
       {
        "id": "a-melodic",
@@ -3694,7 +4019,8 @@
         4,
         8
        ],
-       "min": 80
+       "min": 80,
+       "theory": "Melodic minor raises both the 6th and 7th: it's a major scale with a minor 3rd. Smooth, with no big gaps."
       },
       {
        "id": "minor-quiz",
@@ -3711,7 +4037,8 @@
         "D"
        ],
        "count": 6,
-       "min": 80
+       "min": 80,
+       "theory": "The three minors differ only in the 6th and 7th: natural (♭6 ♭7), harmonic (♭6 7), melodic (6 7)."
       }
      ]
     }
@@ -3765,7 +4092,8 @@
         "mixolydian"
        ],
        "count": 4,
-       "min": 75
+       "min": 75,
+       "theory": "Each mode has one characteristic note compared with major or minor: #4 for Lydian, ♭7 for Mixolydian. That note is the mode's color."
       },
       {
        "id": "g-mixolydian",
@@ -3777,7 +4105,8 @@
         2,
         5
        ],
-       "min": 80
+       "min": 80,
+       "theory": "G Mixolydian is G major with F instead of F#: the notes of C major centered on G. It fits a G7 chord perfectly."
       },
       {
        "id": "f-lydian",
@@ -3789,7 +4118,8 @@
         0,
         3
        ],
-       "min": 80
+       "min": 80,
+       "theory": "F Lydian is F major with B instead of B♭: again the notes of C major, now centered on F. Lean on the B to hear the float."
       }
      ]
     },
@@ -3835,7 +4165,8 @@
         "locrian"
        ],
        "count": 5,
-       "min": 80
+       "min": 80,
+       "theory": "Compared with natural minor: Dorian raises the 6th, Phrygian lowers the 2nd, Locrian lowers the 2nd and the 5th."
       },
       {
        "id": "d-dorian",
@@ -3847,7 +4178,8 @@
         3,
         7
        ],
-       "min": 80
+       "min": 80,
+       "theory": "D Dorian has the notes of C major centered on D. Its natural 6th (B) is what separates it from D natural minor."
       },
       {
        "id": "e-phrygian",
@@ -3859,7 +4191,8 @@
         0,
         3
        ],
-       "min": 80
+       "min": 80,
+       "theory": "E Phrygian starts with a half step, E to F. That ♭2 is the dark, Spanish and metal color of the mode."
       },
       {
        "id": "dark-degrees",
@@ -3876,7 +4209,8 @@
         "A"
        ],
        "count": 6,
-       "min": 80
+       "min": 80,
+       "theory": "Spell the modes from their own root: Dorian 1 2 ♭3 4 5 6 ♭7, Phrygian 1 ♭2 ♭3 4 5 ♭6 ♭7."
       }
      ]
     },
@@ -3903,7 +4237,8 @@
        "title": "How often does it repeat?",
        "quiz": "symmetric",
        "count": 4,
-       "min": 75
+       "min": 75,
+       "theory": "Symmetric scales repeat at a fixed interval: every whole step for whole-tone, every minor 3rd for diminished. So there are only two whole-tone scales and three diminished ones."
       },
       {
        "id": "c-whole-tone",
@@ -3915,7 +4250,8 @@
         7,
         11
        ],
-       "min": 80
+       "min": 80,
+       "theory": "C whole-tone: C D E F# G# A#. Two frets between every note. Over an augmented chord or a 7#5 it sounds perfect."
       },
       {
        "id": "g-half-whole",
@@ -3927,7 +4263,8 @@
         2,
         6
        ],
-       "min": 80
+       "min": 80,
+       "theory": "G half-whole: G A♭ B♭ B C# D E F. It contains the 3rd, 5th and ♭7 of G7 plus ♭9, #9 and #11: tension that still sounds organized."
       }
      ]
     },
@@ -3954,7 +4291,8 @@
        "title": "Which note does it add?",
        "quiz": "bebop",
        "count": 4,
-       "min": 75
+       "min": 75,
+       "theory": "The added passing tone makes eight notes per octave, so chord tones fall on the downbeats of a running eighth-note line."
       },
       {
        "id": "g-dom-bebop",
@@ -3967,7 +4305,8 @@
         6
        ],
        "direction": "down",
-       "min": 80
+       "min": 80,
+       "theory": "Coming down from G, the passing F# sits between G and F. Play it descending: chord tones G, F, D, B land on the beats."
       },
       {
        "id": "c-major-bebop",
@@ -3979,7 +4318,8 @@
         7,
         10
        ],
-       "min": 80
+       "min": 80,
+       "theory": "C major bebop adds A♭ between G and A. Over Cmaj7 or C6, the chord tones line up with the beat."
       }
      ]
     },
@@ -4006,7 +4346,8 @@
        "title": "What does it add?",
        "quiz": "altered",
        "count": 3,
-       "min": 66
+       "min": 66,
+       "theory": "The altered scale keeps the root, 3rd and ♭7 of a dominant and alters everything else: ♭9, #9, #11 and ♭13."
       },
       {
        "id": "tensions-quiz",
@@ -4014,7 +4355,8 @@
        "title": "Name the tension",
        "quiz": "extension",
        "count": 5,
-       "min": 80
+       "min": 80,
+       "theory": "Tensions are named from the chord's root, an octave up: the 9th is the 2nd, the 11th the 4th, the 13th the 6th."
       },
       {
        "id": "g-altered",
@@ -4026,7 +4368,8 @@
         2,
         6
        ],
-       "min": 80
+       "min": 80,
+       "theory": "G altered has the same notes as A♭ melodic minor. Think of it as \"melodic minor a half step above the dominant\"."
       }
      ]
     }
@@ -4045,7 +4388,8 @@
      "theory": [
       "A triad stacks two thirds: root, 3rd and 5th. Major is a major 3rd plus a minor 3rd; minor is a minor 3rd plus a major 3rd.",
       "The 3rd decides major or minor: lower it one fret and C becomes Cm.",
-      "Any three strings can hold a triad, as long as you find the three notes."
+      "Any three strings can hold a triad, as long as you find the three notes.",
+      "Moving one triad shape up the neck fret by fret, in every key, is the fastest way to get used to its sound and its fingering."
      ],
      "tips": [
       "Before you play a shape, point at its root, 3rd and 5th."
@@ -4088,7 +4432,8 @@
         5
        ],
        "count": 4,
-       "min": 75
+       "min": 75,
+       "theory": "Find the root, then the 3rd (major: 4 frets up, minor: 3) and the 5th (7 frets up). Any three strings work if those notes are on them."
       },
       {
        "id": "triad-tones",
@@ -4100,7 +4445,8 @@
         "min"
        ],
        "count": 6,
-       "min": 80
+       "min": 80,
+       "theory": "Major triad 1-3-5, minor 1-♭3-5, diminished 1-♭3-♭5, augmented 1-3-#5. The four triad types come from the four ways to stack two thirds."
       },
       {
        "id": "triad-ear",
@@ -4108,7 +4454,8 @@
        "title": "Major or minor? (by ear)",
        "quiz": "hear_quality",
        "count": 6,
-       "min": 80
+       "min": 80,
+       "theory": "Major sounds bright and stable; minor sounds darker. The difference is a single note, the 3rd, one fret apart."
       }
      ]
     },
@@ -4143,7 +4490,8 @@
        ],
        "near": 5,
        "times": 2,
-       "min": 75
+       "min": 75,
+       "theory": "On strings 1-2-3, C appears in three shapes going up the neck: each new shape puts the next chord tone on top."
       },
       {
        "id": "g-middle",
@@ -4159,7 +4507,8 @@
        ],
        "near": 5,
        "times": 2,
-       "min": 75
+       "min": 75,
+       "theory": "Strings 2-3-4 give the same three inversions with a slightly different shape because of the B string's tuning."
       },
       {
        "id": "inversion-quiz",
@@ -4167,7 +4516,8 @@
        "title": "Name the inversion",
        "quiz": "inversion",
        "count": 6,
-       "min": 80
+       "min": 80,
+       "theory": "The lowest note names the inversion: root in the bass is root position, 3rd in the bass is first inversion, 5th in the bass is second."
       }
      ]
     },
@@ -4239,7 +4589,8 @@
         }
        ],
        "times": 2,
-       "min": 75
+       "min": 75,
+       "theory": "C, Em/B, F/A, G: the bass walks down C-B-A-G step by step. Inversions turn chord changes into a melody in the bass."
       },
       {
        "id": "slash-quiz",
@@ -4247,7 +4598,8 @@
        "title": "Which inversion is it?",
        "quiz": "inversion",
        "count": 4,
-       "min": 75
+       "min": 75,
+       "theory": "In a slash chord the letter after the slash is the bass. If that note belongs to the chord, it's an inversion; if not, it's a chord over a different bass note."
       }
      ]
     },
@@ -4277,7 +4629,8 @@
         "D"
        ],
        "times": 4,
-       "min": 75
+       "min": 75,
+       "theory": "The 4th (G) resolving to the 3rd (F#) is one of the oldest moves in music: tension and release in a single finger."
       },
       {
        "id": "a-sus",
@@ -4290,7 +4643,8 @@
         "A"
        ],
        "times": 2,
-       "min": 75
+       "min": 75,
+       "theory": "Asus2 lowers the 3rd to the 2nd, Asus4 raises it to the 4th. Moving around the 3rd like this makes a static chord sound alive."
       },
       {
        "id": "sus-quiz",
@@ -4304,7 +4658,8 @@
         "m6"
        ],
        "count": 6,
-       "min": 80
+       "min": 80,
+       "theory": "sus2 = 1-2-5, sus4 = 1-4-5, 6 = 1-3-5-6, m6 = 1-♭3-5-6. Note that C6 has the same notes as Am7."
       },
       {
        "id": "c6-shape",
@@ -4315,7 +4670,8 @@
        "strings": "1234",
        "near": 5,
        "times": 3,
-       "min": 75
+       "min": 75,
+       "theory": "C6 on the top four strings is a soft, stable sound used to end songs in swing and old pop."
       }
      ]
     },
@@ -4343,7 +4699,8 @@
        "title": "Which formula is it?",
        "quiz": "chord_formula",
        "count": 6,
-       "min": 80
+       "min": 80,
+       "theory": "A seventh chord is a triad plus a third on top. The triad's type and the 7th's size (major or minor) give the five main types."
       },
       {
        "id": "sevenths-tones",
@@ -4358,7 +4715,8 @@
         "dim7"
        ],
        "count": 6,
-       "min": 80
+       "min": 80,
+       "theory": "Spell each chord from its root with the formula: Cmaj7 C E G B, C7 C E G B♭, Cm7 C E♭ G B♭, Cm7♭5 C E♭ G♭ B♭."
       },
       {
        "id": "c-family",
@@ -4376,7 +4734,8 @@
        ],
        "near": 3,
        "times": 2,
-       "min": 75
+       "min": 75,
+       "theory": "Four chords on the same root, one note changing at a time. Hearing them in a row teaches the color of each type faster than any definition."
       }
      ]
     },
@@ -4403,7 +4762,8 @@
        "title": "Which note is the tension?",
        "quiz": "extension",
        "count": 6,
-       "min": 80
+       "min": 80,
+       "theory": "Find the tension by its distance from the root: 2 frets (9), 5 frets (11), 9 frets (13), plus or minus one for the altered versions."
       },
       {
        "id": "extension-formula",
@@ -4419,7 +4779,8 @@
         "m9"
        ],
        "count": 6,
-       "min": 80
+       "min": 80,
+       "theory": "C9 = C E G B♭ D; Cmaj9 = C E G B D; C13 adds A over the 9. The 7th tells you whether the chord is dominant or major."
       },
       {
        "id": "c-colors",
@@ -4472,7 +4833,8 @@
         }
        ],
        "times": 2,
-       "min": 75
+       "min": 75,
+       "theory": "These four dominants share the same 3rd and 7th. Only the top note changes, and with it the tension: listen to how ♭9 and #9 bite."
       }
      ]
     }
@@ -4517,14 +4879,16 @@
        "kind": "lick",
        "title": "Sweep Am on three strings, up and back",
        "tab": "3:5 2:5 1:5h8p5 2:5 3:5",
-       "min": 75
+       "min": 75,
+       "theory": "A sweep is one continuous motion of the pick, not several strokes. Each note must stop as the next one sounds; otherwise you hear a strummed chord."
       },
       {
        "id": "sweep-g",
        "kind": "lick",
        "title": "Sweep G on three strings, up and back",
        "tab": "3:7 2:8 1:7h10p7 2:8 3:7",
-       "min": 75
+       "min": 75,
+       "theory": "The same three-string sweep on a major triad. Practice slowly enough that every note is even in volume and time."
       }
      ]
     },
@@ -4550,7 +4914,8 @@
        "kind": "lick",
        "title": "Tap 12, pull to 5, hammer 8",
        "tab": "1:12p5h8 1:12p5h8 1:12p5h8 1:12p5h8",
-       "min": 75
+       "min": 75,
+       "theory": "Tap, pull off, hammer on: three notes from one pick-hand motion. The tap must be a firm hammer-on; the pull-off flicks the string slightly sideways."
       },
       {
        "id": "tech-review",
@@ -4564,7 +4929,8 @@
         "tapping"
        ],
        "count": 6,
-       "min": 80
+       "min": 80,
+       "theory": "Every technique is a tool for a sound: picking for attack, legato for flow, bends for voice, tapping for wide intervals."
       }
      ]
     }
@@ -4582,7 +4948,8 @@
      "minutes": 12,
      "theory": [
       "The open chords C, A, G, E and D all look different. The idea of CAGED is that these five shapes, moved up with a barre, play any major chord in five regions of the neck, each one touching the next.",
-      "Going up the neck the order is always C → A → G → E → D, and then it starts again. Knowing which shape you're in tells you where the root, the 3rd and the 5th are, with nothing else to memorize."
+      "Going up the neck the order is always C → A → G → E → D, and then it starts again. Knowing which shape you're in tells you where the root, the 3rd and the 5th are, with nothing else to memorize.",
+      "A capo moves every open shape up the neck as a block: it's CAGED with a mechanical barre."
      ],
      "tips": [
       "Two neighboring shapes share notes where they meet: the edge of one is the start of the next. That's why they cover the neck with no gaps."
@@ -4611,7 +4978,8 @@
        "title": "The shapes and their order",
        "quiz": "caged",
        "count": 6,
-       "min": 80
+       "min": 80,
+       "theory": "C → A → G → E → D, then back to C. Each shape's highest notes become the next shape's lowest ones, so they lock together like puzzle pieces."
       }
      ]
     },
@@ -4620,7 +4988,8 @@
      "title": "The E shape",
      "minutes": 10,
      "theory": [
-      "The E shape is the most used barre: the root sits on the 6th string under finger 1, and the rest of the chord in the next two frets."
+      "The E shape is the most used barre: the root sits on the 6th string under finger 1, and the rest of the chord in the next two frets.",
+      "The E shape's barre at fret 1 is F; at fret 3 it's G; at fret 5, A. The fret number plus the note names of the 6th string are all you need."
      ],
      "tips": [],
      "tutorials": [],
@@ -4646,7 +5015,8 @@
        "quality": "maj",
        "count": 6,
        "min": 80,
-       "caged": "E"
+       "caged": "E",
+       "theory": "In the E shape the root is on the 6th, 4th and 1st strings. Find the 6th-string root first and the shape falls into place."
       },
       {
        "id": "e-shape-play",
@@ -4654,7 +5024,8 @@
        "title": "Play G in the E shape, low to high",
        "chord": "G",
        "min": 80,
-       "caged": "E"
+       "caged": "E",
+       "theory": "G in the E shape is the barre at fret 3. Play it note by note, low to high: hear root, 5th, root, 3rd, 5th, root."
       }
      ]
     },
@@ -4663,7 +5034,8 @@
      "title": "The A shape",
      "minutes": 10,
      "theory": [
-      "In the A shape the root sits on the 5th string under finger 1. It's the other everyday barre."
+      "In the A shape the root sits on the 5th string under finger 1. It's the other everyday barre.",
+      "Many players play the A shape with a ring-finger barre over strings 2-4, muting the 1st string."
      ],
      "tips": [],
      "tutorials": [],
@@ -4689,7 +5061,8 @@
        "quality": "maj",
        "count": 6,
        "min": 80,
-       "caged": "A"
+       "caged": "A",
+       "theory": "In the A shape the root is on the 5th and 3rd strings, under the index and the ring finger. For the same chord it sits seven frets above the E shape: G in the E shape at fret 3, in the A shape at fret 10."
       },
       {
        "id": "a-shape-play",
@@ -4697,7 +5070,8 @@
        "title": "Play C in the A shape, low to high",
        "chord": "C",
        "min": 80,
-       "caged": "A"
+       "caged": "A",
+       "theory": "C in the A shape is the barre at fret 3. Its root is on the 5th string under the index, and again on the 3rd string under the ring finger."
       }
      ]
     },
@@ -4706,7 +5080,8 @@
      "title": "The D shape",
      "minutes": 10,
      "theory": [
-      "In the D shape the root sits on the 4th string. The shape is small and lives on the high strings: great for chords up the neck."
+      "In the D shape the root sits on the 4th string. The shape is small and lives on the high strings: great for chords up the neck.",
+      "Above the open position, the D shape is played with the index holding the 3rd string and the others forming the D triangle above it."
      ],
      "tips": [],
      "tutorials": [],
@@ -4732,7 +5107,8 @@
        "quality": "maj",
        "count": 6,
        "min": 80,
-       "caged": "D"
+       "caged": "D",
+       "theory": "The D shape puts the root on the 4th string and the 3rd on top. It's compact, perfect for high voicings over a bass player."
       }
      ]
     },
@@ -4741,7 +5117,8 @@
      "title": "The C shape",
      "minutes": 10,
      "theory": [
-      "In the C shape the root is on the 5th string again, but under finger 3 or 4: the chord reaches back toward the nut."
+      "In the C shape the root is on the 5th string again, but under finger 3 or 4: the chord reaches back toward the nut.",
+      "The C shape is great for arpeggios: its notes climb from the 5th string to the 1st in a single position."
      ],
      "tips": [],
      "tutorials": [],
@@ -4767,7 +5144,8 @@
        "quality": "maj",
        "count": 6,
        "min": 80,
-       "caged": "C"
+       "caged": "C",
+       "theory": "The C shape has the root on the 5th string under a high finger and again on the 2nd string. It stretches back toward the headstock."
       }
      ]
     },
@@ -4776,7 +5154,8 @@
      "title": "The G shape",
      "minutes": 10,
      "theory": [
-      "The G shape also reaches back, with the root on the 6th string under finger 3 or 4. It's the widest of the five, and many players use only part of it."
+      "The G shape also reaches back, with the root on the 6th string under finger 3 or 4. It's the widest of the five, and many players use only part of it.",
+      "Use the top three strings of the G shape as a small triad: it's one of the most common rhythm-guitar voicings in pop and funk."
      ],
      "tips": [],
      "tutorials": [],
@@ -4802,7 +5181,8 @@
        "quality": "maj",
        "count": 6,
        "min": 80,
-       "caged": "G"
+       "caged": "G",
+       "theory": "The G shape has roots on the 6th, 3rd and 1st strings. Most players use only its top part or its bottom part, since the full shape is a big stretch."
       }
      ]
     },
@@ -4811,7 +5191,8 @@
      "title": "Connecting the five shapes",
      "minutes": 12,
      "theory": [
-      "Now all of them together. The app picks the chord and the shape; you find 1, 3 and 5 in that position. Before you click, remember the order C → A → G → E → D and where each shape keeps its root."
+      "Now all of them together. The app picks the chord and the shape; you find 1, 3 and 5 in that position. Before you click, remember the order C → A → G → E → D and where each shape keeps its root.",
+      "Combine CAGED with the pentatonic: each chord shape has a pentatonic box around it, with the same roots. Chord, arpeggio and scale become one map."
      ],
      "tips": [],
      "tutorials": [],
@@ -4837,7 +5218,8 @@
        "quality": "maj",
        "count": 10,
        "min": 80,
-       "caged": "CAGED"
+       "caged": "CAGED",
+       "theory": "Start from the root and recall which shape keeps its root on which string: E and G on the 6th, A and C on the 5th, D on the 4th."
       },
       {
        "id": "connect-play",
@@ -4845,7 +5227,8 @@
        "title": "The five shapes of G, up the neck",
        "chord": "G",
        "min": 75,
-       "caged": "CAGED"
+       "caged": "CAGED",
+       "theory": "Five shapes of G, from low to high: E (fret 3), D, C, A, G. Hear that it's the same chord all the way up, only the voicing changes."
       }
      ]
     },
@@ -4854,7 +5237,8 @@
      "title": "Minor shapes",
      "minutes": 10,
      "theory": [
-      "The E, A and D shapes also come in minor: just lower the 3rd a half step. With them you can play any minor chord in three regions."
+      "The E, A and D shapes also come in minor: just lower the 3rd a half step. With them you can play any minor chord in three regions.",
+      "Partial shapes count too: the top three or four strings of any shape are a usable chord, often easier than the full barre."
      ],
      "tips": [],
      "tutorials": [],
@@ -4880,7 +5264,8 @@
        "quality": "min",
        "count": 9,
        "min": 80,
-       "caged": "EAD"
+       "caged": "EAD",
+       "theory": "The minor shapes are the major ones with the 3rd lowered a fret: Em, Am and Dm forms. Find the 3rd and drop it."
       },
       {
        "id": "minor-play",
@@ -4888,7 +5273,8 @@
        "title": "Play Am in the Em and Am shapes",
        "chord": "Am",
        "min": 80,
-       "caged": "EA"
+       "caged": "EA",
+       "theory": "Am in the Em shape is the barre at fret 5; Am in the Am shape is open, or at fret 12. Same chord, two regions of the neck."
       }
      ]
     }
@@ -4931,7 +5317,8 @@
         "F"
        ],
        "count": 8,
-       "min": 80
+       "min": 80,
+       "theory": "In every major key the pattern of qualities is the same: major on I, IV and V; minor on ii, iii and vi; diminished on vii°."
       },
       {
        "id": "c-scale-chords",
@@ -4953,7 +5340,8 @@
        ],
        "near": 5,
        "times": 1,
-       "min": 75
+       "min": 75,
+       "theory": "Playing the seven triads of C in a row is the harmonized scale. Each chord is the previous one moved up the scale, with the shapes changing to stay in key."
       }
      ]
     },
@@ -4981,7 +5369,8 @@
        "quiz": "roman",
        "size": "sevenths",
        "count": 8,
-       "min": 80
+       "min": 80,
+       "theory": "With sevenths: Imaj7 and IVmaj7 are major 7, V7 is the only dominant, ii7 iii7 vi7 are minor 7, and vii is half-diminished (m7♭5)."
       },
       {
        "id": "c-sevenths",
@@ -5003,7 +5392,8 @@
        ],
        "near": 3,
        "times": 1,
-       "min": 75
+       "min": 75,
+       "theory": "Every seventh chord of C uses only white-key notes. Moving one drop-2 shape up the scale shows how the qualities change along the way."
       },
       {
        "id": "ninths-roman",
@@ -5017,7 +5407,8 @@
         "G"
        ],
        "count": 4,
-       "min": 75
+       "min": 75,
+       "theory": "A 9th is the 2nd an octave up. It fits where the scale gives a whole step above the root: on I, ii, IV, V and vi."
       }
      ]
     },
@@ -5051,7 +5442,8 @@
         "D"
        ],
        "count": 6,
-       "min": 80
+       "min": 80,
+       "theory": "Harmonic minor gives i(maj7), iiø7, III+maj7, iv7, V7, VImaj7 and vii°7. The V7 and vii°7 both contain the raised 7th, the leading tone."
       },
       {
        "id": "natural-roman",
@@ -5066,7 +5458,8 @@
         "D"
        ],
        "count": 6,
-       "min": 80
+       "min": 80,
+       "theory": "Natural minor is the relative major started on its 6th degree, so its chords are the same seven chords in a new order: i7 iiø7 IIImaj7 iv7 v7 VImaj7 VII7."
       },
       {
        "id": "am-e7",
@@ -5077,7 +5470,8 @@
         "E7"
        ],
        "times": 4,
-       "min": 75
+       "min": 75,
+       "theory": "E7 in A minor contains G#, a half step below A. That leading tone is what makes the V7 pull so strongly back to i."
       }
      ]
     }
@@ -5095,7 +5489,8 @@
      "minutes": 10,
      "theory": [
       "Every chord of the key has a job. The tonic (I, and also iii and vi) is home: rest. The subdominant (IV and ii) moves away from home. The dominant (V and vii°) builds tension and asks to go back to the tonic.",
-      "Chords that share notes tend to share their job: C, Em and Am all have E in them; F and Dm share F and A; G7 and B° share B, D and F."
+      "Chords that share notes tend to share their job: C, Em and Am all have E in them; F and Dm share F and A; G7 and B° share B, D and F.",
+      "The tritone inside the dominant (B and F in G7) is the source of its tension: two notes that want to move in opposite directions."
      ],
      "tips": [
       "Almost every song tells this story in cycles: it leaves the tonic, passes the subdominant, reaches the dominant and comes back."
@@ -5110,7 +5505,8 @@
        "title": "What's this chord's job?",
        "quiz": "function",
        "count": 8,
-       "min": 80
+       "min": 80,
+       "theory": "Three families: tonic (rest), subdominant (motion away), dominant (tension). Most progressions travel tonic → subdominant → dominant → tonic."
       }
      ]
     },
@@ -5119,7 +5515,8 @@
      "title": "By ear: I, IV and V",
      "minutes": 10,
      "theory": [
-      "I, IV and V are the major chords of the key and they hold up thousands of songs. The app plays the tonic and then another chord: you say which degree it is."
+      "I, IV and V are the major chords of the key and they hold up thousands of songs. The app plays the tonic and then another chord: you say which degree it is.",
+      "A trick: sing the root of the key over each chord. Over I it fits perfectly, over IV it's the 5th of the chord, over V it clashes and wants to move."
      ],
      "tips": [
       "The IV sounds like opening a door; the V sounds like something is missing. Sing the tonic over it: on the V it feels uncomfortable."
@@ -5138,7 +5535,8 @@
         1,
         4,
         5
-       ]
+       ],
+       "theory": "IV sounds like a step away from home, open and warm; V sounds tense, leaning back toward I. Sing the root of each chord to compare."
       }
      ]
     },
@@ -5147,7 +5545,8 @@
      "title": "By ear: ii and vi join in",
      "minutes": 10,
      "theory": [
-      "Now the minor chords of the key join in: ii (subdominant) and vi (the relative tonic). The vi sounds like the sad side of home; the ii like a softer IV."
+      "Now the minor chords of the key join in: ii (subdominant) and vi (the relative tonic). The vi sounds like the sad side of home; the ii like a softer IV.",
+      "Relative chords share two notes: I and vi, IV and ii, V and iii. That's why they can replace each other."
      ],
      "tips": [],
      "tutorials": [],
@@ -5166,7 +5565,8 @@
         4,
         5,
         6
-       ]
+       ],
+       "theory": "ii sounds like a softer IV (they share two notes); vi sounds like a sad version of I (they share two notes too). Shared notes explain shared feelings."
       }
      ]
     },
@@ -5175,7 +5575,8 @@
      "title": "By ear in a minor key",
      "minutes": 10,
      "theory": [
-      "In a minor key the major chords VI and VII give that epic sound of so much rock and metal. The app plays the i and then another chord of the minor key."
+      "In a minor key the major chords VI and VII give that epic sound of so much rock and metal. The app plays the i and then another chord of the minor key.",
+      "The minor iv sounds heavier than the major IV. In rock, i–iv and i–VI–VII are the backbone of countless riffs."
      ],
      "tips": [
       "In practice many minor songs swap the minor v for a major V, borrowed from harmonic minor, for a stronger pull home."
@@ -5195,7 +5596,8 @@
         4,
         6,
         7
-       ]
+       ],
+       "theory": "In minor, VI and VII are major chords a whole step apart. VI–VII–i is the classic epic climb of rock and metal."
       }
      ]
     },
@@ -5216,7 +5618,8 @@
        "title": "Name the progression",
        "quiz": "progression",
        "count": 8,
-       "min": 80
+       "min": 80,
+       "theory": "Recognize a progression by its degrees, not its chord names: once you know I–V–vi–IV, you've learned it in all twelve keys."
       }
      ]
     },
@@ -5239,7 +5642,8 @@
        "title": "Name the cadence",
        "quiz": "cadence",
        "count": 8,
-       "min": 80
+       "min": 80,
+       "theory": "Look at the last two chords: V–I authentic, IV–I plagal, anything–V half, V–vi deceptive."
       },
       {
        "id": "cadence-ear",
@@ -5248,7 +5652,8 @@
        "quiz": "cadence",
        "count": 8,
        "min": 70,
-       "ear": true
+       "ear": true,
+       "theory": "Authentic sounds final, plagal sounds like a gentle \"amen\", half sounds unfinished, deceptive sounds like a surprise turn."
       }
      ]
     },
@@ -5271,7 +5676,8 @@
        "title": "V7 of what?",
        "quiz": "secondary",
        "count": 8,
-       "min": 80
+       "min": 80,
+       "theory": "To find V7 of a chord, go a fifth up from its root and build a dominant 7: V7 of Dm is A7, V7 of G is D7."
       },
       {
        "id": "a7-dm",
@@ -5282,7 +5688,8 @@
         "Dm"
        ],
        "times": 4,
-       "min": 75
+       "min": 75,
+       "theory": "A7 brings C#, which isn't in C major: it leads a half step up to D, the root of Dm. That borrowed leading tone is the whole trick."
       },
       {
        "id": "e7-am",
@@ -5293,7 +5700,8 @@
         "Am"
        ],
        "times": 4,
-       "min": 75
+       "min": 75,
+       "theory": "E7 → Am is V7/vi in C major, or simply V7–i in A minor. The same move works in both contexts."
       }
      ],
      "chords": [
@@ -5308,7 +5716,8 @@
      "title": "Borrowed chords",
      "minutes": 12,
      "theory": [
-      "A major key can borrow chords from the minor key with the same tonic. In C major the usual ones are Fm (iv), B♭ (♭VII), A♭ (♭VI) and E♭ (♭III). The minor iv gives that nostalgic squeeze (F → Fm → C); the ♭VII, a rock flavor."
+      "A major key can borrow chords from the minor key with the same tonic. In C major the usual ones are Fm (iv), B♭ (♭VII), A♭ (♭VI) and E♭ (♭III). The minor iv gives that nostalgic squeeze (F → Fm → C); the ♭VII, a rock flavor.",
+      "Borrowed chords keep the same root as the key: the song stays in C major, it just takes a darker color from C minor for a moment."
      ],
      "tips": [
       "See a chord with a flat in a sharp key (or a minor chord on IV)? Think of a loan from the parallel minor."
@@ -5321,7 +5730,8 @@
        "title": "Which chord is borrowed?",
        "quiz": "borrowed",
        "count": 8,
-       "min": 80
+       "min": 80,
+       "theory": "A borrowed chord comes from the parallel minor (same root, minor key). Look for flat notes that don't belong to the major key: A♭ in Fm, B♭ in B♭."
       },
       {
        "id": "f-fm",
@@ -5332,7 +5742,8 @@
         "Fm"
        ],
        "times": 4,
-       "min": 75
+       "min": 75,
+       "theory": "F to Fm changes only one note: A falls to A♭. That half step down gives the minor iv its nostalgic sound before returning to C."
       }
      ],
      "chords": [
@@ -5376,7 +5787,8 @@
        "strings": "543",
        "near": 3,
        "times": 3,
-       "min": 75
+       "min": 75,
+       "theory": "A shell keeps root, 3rd and 7th: the 5th adds little and the bass player usually covers the root. Three notes, the whole chord identity."
       },
       {
        "id": "ii-v-i-shells",
@@ -5390,7 +5802,8 @@
        "voicing": "shell",
        "near": 3,
        "times": 2,
-       "min": 75
+       "min": 75,
+       "theory": "Dm7 (root on the 5th string), G7 (root on the 6th), Cmaj7 (root on the 5th): the hand barely moves while the harmony travels."
       },
       {
        "id": "ii-v-i-g",
@@ -5404,7 +5817,8 @@
        "voicing": "shell",
        "near": 3,
        "times": 2,
-       "min": 75
+       "min": 75,
+       "theory": "The same three shapes moved to G: Am7, D7, Gmaj7. Shells make every key feel like the same handful of shapes."
       },
       {
        "id": "shell-quiz",
@@ -5412,7 +5826,8 @@
        "title": "Which notes are the guide tones?",
        "quiz": "guide_tones",
        "count": 5,
-       "min": 80
+       "min": 80,
+       "theory": "Guide tones are the 3rd and 7th: they decide the chord type. Root and 5th are shared by many chords; the 3rd and 7th are not."
       }
      ]
     },
@@ -5442,7 +5857,8 @@
         2
        ],
        "count": 3,
-       "min": 66
+       "min": 66,
+       "theory": "Drop 2 takes the second note from the top of a close voicing and moves it down an octave. The result spans less than an octave and a half and fits four adjacent strings."
       },
       {
        "id": "cmaj7-drop2",
@@ -5453,7 +5869,8 @@
        "strings": "1234",
        "near": 7,
        "times": 3,
-       "min": 75
+       "min": 75,
+       "theory": "Cmaj7 on the top four strings: four notes, each on its own string. Learn which finger plays the root so you can find the other inversions."
       },
       {
        "id": "drop2-top",
@@ -5470,7 +5887,8 @@
        ],
        "near": 5,
        "times": 2,
-       "min": 75
+       "min": 75,
+       "theory": "On the top strings the ii–V–I moves with tiny steps: each voice goes to the nearest note of the next chord."
       },
       {
        "id": "drop2-middle",
@@ -5487,7 +5905,8 @@
        ],
        "near": 3,
        "times": 2,
-       "min": 75
+       "min": 75,
+       "theory": "On strings 2-5 the same voicings sound warmer and leave the high strings free for the melody."
       }
      ]
     },
@@ -5516,7 +5935,8 @@
         3
        ],
        "count": 3,
-       "min": 66
+       "min": 66,
+       "theory": "Drop 3 lowers the third note from the top by an octave, leaving a gap between the bass and the upper three notes."
       },
       {
        "id": "g7-drop3",
@@ -5527,7 +5947,8 @@
        "strings": "6432",
        "near": 3,
        "times": 3,
-       "min": 75
+       "min": 75,
+       "theory": "G7 with the bass on the 6th string skips the 5th string: mute it with the finger that plays the bass."
       },
       {
        "id": "drop3-ii-v-i",
@@ -5541,7 +5962,8 @@
        "voicing": "drop3",
        "near": 3,
        "times": 2,
-       "min": 75
+       "min": 75,
+       "theory": "Drop-3 ii–V–Is alternate the bass between the 5th and 6th strings, like a walking bass under the chords."
       }
      ]
     },
@@ -5569,7 +5991,8 @@
        "title": "Where does the 7th go?",
        "quiz": "voice_lead",
        "count": 6,
-       "min": 80
+       "min": 80,
+       "theory": "The 7th of a chord usually falls a step to the 3rd of the next chord. That small motion is the core of smooth voice leading."
       },
       {
        "id": "lead-drop2",
@@ -5584,7 +6007,8 @@
        "voicing": "drop2",
        "near": 5,
        "times": 2,
-       "min": 75
+       "min": 75,
+       "theory": "I–vi–ii–V with drop-2: keep common tones, move the rest by step. The top note should sound like a little melody."
       },
       {
        "id": "lead-triads",
@@ -5603,7 +6027,8 @@
        "lead": "top",
        "near": 5,
        "times": 2,
-       "min": 75
+       "min": 75,
+       "theory": "C–Am–F–G with triads on the top strings: choose each inversion so the top note moves as little as possible."
       }
      ]
     },
@@ -5630,7 +6055,8 @@
        "title": "Name the guide tones",
        "quiz": "guide_tones",
        "count": 5,
-       "min": 80
+       "min": 80,
+       "theory": "In Dm7 the guide tones are F and C; in G7, B and F; in Cmaj7, E and B. F stays from Dm7 to G7 while C falls to B; then F falls to E."
       },
       {
        "id": "guide-pairs",
@@ -5643,7 +6069,8 @@
        ],
        "voicing": "guide",
        "times": 2,
-       "min": 75
+       "min": 75,
+       "theory": "Two notes per chord are enough to hear the progression. The 7th of each chord falls a half step to the 3rd of the next."
       },
       {
        "id": "guide-line-c",
@@ -5660,7 +6087,8 @@
         8
        ],
        "per_chord": 2,
-       "min": 80
+       "min": 80,
+       "theory": "A guide-tone line connects the 3rds and 7ths into a single melody. Play it alone: if the progression is still audible, the line works."
       },
       {
        "id": "guide-line-d",
@@ -5677,7 +6105,8 @@
         10
        ],
        "per_chord": 2,
-       "min": 80
+       "min": 80,
+       "theory": "In D the same motion happens two frets higher: G holds from Em7 into A7 while D falls to C#, then G falls to F# on Dmaj7."
       }
      ]
     }
@@ -5713,7 +6142,8 @@
        "quiz": "ii_v_i",
        "mode": "major",
        "count": 6,
-       "min": 80
+       "min": 80,
+       "theory": "Find the dominant first (the only 7 chord), then check that a minor 7 a fifth above comes before it and a major 7 a fourth above comes after."
       },
       {
        "id": "ii-v-i-c-shells",
@@ -5727,7 +6157,8 @@
        "voicing": "shell",
        "near": 3,
        "times": 2,
-       "min": 75
+       "min": 75,
+       "theory": "Shells first: three notes per chord keep the focus on the motion of the 3rds and 7ths."
       },
       {
        "id": "keys-1",
@@ -5735,7 +6166,8 @@
        "title": "C, F, B♭, E♭ at 70%",
        "chart": "19-jazz-ii-v-i-1",
        "speed": 0.7,
-       "min": 80
+       "min": 80,
+       "theory": "C, F, B♭, E♭: each key is a fourth above the previous one. Moving through keys in fourths is how jazz tunes usually travel."
       },
       {
        "id": "keys-2",
@@ -5743,7 +6175,8 @@
        "title": "A♭, D♭, G♭, B at 70%",
        "chart": "20-jazz-ii-v-i-2",
        "speed": 0.7,
-       "min": 80
+       "min": 80,
+       "theory": "A♭, D♭, G♭, B: the flat keys. The shapes don't change; only their place on the neck does."
       },
       {
        "id": "keys-3",
@@ -5751,7 +6184,8 @@
        "title": "E, A, D, G at 70%",
        "chart": "21-jazz-ii-v-i-3",
        "speed": 0.7,
-       "min": 80
+       "min": 80,
+       "theory": "E, A, D, G complete the twelve. After these, you've played a ii–V–I in every key."
       }
      ]
     },
@@ -5779,7 +6213,8 @@
        "quiz": "ii_v_i",
        "mode": "minor",
        "count": 6,
-       "min": 80
+       "min": 80,
+       "theory": "The minor ii–V–i is easy to spot by its first chord: a m7♭5 (half-diminished) a fifth above the dominant."
       },
       {
        "id": "minor-drop2",
@@ -5793,7 +6228,8 @@
        "voicing": "drop2",
        "near": 5,
        "times": 2,
-       "min": 75
+       "min": 75,
+       "theory": "Bm7♭5 – E7♭9 – Am6 in drop-2: the F of Bm7♭5 stays as the ♭9 of E7, then falls to E. Hear how few notes move."
       },
       {
        "id": "minor-shells",
@@ -5807,7 +6243,8 @@
        "voicing": "shell",
        "near": 4,
        "times": 2,
-       "min": 75
+       "min": 75,
+       "theory": "In D minor: Em7♭5, A7, Dm7. The shells of a minor ii–V–i are the same shapes as major, with the 5th of the ii lowered (when it's played)."
       },
       {
        "id": "minor-chart",
@@ -5815,7 +6252,8 @@
        "title": "Three minor keys at 75%",
        "chart": "22-minor-ii-v-i",
        "speed": 0.75,
-       "min": 80
+       "min": 80,
+       "theory": "Three minor keys in a row: listen for the darker sound of the ♭9 on each dominant."
       }
      ]
     },
@@ -5842,7 +6280,8 @@
        "title": "Name the turnaround",
        "quiz": "turnaround",
        "count": 6,
-       "min": 80
+       "min": 80,
+       "theory": "Turnarounds are built from ii–V motion: each chord is the V or ii of the next. Read them backwards from the I."
       },
       {
        "id": "i-vi-ii-v",
@@ -5857,7 +6296,8 @@
        "voicing": "drop2",
        "near": 5,
        "times": 2,
-       "min": 75
+       "min": 75,
+       "theory": "Cmaj7–Am7–Dm7–G7: the roots move down a third, then up a fourth twice. Two bars that lead you back to the top."
       },
       {
        "id": "iii-vi-ii-v",
@@ -5872,7 +6312,8 @@
        "voicing": "drop2",
        "near": 5,
        "times": 2,
-       "min": 75
+       "min": 75,
+       "theory": "Em7–A7–Dm7–G7: the A7 is a secondary dominant (V7/ii). Every chord is now a fifth above the next."
       },
       {
        "id": "turnaround-chart",
@@ -5880,7 +6321,8 @@
        "title": "All three, in a row",
        "chart": "24-turnarounds",
        "speed": 0.8,
-       "min": 80
+       "min": 80,
+       "theory": "Playing the three turnarounds back to back trains the ear to hear them as variations of one idea."
       }
      ]
     },
@@ -5910,7 +6352,8 @@
         "shared_tones"
        ],
        "count": 6,
-       "min": 80
+       "min": 80,
+       "theory": "A dominant and its tritone substitute are six frets apart and share the same 3rd and 7th, swapped."
       },
       {
        "id": "sub-guide",
@@ -5925,7 +6368,8 @@
        ],
        "voicing": "guide",
        "times": 1,
-       "min": 75
+       "min": 75,
+       "theory": "Play only the guide tones of G7 and D♭7: they're the same two notes. That's why the substitution sounds so natural."
       },
       {
        "id": "sub-shells",
@@ -5939,7 +6383,8 @@
        "voicing": "shell",
        "near": 3,
        "times": 2,
-       "min": 75
+       "min": 75,
+       "theory": "Dm7–D♭7–Cmaj7: the bass slides down by half steps, D–D♭–C, a smooth chromatic line."
       }
      ]
     },
@@ -5974,7 +6419,8 @@
        "voicing": "shell",
        "near": 1,
        "times": 2,
-       "min": 75
+       "min": 75,
+       "theory": "F7–B♭7–F7–Cm7–F7: bar 4's Cm7–F7 is a ii–V into B♭7. Jazz blues sprinkles ii–Vs over the old 12-bar form."
       },
       {
        "id": "blues-slow",
@@ -5982,7 +6428,8 @@
        "title": "The whole form at 70%",
        "chart": "23-jazz-blues-f",
        "speed": 0.7,
-       "min": 80
+       "min": 80,
+       "theory": "Follow the form: the three lines of four bars are still there, now with extra chords leading to each new one."
       },
       {
        "id": "blues-full",
@@ -5990,7 +6437,8 @@
        "title": "The whole form at full speed",
        "chart": "23-jazz-blues-f",
        "speed": 1.0,
-       "min": 80
+       "min": 80,
+       "theory": "At full tempo, think in two-bar chunks: each chunk has a target chord, and everything else leads there."
       }
      ]
     },
@@ -6026,7 +6474,8 @@
        "voicing": "shell",
        "near": 1,
        "times": 1,
-       "min": 75
+       "min": 75,
+       "theory": "The bridge visits the IV, borrows the minor iv, then walks back with ii–Vs: Fmaj7, Fm6, Em7, A7, Dm7, G7."
       },
       {
        "id": "form-slow",
@@ -6034,7 +6483,8 @@
        "title": "The whole form at 70%",
        "chart": "25-song-form-aaba",
        "speed": 0.7,
-       "min": 80
+       "min": 80,
+       "theory": "A A B A: count eight bars per section. The bridge is where most players get lost, so mark its first bar in your head."
       },
       {
        "id": "form-full",
@@ -6042,7 +6492,8 @@
        "title": "At full speed",
        "chart": "25-song-form-aaba",
        "speed": 1.0,
-       "min": 80
+       "min": 80,
+       "theory": "At full tempo, knowing the form frees your attention for the sound. Thirty-two bars, four sections, one story."
       }
      ]
     },
@@ -6070,7 +6521,8 @@
        "title": "Four to the bar",
        "chart": "26-comp-four",
        "speed": 0.8,
-       "min": 80
+       "min": 80,
+       "theory": "Four to the bar: short, even chords on every beat, with a slight accent on 2 and 4. It's the pulse of swing rhythm guitar."
       },
       {
        "id": "comp-charleston",
@@ -6078,7 +6530,8 @@
        "title": "The Charleston",
        "chart": "27-comp-charleston",
        "speed": 0.8,
-       "min": 80
+       "min": 80,
+       "theory": "The Charleston rhythm: beat 1 and the \"and\" of 2. Two short hits per bar leave lots of space and swing hard."
       },
       {
        "id": "comp-anticipation",
@@ -6086,7 +6539,8 @@
        "title": "Anticipations",
        "chart": "28-comp-anticipation",
        "speed": 0.8,
-       "min": 80
+       "min": 80,
+       "theory": "Anticipating the next chord on the \"and\" of 4 makes the harmony arrive early, pushing the music forward."
       },
       {
        "id": "comp-space",
@@ -6094,7 +6548,8 @@
        "title": "Leave space",
        "chart": "29-comp-space",
        "speed": 0.8,
-       "min": 80
+       "min": 80,
+       "theory": "Comping is listening: one chord per bar leaves space for the soloist. Less can swing more."
       }
      ]
     }
@@ -6129,7 +6584,8 @@
        "title": "Light swing, four to the bar",
        "chart": "26-comp-four",
        "speed": 1.0,
-       "min": 80
+       "min": 80,
+       "theory": "Light swing: the offbeat eighth arrives just a little late. Feel it, don't calculate it."
       },
       {
        "id": "hard-swing",
@@ -6137,7 +6593,8 @@
        "title": "Hard swing with upstrokes",
        "chart": "30-swing-hard",
        "speed": 0.8,
-       "min": 80
+       "min": 80,
+       "theory": "Hard swing: the offbeat sits on the last note of a triplet. Upstrokes on the offbeats make it bounce."
       }
      ]
     },
@@ -6173,7 +6630,8 @@
         0,
         5
        ],
-       "min": 80
+       "min": 80,
+       "theory": "Root on beat 1, chord tones on 2 and 3, a half-step approach on 4. Four simple rules give you a walking line over any progression."
       },
       {
        "id": "walk-blues",
@@ -6190,7 +6648,8 @@
         0,
         6
        ],
-       "min": 80
+       "min": 80,
+       "theory": "Over the blues the roots move a fourth: F to B♭ and back. Approach each new root from a half step above or below."
       }
      ]
     },
@@ -6227,7 +6686,8 @@
         9
        ],
        "start": "1",
-       "min": 80
+       "min": 80,
+       "theory": "One arpeggio per chord, in one position: you'll hear the changes even without accompaniment."
       },
       {
        "id": "arp-turnaround",
@@ -6245,7 +6705,8 @@
         10
        ],
        "start": "1",
-       "min": 80
+       "min": 80,
+       "theory": "Em7–A7–Dm7–G7 at fret 7: start each arpeggio on its root, then try starting on the closest chord tone instead."
       }
      ]
     },
@@ -6282,7 +6743,8 @@
         9
        ],
        "start": "3",
-       "min": 80
+       "min": 80,
+       "theory": "Approach each 3rd from a half step below, offbeat to downbeat. The target lands on the beat, so the chord is heard right on time."
       },
       {
        "id": "approach-7ths",
@@ -6300,7 +6762,8 @@
         9
        ],
        "start": "7",
-       "min": 80
+       "min": 80,
+       "theory": "Aiming at 7ths gives the line a more sophisticated sound: the 7th is the note that defines the chord's type alongside the 3rd."
       }
      ]
     },
@@ -6337,7 +6800,8 @@
         9
        ],
        "start": "3",
-       "min": 80
+       "min": 80,
+       "theory": "Scale note above, half step below, target: three notes that circle the 3rd before landing on it."
       },
       {
        "id": "enclose-7",
@@ -6355,7 +6819,8 @@
         9
        ],
        "start": "7",
-       "min": 80
+       "min": 80,
+       "theory": "Enclosing the 7th works the same way. The delay builds tension, the landing releases it."
       },
       {
        "id": "enclose-1",
@@ -6373,7 +6838,8 @@
         9
        ],
        "start": "1",
-       "min": 80
+       "min": 80,
+       "theory": "Enclosing the roots of Em7–A7–Dm7–G7 makes each change audible. It's the simplest place to start hearing enclosures."
       }
      ]
     },
@@ -6410,7 +6876,8 @@
         9
        ],
        "start": "3",
-       "min": 80
+       "min": 80,
+       "theory": "Start on the 3rd on beat 1, then run the chord's scale in eighths. Chord tones fall on the beats when the line starts on one."
       },
       {
        "id": "eighths-7",
@@ -6429,7 +6896,8 @@
        ],
        "start": "7",
        "direction": "down",
-       "min": 80
+       "min": 80,
+       "theory": "Starting on the 7th and going down gives the line a falling shape that resolves naturally into the next chord's 3rd."
       }
      ]
     },
@@ -6455,21 +6923,24 @@
        "kind": "lick",
        "title": "“Small steps” (Dm7 – G7 – Cmaj7)",
        "tab": "4:7 3:5 3:7 2:6 1:7 1:5 2:8 2:6 2:5 3:5 4:5 2:5~",
-       "min": 80
+       "min": 80,
+       "theory": "Arpeggio shapes connected by step: the 7th of each chord falls to the 3rd of the next, like a guide-tone line inside a melody."
       },
       {
        "id": "etude-minor-turn",
        "kind": "lick",
        "title": "“Minor turn” (Bm7♭5 – E7♭9 – Am6)",
        "tab": "4:7 3:7 2:6 1:7 2:6 2:5 3:7 4:6 4:7 3:5 2:5 1:5~",
-       "min": 80
+       "min": 80,
+       "theory": "The F over E7 is the ♭9: a note of A minor that makes the dominant sound dark and lead home."
       },
       {
        "id": "etude-blue-f",
        "kind": "lick",
        "title": "“Blue F” (F7 – B♭7 – F7)",
        "tab": "5:8 4:7 3:5 3:8 4:6 3:7 2:6 1:6 1:5 2:6 3:8 3:5 4:7 4:6 5:8~",
-       "min": 80
+       "min": 80,
+       "theory": "Chord tones plus the blue note (the ♭3, A♭ in F) over the major chord: the blues inside jazz."
       }
      ]
     },
@@ -6499,7 +6970,8 @@
         5
        ],
        "count": 12,
-       "min": 75
+       "min": 75,
+       "theory": "Twelve notes, no repeats, no key: read each note and find it in the low frets. It's pure fretboard knowledge."
       },
       {
        "id": "row-mid",
@@ -6510,7 +6982,688 @@
         9
        ],
        "count": 12,
-       "min": 75
+       "min": 75,
+       "theory": "The same challenge around fret 5: the notes move to different strings. Name them before playing."
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "optional": [
+  {
+   "id": "m1",
+   "track": "metal",
+   "badge": "M1",
+   "number": 23,
+   "title": "Metal rhythm",
+   "subtitle": "The chug, the gallop, pedal-point riffs and the dark intervals of heavy metal.",
+   "lessons": [
+    {
+     "id": "metal-chug",
+     "title": "The chug: palm mute and down-picking",
+     "minutes": 10,
+     "theory": [
+      "The heart of metal rhythm is the open low E (or the lowest string in your tuning) played palm-muted: a tight, percussive chug.",
+      "Down-picking every note gives each attack the same weight. It's harder at speed, so build tempo slowly and keep the wrist loose.",
+      "The gallop is an eighth note and two sixteenths (daa-da-da), repeated. Its mirror, the reverse gallop, is two sixteenths and an eighth (da-da-daa).",
+      "Play with gain but not too much: too much distortion turns a tight chug into noise. Clarity is heavier than fuzz."
+     ],
+     "tutorials": [
+      "metal palm mute gallop rhythm lesson"
+     ],
+     "exercises": [
+      {
+       "id": "chug-eighths",
+       "kind": "rhythm",
+       "title": "Down-picked eighths on the low E",
+       "bpm": 90,
+       "count": 4,
+       "pitch": 40,
+       "min": 70,
+       "patterns": [
+        "e e e e e e e e",
+        "e e e e q q",
+        "e e e e e e q",
+        "q e e q e e"
+       ],
+       "marks": [
+        [
+         "⊓",
+         "⊓",
+         "⊓",
+         "⊓",
+         "⊓",
+         "⊓",
+         "⊓",
+         "⊓"
+        ],
+        [
+         "⊓",
+         "⊓",
+         "⊓",
+         "⊓",
+         "⊓",
+         "⊓"
+        ],
+        [
+         "⊓",
+         "⊓",
+         "⊓",
+         "⊓",
+         "⊓",
+         "⊓",
+         "⊓"
+        ],
+        [
+         "⊓",
+         "⊓",
+         "⊓",
+         "⊓",
+         "⊓",
+         "⊓"
+        ]
+       ],
+       "theory": "All downstrokes: the pick returns above the string without touching it. Keep the palm on the bridge so every note is equally short."
+      },
+      {
+       "id": "gallop",
+       "kind": "rhythm",
+       "title": "The gallop",
+       "bpm": 80,
+       "count": 4,
+       "pitch": 40,
+       "min": 70,
+       "patterns": [
+        "e s s e s s e s s e s s",
+        "e s s e s s q q",
+        "e s s q e s s q",
+        "e s s e s s e s s q"
+       ],
+       "marks": [
+        [
+         "PM",
+         "",
+         "",
+         "PM",
+         "",
+         "",
+         "PM",
+         "",
+         "",
+         "PM",
+         "",
+         ""
+        ],
+        [
+         "PM",
+         "",
+         "",
+         "PM",
+         "",
+         "",
+         "",
+         ""
+        ],
+        [
+         "PM",
+         "",
+         "",
+         "",
+         "PM",
+         "",
+         "",
+         ""
+        ],
+        [
+         "PM",
+         "",
+         "",
+         "PM",
+         "",
+         "",
+         "PM",
+         "",
+         "",
+         ""
+        ]
+       ],
+       "theory": "Eighth plus two sixteenths per beat. Pick down-down-up or down-up-down; both work, but the rhythm must stay even: the two sixteenths are exactly half of the eighth."
+      },
+      {
+       "id": "reverse-gallop",
+       "kind": "rhythm",
+       "title": "The reverse gallop",
+       "bpm": 80,
+       "count": 4,
+       "pitch": 40,
+       "min": 70,
+       "patterns": [
+        "s s e s s e s s e s s e",
+        "s s e s s e q q",
+        "q s s e q s s e"
+       ],
+       "marks": [
+        [
+         "PM",
+         "",
+         "",
+         "PM",
+         "",
+         "",
+         "PM",
+         "",
+         "",
+         "PM",
+         "",
+         ""
+        ],
+        [
+         "PM",
+         "",
+         "",
+         "PM",
+         "",
+         "",
+         "",
+         ""
+        ],
+        [
+         "",
+         "PM",
+         "",
+         "",
+         "",
+         "PM",
+         "",
+         ""
+        ]
+       ],
+       "theory": "Two sixteenths and an eighth: the accent moves to the end of the beat. Count \"1 e and\" and feel the push into the next beat."
+      }
+     ]
+    },
+    {
+     "id": "pedal-riffs",
+     "title": "Pedal-point riffs",
+     "minutes": 10,
+     "theory": [
+      "A pedal point is a note that keeps returning while others move around it. In metal it's usually the open low string: chug, note, chug, note.",
+      "On the low E string the notes of E minor are frets 0, 2, 3, 5, 7, 8, 10, 12. Add fret 1 (F, the flat 2nd) and you get the darker Phrygian sound; fret 6 (B♭, the flat 5th) is the darkest of all.",
+      "Keep the pedal notes palm-muted and let the fretted notes ring a little more: the contrast makes the riff speak."
+     ],
+     "tutorials": [
+      "pedal point metal riff open e"
+     ],
+     "exercises": [
+      {
+       "id": "pedal-minor",
+       "kind": "lick",
+       "title": "E minor pedal riff",
+       "tab": "6:0 6:0 6:3 6:0 6:0 6:5 6:0 6:3 6:0 6:0 6:7 6:5",
+       "min": 75,
+       "theory": "The open E returns between every fretted note. G (fret 3), A (5) and B (7) are the minor 3rd, 4th and 5th of E: a minor sound built on one string."
+      },
+      {
+       "id": "pedal-phrygian",
+       "kind": "lick",
+       "title": "Phrygian pedal riff",
+       "tab": "6:0 6:0 6:1 6:0 6:0 6:3 6:0 6:1 6:0 6:0 6:1 6:3",
+       "min": 75,
+       "theory": "F against E is a minor second: the most tense interval there is. Phrygian's flat 2nd is the signature of countless heavy riffs."
+      },
+      {
+       "id": "chromatic-climb",
+       "kind": "lick",
+       "title": "Chromatic climb to the fifth",
+       "tab": "6:0 6:0 6:5 6:0 6:6 6:0 6:7 6:0 6:6 6:5",
+       "min": 75,
+       "theory": "A (5), B♭ (6), B (7): a chromatic climb through the flat 5th. Chromatic notes between scale notes add menace without leaving the key."
+      }
+     ]
+    },
+    {
+     "id": "metal-power",
+     "title": "Power-chord riffs in minor",
+     "minutes": 12,
+     "theory": [
+      "Metal lives in minor keys. In E minor the power chords that fit are E5, G5, A5, B5, C5 and D5 (F#5 is avoided: F# has no perfect fifth in the key); the most used moves are i–♭VI–♭VII (E5–C5–D5) and i–♭III (E5–G5).",
+      "Add F5, a half step above the root (the Phrygian ♭II), and the riff turns darker immediately.",
+      "Mix muted and open: chug the root with palm mute and let the moving power chords ring. Accents come from the contrast, not from hitting harder."
+     ],
+     "tutorials": [
+      "metal power chord riff minor key"
+     ],
+     "exercises": [
+      {
+       "id": "chug-chart",
+       "kind": "chart",
+       "title": "Down-picked riff in E minor",
+       "chart": "31-metal-chug",
+       "speed": 0.75,
+       "min": 80,
+       "theory": "E5–C5–D5 is i–♭VI–♭VII: the epic minor climb. Down-pick every eighth and keep the palm mute even across the chord changes."
+      },
+      {
+       "id": "gallop-chart",
+       "kind": "chart",
+       "title": "Phrygian gallop",
+       "chart": "32-phrygian-gallop",
+       "speed": 0.7,
+       "min": 80,
+       "theory": "The gallop strum (down on 1, then down-up on \"and\" and \"a\") on E5 and F5. The half step between them is the whole riff."
+      }
+     ]
+    },
+    {
+     "id": "metal-intervals",
+     "title": "Dark intervals: the tritone and the minor second",
+     "minutes": 10,
+     "theory": [
+      "The tritone splits the octave in half: six frets. For centuries it was avoided as unstable; metal adopted it as its signature sound. E to B♭ is a tritone.",
+      "The minor second (one fret) is the most dissonant interval. Played one note after the other, it sounds like a threat; played together, like a scream.",
+      "Octaves (two strings and two frets apart) thicken a riff without adding new notes: the classic way to double a melody in heavy music."
+     ],
+     "tutorials": [
+      "tritone metal riff explained"
+     ],
+     "exercises": [
+      {
+       "id": "dark-ear",
+       "kind": "quiz",
+       "title": "Minor second, tritone, fifth or octave?",
+       "quiz": "interval_ear",
+       "intervals": [
+        "m2",
+        "A4",
+        "P5",
+        "P8"
+       ],
+       "count": 8,
+       "min": 80,
+       "theory": "The fifth sounds solid, the octave like the same note, the tritone unstable and floating, the minor second tight and grinding."
+      },
+      {
+       "id": "dark-play",
+       "kind": "play_interval",
+       "title": "Play a minor second, a tritone or an octave",
+       "intervals": [
+        "m2",
+        "A4",
+        "P8"
+       ],
+       "count": 4,
+       "min": 80,
+       "theory": "On one string: one fret (minor second), six frets (tritone), twelve frets (octave). Across strings, the octave is two strings up and two frets up."
+      },
+      {
+       "id": "metal-tech-quiz",
+       "kind": "quiz",
+       "title": "Metal rhythm technique",
+       "quiz": "technique",
+       "topics": [
+        "metal"
+       ],
+       "count": 6,
+       "min": 80,
+       "theory": "Palm position, down-picking, the gallop and the tritone: the technical vocabulary of metal rhythm guitar."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "m2",
+   "track": "metal",
+   "badge": "M2",
+   "number": 24,
+   "title": "Metal lead",
+   "subtitle": "The scales of metal, sequences, tremolo picking, screaming bends and harmonics.",
+   "lessons": [
+    {
+     "id": "metal-scales",
+     "title": "The scales of metal",
+     "minutes": 12,
+     "theory": [
+      "Natural minor (1 2 ♭3 4 5 ♭6 ♭7) is the default color of metal melodies.",
+      "Harmonic minor raises the 7th: the gap between ♭6 and 7 sounds exotic and neoclassical, and the V chord becomes major, pulling hard back to the root.",
+      "Phrygian lowers the 2nd: the half step above the root gives that dark, Spanish-tinged heaviness. Many riffs mix minor and Phrygian freely."
+     ],
+     "tutorials": [
+      "metal scales harmonic minor phrygian guitar"
+     ],
+     "exercises": [
+      {
+       "id": "e-minor-open",
+       "kind": "scale",
+       "title": "E natural minor in open position",
+       "key": "E",
+       "scale": "natural_minor",
+       "frets": [
+        0,
+        3
+       ],
+       "min": 80,
+       "theory": "E minor in open position uses the open strings as scale notes: the lowest, heaviest place to play metal in standard tuning."
+      },
+      {
+       "id": "e-harmonic",
+       "kind": "scale",
+       "title": "E harmonic minor",
+       "key": "E",
+       "scale": "harmonic_minor",
+       "frets": [
+        0,
+        4
+       ],
+       "min": 80,
+       "theory": "D# is the raised 7th, a half step below E. Hear how it pulls into the root: that pull is the neoclassical sound."
+      },
+      {
+       "id": "a-phrygian",
+       "kind": "scale",
+       "title": "A Phrygian at fret 5",
+       "key": "A",
+       "scale": "phrygian",
+       "frets": [
+        5,
+        8
+       ],
+       "min": 80,
+       "theory": "A Phrygian has the notes of F major centered on A. B♭, a half step above A, is the note to lean on."
+      }
+     ]
+    },
+    {
+     "id": "sequences",
+     "title": "Scale sequences",
+     "minutes": 10,
+     "theory": [
+      "A sequence plays a scale in small repeating groups instead of straight up and down: groups of three, of four, or patterns like \"up three, back one\".",
+      "Sequences turn a scale into lines that sound like music and build speed, because the hand repeats one small motion.",
+      "Accent the first note of each group: the ear follows the groups and the line sounds organized even when it's fast."
+     ],
+     "tutorials": [
+      "pentatonic sequences groups of three four"
+     ],
+     "exercises": [
+      {
+       "id": "threes-down",
+       "kind": "lick",
+       "title": "A minor pentatonic in threes, descending",
+       "tab": "1:8 1:5 2:8 1:5 2:8 2:5 2:8 2:5 3:7 2:5 3:7 3:5 3:7 3:5 4:7 3:5 4:7 4:5",
+       "min": 75,
+       "theory": "Each group starts one scale note lower than the last: C-A-G, A-G-E, G-E-D… Three-note groups across a beat of sixteenths shift the accent, which is why they sound so restless."
+      },
+      {
+       "id": "fours-up",
+       "kind": "lick",
+       "title": "A minor pentatonic in fours, ascending",
+       "tab": "6:5 6:8 5:5 5:7 6:8 5:5 5:7 4:5 5:5 5:7 4:5 4:7 5:7 4:5 4:7 3:5",
+       "min": 75,
+       "theory": "Groups of four fit a beat of sixteenths exactly: every group starts on a beat. Up four, start one note higher, repeat."
+      }
+     ]
+    },
+    {
+     "id": "tremolo",
+     "title": "Tremolo picking",
+     "minutes": 8,
+     "theory": [
+      "Tremolo picking repeats one note as fast as possible with alternate picking. It's the sustained, buzzing sound of extreme metal melodies.",
+      "The motion is tiny and comes from a loose wrist; tension makes it uneven. Anchor lightly with the side of the hand if it helps.",
+      "Change notes without stopping the picking hand: the right hand keeps its motor running while the left hand plays the melody."
+     ],
+     "tutorials": [
+      "tremolo picking technique metal"
+     ],
+     "exercises": [
+      {
+       "id": "tremolo-e",
+       "kind": "rhythm",
+       "title": "Sixteenths on the high E, fret 12",
+       "bpm": 70,
+       "count": 4,
+       "pitch": 76,
+       "min": 70,
+       "patterns": [
+        "s s s s s s s s s s s s s s s s",
+        "s s s s s s s s q q",
+        "s s s s q s s s s q"
+       ],
+       "marks": [
+        [
+         "⊓",
+         "V",
+         "⊓",
+         "V",
+         "⊓",
+         "V",
+         "⊓",
+         "V",
+         "⊓",
+         "V",
+         "⊓",
+         "V",
+         "⊓",
+         "V",
+         "⊓",
+         "V"
+        ],
+        [
+         "⊓",
+         "V",
+         "⊓",
+         "V",
+         "⊓",
+         "V",
+         "⊓",
+         "V",
+         "⊓",
+         "⊓"
+        ],
+        [
+         "⊓",
+         "V",
+         "⊓",
+         "V",
+         "⊓",
+         "⊓",
+         "V",
+         "⊓",
+         "V",
+         "⊓"
+        ]
+       ],
+       "theory": "Strict alternate picking in sixteenths: four notes per click, all equal. When it's clean at 70, raise the tempo a few BPM at a time."
+      }
+     ]
+    },
+    {
+     "id": "metal-bends",
+     "title": "Screaming bends, pinch harmonics and vibrato",
+     "minutes": 12,
+     "theory": [
+      "A pinch harmonic is a squeal: right after the pick hits, the side of the thumb grazes the string. Where along the string you pick decides which harmonic sounds; with gain it jumps out.",
+      "Metal vibrato is wide and controlled: a quarter or half step each way, in rhythm. An over-bend (beyond a whole step) is a deliberate scream, still aimed at a pitch.",
+      "A rake drags the pick across muted strings before the target note: a percussive \"zip\" that launches the bend."
+     ],
+     "tutorials": [
+      "pinch harmonic metal vibrato lesson"
+     ],
+     "exercises": [
+      {
+       "id": "bend-g12",
+       "kind": "bend",
+       "title": "Whole-step bend: G string, fret 12 → A",
+       "string": 3,
+       "fret": 12,
+       "bend": 2,
+       "tries": 8,
+       "hold": 1.0,
+       "min": 70,
+       "theory": "High on the neck the strings bend more easily, which makes it easier to go too far. Check the target: fret 14 on the same string."
+      },
+      {
+       "id": "bend-b15",
+       "kind": "bend",
+       "title": "Long bend: B string, fret 15 → E, held",
+       "string": 2,
+       "fret": 15,
+       "bend": 2,
+       "tries": 8,
+       "hold": 1.5,
+       "min": 70,
+       "theory": "D to E: a whole step that lands on the root of E minor. Hold it in tune before any vibrato: the scream works only if it's on pitch."
+      },
+      {
+       "id": "lead-tech-quiz",
+       "kind": "quiz",
+       "title": "Lead technique, metal style",
+       "quiz": "technique",
+       "topics": [
+        "metal",
+        "bends"
+       ],
+       "count": 6,
+       "min": 80,
+       "theory": "Pinch harmonics, tremolo, bends and vibrato share one rule: control. Wild sounds are made with precise hands."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "m3",
+   "track": "metal",
+   "badge": "M3",
+   "number": 25,
+   "title": "Metal speed and harmony",
+   "subtitle": "Pedal-point licks, twin-guitar harmonies, diminished arpeggios and a full piece.",
+   "lessons": [
+    {
+     "id": "pedal-licks",
+     "title": "Pedal-point licks",
+     "minutes": 10,
+     "theory": [
+      "Lead players use the pedal idea too: a fixed note alternates with a melody that moves, all on one string. The fixed note can be below or above the melody.",
+      "Over a pedal, harmonic minor shines: its raised 7th sounds dramatic against the repeated note.",
+      "Keep the hand in position and move only the fingers: the pedal note is your anchor, the melody walks around it."
+     ],
+     "tutorials": [
+      "pedal point lick neoclassical guitar"
+     ],
+     "exercises": [
+      {
+       "id": "pedal-harmonic",
+       "kind": "lick",
+       "title": "E harmonic minor over a B pedal",
+       "tab": "1:12 1:7 1:11 1:7 1:12 1:7 1:14 1:7 1:15 1:7 1:14 1:7 1:12 1:7 1:11 1:7",
+       "min": 75,
+       "theory": "The melody E-D#-E-F#-G-F#-E-D# moves over a repeated B (fret 7). D# is harmonic minor's raised 7th; against the B pedal it outlines a B major chord, the V of E minor."
+      },
+      {
+       "id": "pedal-pentatonic",
+       "kind": "lick",
+       "title": "Pentatonic pedal lick",
+       "tab": "2:8 2:5 2:7 2:5 2:8 2:5 2:10 2:5 2:8 2:5 2:7 2:5",
+       "min": 75,
+       "theory": "On the B string with E (fret 5) as the pedal: G, F#, A above it. Repeating a small cell is how fast licks stay clean: the hand learns one motion."
+      }
+     ]
+    },
+    {
+     "id": "twin-harmony",
+     "title": "Twin-guitar harmony in thirds",
+     "minutes": 10,
+     "theory": [
+      "Two guitars playing the same melody a third apart is a classic heavy-metal sound. The second guitar plays each note a diatonic third higher: two scale steps up.",
+      "Diatonic means the thirds follow the key: some are major (4 frets), some minor (3 frets). Staying in the scale is what makes the harmony sound sweet instead of clashing.",
+      "Record or loop the melody and play the harmony over it: the two lines have to start and end together."
+     ],
+     "tutorials": [
+      "twin guitar harmony thirds metal"
+     ],
+     "exercises": [
+      {
+       "id": "melody-line",
+       "kind": "lick",
+       "title": "The melody (E minor, B string)",
+       "tab": "2:5 2:7 2:8 2:10 2:8 2:7 2:5 3:7",
+       "min": 75,
+       "theory": "E, F#, G, A and back to E, then D: a stepwise line in E minor. Learn it until it's automatic before adding the harmony."
+      },
+      {
+       "id": "harmony-line",
+       "kind": "lick",
+       "title": "The harmony, a third above",
+       "tab": "2:8 2:10 2:12 2:13 2:12 2:10 2:8 3:11",
+       "min": 75,
+       "theory": "G, A, B, C, B, A, G, F#: each note two scale steps above the melody. E→G, F#→A and A→C are minor thirds (3 frets); G→B and D→F# are major thirds (4 frets): the key decides."
+      }
+     ]
+    },
+    {
+     "id": "metal-arpeggios",
+     "title": "Minor and diminished arpeggios",
+     "minutes": 12,
+     "theory": [
+      "An arpeggio is a chord played one note at a time. Swept minor and diminished arpeggios are the backbone of neoclassical metal.",
+      "In E harmonic minor the chord on the 7th degree is D# diminished (D# F# A): three minor thirds stacked would make the symmetric diminished 7th, which repeats every three frets.",
+      "Sweep only when each note is separate: play the arpeggio slowly with alternate picking first, then let the pick fall through the strings."
+     ],
+     "tutorials": [
+      "diminished arpeggio sweep metal"
+     ],
+     "exercises": [
+      {
+       "id": "em-sweep",
+       "kind": "lick",
+       "title": "E minor sweep on three strings",
+       "tab": "3:9 2:8 1:7h12p7 2:8 3:9",
+       "min": 75,
+       "theory": "E (G string, fret 9), G, B and the high E: the E minor triad up and back. The hammer and pull at the top let the pick change direction smoothly."
+      },
+      {
+       "id": "dim-arpeggio",
+       "kind": "lick",
+       "title": "D# diminished, then home to E minor",
+       "tab": "3:8 2:7 1:5 2:7 3:8 3:9 2:8 1:7",
+       "min": 75,
+       "theory": "D#-F#-A is the vii° of E harmonic minor; it resolves up a half step to the E minor triad. Tension, then release, in eight notes."
+      }
+     ]
+    },
+    {
+     "id": "metal-song",
+     "title": "A full metal piece",
+     "minutes": 15,
+     "theory": [
+      "A metal song is built from riffs arranged in sections: intro, verse, chorus, a breakdown and an ending. Each section has its own rhythm and energy.",
+      "Dynamics matter in heavy music too: a half-time breakdown or a section of ringing chords makes the next fast part hit harder.",
+      "Learn the form before the details: know how many times each riff repeats and what comes next."
+     ],
+     "tutorials": [
+      "metal song structure riffs breakdown"
+     ],
+     "exercises": [
+      {
+       "id": "song-slow",
+       "kind": "chart",
+       "title": "The whole piece at 70%",
+       "chart": "33-metal-piece",
+       "speed": 0.7,
+       "min": 80,
+       "theory": "Five sections, one key (E minor). Watch the section names: each one changes the strum pattern's feel even when the chords repeat."
+      },
+      {
+       "id": "song-full",
+       "kind": "chart",
+       "title": "At full speed",
+       "chart": "33-metal-piece",
+       "speed": 1.0,
+       "min": 80,
+       "theory": "At full tempo the right hand leads: keep the down-picking relaxed and let the palm mute do the heavy lifting."
       }
      ]
     }

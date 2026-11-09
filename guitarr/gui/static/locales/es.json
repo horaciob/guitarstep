@@ -395,6 +395,8 @@
    "nothing_yet_html": "Todavía nada. Empezá por la <a href=\"#/course\">ruta</a>."
   },
   "course": {
+   "optional_title": "Cursos opcionales",
+   "optional_hint": "Caminos extra para un estilo. No cuentan para el curso principal: hacelos cuando quieras, una vez que tengas la técnica que piden.",
    "title": "Ruta",
    "subtitle": "{{done}}/{{total}} lecciones. Cada ejercicio se aprueba tocándolo: te escucha y te dice si salió.",
    "continue_html": "Seguís con <b>{{title}}</b>",
@@ -408,6 +410,8 @@
    "open_lesson": "Abrir la lección"
   },
   "lesson": {
+   "theory_btn": "La teoría detrás de este ejercicio",
+   "theory_short": "Teoría",
    "not_found": "No existe esa lección.",
    "back": "Volver a la ruta",
    "meta": "Nivel {{n}} · {{level}} · {{min}} min",
@@ -1673,7 +1677,67 @@
    "name_note": "¿Qué nota está marcada?",
    "fact_neck": "{{note}} en la cuerda {{string}}, traste {{fret}}",
    "fact_read": "{{note}} en el pentagrama",
-   "fact_degree": "{{roman}} de oído"
+   "fact_degree": "{{roman}} de oído",
+   "keysig_count": "¿Cuántos sostenidos o bemoles tiene {{key}} mayor?",
+   "keysig_key": "¿Qué tonalidad mayor tiene {{sig}}?",
+   "keysig_none": "Ninguno",
+   "keysig_sharps": "{{count}} ♯",
+   "keysig_flats": "{{count}} ♭",
+   "tech_buzz": "Una nota pisada zumba. La causa más común es…",
+   "tech_buzz_far_fret": "El dedo está muy lejos del traste",
+   "tech_buzz_too_hard": "Apretar demasiado",
+   "tech_buzz_pick_soft": "Tocar muy suave",
+   "tech_buzz_tuning": "La afinación",
+   "tech_dead_note": "En un acorde, una cuerda suena apagada. Lo más probable es que…",
+   "tech_dead_note_leaning": "Otro dedo se apoya en ella: arqueá más los dedos",
+   "tech_dead_note_too_close": "El dedo está muy cerca del traste",
+   "tech_dead_note_thumb_low": "El pulgar está muy abajo en el mástil",
+   "tech_dead_note_new_strings": "Las cuerdas son muy nuevas",
+   "tech_on_fret": "Si la yema queda justo encima del traste de metal, la nota…",
+   "tech_on_fret_muted": "Sale apagada o ahogada",
+   "tech_on_fret_sharp": "Sube de afinación",
+   "tech_on_fret_louder": "Suena más fuerte",
+   "tech_on_fret_fine": "Suena perfecta",
+   "tech_order": "Para que una nota nueva no zumbe…",
+   "tech_order_fret_first": "Primero pisá, después tocá",
+   "tech_order_together": "Pisá y tocá exactamente al mismo tiempo",
+   "tech_order_pick_first": "Primero tocá, después pisá",
+   "tech_order_either": "Da lo mismo",
+   "tech_stuck": "Un pasaje no sale. El mejor primer paso es…",
+   "tech_stuck_slow_isolate": "Aislar la parte difícil y tocarla más lento",
+   "tech_stuck_faster": "Tocarlo más rápido hasta que salga",
+   "tech_stuck_skip": "Saltearlo",
+   "tech_stuck_whole_again": "Tocar todo el tema otra vez desde el principio",
+   "tech_pm_place": "¿Dónde se apoya el costado de la mano para el palm mute?",
+   "tech_pm_place_bridge": "Justo donde las cuerdas salen del puente",
+   "tech_pm_place_neck": "Sobre el final del mástil",
+   "tech_pm_place_pickup": "Sobre el micrófono del mástil",
+   "tech_pm_place_middle": "En la mitad del largo de las cuerdas",
+   "tech_gallop": "El ritmo de galope, en cada tiempo, es…",
+   "tech_gallop_e_ss": "Una corchea y dos semicorcheas",
+   "tech_gallop_ss_e": "Dos semicorcheas y una corchea",
+   "tech_gallop_eee": "Un tresillo",
+   "tech_gallop_dotted": "Una corchea con puntillo y una semicorchea",
+   "tech_downpick": "¿Por qué muchos riffs de metal se tocan todo hacia abajo?",
+   "tech_downpick_weight": "Cada nota recibe el mismo ataque pesado",
+   "tech_downpick_only_fast": "Es la única forma de tocar rápido",
+   "tech_downpick_quieter": "Suena más bajo",
+   "tech_downpick_bends": "Ayuda con los bends",
+   "tech_tritone": "¿Cuántos trastes en una cuerda forman un tritono?",
+   "tech_tritone_f6": "6",
+   "tech_tritone_f5": "5",
+   "tech_tritone_f7": "7",
+   "tech_tritone_f4": "4",
+   "tech_pinch": "Armónico artificial: justo después de que la púa toca la cuerda, la roza…",
+   "tech_pinch_thumb": "El costado del pulgar",
+   "tech_pinch_bend": "Un bend",
+   "tech_pinch_tap": "Un dedo de tapping",
+   "tech_pinch_slide": "Un slide",
+   "tech_tremolo": "El trémolo sale de…",
+   "tech_tremolo_wrist": "Un movimiento chico y suelto de muñeca con púa alternada",
+   "tech_tremolo_arm": "Golpes grandes desde el brazo",
+   "tech_tremolo_fingers": "Pulsar con los dedos",
+   "tech_tremolo_legato": "Ligados"
   },
   "flow": {
    "label": "Los pasos de esta lección",
@@ -2402,6 +2466,18 @@
    "n22": {
     "title": "Técnica avanzada",
     "subtitle": "Sweep de tríadas y tapping, una vez que conocés las formas de las que salen."
+   },
+   "m1": {
+    "title": "Ritmo de metal",
+    "subtitle": "El chug, el galope, los riffs con nota pedal y los intervalos oscuros del heavy metal."
+   },
+   "m2": {
+    "title": "Lead de metal",
+    "subtitle": "Las escalas del metal, secuencias, trémolo, bends que gritan y armónicos."
+   },
+   "m3": {
+    "title": "Velocidad y armonía en el metal",
+    "subtitle": "Licks con nota pedal, armonías de dos guitarras, arpegios disminuidos y un tema completo."
    }
   },
   "lessons": {
@@ -2410,7 +2486,8 @@
     "theory": [
      "Las cuerdas se numeran de la más aguda (1ra, Mi) a la más grave (6ta, Mi).",
      "Al aire, de grave a aguda: Mi – La – Re – Sol – Si – Mi (E A D G B E).",
-     "Antes de cada práctica, afiná: un instrumento desafinado hace que hasta lo bien tocado suene mal."
+     "Antes de cada práctica, afiná: un instrumento desafinado hace que hasta lo bien tocado suene mal.",
+     "Antes de tocar, revisá lo básico: espalda derecha, la cintura de la guitarra sobre la pierna y el mástil apenas inclinado hacia arriba. Un cuerpo relajado toca más limpio y aguanta más."
     ],
     "tips": [
      "Apoyá la púa en la cuerda y soltala: un ataque firme y sin rasgar las vecinas.",
@@ -2426,7 +2503,8 @@
     "theory": [
      "Un acorde son varias notas a la vez. Em usa solo dos dedos y suenan las seis cuerdas.",
      "Medio en el traste 2 de la 5ta cuerda, anular en el traste 2 de la 4ta.",
-     "Pisá con la yema, justo detrás del traste de metal, con el pulgar detrás del mástil."
+     "Pisá con la yema, justo detrás del traste de metal, con el pulgar detrás del mástil.",
+     "Si una nota zumba, el dedo está lejos del traste o todavía no apretó: acercalo justo detrás del traste y tocá recién cuando está apoyado. Si una nota suena apagada, un dedo está acostado sobre esa cuerda: arqueá más el dedo."
     ],
     "tips": [
      "Si una cuerda suena apagada, algún dedo la está rozando: arqueá más los nudillos."
@@ -2440,7 +2518,8 @@
     "title": "Am y tu primer cambio",
     "theory": [
      "Am tiene la misma forma que E, una cuerda más abajo. La 6ta no se toca.",
-     "En el cambio Em→Am, el medio y el anular viajan juntos una cuerda hacia el piso."
+     "En el cambio Em→Am, el medio y el anular viajan juntos una cuerda hacia el piso.",
+     "Cuando un cambio no sale: tocá solo esos dos acordes, despacio, y practicá únicamente el movimiento entre ellos. Después volvé a ponerlo en la canción."
     ],
     "tips": [
      "Practicá el cambio lento y sin rasguear: mirá la forma, después cerrá los ojos."
@@ -2477,7 +2556,8 @@
     "theory": [
      "La mano derecha va y viene como un péndulo, siempre a tempo, aunque no toque las cuerdas.",
      "Los rasguidos hacia abajo caen en los números (1, 2, 3, 4) y los de arriba en los \"y\".",
-     "El patrón D.DU.UDU se cuenta: 1, 2 y, y 4 y."
+     "El patrón D.DU.UDU se cuenta: 1, 2 y, y 4 y.",
+     "Practicá lento primero. La velocidad es una consecuencia: cuando un patrón sale parejo y relajado a tempo lento, subí el metrónomo de a pocos BPM."
     ],
     "tips": [],
     "tutorials": [
@@ -2489,7 +2569,8 @@
     "title": "El compás de 3/4",
     "theory": [
      "En 3/4 se cuenta UN-dos-tres: el primer tiempo pesa más.",
-     "E7 es E sin el anular: la tensión que vuelve a Am."
+     "E7 es E sin el anular: la tensión que vuelve a Am.",
+     "El primer tiempo de cada compás lleva el acento. En 3/4 eso da el vaivén UN-dos-tres del vals; en 4/4 el acento cae en el 1 y, más suave, en el 3."
     ],
     "tips": [],
     "tutorials": [
@@ -2513,7 +2594,8 @@
     "theory": [
      "Una quinta es tónica + quinta: ni mayor ni menor, por eso suena tan bien con distorsión.",
      "Es una forma móvil: la misma figura en cualquier traste.",
-     "Con la fundamental en la 6ta cuerda (E5, G5, F5) o en la 5ta (A5, C5, B5, D5): aprendé dónde están las notas en esas dos cuerdas y podés tocar cualquier quinta."
+     "Con la fundamental en la 6ta cuerda (E5, G5, F5) o en la 5ta (A5, C5, B5, D5): aprendé dónde están las notas en esas dos cuerdas y podés tocar cualquier quinta.",
+     "La afinación en Drop D baja la 6ª cuerda a D: los power chords con la fundamental en la 6ª cuerda se tocan con un solo dedo sobre tres cuerdas, un clásico de los riffs pesados."
     ],
     "tips": [],
     "tutorials": [
@@ -2525,7 +2607,8 @@
     "title": "F con cejilla",
     "theory": [
      "La cejilla es el índice apretando todas las cuerdas de un traste: apoyalo de costado, no de plano.",
-     "F es la forma de E con cejilla en el traste 1. Movela y obtenés cualquier acorde mayor."
+     "F es la forma de E con cejilla en el traste 1. Movela y obtenés cualquier acorde mayor.",
+     "Si la cejilla zumba, revisá cuerda por cuerda y acercá el índice al traste. La mayoría de las cejillas necesitan menos fuerza de la que creés, pero en el lugar justo."
     ],
     "tips": [
      "No apretés más fuerte: tirá el brazo hacia atrás y dejá que el peso haga la presión."
@@ -2539,7 +2622,8 @@
     "title": "Pentatónica menor de La",
     "theory": [
      "La escala pentatónica tiene 5 notas: con ella se improvisan la mayoría de los solos de rock y blues.",
-     "Posición 1 en el traste 5: índice en el 5, anular o meñique en el 7/8."
+     "Posición 1 en el traste 5: índice en el 5, anular o meñique en el 7/8.",
+     "Practicá las escalas lento y parejo con metrónomo, diciendo la fundamental cada vez que pasás por ella. La velocidad llega cuando la digitación ya es automática."
     ],
     "tips": [],
     "tutorials": [
@@ -2607,7 +2691,8 @@
      "El blues habla: una frase pregunta y la siguiente responde. La voz pregunta y la guitarra responde, o tu guitarra hace las dos cosas.",
      "Una frase tiene cinco partes: dónde empieza, su ritmo, su dirección, la nota donde cae y cómo termina.",
      "Una buena respuesta conserva algo de la pregunta (el ritmo, la dirección o la última nota) y cambia otra cosa.",
-     "Dejá espacio después de cada frase: el silencio deja que se oiga la respuesta."
+     "Dejá espacio después de cada frase: el silencio deja que se oiga la respuesta.",
+     "Tu sonido vive en el ataque: tocar fuerte o suave, cerca del puente o del mástil, con púa o con los dedos. Las mismas notas pueden sonar como guitarristas distintos."
     ],
     "tips": [
      "Las preguntas terminan abiertas (en la 5ª o la 4ª); las respuestas vuelven a casa (a la tónica, o a la tercera mayor).",
@@ -2673,7 +2758,8 @@
     "theory": [
      "La vuelta 1 presenta un motivo, en el registro grave y con pocas notas. La 2 lo repite con un cambio. La 3 sube o suena más fuerte, y termina con claridad.",
      "Desarrollalo cambiando una cosa por vez: el final, el registro, el ritmo o la dinámica. Si cambiás todo, nadie reconoce el motivo.",
-     "Más y más rápido no es la única manera de crecer: el espacio, la repetición y el registro también construyen."
+     "Más y más rápido no es la única manera de crecer: el espacio, la repetición y el registro también construyen.",
+     "Convertí una escala en música: agregá silencios, repetí un ritmo y sostené las notas que son del acorde. Una escala tocada nota tras nota suena a ejercicio; las mismas notas con espacio y repetición suenan a frase."
     ],
     "tips": [
      "Grabá las tres vueltas sin parar. Si te equivocás, seguí: eso también es práctica."
@@ -2854,7 +2940,8 @@
      "Una escala mayor usa cada letra de la A a la G una sola vez. Por eso Fa♯ mayor tiene Mi♯, no Fa, y Sol♭ mayor tiene Do♭, no Si.",
      "Las tonalidades con sostenidos suben de a quintas: Sol (1♯), Re (2), La (3), Mi (4), Si (5), Fa♯ (6).",
      "Las tonalidades con bemoles van al revés: Fa (1♭), Si♭ (2), Mi♭ (3), La♭ (4), Re♭ (5), Sol♭ (6).",
-     "La forma en la guitarra no se fija en los nombres: la misma digitación sirve en todas las tonalidades. Escribir bien importa cuando leés, escribís y hablás de música."
+     "La forma en la guitarra no se fija en los nombres: la misma digitación sirve en todas las tonalidades. Escribir bien importa cuando leés, escribís y hablás de música.",
+     "Para saber la tonalidad con sostenidos a partir de la armadura: el último sostenido es el 7º grado, así que subí un semitono. En las tonalidades con bemoles, el penúltimo bemol da el nombre (Fa mayor tiene un solo bemol, B♭)."
     ],
     "tips": [
      "Escribí primero las letras de la escala (una de cada una) y después agregá los sostenidos o bemoles que pide el dibujo."
@@ -2888,7 +2975,8 @@
     "theory": [
      "Una posición ocupa cuatro o cinco trastes, un dedo por traste. Cinco posiciones se unen para cubrir todo el mástil.",
      "Cada posición empieza en un grado distinto de la 6ª cuerda, y el final de una es el comienzo de la siguiente.",
-     "Aprendelas de a una, diciendo la fundamental en voz alta. Después uní dos vecinas."
+     "Aprendelas de a una, diciendo la fundamental en voz alta. Después uní dos vecinas.",
+     "Una posición se nombra por el traste donde toca el dedo 1: en 5ª posición, el dedo 1 cubre el traste 5. Aprender una escala en varias posiciones es lo que te libera de una sola caja."
     ],
     "tips": [
      "Quedate en una posición durante toda una sesión antes de sumar la siguiente."
@@ -3041,7 +3129,8 @@
     "theory": [
      "Una tríada apila dos terceras: fundamental, 3ª y 5ª. La mayor es una 3ª mayor más una 3ª menor; la menor es una 3ª menor más una 3ª mayor.",
      "La 3ª decide si es mayor o menor: bajala un traste y Do se vuelve Dom.",
-     "Cualquier grupo de tres cuerdas puede tener una tríada, mientras encuentres las tres notas."
+     "Cualquier grupo de tres cuerdas puede tener una tríada, mientras encuentres las tres notas.",
+     "Mover una forma de tríada por el mástil traste a traste, en todas las tonalidades, es la forma más rápida de acostumbrarse a su sonido y a su digitación."
     ],
     "tips": [
      "Antes de tocar una forma, señalá su fundamental, su 3ª y su 5ª."
@@ -3481,7 +3570,8 @@
     "title": "El pulso",
     "theory": [
      "El pulso es el golpe constante que marcás con el pie. Los BPM dicen cuántos golpes entran en un minuto: 60 BPM es uno por segundo.",
-     "Casi toda la música cuenta en grupos de cuatro (compás de 4/4). El primer tiempo de cada grupo es el más fuerte, y el metrónomo lo marca con un clic más agudo."
+     "Casi toda la música cuenta en grupos de cuatro (compás de 4/4). El primer tiempo de cada grupo es el más fuerte, y el metrónomo lo marca con un clic más agudo.",
+     "Marcá con el pie y tocá con las manos: el cuerpo sostiene el pulso mientras las manos hacen el resto."
     ],
     "tips": [
      "Tocá Espacio (o el pad) con cada nota. El primer compás es solo la cuenta: escuchá antes de tocar."
@@ -3516,7 +3606,9 @@
    "long-notes": {
     "title": "Notas largas",
     "theory": [
-     "Con las notas largas tocás una vez y seguís contando mientras suena. Lo difícil es no apurar la siguiente."
+     "Con las notas largas tocás una vez y seguís contando mientras suena. Lo difícil es no apurar la siguiente.",
+     "La ligadura une dos notas de la misma altura en una más larga: tocás la primera y seguís contando durante la segunda.",
+     "Un puntillo después de una nota le suma la mitad de su valor: una blanca con puntillo dura tres tiempos, justo un compás de 3/4."
     ],
     "tips": [],
     "tutorials": [],
@@ -3527,7 +3619,8 @@
    "eighths": {
     "title": "Corcheas",
     "theory": [
-     "Las corcheas parten cada tiempo en dos. Contá \"uno-y, dos-y\": la nota del \"y\" cae justo entre dos clics."
+     "Las corcheas parten cada tiempo en dos. Contá \"uno-y, dos-y\": la nota del \"y\" cae justo entre dos clics.",
+     "Al rasguear corcheas la mano baja en los números y sube en los \"y\". Mantené la mano en movimiento aunque un golpe no suene."
     ],
     "tips": [
      "Mucha guitarra rítmica de rock es corchea constante. Cuando te salen parejas, la mitad de las canciones se vuelven más fáciles."
@@ -3540,7 +3633,8 @@
    "rests": {
     "title": "Silencios",
     "theory": [
-     "Un silencio es tiempo que contás callado. En la guitarra, apagar las cuerdas en el momento justo importa tanto como tocar."
+     "Un silencio es tiempo que contás callado. En la guitarra, apagar las cuerdas en el momento justo importa tanto como tocar.",
+     "Cada figura tiene su silencio: de redonda, blanca, negra, corchea y semicorchea. La misma duración, pero callada."
     ],
     "tips": [],
     "tutorials": [],
@@ -3551,7 +3645,8 @@
    "mixing-rhythms": {
     "title": "Todo junto",
     "theory": [
-     "Ahora a 80 BPM. Leé el compás entero durante la cuenta, antes de empezar."
+     "Ahora a 80 BPM. Leé el compás entero durante la cuenta, antes de empezar.",
+     "Contá todos los tiempos, también los que no tienen nota. La mayoría de los errores ocurren en un tiempo que nadie tocó."
     ],
     "tips": [],
     "tutorials": [],
@@ -3560,7 +3655,8 @@
    "rhythm-on-guitar": {
     "title": "Ritmo en la guitarra",
     "theory": [
-     "Ahora cambiá el toque por la guitarra: tocá la sexta cuerda al aire (Mi grave) en el ritmo. guitarr escucha cada ataque y su tiempo."
+     "Ahora cambiá el toque por la guitarra: tocá la sexta cuerda al aire (Mi grave) en el ritmo. guitarr escucha cada ataque y su tiempo.",
+     "El tiempo se mide en el ataque, el momento en que la púa toca la cuerda. Un ataque limpio y a tiempo importa más que una nota larga."
     ],
     "tips": [
      "Apagá la cuerda en los silencios: si sigue sonando, el ataque siguiente se oye peor.",
@@ -3572,7 +3668,8 @@
    "sixteenths": {
     "title": "Semicorcheas",
     "theory": [
-     "La semicorchea vale un cuarto de tiempo: entran cuatro en cada clic. Se escribe con dos barras (o dos banderitas). Contá \"1 e y a\" en voz baja, sin acelerar."
+     "La semicorchea vale un cuarto de tiempo: entran cuatro en cada clic. Se escribe con dos barras (o dos banderitas). Contá \"1 e y a\" en voz baja, sin acelerar.",
+     "Tocá las semicorcheas con púa alternada estricta: abajo en \"1\" y en \"y\", arriba en \"e\" y \"a\". La mano nunca cambia su ritmo."
     ],
     "tips": [
      "Púa alternada abajo-arriba-abajo-arriba, una por semicorchea. La mano sigue moviéndose aunque no toque."
@@ -3586,7 +3683,8 @@
    "dotted-eighth": {
     "title": "La corchea con puntillo",
     "theory": [
-     "El puntillo al lado de una nota le suma la mitad de su valor. La corchea con puntillo dura ¾ de tiempo, y casi siempre viene con una semicorchea que completa el tiempo: el ritmo rengo de muchos riffs."
+     "El puntillo al lado de una nota le suma la mitad de su valor. La corchea con puntillo dura ¾ de tiempo, y casi siempre viene con una semicorchea que completa el tiempo: el ritmo rengo de muchos riffs.",
+     "La figura de corchea con puntillo y semicorchea da el balanceo rengueante de muchos riffs de rock y blues."
     ],
     "tips": [
      "Pensá en semicorcheas: la del puntillo dura tres, la semicorchea una. \"1 – – a 2 – – a\"."
@@ -3599,7 +3697,8 @@
    "triplets": {
     "title": "Tresillos",
     "theory": [
-     "El tresillo parte el tiempo en tres partes iguales en vez de dos o cuatro. Se escribe con un 3 sobre el grupo. Contá \"tre-si-llo\" o \"1-2-3\" dentro de cada clic."
+     "El tresillo parte el tiempo en tres partes iguales en vez de dos o cuatro. Se escribe con un 3 sobre el grupo. Contá \"tre-si-llo\" o \"1-2-3\" dentro de cada clic.",
+     "El shuffle es un tresillo con las dos primeras notas ligadas: largo-corto. Practicá primero tresillos parejos y después ligalos."
     ],
     "tips": [
      "Mucho blues y muchas baladas en 12/8 viven de tresillos. El shuffle es un tresillo con la nota del medio callada."
@@ -3612,7 +3711,8 @@
    "syncopation": {
     "title": "Síncopa",
     "theory": [
-     "La síncopa es cuando una nota empieza en un tiempo débil (en el \"y\") y se sostiene por encima del tiempo fuerte siguiente. Es el empujón que hace avanzar al funk y a tanta otra música."
+     "La síncopa es cuando una nota empieza en un tiempo débil (en el \"y\") y se sostiene por encima del tiempo fuerte siguiente. Es el empujón que hace avanzar al funk y a tanta otra música.",
+     "La síncopa solo funciona si el pulso está claro. Marcá el tiempo con el pie mientras las manos tocan a contratiempo."
     ],
     "tips": [
      "Marcá con el pie todos los tiempos y tocá solo donde está escrito. El pie no sigue a la mano."
@@ -3626,7 +3726,8 @@
    "dictation-1": {
     "title": "Dictado I",
     "theory": [
-     "En el dictado es al revés: la app toca un compás y vos elegís la escritura. Es lo que pasa cuando sacás una canción de oído."
+     "En el dictado es al revés: la app toca un compás y vos elegís la escritura. Es lo que pasa cuando sacás una canción de oído.",
+     "Escribí lo que escuchás de a un tiempo. La mayoría de los compases se arman con pocos grupos comunes: una negra, dos corcheas, cuatro semicorcheas, corchea y dos semicorcheas."
     ],
     "tips": [
      "Escuchá una vez entero, y después de nuevo prestando atención a un tiempo por vez."
@@ -3637,7 +3738,8 @@
    "dictation-2": {
     "title": "Dictado II",
     "theory": [
-     "Ahora con las figuras nuevas. El tresillo suena redondo, rodando; el puntillo suena rengo; la síncopa suena adelantada, antes del tiempo."
+     "Ahora con las figuras nuevas. El tresillo suena redondo, rodando; el puntillo suena rengo; la síncopa suena adelantada, antes del tiempo.",
+     "Si un tiempo suena desparejo, preguntate: ¿es largo-corto (puntillo) o tres notas iguales (tresillo)?"
     ],
     "tips": [],
     "tutorials": [],
@@ -3646,7 +3748,8 @@
    "rhythm-2-on-guitar": {
     "title": "Ritmo II en la guitarra",
     "theory": [
-     "Cerrá el nivel tocando de verdad: la sexta al aire, los ritmos nuevos, y el oyente midiendo cada ataque en milisegundos."
+     "Cerrá el nivel tocando de verdad: la sexta al aire, los ritmos nuevos, y el oyente midiendo cada ataque en milisegundos.",
+     "Usá el metrónomo a un tempo donde todo salga limpio y después subí de a poco."
     ],
     "tips": [
      "Si las notas te salen siempre adelantadas o atrasadas, corré guitarr calibrate una vez."
@@ -3674,7 +3777,8 @@
    "open-strings-staff": {
     "title": "Cuerdas al aire en el pentagrama",
     "theory": [
-     "Empezá por las cuerdas al aire: son los puntos de referencia de todo lo demás. Fijate dónde cae cada una, en línea o en espacio, y cuántas líneas adicionales usa."
+     "Empezá por las cuerdas al aire: son los puntos de referencia de todo lo demás. Fijate dónde cae cada una, en línea o en espacio, y cuántas líneas adicionales usa.",
+     "La guitarra suena una octava más grave de lo escrito: la E escrita en el espacio de arriba es la 1ª cuerda al aire."
     ],
     "tips": [],
     "tutorials": [],
@@ -3685,7 +3789,8 @@
    "naturals-low": {
     "title": "Notas naturales en las cuerdas graves",
     "theory": [
-     "Ahora las notas naturales (sin sostenidos ni bemoles) de las dos cuerdas más graves, hasta el traste 5. Cada letra del alfabeto musical mueve la nota un escalón en el pentagrama, de línea a espacio o al revés."
+     "Ahora las notas naturales (sin sostenidos ni bemoles) de las dos cuerdas más graves, hasta el traste 5. Cada letra del alfabeto musical mueve la nota un escalón en el pentagrama, de línea a espacio o al revés.",
+     "Las líneas adicionales extienden el pentagrama por debajo y por encima. La cuerda E grave necesita tres líneas adicionales; la A, dos."
     ],
     "tips": [],
     "tutorials": [],
@@ -3697,7 +3802,8 @@
    "naturals-all": {
     "title": "Notas naturales en todas las cuerdas",
     "theory": [
-     "Con todas las cuerdas, la primera posición abarca más de dos octavas. Usá las cuerdas al aire como anclas: buscá la cuerda al aire más cercana y contá escalones desde ahí."
+     "Con todas las cuerdas, la primera posición abarca más de dos octavas. Usá las cuerdas al aire como anclas: buscá la cuerda al aire más cercana y contá escalones desde ahí.",
+     "Agrupá las notas que sabés por cuerda: en la 1ª F y G, en la 2ª C y D, y así. Dos o tres notas por cuerda cubren toda la primera posición."
     ],
     "tips": [],
     "tutorials": [],
@@ -3706,7 +3812,8 @@
    "staff-to-neck": {
     "title": "Del pentagrama al diapasón",
     "theory": [
-     "Leer es saber dónde tocar. La app muestra una nota en el pentagrama y vos la marcás en el diapasón a la altura exacta: la misma nota una octava arriba o abajo no vale."
+     "Leer es saber dónde tocar. La app muestra una nota en el pentagrama y vos la marcás en el diapasón a la altura exacta: la misma nota una octava arriba o abajo no vale.",
+     "En primera posición cada traste lo toca el dedo con su número: el traste 1 con el dedo 1, el 2 con el 2, y así."
     ],
     "tips": [
      "Algunas notas están en dos cuerdas (el traste 5 de una cuerda = la cuerda al aire siguiente). Valen las dos: es la misma altura."
@@ -3717,7 +3824,8 @@
    "accidentals-staff": {
     "title": "Sostenidos y bemoles en el pentagrama",
     "theory": [
-     "El sostenido (♯) antes de una nota la sube medio tono; el bemol (♭) la baja medio tono. En el pentagrama la nota queda en el mismo lugar y solo lleva el signo adelante. En el diapasón es el traste de al lado."
+     "El sostenido (♯) antes de una nota la sube medio tono; el bemol (♭) la baja medio tono. En el pentagrama la nota queda en el mismo lugar y solo lleva el signo adelante. En el diapasón es el traste de al lado.",
+     "La armadura pone los sostenidos o bemoles al principio de cada línea, para no tener que escribirlos en cada nota."
     ],
     "tips": [],
     "tutorials": [],
@@ -3729,7 +3837,8 @@
    "fifth-position": {
     "title": "Leer en 5ª posición",
     "theory": [
-     "Quien lee no se queda atado a la primera posición. En 5ª posición el dedo 1 va en el traste 5 y cada dedo se ocupa de un traste (del 5 al 8). Las notas en el pentagrama son las mismas; solo cambia dónde viven en el diapasón."
+     "Quien lee no se queda atado a la primera posición. En 5ª posición el dedo 1 va en el traste 5 y cada dedo se ocupa de un traste (del 5 al 8). Las notas en el pentagrama son las mismas; solo cambia dónde viven en el diapasón.",
+     "Las posiciones se nombran por el traste que queda bajo el dedo 1. Conocer varias posiciones te deja tocar una melodía donde mejor suena y mejor cae."
     ],
     "tips": [
      "Usá la cuerda de arriba como atajo: el traste 5 de una cuerda es la cuerda al aire siguiente (salvo Sol→Si, que es el traste 4)."
@@ -3742,7 +3851,8 @@
    "seventh-position": {
     "title": "Leer en 7ª posición",
     "theory": [
-     "En 7ª posición (trastes 7 a 10), muchas notas que en primera posición eran cuerdas al aire pasan a ser pisadas. Es una posición ideal para leer escalas en tonos con sostenidos, como Re y La mayor."
+     "En 7ª posición (trastes 7 a 10), muchas notas que en primera posición eran cuerdas al aire pasan a ser pisadas. Es una posición ideal para leer escalas en tonos con sostenidos, como Re y La mayor.",
+     "Al leer en una posición nueva, decí la nota y el dedo en voz alta durante los primeros compases."
     ],
     "tips": [
      "Elegí una posición antes de empezar a leer y quedate ahí: con la mano quieta encontrás cada nota más fácil."
@@ -3753,7 +3863,8 @@
    "read-and-play": {
     "title": "Leer con la guitarra",
     "theory": [
-     "El cierre: la nota aparece en el pentagrama y vos la tocás en la guitarra. Es el primer paso para leer una partitura de verdad nota por nota, como leés una tablatura."
+     "El cierre: la nota aparece en el pentagrama y vos la tocás en la guitarra. Es el primer paso para leer una partitura de verdad nota por nota, como leés una tablatura.",
+     "Leé lento pero sin frenar: un pulso firme con algunas notas erradas entrena la lectura mejor que un perfecto frenar y arrancar."
     ],
     "tips": [
      "Tocala a la altura escrita: el oyente quiere esa nota exacta, no el mismo nombre una octava más allá."
@@ -3765,7 +3876,8 @@
     "title": "Un acorde, cinco lugares",
     "theory": [
      "Los acordes abiertos de C, A, G, E y D tienen formas distintas. La idea del CAGED es que esas cinco formas, movidas con cejilla, tocan cualquier acorde mayor en cinco regiones del mástil, cada una pegada a la siguiente.",
-     "Subiendo por el mástil el orden es siempre C → A → G → E → D, y vuelve a empezar. Saber en qué forma estás te dice dónde están la fundamental, la 3ª y la 5ª, sin memorizar nada más."
+     "Subiendo por el mástil el orden es siempre C → A → G → E → D, y vuelve a empezar. Saber en qué forma estás te dice dónde están la fundamental, la 3ª y la 5ª, sin memorizar nada más.",
+     "La cejuela móvil (capo) sube todas las formas abiertas por el mástil en bloque: es CAGED con una cejilla mecánica."
     ],
     "tips": [
      "Dos formas vecinas comparten notas donde se juntan: el borde de una es el comienzo de la otra. Por eso cubren el mástil sin huecos."
@@ -3781,7 +3893,8 @@
    "e-shape": {
     "title": "La forma de E",
     "theory": [
-     "La forma de E es la cejilla más usada: la fundamental está en la 6ª cuerda bajo el dedo 1, y el resto del acorde en los dos trastes siguientes."
+     "La forma de E es la cejilla más usada: la fundamental está en la 6ª cuerda bajo el dedo 1, y el resto del acorde en los dos trastes siguientes.",
+     "La cejilla en forma de E en el traste 1 es F; en el 3, G; en el 5, A. Con el número de traste y las notas de la 6ª cuerda alcanza."
     ],
     "tips": [],
     "tutorials": [],
@@ -3792,7 +3905,8 @@
    "a-shape": {
     "title": "La forma de A",
     "theory": [
-     "En la forma de A la fundamental está en la 5ª cuerda bajo el dedo 1. Es la otra cejilla de todos los días."
+     "En la forma de A la fundamental está en la 5ª cuerda bajo el dedo 1. Es la otra cejilla de todos los días.",
+     "Muchos tocan la forma de A con una cejilla del anular sobre las cuerdas 2 a 4, apagando la 1ª cuerda."
     ],
     "tips": [],
     "tutorials": [],
@@ -3803,7 +3917,8 @@
    "d-shape": {
     "title": "La forma de D",
     "theory": [
-     "En la forma de D la fundamental está en la 4ª cuerda. La forma es chica y vive en las cuerdas agudas: ideal para acordes arriba del mástil."
+     "En la forma de D la fundamental está en la 4ª cuerda. La forma es chica y vive en las cuerdas agudas: ideal para acordes arriba del mástil.",
+     "Fuera de la posición abierta, la forma de D se toca con el índice en la 3ª cuerda y los otros dedos formando el triángulo de D por encima."
     ],
     "tips": [],
     "tutorials": [],
@@ -3814,7 +3929,8 @@
    "c-shape": {
     "title": "La forma de C",
     "theory": [
-     "En la forma de C la fundamental vuelve a estar en la 5ª cuerda, pero bajo el dedo 3 o 4: el acorde se estira hacia atrás, hacia la cejuela."
+     "En la forma de C la fundamental vuelve a estar en la 5ª cuerda, pero bajo el dedo 3 o 4: el acorde se estira hacia atrás, hacia la cejuela.",
+     "La forma de C es buenísima para arpegios: sus notas suben de la 5ª a la 1ª cuerda en una sola posición."
     ],
     "tips": [],
     "tutorials": [],
@@ -3825,7 +3941,8 @@
    "g-shape": {
     "title": "La forma de G",
     "theory": [
-     "La forma de G también se estira hacia atrás, con la fundamental en la 6ª cuerda bajo el dedo 3 o 4. Es la más abierta de las cinco, y mucha gente usa solo una parte."
+     "La forma de G también se estira hacia atrás, con la fundamental en la 6ª cuerda bajo el dedo 3 o 4. Es la más abierta de las cinco, y mucha gente usa solo una parte.",
+     "Usá las tres cuerdas agudas de la forma de G como una tríada chica: es una de las disposiciones más comunes de la guitarra rítmica en pop y funk."
     ],
     "tips": [],
     "tutorials": [],
@@ -3836,7 +3953,8 @@
    "caged-connect": {
     "title": "Conectar las cinco formas",
     "theory": [
-     "Ahora todas juntas. La app elige el acorde y la forma; vos encontrás 1, 3 y 5 en esa posición. Antes de marcar, acordate del orden C → A → G → E → D y de dónde guarda cada forma su fundamental."
+     "Ahora todas juntas. La app elige el acorde y la forma; vos encontrás 1, 3 y 5 en esa posición. Antes de marcar, acordate del orden C → A → G → E → D y de dónde guarda cada forma su fundamental.",
+     "Combiná CAGED con la pentatónica: cada forma de acorde tiene una caja pentatónica alrededor, con las mismas fundamentales. Acorde, arpegio y escala se vuelven un solo mapa."
     ],
     "tips": [],
     "tutorials": [],
@@ -3847,7 +3965,8 @@
    "caged-minor": {
     "title": "Formas menores",
     "theory": [
-     "Las formas de E, A y D también existen en menor: alcanza con bajar la 3ª medio tono. Con ellas tocás cualquier acorde menor en tres regiones."
+     "Las formas de E, A y D también existen en menor: alcanza con bajar la 3ª medio tono. Con ellas tocás cualquier acorde menor en tres regiones.",
+     "Las formas parciales también valen: las tres o cuatro cuerdas agudas de cualquier forma son un acorde útil, muchas veces más fácil que la cejilla completa."
     ],
     "tips": [],
     "tutorials": [],
@@ -3859,7 +3978,8 @@
     "title": "Tónica, subdominante, dominante",
     "theory": [
      "Cada acorde del tono tiene un papel. La tónica (I, y también iii y vi) es la casa: reposo. La subdominante (IV y ii) se aleja de casa. La dominante (V y vii°) crea tensión y pide volver a la tónica.",
-     "Los acordes que comparten notas suelen compartir el papel: C, Em y Am tienen Mi; F y Dm comparten Fa y La; G7 y B° comparten Si, Re y Fa."
+     "Los acordes que comparten notas suelen compartir el papel: C, Em y Am tienen Mi; F y Dm comparten Fa y La; G7 y B° comparten Si, Re y Fa.",
+     "El tritono dentro de la dominante (B y F en G7) es la fuente de su tensión: dos notas que quieren moverse en direcciones opuestas."
     ],
     "tips": [
      "Casi toda canción cuenta esta historia en ciclos: sale de la tónica, pasa por la subdominante, llega a la dominante y vuelve."
@@ -3871,7 +3991,8 @@
    "ear-one-four-five": {
     "title": "De oído: I, IV y V",
     "theory": [
-     "I, IV y V son los acordes mayores del tono y sostienen miles de canciones. La app toca la tónica y después otro acorde: vos decís qué grado es."
+     "I, IV y V son los acordes mayores del tono y sostienen miles de canciones. La app toca la tónica y después otro acorde: vos decís qué grado es.",
+     "Un truco: cantá la fundamental de la tonalidad sobre cada acorde. Sobre el I encaja perfecto, sobre el IV es la quinta del acorde y sobre el V choca y quiere moverse."
     ],
     "tips": [
      "El IV suena a abrir una puerta; el V suena a que falta algo. Cantá la tónica encima: sobre el V se siente incómoda."
@@ -3881,7 +4002,8 @@
    "ear-two-six": {
     "title": "De oído: entran ii y vi",
     "theory": [
-     "Ahora entran los menores del tono: ii (subdominante) y vi (la tónica relativa). El vi suena al lado triste de la casa; el ii, a un IV más suave."
+     "Ahora entran los menores del tono: ii (subdominante) y vi (la tónica relativa). El vi suena al lado triste de la casa; el ii, a un IV más suave.",
+     "Los acordes relativos comparten dos notas: I y vi, IV y ii, V y iii. Por eso pueden reemplazarse entre sí."
     ],
     "tips": [],
     "tutorials": []
@@ -3889,7 +4011,8 @@
    "ear-minor-key": {
     "title": "De oído en tono menor",
     "theory": [
-     "En tono menor, los acordes mayores VI y VII dan ese sonido épico de tanto rock y metal. La app toca el i y después otro acorde del tono menor."
+     "En tono menor, los acordes mayores VI y VII dan ese sonido épico de tanto rock y metal. La app toca el i y después otro acorde del tono menor.",
+     "El iv menor suena más pesado que el IV mayor. En el rock, i–iv e i–VI–VII son la columna vertebral de muchísimos riffs."
     ],
     "tips": [
      "En la práctica, muchas canciones menores cambian el v menor por un V mayor, prestado de la menor armónica, para tener una vuelta a casa más fuerte."
@@ -3930,7 +4053,8 @@
    "borrowed-chords": {
     "title": "Acordes prestados",
     "theory": [
-     "Un tono mayor puede pedir prestados acordes al tono menor con la misma tónica. En Do mayor los más comunes son Fm (iv), B♭ (♭VII), A♭ (♭VI) y E♭ (♭III). El iv menor da ese apretón nostálgico (F → Fm → C); el ♭VII, un sabor a rock."
+     "Un tono mayor puede pedir prestados acordes al tono menor con la misma tónica. En Do mayor los más comunes son Fm (iv), B♭ (♭VII), A♭ (♭VI) y E♭ (♭III). El iv menor da ese apretón nostálgico (F → Fm → C); el ♭VII, un sabor a rock.",
+     "Los acordes prestados mantienen la misma tónica: la canción sigue en Do mayor, solo toma por un momento un color más oscuro de Do menor."
     ],
     "tips": [
      "¿Ves un acorde con bemol en un tono de sostenidos (o un acorde menor en el IV)? Pensá en un préstamo de la menor paralela."
@@ -4044,7 +4168,8 @@
     "title": "Octavas: el atajo",
     "theory": [
      "La misma nota aparece por todo el mástil en octavas, siempre con las mismas formas. Desde una nota en la 6ª o la 5ª cuerda: dos cuerdas arriba y dos trastes adelante. Desde la 4ª o la 3ª: dos cuerdas arriba y tres trastes adelante (la cuerda Si está afinada un traste más abajo).",
-     "Sabiendo una nota y sus formas de octava, la encontrás en todos lados."
+     "Sabiendo una nota y sus formas de octava, la encontrás en todos lados.",
+     "Las octavas también son un sonido: tocar la misma melodía en dos octavas a la vez la engorda, un clásico del jazz y del rock."
     ],
     "tips": [
      "Tocá las dos notas de una octava juntas, apagando la cuerda del medio: es el sonido de octavas de tanto jazz y funk."
@@ -4058,7 +4183,8 @@
     "title": "Traste 12: el mástil vuelve a empezar",
     "theory": [
      "En el traste 12 cada cuerda suena su nota al aire una octava más arriba. De ahí para arriba el mástil se repite: el traste 13 es otra vez el 1, el 15 es el 3, y así.",
-     "Por eso la marca doble está en el traste 12: es la mitad de la cuerda."
+     "Por eso la marca doble está en el traste 12: es la mitad de la cuerda.",
+     "El armónico natural del traste 12 suena en esa misma octava: tocá la cuerda apenas, justo sobre el traste, y pulsala."
     ],
     "tips": [
      "Para encontrar una nota arriba del traste 12, buscala abajo y sumá 12."
@@ -4070,7 +4196,8 @@
     "title": "Nombrá la nota marcada",
     "theory": [
      "El alfabeto musical tiene siete letras: A B C D E F G (La Si Do Re Mi Fa Sol), y vuelve a empezar. En una cuerda cada traste es un semitono, así que las notas naturales están a dos trastes, salvo Mi–Fa y Si–Do, que están a un traste.",
-     "Aprendé primero las dos cuerdas graves: ahí viven las fundamentales de casi todas las formas de acorde. Decí cada nota en voz alta cuando la encontrás."
+     "Aprendé primero las dos cuerdas graves: ahí viven las fundamentales de casi todas las formas de acorde. Decí cada nota en voz alta cuando la encontrás.",
+     "Un método rápido: memorizá las notas de los trastes 5, 7 y 12 en todas las cuerdas y contá uno o dos trastes desde ahí."
     ],
     "tips": [
      "Usá las marcas del mástil como referencia: en la 6ª cuerda, los trastes 3, 5, 7 y 9 son Sol, La, Si y Do♯."
@@ -4138,6 +4265,190 @@
     ],
     "tutorials": [
      "acordes de septima con cejilla guitarra"
+    ]
+   },
+   "fingers": {
+    "title": "Un dedo por traste",
+    "theory": [
+     "Un dedo por traste: en un tramo de cuatro trastes, el dedo 1 toca el primero, el 2 el segundo, y así. La mano queda quieta y los dedos caminan.",
+     "Pisá con la yema justo detrás del traste, no encima. Detrás suena limpio; muy lejos zumba; encima suena apagado.",
+     "Primero pisá, después tocá: si la púa llega antes que el dedo, la nota zumba.",
+     "Lento y parejo le gana a rápido y desprolijo. Este recorrido cromático es el calentamiento clásico: despierta las dos manos y les enseña a trabajar juntas."
+    ],
+    "tips": [],
+    "tutorials": [
+     "ejercicio cromático guitarra 1 2 3 4"
+    ]
+   },
+   "key-signatures": {
+    "title": "Armaduras de clave",
+    "theory": [
+     "La armadura es el conjunto de sostenidos o bemoles que usa una tonalidad, escrito una vez al principio de cada línea en lugar de antes de cada nota.",
+     "Los sostenidos se agregan siempre en el mismo orden: F C G D A E B. Los bemoles van al revés: B E A D G C F.",
+     "Para leer una armadura con sostenidos: el último sostenido es el 7º grado, así que la tonalidad está medio tono arriba (tres sostenidos, el último G#: La mayor). Con bemoles: el penúltimo bemol da el nombre (tres bemoles: Mi bemol mayor). Un solo bemol es Fa mayor.",
+     "Cada armadura la comparten una tonalidad mayor y su relativa menor: tres sostenidos es La mayor o Fa# menor. El acorde de casa de la canción te dice cuál."
+    ],
+    "tips": [],
+    "tutorials": [
+     "armaduras de clave círculo de quintas explicación"
+    ]
+   },
+   "fingerstyle": {
+    "title": "Fingerstyle: p, i, m, a",
+    "theory": [
+     "En fingerstyle los dedos de la mano derecha tienen nombre: p (pulgar), i (índice), m (medio) y a (anular). El pulgar toca las cuerdas graves (6, 5 y 4); i, m y a suelen tocar la 3, la 2 y la 1.",
+     "En un arpegio la mano izquierda sostiene un acorde mientras la derecha toca sus notas de a una, sin repetir el mismo dedo dos veces seguidas.",
+     "Dejá la muñeca relajada sobre las cuerdas y mové los dedos desde los nudillos. Que todas las notas suenen al mismo volumen: escuchá el pulgar contra los otros dedos.",
+     "Dónde pulsás cambia el sonido: cerca del puente es brillante y filoso; sobre el final del mástil, redondo y dulce. En la eléctrica el selector de micrófonos hace lo mismo."
+    ],
+    "tips": [],
+    "tutorials": [
+     "arpegio fingerstyle pima principiante"
+    ]
+   },
+   "metal-chug": {
+    "title": "El chug: palm mute y púa hacia abajo",
+    "theory": [
+     "El corazón del ritmo metalero es la E grave al aire (o la cuerda más grave de tu afinación) tocada con palm mute: un chug apretado y percusivo.",
+     "Tocar todas las notas hacia abajo le da a cada ataque el mismo peso. Cuesta más rápido, así que subí el tempo de a poco y con la muñeca suelta.",
+     "El galope es una corchea y dos semicorcheas (taa-ta-ta), repetido. Su espejo, el galope invertido, son dos semicorcheas y una corchea (ta-ta-taa).",
+     "Tocá con ganancia pero sin exagerar: demasiada distorsión convierte un chug apretado en ruido. La claridad pesa más que la saturación."
+    ],
+    "tips": [],
+    "tutorials": [
+     "palm mute galope metal clase"
+    ]
+   },
+   "pedal-riffs": {
+    "title": "Riffs con nota pedal",
+    "theory": [
+     "Una nota pedal es una nota que vuelve una y otra vez mientras las demás se mueven alrededor. En el metal suele ser la cuerda grave al aire: chug, nota, chug, nota.",
+     "En la cuerda E grave, las notas de Mi menor son los trastes 0, 2, 3, 5, 7, 8, 10 y 12. Agregá el traste 1 (F, la segunda menor) y aparece el sonido frigio, más oscuro; el traste 6 (B♭, la quinta disminuida) es el más oscuro de todos.",
+     "Dejá las notas pedal con palm mute y que las pisadas suenen un poco más: el contraste hace hablar al riff."
+    ],
+    "tips": [],
+    "tutorials": [
+     "riff metal nota pedal mi al aire"
+    ]
+   },
+   "metal-power": {
+    "title": "Riffs con power chords en menor",
+    "theory": [
+     "El metal vive en tonalidades menores. En Mi menor los power chords que encajan son E5, G5, A5, B5, C5 y D5 (F#5 se evita: F# no tiene quinta justa en la tonalidad); los movimientos más usados son i–♭VI–♭VII (E5–C5–D5) e i–♭III (E5–G5).",
+     "Sumá F5, medio tono arriba de la fundamental (el ♭II frigio), y el riff se oscurece al instante.",
+     "Mezclá apagado y abierto: hacé el chug de la fundamental con palm mute y dejá sonar los power chords que se mueven. Los acentos salen del contraste, no de pegarle más fuerte."
+    ],
+    "tips": [],
+    "tutorials": [
+     "riff metal power chords tonalidad menor"
+    ]
+   },
+   "metal-intervals": {
+    "title": "Intervalos oscuros: el tritono y la segunda menor",
+    "theory": [
+     "El tritono parte la octava al medio: seis trastes. Durante siglos se lo evitó por inestable; el metal lo adoptó como su sonido característico. E a B♭ es un tritono.",
+     "La segunda menor (un traste) es el intervalo más disonante. Tocada nota tras nota suena a amenaza; tocada junta, a grito.",
+     "Las octavas (dos cuerdas y dos trastes de distancia) engordan un riff sin agregar notas: la forma clásica de doblar una melodía en la música pesada."
+    ],
+    "tips": [],
+    "tutorials": [
+     "tritono metal riff explicado"
+    ]
+   },
+   "metal-scales": {
+    "title": "Las escalas del metal",
+    "theory": [
+     "La menor natural (1 2 ♭3 4 5 ♭6 ♭7) es el color por defecto de las melodías metaleras.",
+     "La menor armónica sube la 7ª: el salto entre la ♭6 y la 7 suena exótico y neoclásico, y el acorde V se vuelve mayor y tira fuerte hacia la fundamental.",
+     "El frigio baja la 2ª: el semitono arriba de la fundamental da esa pesadez oscura con sabor español. Muchos riffs mezclan menor y frigio sin problema."
+    ],
+    "tips": [],
+    "tutorials": [
+     "escalas metal menor armónica frigio guitarra"
+    ]
+   },
+   "sequences": {
+    "title": "Secuencias de escala",
+    "theory": [
+     "Una secuencia toca la escala en grupitos que se repiten en lugar de subir y bajar derecho: grupos de tres, de cuatro, o patrones como \"subir tres, volver una\".",
+     "Las secuencias convierten una escala en líneas que suenan a música y construyen velocidad, porque la mano repite un movimiento chico.",
+     "Acentuá la primera nota de cada grupo: el oído sigue los grupos y la línea suena ordenada aunque sea rápida."
+    ],
+    "tips": [],
+    "tutorials": [
+     "secuencias pentatónica grupos de tres y cuatro"
+    ]
+   },
+   "tremolo": {
+    "title": "Trémolo",
+    "theory": [
+     "El trémolo repite una nota lo más rápido posible con púa alternada. Es el sonido sostenido y zumbante de las melodías del metal extremo.",
+     "El movimiento es chiquito y sale de una muñeca suelta; la tensión lo vuelve desparejo. Si te ayuda, apoyate apenas con el costado de la mano.",
+     "Cambiá de nota sin frenar la mano derecha: la púa mantiene el motor andando mientras la izquierda toca la melodía."
+    ],
+    "tips": [],
+    "tutorials": [
+     "técnica de trémolo metal guitarra"
+    ]
+   },
+   "metal-bends": {
+    "title": "Bends que gritan, armónicos artificiales y vibrato",
+    "theory": [
+     "El armónico artificial (pinch harmonic) es un chillido: justo después de que la púa toca la cuerda, el costado del pulgar la roza. El lugar de la cuerda donde pulsás decide qué armónico suena; con ganancia salta al frente.",
+     "El vibrato metalero es amplio y controlado: un cuarto o medio tono para cada lado, a tiempo. Un over-bend (más de un tono) es un grito a propósito, pero igual apunta a una altura.",
+     "El rastrillo (rake) arrastra la púa por cuerdas apagadas antes de la nota objetivo: un \"zip\" percusivo que lanza el bend."
+    ],
+    "tips": [],
+    "tutorials": [
+     "pinch harmonic metal vibrato clase"
+    ]
+   },
+   "pedal-licks": {
+    "title": "Licks con nota pedal",
+    "theory": [
+     "Los guitarristas de lead también usan la idea del pedal: una nota fija alterna con una melodía que se mueve, todo en una cuerda. La nota fija puede estar debajo o encima de la melodía.",
+     "Sobre un pedal brilla la menor armónica: su séptima elevada suena dramática contra la nota repetida.",
+     "Dejá la mano en posición y mové solo los dedos: la nota pedal es tu ancla y la melodía camina alrededor."
+    ],
+    "tips": [],
+    "tutorials": [
+     "lick nota pedal guitarra neoclásica"
+    ]
+   },
+   "twin-harmony": {
+    "title": "Armonía de dos guitarras en terceras",
+    "theory": [
+     "Dos guitarras tocando la misma melodía a una tercera de distancia es un sonido clásico del heavy metal. La segunda guitarra toca cada nota una tercera diatónica más arriba: dos notas de la escala más arriba.",
+     "Diatónica quiere decir que las terceras siguen la tonalidad: algunas son mayores (4 trastes) y otras menores (3 trastes). Quedarse en la escala es lo que hace que la armonía suene dulce y no choque.",
+     "Grabá o loopeá la melodía y tocá la armonía encima: las dos líneas tienen que empezar y terminar juntas."
+    ],
+    "tips": [],
+    "tutorials": [
+     "armonía dos guitarras terceras metal"
+    ]
+   },
+   "metal-arpeggios": {
+    "title": "Arpegios menores y disminuidos",
+    "theory": [
+     "Un arpegio es un acorde tocado de a una nota. Los arpegios menores y disminuidos con sweep son la columna del metal neoclásico.",
+     "En Mi menor armónica el acorde del 7º grado es Re# disminuido (D# F# A): apilando una tercera menor más aparece el disminuido con séptima, simétrico, que se repite cada tres trastes.",
+     "Hacé sweep solo cuando cada nota suena separada: primero tocá el arpegio lento con púa alternada y después dejá que la púa caiga por las cuerdas."
+    ],
+    "tips": [],
+    "tutorials": [
+     "arpegio disminuido sweep metal"
+    ]
+   },
+   "metal-song": {
+    "title": "Un tema de metal completo",
+    "theory": [
+     "Un tema de metal se arma con riffs ordenados en secciones: intro, estrofa, estribillo, un breakdown y un final. Cada sección tiene su ritmo y su energía.",
+     "La dinámica también importa en la música pesada: un breakdown a mitad de tiempo o una sección de acordes que suenan abiertos hace que la parte rápida siguiente pegue más fuerte.",
+     "Aprendé la forma antes que los detalles: sabé cuántas veces se repite cada riff y qué viene después."
+    ],
+    "tips": [],
+    "tutorials": [
+     "estructura tema metal riffs breakdown"
     ]
    }
   },
@@ -4420,7 +4731,45 @@
    "moving-barres/f-gm-change": "F ↔ Gm: la misma mano dos trastes más arriba",
    "moving-barres/moving-chart": "Acordes con cejilla que se mueven",
    "barre-sevenths/f7-bb7-change": "F7 ↔ Bb7",
-   "barre-sevenths/bm7-fsm7-change": "Bm7 ↔ F#m7"
+   "barre-sevenths/bm7-fsm7-change": "Bm7 ↔ F#m7",
+   "fingers/chromatic-up": "1-2-3-4 subiendo cuatro cuerdas",
+   "fingers/chromatic-down": "4-3-2-1 de vuelta",
+   "fingers/finger-independence": "1-3-2-4: independencia de dedos",
+   "fingers/clean-quiz": "Zumbidos y notas apagadas: causas y soluciones",
+   "key-signatures/keysig-quiz": "¿Cuántos sostenidos o bemoles?",
+   "key-signatures/d-major": "Re mayor (dos sostenidos)",
+   "key-signatures/f-major": "Fa mayor (un bemol)",
+   "fingerstyle/c-arpeggio": "C: p i m a m i",
+   "fingerstyle/am-arpeggio": "Am: el mismo patrón",
+   "fingerstyle/g-arpeggio": "G: pulgar en la 6ª cuerda",
+   "metal-chug/chug-eighths": "Corcheas hacia abajo en la E grave",
+   "metal-chug/gallop": "El galope",
+   "metal-chug/reverse-gallop": "El galope invertido",
+   "pedal-riffs/pedal-minor": "Riff pedal en Mi menor",
+   "pedal-riffs/pedal-phrygian": "Riff pedal frigio",
+   "pedal-riffs/chromatic-climb": "Subida cromática a la quinta",
+   "metal-power/chug-chart": "Riff con púa abajo en Mi menor",
+   "metal-power/gallop-chart": "Galope frigio",
+   "metal-intervals/dark-ear": "¿Segunda menor, tritono, quinta u octava?",
+   "metal-intervals/dark-play": "Tocá una segunda menor, un tritono o una octava",
+   "metal-intervals/metal-tech-quiz": "Técnica de ritmo metalero",
+   "metal-scales/e-minor-open": "Mi menor natural en posición abierta",
+   "metal-scales/e-harmonic": "Mi menor armónica",
+   "metal-scales/a-phrygian": "La frigio en el traste 5",
+   "sequences/threes-down": "Pentatónica de La menor de a tres, bajando",
+   "sequences/fours-up": "Pentatónica de La menor de a cuatro, subiendo",
+   "tremolo/tremolo-e": "Semicorcheas en la E aguda, traste 12",
+   "metal-bends/bend-g12": "Bend de un tono: cuerda G, traste 12 → A",
+   "metal-bends/bend-b15": "Bend largo: cuerda B, traste 15 → E, sostenido",
+   "metal-bends/lead-tech-quiz": "Técnica de lead, estilo metal",
+   "pedal-licks/pedal-harmonic": "Mi menor armónica sobre un pedal de B",
+   "pedal-licks/pedal-pentatonic": "Lick pedal pentatónico",
+   "twin-harmony/melody-line": "La melodía (Mi menor, cuerda B)",
+   "twin-harmony/harmony-line": "La armonía, una tercera arriba",
+   "metal-arpeggios/em-sweep": "Sweep de Mi menor en tres cuerdas",
+   "metal-arpeggios/dim-arpeggio": "Re# disminuido y vuelta a Mi menor",
+   "metal-song/song-slow": "El tema entero al 70%",
+   "metal-song/song-full": "A velocidad completa"
   },
   "charts": {
    "01-em-am": {
@@ -4542,6 +4891,18 @@
    "30-swing-hard": {
     "title": "Swing marcado",
     "note": "Swing marcado: los rasguidos hacia arriba caen tarde, en el último tercio del tiempo (largo–corto)."
+   },
+   "31-metal-chug": {
+    "title": "Riff con púa abajo en Mi menor",
+    "note": "Todo hacia abajo y con palm mute. Dejá sonar el último acorde de cada línea."
+   },
+   "32-phrygian-gallop": {
+    "title": "Galope frigio",
+    "note": "Galope en cada tiempo: una corchea y dos semicorcheas. F5 está medio tono arriba de E5: la segunda menor frigia."
+   },
+   "33-metal-piece": {
+    "title": "Un tema de metal completo",
+    "note": "Intro y estrofa con púa abajo y palm mute; el estribillo deja sonar los acordes; el breakdown va a mitad de tiempo."
    }
   },
   "sections": {
@@ -4573,7 +4934,11 @@
    "iii–VI–ii–V": "iii–VI–ii–V",
    "With substitutes": "Con sustitutos",
    "A": "A",
-   "B": "B"
+   "B": "B",
+   "Riff": "Riff",
+   "Intro": "Intro",
+   "Breakdown": "Breakdown",
+   "Ending": "Final"
   },
   "glossary": {
    "half_step": {
@@ -4862,6 +5227,325 @@
     "name": "Vaivén en seis por ocho",
     "tip": "Dos pulsos grandes por compás, cada uno dividido en tres. Sentilo como 1-2-3 4-5-6."
    }
+  },
+  "ex_theory": {
+   "strings/open-strings": "Las cuerdas al aire, de grave a aguda, son E A D G B E (Mi La Re Sol Si Mi). Cada una está una cuarta arriba de la anterior, salvo de G a B, que es una tercera mayor: por eso una cuerda \"rompe\" todos los patrones de la guitarra.",
+   "strings/open-strings-back": "Bajando de la 1ª a la 6ª cuerda, la altura baja cada vez. Dejá sonar cada cuerda hasta que suene la siguiente: es el primer paso hacia un sonido limpio y ligado.",
+   "reading-tab/strings-tab-quiz": "La tablatura es un mapa del mástil, no del ritmo: las líneas son cuerdas y los números, trastes. Saber qué línea es cada cuerda ya es la mitad de leerla.",
+   "reading-tab/play-the-tab": "Esta tab sube cuerda por cuerda: al aire y después una nota pisada en la misma cuerda. Leé una columna por vez y decí la cuerda y el traste antes de tocarla.",
+   "e-minor/em-x4": "Em es una tríada menor (E, G, B) repartida en seis cuerdas: las cuerdas al aire ya dan E, G y B, y tus dos dedos agregan B y E una octava más arriba. Tienen que sonar todas: si una no suena, algún dedo la está tocando.",
+   "first-change/am-x4": "Am es A, C y E. La 5ª cuerda al aire es la fundamental, así que rasgueá desde la 5ª: la 6ª pondría la quinta en el bajo y ensuciaría el acorde.",
+   "first-change/em-am-change": "Em y Am tienen la misma forma de dos dedos, corrida una cuerda, y los dos contienen la nota E. Mové los dedos como un bloque y mirá dónde van a caer, no de dónde salen.",
+   "first-change/em-am-chart": "Cada acorde dura un compás entero de cuatro tiempos. Cambiá en el tiempo 1: empezá a moverte durante el tiempo 4 del compás anterior para que el acorde nuevo suene justo con el clic.",
+   "d-a-e/d-x4": "D es D, F# y A. Su fundamental es la 4ª cuerda al aire, así que las dos más graves no suenan. La tercera (F#) está arriba de todo: pisala bien, es la que lo hace mayor.",
+   "d-a-e/d-a-change": "D y A son el I y el V de Re mayor: el V quiere volver al I. Cambiá sin frenar la mano del rasgueo: un acorde que llega tarde es mejor que un pulso cortado.",
+   "d-a-e/dae-chart": "D, A y E son tres acordes mayores; en La mayor son IV, I y V, los tres acordes de muchísimas canciones. Escuchá cuál suena a casa.",
+   "g-c/g-c-change": "G y C son I y IV en Sol (o V y I en Do). La 3ª cuerda al aire (G) suena en los dos: dejala sonar como puente entre uno y otro.",
+   "g-c/pop-chart": "I–V–vi–IV en Sol es G–D–Em–C. Tres de los cuatro acordes son mayores; el vi (Em) es el relativo menor y le da a la progresión su giro agridulce.",
+   "color-chords/d-sus-change": "Dsus4 reemplaza la tercera (F#) por la cuarta (G). La cuarta está a medio tono de la tercera y quiere bajar: es la clásica resolución sus4 → mayor.",
+   "color-chords/folk-chart": "Los acordes suspendidos adornan a los comunes sin cambiar la armonía: el bajo queda, solo se mueve la nota de arriba. Mantené el rasgueo parejo y dejá que hable ese dedo.",
+   "color-chords/anchor-chart": "Em7, G, Dsus4 y Cadd9 dejan los dedos 3 y 4 en los mismos trastes de las dos cuerdas agudas. Esos anclajes no se levantan mientras el resto se mueve: menos dedos que mover, cambios más rápidos.",
+   "strumming/ballad-chart": "El péndulo nunca se detiene: la mano baja en cada número y sube en cada \"y\", y en los silencios simplemente no toca las cuerdas. El patrón sale de qué golpes tocan las cuerdas.",
+   "three-four/waltz-chart": "En 3/4 el compás tiene tres tiempos y el primero es el fuerte: un rasguido más grave en el 1 y más livianos en el 2 y el 3 lo hacen sonar a vals.",
+   "pulse/pulse-tap": "El pulso es una grilla de tiempos iguales. Golpear con el clic te entrena para caer exactamente en él, no solo cerca.",
+   "note-values/values-quiz": "Las figuras son proporciones: cada una vale la mitad de la anterior. Sabiendo que la negra vale un tiempo, todas las demás son una multiplicación o una división.",
+   "long-notes/long-tap": "Una blanca dura dos clics y una redonda, cuatro. Contá los tiempos en voz alta mientras dura la nota: el próximo ataque tiene que caer en su clic, no antes.",
+   "eighths/eighths-tap": "Dos corcheas llenan un tiempo: la primera cae con el clic y la segunda justo a mitad de camino del siguiente. Decí \"uno-y\" para ubicarla.",
+   "rests/rests-tap": "Un silencio tiene duración, igual que una nota. Seguí contando durante el silencio: la nota que viene después es donde casi todos se apuran.",
+   "mixing-rhythms/mix-tap": "Leer ritmo es agrupar: mirá cada tiempo como un bloque (una negra, dos corcheas, un silencio) en lugar de leer nota por nota.",
+   "rhythm-on-guitar/rhythm-guitar": "En la guitarra un silencio necesita una acción: aflojá los dedos o apoyá la mano derecha sobre la cuerda para que la nota se corte a tiempo.",
+   "blues/a7-d7-change": "A7 y D7 son el I7 y el IV7 de un blues en La. En el blues hasta el acorde I es una séptima de dominante: esa tensión que nunca se resuelve del todo es el color del estilo.",
+   "blues/blues-chart": "Doce compases en tres grupos de cuatro: I durante cuatro, IV durante dos y vuelta al I, después V–IV–I y el turnaround. Contá los compases y no te perdés nunca.",
+   "sevenths/g7-c-change": "G7 tiene B y F, a un tritono de distancia. B sube medio tono a C y F baja medio tono a E: ese tirón es la razón por la que una séptima de dominante resuelve tan fuerte a su I.",
+   "sevenths/ii-v-i-chart": "Dm7 → G7 → Cmaj7: las fundamentales suben una cuarta cada vez, y la séptima de cada acorde baja por grado a la tercera del siguiente.",
+   "power-chords/rock-chart": "Un power chord no tiene tercera, así que la distorsión no lo vuelve barro: la fundamental y la quinta dan una combinación limpia y fuerte aunque la señal esté saturada.",
+   "barre/f-x4": "F es la forma de E al aire subida un traste, con el índice haciendo de cejuela. Girá un poco el índice hacia su costado óseo y pegalo al traste; usá el peso del brazo en lugar de apretar con el pulgar.",
+   "barre/andalusian-chart": "La cadencia andaluza baja en menor: i–VII–VI–V (Am–G–F–E). El E del final es mayor, prestado de la menor armónica, y tira directo de vuelta a Am.",
+   "moving-barres/f-gm-change": "F y Gm usan la cejilla con forma de E, a dos trastes. Solo cambia el dedo medio: levantalo y aparece la tercera menor de Gm. La misma mano, otro acorde.",
+   "moving-barres/moving-chart": "Nombrá cada cejilla por la nota que queda bajo el índice en la 6ª o la 5ª cuerda. Si conocés las notas de esas dos cuerdas, podés tocar cualquier acorde mayor o menor.",
+   "barre-sevenths/f7-bb7-change": "F7 a Bb7 es I7 a IV7 de un blues en Fa. Las dos formas están en el mismo traste, con la fundamental en la 6ª y después en la 5ª: un salto de cuerda, sin deslizar.",
+   "barre-sevenths/bm7-fsm7-change": "Bm7 y F#m7 son acordes menores con séptima a una cuarta de distancia. El m7 es una tríada menor más una séptima menor: más suave que una dominante y muy común en pop y soul.",
+   "pentatonic/pentatonic-up": "La pentatónica menor de La es A C D E G: la escala menor sin su 2ª ni su 6ª. Como no tiene semitonos, casi cualquier nota suena bien sobre una base menor o de blues.",
+   "pentatonic/pentatonic-down": "Bajando, usá la misma digitación: dos notas por cuerda, índice en el traste 5. Decí la fundamental (A) en voz alta cada vez que pasás por ella: es tu base.",
+   "alternate-picking/alt-pick-play": "Abajo en los tiempos y en los \"y\", arriba en las \"e\" y las \"a\". Si la mano se mueve siempre a tiempo, la dirección de cada nota la decide el ritmo, nunca la adivinanza.",
+   "alternate-picking/picking-quiz": "Púa es un movimiento chico y relajado de muñeca. La tensión es enemiga de la velocidad: cuanto menos apretás la púa, más rápido y parejo podés tocar.",
+   "palm-mute/pm-play": "Apoyá el canto de la mano justo donde las cuerdas salen del puente. Correla unos milímetros hacia el mástil para apagar más, o hacia el puente para que suene más.",
+   "economy-skipping/skip-octaves": "Octavas a dos cuerdas: dos cuerdas arriba y dos trastes arriba (tres si cruzás la cuerda B). La cuerda del medio no tiene que sonar: rozala apenas con el dedo que pisa.",
+   "economy-skipping/economy-quiz": "La púa económica ahorra movimiento al cambiar de cuerda; la alternada mantiene el ritmo firme. La mayoría de los guitarristas mezcla las dos según la frase.",
+   "legato/legato-lick": "Un golpe de púa por cuerda y la mano izquierda hace el resto: ligado ascendente y descendente. Buscá que las tres notas suenen al mismo volumen.",
+   "legato/legato-quiz": "En el ligado las otras cuerdas tienden a sonar cuando tirás. Apagalas con los dedos que pisan y con el costado de la mano derecha.",
+   "bends-vibrato/bends-quiz": "Hacer un bend es afinar mientras tocás: la nota objetivo es fija y el oído la controla. Un bend que se queda corto suena desafinado, no expresivo.",
+   "bends-vibrato/half-bend": "Un bend de medio tono sube la nota lo que vale un traste. Tocá primero el traste 11 para escuchar el objetivo y después estirá el 10 hasta igualarlo.",
+   "blues-shuffle/boogie-a": "La línea de boogie recorre la fundamental, la 3ª, la 5ª, la 6ª y la 7ª menor del acorde: dibuja un A7 en el bajo. Tocala con el ritmo largo-corto del shuffle.",
+   "blues-shuffle/boogie-e": "Los mismos intervalos desde E: la forma en la guitarra es idéntica, una cuerda más abajo. Ese es el poder de los patrones: los aprendés una vez y los tocás en cualquier tonalidad.",
+   "blues-shuffle/shuffle-e": "El quick change visita el IV en el compás 2 y vuelve al I en el 3. Escuchalo antes de tocar: la forma es la misma, solo cambia ese compás.",
+   "blues-thirds/curl-a7": "C es la tercera menor de La y C# la mayor. Pasar de una a otra con un ligado o un deslizamiento es el gesto más típico de la guitarra de blues.",
+   "blues-thirds/curl-d7": "Sobre D7 el mismo gesto va de F a F#. Cada acorde del blues tiene su tercera menor y mayor: seguí el acorde, no solo la escala.",
+   "blues-thirds/curl-e7": "Sobre E7 es G a G#. Caer en G# justo cuando llega el E7 hace que el acorde V suene inconfundible.",
+   "blues-thirds/thirds": "Notas del acorde en el cambio: C# para A7, F# para D7, G# para E7. Apuntar a estas notas hace que un solo siga la armonía en lugar de flotar por encima.",
+   "blues-bends/bend-g7": "Un bend de un tono desde el traste 7 de la cuerda G llega a la altura del traste 9 (E). Los dedos 1, 2 y 3 empujan juntos; la muñeca gira.",
+   "blues-bends/bend-b8": "En la cuerda B el bend se puede hacer hacia arriba o hacia abajo; lo común es empujar hacia la cuerda G. Objetivo: la altura del traste 10 (A).",
+   "blues-bends/bend-curl": "Un bend de un cuarto o medio tono sobre la tercera menor (C) hacia C# es el \"curl\": la blue note empujada hacia la tercera mayor sin llegar del todo.",
+   "blues-answers/question": "Una frase que termina en la 5ª (E en La) suena abierta, como una pregunta. Dónde termina una frase cambia su sentido más que las notas anteriores.",
+   "blues-answers/answer": "Terminar en la fundamental (A) cierra la idea. La respuesta reusa el bend de la pregunta, así las dos frases suenan emparentadas.",
+   "blues-answers/answer-e": "Bajada cinco trastes, la misma frase responde en Mi. Transportar una frase que ya sabés es la forma más rápida de tener vocabulario en todas las tonalidades.",
+   "blues-turnaround/turn-a": "La línea G–F#–F–E baja por semitonos desde la 7ª menor hasta la 5ª de La, justo después de la fundamental aguda. El movimiento cromático lleva el oído hacia el V.",
+   "blues-turnaround/turn-e": "El mismo turnaround cinco trastes más abajo funciona en Mi. Aprendelo como forma y después decí las notas: saber qué tocás lo vuelve trasladable.",
+   "blues-turnaround/turn-chart": "A velocidad completa el chart pone a prueba la forma más que los dedos: sabé dónde están los compases 5, 9 y 11 sin contar cada tiempo.",
+   "blues-minor/bend-e8": "Sostener un bend afinado durante un segundo y medio es más difícil que llegar. Escuchá la altura mientras dura y corregila con movimientos chicos de muñeca.",
+   "blues-minor/long-answer": "Caer en C, la tercera menor, suena a casa en un blues menor: es nota del acorde de Am. Agregá vibrato al final para que la nota larga siga viva.",
+   "blues-minor/minor-chart": "Los tempos lentos dejan el tiempo al desnudo: cada cambio y cada silencio se escuchan clarísimo. Sentí el tiempo dividido en tres para que el shuffle quede firme.",
+   "blues-eight-bar/eight-slow": "En ocho compases los acordes cambian más rápido que en doce: hay menos tiempo en cada uno, así que anticipá el siguiente antes.",
+   "blues-eight-bar/eight-full": "A velocidad completa, sentí la forma en dos mitades de cuatro compases. La segunda mitad termina con el turnaround que te devuelve al principio.",
+   "blues-story/motif": "Un motivo es una idea corta que se puede repetir y cambiar. Seis notas alcanzan: cuanto más corto, más fácil reconocerlo cuando vuelve.",
+   "blues-story/variation": "El mismo comienzo con un final nuevo: el oyente reconoce el motivo y disfruta la sorpresa. Cambiá una cosa y mantené el resto.",
+   "blues-story/higher": "Llevar un motivo una octava arriba sube la energía sin notas nuevas. El registro es una de las formas más simples de construir un solo.",
+   "blues-story/story-chart": "Tres vueltas: presentar la idea, desarrollarla, llegar al punto más alto y cerrar. Planeá el final antes de empezar: una última nota clara hace que todo el solo suene pensado.",
+   "november-rain/f-chord": "La cejilla de F necesita todas las cuerdas limpias. Revisalas una por una, despacio: las que no suenan te dicen qué dedo ajustar.",
+   "november-rain/f-dm": "F y Dm comparten F y A: Dm es el relativo menor de F. Dos acordes con notas en común pero otro bajo suenan cercanos y con distinto ánimo.",
+   "november-rain/dm-g-c": "ii–V–I en Do: Dm prepara, G tensa, C resuelve. La cadencia más común de la música occidental, acá en una balada de rock.",
+   "november-rain/bend-c": "En una balada un bend es una nota cantada: lenta, afinada y sostenida. Llegá a la altura objetivo y dejala sonar antes de agregar vibrato.",
+   "november-rain/melody-c": "Esta frase usa la pentatónica de Do mayor y termina con vibrato. El fraseo (dónde respirás, qué sostenés) importa más que la cantidad de notas.",
+   "november-rain/nr-chart-slow": "Al 70% tenés tiempo para escuchar cada acorde. Aprovechalo para que cada cambio caiga exacto en el tiempo 1.",
+   "november-rain/nr-chart": "A velocidad completa la balada sigue pidiendo paciencia: un acorde por compás, dejalo respirar, no apures los cambios.",
+   "comfortably-numb/bm-a": "Bm a A es i a VII en Si menor: un tono abajo. Ese paso es uno de los movimientos más típicos del rock en tonalidad menor.",
+   "comfortably-numb/g-em": "G y Em son VI y iv en Si menor. Em comparte dos notas con G (G y B): por eso el cambio se siente tan suave.",
+   "comfortably-numb/d-a-c-g": "En Re mayor, C es el VII bemol prestado: un tono debajo del I. Agrega un color abierto, flotante, antes de que la progresión vuelva a casa.",
+   "comfortably-numb/bend-b": "Un bend largo sostenido dos segundos: escuchá la altura todo el tiempo. Un vibrato lento y amplio al final es la firma de este estilo.",
+   "comfortably-numb/pent-b": "La pentatónica de Si menor en el traste 7 es la misma caja que La menor en el 5, dos trastes más arriba. Una forma, cualquier tonalidad: solo movés la fundamental.",
+   "comfortably-numb/bend-phrase": "Bend, soltar y responder: subir y volver a bajar es un gesto completo. Hacé que la vuelta caiga a tiempo, como si fuera una nota escrita.",
+   "comfortably-numb/cn-chart-slow": "La estrofa está en Si menor y el estribillo en Re mayor, su relativo mayor. Fijate cómo las mismas notas se sienten más oscuras o más claras según el acorde de casa.",
+   "comfortably-numb/cn-chart": "A velocidad completa, mantené el rasgueo relajado y los cambios a tiempo: la fuerza de la canción viene de la firmeza, no de pegarle fuerte.",
+   "sharps-flats/steps-quiz": "El semitono es la distancia más chica de la música occidental: un traste. Dos semitonos forman un tono. E–F y B–C son semitonos naturales, sin ninguna nota entre ellos.",
+   "sharps-flats/naturals-pick": "Las notas naturales en una cuerda están a dos trastes, salvo E–F y B–C, que están a uno. Partí del nombre de la cuerda al aire y subí.",
+   "sharps-flats/naturals-play": "Saber el nombre de una nota y tocarla son habilidades distintas. Acá vas del nombre al traste: lo contrario de leer tablatura.",
+   "intervals/interval-frets-quiz": "Contá los semitonos entre las dos notas: 3 es una tercera menor, 4 una mayor, 5 una cuarta justa, 7 una quinta justa y 12 una octava.",
+   "intervals/play-3-5-8": "La 3ª, la 5ª y la octava son el esqueleto de todo acorde mayor. En cuerdas vecinas: la 5ª está una cuerda arriba y dos trastes adelante; la octava, dos cuerdas arriba y dos trastes adelante.",
+   "intervals/play-m3-4-6": "La tercera menor (3 trastes) vuelve menor a un acorde; la cuarta (5 trastes) es la distancia entre casi todas las cuerdas al aire; la sexta mayor (9 trastes) es la tercera menor invertida.",
+   "interval-ear/ear-3-5-8": "La octava suena como la misma nota, más aguda. La quinta suena hueca y estable. La tercera mayor suena brillante y dulce. Empezá por distinguir estas tres.",
+   "interval-ear/ear-thirds-fourths": "Las terceras suenan a acorde; la cuarta suena abierta y algo irresuelta, como si quisiera bajar a la tercera; la quinta suena estable. Cantalas para sentir la diferencia.",
+   "interval-ear/ear-play": "Escuchar un intervalo y encontrarlo en el mástil une el oído con la mano. Cantá la nota objetivo antes de tocarla.",
+   "interval-ear/ear-echo": "Repetir una frase es como los músicos aprenden de oído: escuchar, cantar y encontrar. Mantenela corta y encontrá la primera nota antes de preocuparte por el resto.",
+   "find-note/find-pick": "Las notas de la 6ª y la 5ª cuerda son las fundamentales de casi todas las cejillas y los power chords. Marcalas todas y buscá referencias como los trastes 5, 7 y 12.",
+   "find-note/find-6": "En la 6ª cuerda: F en el 1, G en el 3, A en el 5, B en el 7, C en el 8, D en el 10 y E en el 12. Aprendé estas siete y los sostenidos y bemoles son los trastes del medio.",
+   "find-note/find-5": "En la 5ª cuerda: B en el 2, C en el 3, D en el 5, E en el 7, F en el 8, G en el 10 y A en el 12. Es el mapa de la 6ª cuerda corrido cinco trastes.",
+   "find-note/find-mixed": "La 4ª cuerda repite el patrón de la 5ª cinco trastes más allá, igual que la 5ª repetía el de la 6ª. Usá lo que sabés de la cuerda de abajo.",
+   "name-the-note/name-low": "Nombrá cada nota marcada contando desde la referencia conocida más cercana, no desde la cuerda al aire cada vez.",
+   "name-the-note/name-all": "Un traste entre dos naturales tiene dos nombres: la nota de abajo con sostenido o la de arriba con bemol. Acá vale cualquiera; dentro de una tonalidad, solo uno.",
+   "twelfth-fret/name-twelve": "El traste 12 divide la cuerda por la mitad, así que suena exactamente una octava arriba de la cuerda al aire: el mismo nombre, el doble de frecuencia.",
+   "twelfth-fret/name-upper": "Arriba del traste 12 restá 12 y usá el mapa que ya sabés: el traste 15 es el 3 y el 17 es el 5.",
+   "octave-shapes/all-octaves": "Una nota, muchos lugares: las formas de octava los conectan. Desde cualquier nota podés saltar dos cuerdas y dos trastes, o dos cuerdas y tres trastes si cruzás la cuerda B.",
+   "degree-map/roots-pick": "La fundamental (1) es la nota que da nombre a la tonalidad o al acorde. Encontrá primero todas las fundamentales: los demás grados se miden desde ella.",
+   "degree-map/thirds-pick": "La tercera mayor está cuatro trastes arriba de la fundamental en la misma cuerda, o una cuerda arriba y un traste atrás. Es la nota que hace mayor a un acorde.",
+   "degree-map/degree-quiz": "Un grado es una posición en la escala: en Re mayor, el 3 es F# y el 5 es A. Pensar en grados te deja llevar cualquier idea a cualquier tonalidad.",
+   "sixteenths/sixteenths-tap": "Cuatro semicorcheas llenan un tiempo. Mantenelas parejas: el error más común es apurar las dos del medio.",
+   "dotted-eighth/dotted-tap": "Una corchea con puntillo más una semicorchea llenan un tiempo: larga (tres cuartos) y corta (un cuarto). Contá \"1 e y a\" y tocá en el \"1\" y en la \"a\".",
+   "triplets/triplets-tap": "Tres notas iguales en un tiempo: suenan más redondas que las corcheas. Decí \"tre-si-llo\" sin alargar la primera sílaba.",
+   "syncopation/sync-tap": "Una nota sincopada empieza en una parte débil del tiempo y se mantiene durante la siguiente fuerte. Seguí contando el pulso por debajo: eso es lo que hace sentir el empuje.",
+   "dictation-1/dictation-16": "Escuchá una vez para el pulso y otra para el ritmo de adentro. Identificá los grupos de cada tiempo antes de mirar el compás entero.",
+   "dictation-2/dictation-mix": "Los tresillos ruedan, los puntillos rengean y las síncopas llegan antes. Nombrá el carácter primero y después verificá las figuras exactas.",
+   "rhythm-2-on-guitar/rhythm-2-guitar": "Las figuras rápidas necesitan un movimiento de púa chico y relajado. La púa alternada mantiene parejas las semicorcheas: abajo en el tiempo y en el \"y\", arriba en el medio.",
+   "staff-clef/staff-quiz": "El pentagrama mide la altura en vertical: cada línea y cada espacio es una letra. La clave de sol se enrosca en la segunda línea desde abajo, que es G.",
+   "open-strings-staff/open-names": "La E grave está tres líneas adicionales debajo del pentagrama; la E aguda, en el espacio de arriba. Las cuatro cuerdas del medio suben por líneas y espacios.",
+   "naturals-low/low-names": "Cada paso en el alfabeto musical mueve la nota de una línea al espacio siguiente, o de un espacio a la línea siguiente.",
+   "naturals-all/all-names": "Usá las cuerdas al aire como anclas: E, A, D, G, B, E. Una nota pisada en primera posición nunca está a más de cuatro trastes de una de ellas.",
+   "staff-to-neck/staff-neck": "Una nota escrita tiene una altura exacta, pero en la guitarra puede estar en dos o tres cuerdas. En primera posición elegí el traste más bajo disponible.",
+   "accidentals-staff/acc-names": "Una alteración dura hasta el final del compás. El becuadro (♮) la cancela.",
+   "fifth-position/fifth-neck": "En 5ª posición cada dedo tiene su traste: el 1 en el 5, el 2 en el 6, el 3 en el 7 y el 4 en el 8. La mano queda quieta y solo se mueven los dedos.",
+   "seventh-position/seventh-play": "La 7ª posición cubre los trastes 7 a 10. Muchas tonalidades con sostenidos encajan bien acá, por eso es un lugar favorito para leer melodías.",
+   "read-and-play/first-play": "Leer, encontrar, tocar: decí el nombre de la nota, imaginá su lugar en el mástil y después tocala. La velocidad viene de repetir, no de adivinar.",
+   "major-scale/c-one-string": "En una sola cuerda el patrón de pasos se ve: dos trastes por tono y uno por semitono. Desde C en la 5ª cuerda: 2-2-1-2-2-2-1 trastes.",
+   "major-scale/g-position": "En una posición la misma escala entra bajo la mano en las seis cuerdas. Los dedos 1 a 4 toman un traste cada uno; los estiramientos vienen de los semitonos.",
+   "major-scale/major-degree-quiz": "Los grados se cuentan desde la fundamental de la tonalidad: en Sol mayor, el 4 es C y el 7 es F#. La 3ª y la 7ª son las notas que más cambian entre escalas.",
+   "spelling/spelling-quiz": "Cada letra aparece una vez en la escala mayor. Para saber los sostenidos de una tonalidad usá el orden F C G D A E B; los bemoles van al revés: B E A D G C F.",
+   "spelling/a-major": "La mayor tiene tres sostenidos: F#, C# y G#. En la guitarra el patrón es el mismo que Sol mayor, dos trastes más arriba.",
+   "spelling/eb-major": "Mi bemol mayor tiene tres bemoles: B♭, E♭ y A♭. La digitación es la misma que cualquier escala mayor: buscá primero la fundamental E♭ y armá desde ahí.",
+   "natural-minor/relative-quiz": "El relativo menor empieza en el 6º grado de la escala mayor, tres trastes debajo de su fundamental. La misma armadura, otra casa.",
+   "natural-minor/which-one": "Las escalas mayores tienen tercera mayor (luminosa) y las menores, tercera menor (oscura). Escuchá la tercera nota: es la que decide el carácter.",
+   "natural-minor/a-minor": "La menor natural usa solo notas naturales, como Do mayor, pero empieza y termina en A. Apoyate en A, C y E: las notas del acorde de Am.",
+   "positions/position-pick": "Marcar la escala en el diagrama antes de tocarla arma un mapa mental. Fijate dónde caen las fundamentales: son las que sostienen el patrón.",
+   "positions/position-1": "Subí y bajá sin frenar arriba: la vuelta en la nota más aguda es donde el ritmo suele cortarse.",
+   "positions/position-2": "La siguiente posición empieza donde terminó la anterior. Las notas compartidas son los puentes que conectan los patrones a lo largo del mástil.",
+   "positions/position-3": "Las posiciones altas usan las mismas notas en otra octava o en otras cuerdas. Reconocer la fundamental en cada una es lo que te mantiene orientado.",
+   "three-nps/g-3nps": "Tres notas por cuerda significa un patrón de púa regular: abajo-arriba-abajo en una cuerda, arriba-abajo-arriba en la siguiente. Por eso lo aman los guitarristas rápidos.",
+   "three-nps/g-3nps-back": "Bajando, el estiramiento es el mismo al revés. Dejá el pulgar detrás del mástil, a la altura del dedo medio, para que la mano pueda abrirse.",
+   "three-nps/a-minor-3nps": "La menor en tres notas por cuerda tiene las mismas notas que Do mayor: un patrón conocido con otra casa. Acentuá cada A.",
+   "pentatonic-relation/penta-quiz": "Toda pentatónica menor es también la pentatónica mayor de la nota una tercera menor más arriba: La menor = Do mayor, Mi menor = Sol mayor.",
+   "pentatonic-relation/c-major-penta": "La pentatónica de Do mayor es C D E G A: sin cuarta ni séptima, las dos notas que forman semitonos. Por eso suena abierta y nunca choca.",
+   "pentatonic-relation/penta-pick": "La caja de la pentatónica menor se ubica con el índice en la fundamental de la 6ª cuerda. Mové la caja y cambia la tonalidad: La en el traste 5, Mi en el 12 (o al aire).",
+   "minor-colors/a-harmonic": "La séptima elevada (G#) deja un salto de tres trastes entre F y G#: ese hueco exótico es el sonido de la menor armónica, preferida en la música clásica y en el metal.",
+   "minor-colors/a-melodic": "La menor melódica eleva la 6ª y la 7ª: es una escala mayor con tercera menor. Suave, sin saltos grandes.",
+   "minor-colors/minor-quiz": "Las tres menores solo se diferencian en la 6ª y la 7ª: natural (♭6 ♭7), armónica (♭6 7) y melódica (6 7).",
+   "modes-bright/bright-quiz": "Cada modo tiene una nota característica comparada con la mayor o la menor: #4 en lidio y ♭7 en mixolidio. Esa nota es el color del modo.",
+   "modes-bright/g-mixolydian": "Sol mixolidio es Sol mayor con F en lugar de F#: las notas de Do mayor centradas en G. Encaja perfecto sobre un acorde G7.",
+   "modes-bright/f-lydian": "Fa lidio es Fa mayor con B en lugar de B♭: otra vez las notas de Do mayor, ahora centradas en F. Apoyate en la B para escuchar esa sensación de flotar.",
+   "modes-dark/dark-quiz": "Comparados con la menor natural: el dórico sube la 6ª, el frigio baja la 2ª y el locrio baja la 2ª y la 5ª.",
+   "modes-dark/d-dorian": "Re dórico tiene las notas de Do mayor centradas en D. Su 6ª natural (B) es lo que lo separa de Re menor natural.",
+   "modes-dark/e-phrygian": "Mi frigio empieza con un semitono, de E a F. Esa ♭2 es el color oscuro, español y metalero del modo.",
+   "modes-dark/dark-degrees": "Deletreá los modos desde su propia fundamental: dórico 1 2 ♭3 4 5 6 ♭7, frigio 1 ♭2 ♭3 4 5 ♭6 ♭7.",
+   "symmetric/symmetric-quiz": "Las escalas simétricas se repiten a intervalos fijos: cada tono la de tonos enteros, cada tercera menor la disminuida. Por eso hay solo dos escalas de tonos enteros y tres disminuidas.",
+   "symmetric/c-whole-tone": "Do tonos enteros: C D E F# G# A#. Dos trastes entre cada nota. Suena perfecta sobre un acorde aumentado o un 7#5.",
+   "symmetric/g-half-whole": "Sol semitono-tono: G A♭ B♭ B C# D E F. Tiene la 3ª, la 5ª y la ♭7 de G7 más ♭9, #9 y #11: tensión que suena ordenada.",
+   "bebop/bebop-quiz": "La nota de paso agregada da ocho notas por octava, así las notas del acorde caen en los tiempos fuertes de una línea de corcheas.",
+   "bebop/g-dom-bebop": "Bajando desde G, la nota de paso F# queda entre G y F. Tocala descendiendo: las notas del acorde G, F, D y B caen en los tiempos.",
+   "bebop/c-major-bebop": "Do mayor bebop agrega A♭ entre G y A. Sobre Cmaj7 o C6, las notas del acorde quedan alineadas con el pulso.",
+   "altered/altered-quiz": "La escala alterada mantiene la fundamental, la 3ª y la ♭7 de una dominante y altera todo lo demás: ♭9, #9, #11 y ♭13.",
+   "altered/tensions-quiz": "Las tensiones se nombran desde la fundamental del acorde, una octava arriba: la 9ª es la 2ª, la 11ª la 4ª y la 13ª la 6ª.",
+   "altered/g-altered": "Sol alterada tiene las mismas notas que La bemol menor melódica. Pensala como \"la menor melódica medio tono arriba de la dominante\".",
+   "build-triads/triad-pick": "Encontrá la fundamental, después la 3ª (mayor: 4 trastes arriba; menor: 3) y la 5ª (7 trastes arriba). Cualquier trío de cuerdas sirve si esas notas están ahí.",
+   "build-triads/triad-tones": "Tríada mayor 1-3-5, menor 1-♭3-5, disminuida 1-♭3-♭5 y aumentada 1-3-#5. Los cuatro tipos salen de las cuatro maneras de apilar dos terceras.",
+   "build-triads/triad-ear": "La mayor suena luminosa y estable; la menor, más oscura. La diferencia es una sola nota, la 3ª, a un traste de distancia.",
+   "triad-inversions/c-top": "En las cuerdas 1-2-3, C aparece en tres formas subiendo por el mástil: cada forma nueva pone la siguiente nota del acorde arriba.",
+   "triad-inversions/g-middle": "Las cuerdas 2-3-4 dan las mismas tres inversiones con una forma un poco distinta por la afinación de la cuerda B.",
+   "triad-inversions/inversion-quiz": "La nota más grave da nombre a la inversión: fundamental en el bajo es estado fundamental, 3ª en el bajo es primera inversión y 5ª en el bajo, segunda.",
+   "inversion-bass/walk-down": "C, Em/B, F/A, G: el bajo baja C-B-A-G grado por grado. Las inversiones convierten los cambios de acorde en una melodía en el bajo.",
+   "inversion-bass/slash-quiz": "En un acorde con barra, la letra después de la barra es el bajo. Si esa nota es del acorde, es una inversión; si no, es un acorde sobre otro bajo.",
+   "sus-sixth/dsus-d": "La cuarta (G) que resuelve a la tercera (F#) es uno de los movimientos más antiguos de la música: tensión y relajación con un solo dedo.",
+   "sus-sixth/a-sus": "Asus2 baja la tercera a la segunda y Asus4 la sube a la cuarta. Moverse así alrededor de la tercera hace que un acorde quieto suene vivo.",
+   "sus-sixth/sus-quiz": "sus2 = 1-2-5, sus4 = 1-4-5, 6 = 1-3-5-6 y m6 = 1-♭3-5-6. Fijate que C6 tiene las mismas notas que Am7.",
+   "sus-sixth/c6-shape": "C6 en las cuatro cuerdas agudas es un sonido suave y estable que se usa para terminar canciones de swing y pop antiguo.",
+   "seventh-family/formula-quiz": "Un acorde de séptima es una tríada más una tercera arriba. El tipo de tríada y el tamaño de la séptima (mayor o menor) dan los cinco tipos principales.",
+   "seventh-family/sevenths-tones": "Deletreá cada acorde desde su fundamental con la fórmula: Cmaj7 C E G B, C7 C E G B♭, Cm7 C E♭ G B♭, Cm7♭5 C E♭ G♭ B♭.",
+   "seventh-family/c-family": "Cuatro acordes sobre la misma fundamental, cambiando una nota por vez. Escucharlos seguidos enseña el color de cada tipo más rápido que cualquier definición.",
+   "extensions/extension-quiz": "Encontrá la tensión por su distancia a la fundamental: 2 trastes (9ª), 5 (11ª) y 9 (13ª), uno más o uno menos para las alteradas.",
+   "extensions/extension-formula": "C9 = C E G B♭ D; Cmaj9 = C E G B D; C13 agrega A sobre la 9ª. La séptima dice si el acorde es dominante o mayor.",
+   "extensions/c-colors": "Estas cuatro dominantes comparten la 3ª y la 7ª. Solo cambia la nota de arriba y con ella la tensión: escuchá cómo muerden la ♭9 y la #9.",
+   "sweep-picking/sweep-am": "Un sweep es un único movimiento continuo de la púa, no varios golpes. Cada nota tiene que cortarse cuando suena la siguiente; si no, se escucha un acorde rasgueado.",
+   "sweep-picking/sweep-g": "El mismo sweep de tres cuerdas sobre una tríada mayor. Practicalo tan lento que cada nota salga pareja en volumen y en tiempo.",
+   "tapping-speed/tap-lick": "Tapping, pull-off y hammer-on: tres notas de un solo movimiento de la mano derecha. El tap tiene que ser un ligado firme; el pull-off tira la cuerda un poco hacia el costado.",
+   "tapping-speed/tech-review": "Cada técnica es una herramienta para un sonido: la púa para el ataque, el ligado para la fluidez, el bend para la voz y el tapping para los intervalos amplios.",
+   "caged-idea/caged-quiz": "C → A → G → E → D y de vuelta a C. Las notas más agudas de una forma son las más graves de la siguiente, así encajan como piezas de rompecabezas.",
+   "e-shape/e-shape-pick": "En la forma de E la fundamental está en la 6ª, la 4ª y la 1ª cuerda. Encontrá primero la de la 6ª y la forma se acomoda sola.",
+   "e-shape/e-shape-play": "G en forma de E es la cejilla del traste 3. Tocala nota por nota, de grave a agudo: escuchá fundamental, 5ª, fundamental, 3ª, 5ª y fundamental.",
+   "a-shape/a-shape-pick": "En la forma de A la fundamental está en la 5ª y la 3ª cuerda, bajo el índice y el anular. Para el mismo acorde queda siete trastes arriba de la forma de E: G en forma de E en el traste 3, en forma de A en el traste 10.",
+   "a-shape/a-shape-play": "C en forma de A es la cejilla del traste 3. Su fundamental está en la 5ª cuerda bajo el índice y otra vez en la 3ª bajo el anular.",
+   "d-shape/d-shape-pick": "La forma de D pone la fundamental en la 4ª cuerda y la tercera arriba. Es compacta, ideal para acordes agudos sobre un bajista.",
+   "c-shape/c-shape-pick": "La forma de C tiene la fundamental en la 5ª cuerda bajo un dedo alto y otra vez en la 2ª. Se estira hacia el clavijero.",
+   "g-shape/g-shape-pick": "La forma de G tiene fundamentales en la 6ª, la 3ª y la 1ª cuerda. Casi todos usan solo su parte de arriba o de abajo, porque la forma completa es un gran estiramiento.",
+   "caged-connect/connect-pick": "Partí de la fundamental y recordá en qué cuerda tiene la fundamental cada forma: E y G en la 6ª, A y C en la 5ª y D en la 4ª.",
+   "caged-connect/connect-play": "Cinco formas de G, de grave a agudo: E (traste 3), D, C, A y G. Escuchá que es el mismo acorde todo el camino, solo cambia la disposición.",
+   "caged-minor/minor-pick": "Las formas menores son las mayores con la tercera bajada un traste: las formas de Em, Am y Dm. Encontrá la tercera y bajala.",
+   "caged-minor/minor-play": "Am en forma de Em es la cejilla del traste 5; Am en forma de Am es al aire, o en el traste 12. El mismo acorde en dos zonas del mástil.",
+   "diatonic-triads/roman-quiz": "En toda tonalidad mayor el patrón de calidades es el mismo: mayores en I, IV y V; menores en ii, iii y vi; disminuido en vii°.",
+   "diatonic-triads/c-scale-chords": "Tocar las siete tríadas de Do seguidas es la escala armonizada. Cada acorde es el anterior subido por la escala, y las formas cambian para quedar dentro de la tonalidad.",
+   "diatonic-sevenths/sevenths-roman": "Con séptimas: Imaj7 y IVmaj7 son de séptima mayor, V7 es la única dominante, ii7 iii7 y vi7 son menores con séptima y vii es semidisminuido (m7♭5).",
+   "diatonic-sevenths/c-sevenths": "Todos los acordes de séptima de Do usan solo notas naturales. Subir una forma drop-2 por la escala muestra cómo van cambiando las calidades.",
+   "diatonic-sevenths/ninths-roman": "La 9ª es la 2ª una octava arriba. Encaja donde la escala da un tono arriba de la fundamental: en I, ii, IV, V y vi.",
+   "minor-key-chords/harmonic-roman": "La menor armónica da i(maj7), iiø7, III+maj7, iv7, V7, VImaj7 y vii°7. El V7 y el vii°7 contienen la séptima elevada, la sensible.",
+   "minor-key-chords/natural-roman": "La menor natural es el relativo mayor empezado en su 6º grado, así que sus acordes son los mismos siete en otro orden: i7 iiø7 IIImaj7 iv7 v7 VImaj7 VII7.",
+   "minor-key-chords/am-e7": "E7 en La menor tiene G#, medio tono debajo de A. Esa sensible es lo que hace que el V7 vuelva con tanta fuerza al i.",
+   "functions/function-quiz": "Tres familias: tónica (reposo), subdominante (alejarse) y dominante (tensión). La mayoría de las progresiones viajan tónica → subdominante → dominante → tónica.",
+   "ear-one-four-five/ear-145": "El IV suena a un paso afuera de casa, abierto y cálido; el V suena tenso, inclinado hacia el I. Cantá la fundamental de cada acorde para comparar.",
+   "ear-two-six/ear-12456": "El ii suena como un IV más suave (comparten dos notas); el vi suena como una versión triste del I (también comparten dos). Las notas en común explican los parecidos.",
+   "ear-minor-key/ear-minor": "En menor, VI y VII son acordes mayores a un tono de distancia. VI–VII–i es la clásica subida épica del rock y del metal.",
+   "famous-progressions/progression-quiz": "Reconocé una progresión por sus grados, no por los nombres de los acordes: cuando sabés I–V–vi–IV, la aprendiste en las doce tonalidades.",
+   "cadences/cadence-names": "Mirá los dos últimos acordes: V–I auténtica, IV–I plagal, cualquiera–V semicadencia y V–vi rota.",
+   "cadences/cadence-ear": "La auténtica suena final, la plagal como un \"amén\" suave, la semicadencia suena inconclusa y la rota, como un giro sorpresa.",
+   "secondary-dominants/secondary-quiz": "Para encontrar el V7 de un acorde, subí una quinta desde su fundamental y armá una séptima de dominante: el V7 de Dm es A7 y el de G es D7.",
+   "secondary-dominants/a7-dm": "A7 trae C#, que no está en Do mayor: sube medio tono a D, la fundamental de Dm. Esa sensible prestada es todo el truco.",
+   "secondary-dominants/e7-am": "E7 → Am es V7/vi en Do mayor, o simplemente V7–i en La menor. El mismo movimiento funciona en los dos contextos.",
+   "borrowed-chords/borrowed-quiz": "Un acorde prestado viene de la menor paralela (misma fundamental, tonalidad menor). Buscá bemoles que no pertenecen a la tonalidad mayor: A♭ en Fm, B♭ en B♭.",
+   "borrowed-chords/f-fm": "F a Fm cambia una sola nota: A baja a A♭. Ese semitono hacia abajo le da al iv menor su sonido nostálgico antes de volver a C.",
+   "shells/cmaj7-shell": "Un shell deja fundamental, 3ª y 7ª: la quinta aporta poco y el bajista suele cubrir la fundamental. Tres notas, toda la identidad del acorde.",
+   "shells/ii-v-i-shells": "Dm7 (fundamental en la 5ª), G7 (en la 6ª) y Cmaj7 (en la 5ª): la mano casi no se mueve mientras la armonía viaja.",
+   "shells/ii-v-i-g": "Las mismas tres formas llevadas a Sol: Am7, D7 y Gmaj7. Los shells hacen que todas las tonalidades se sientan como el mismo puñado de formas.",
+   "shells/shell-quiz": "Las notas guía son la 3ª y la 7ª: deciden el tipo de acorde. La fundamental y la quinta las comparten muchos acordes; la 3ª y la 7ª, no.",
+   "drop2/drop2-quiz": "El drop 2 toma la segunda nota desde arriba de un voicing cerrado y la baja una octava. El resultado abarca menos de una octava y media y entra en cuatro cuerdas vecinas.",
+   "drop2/cmaj7-drop2": "Cmaj7 en las cuatro cuerdas agudas: cuatro notas, cada una en su cuerda. Aprendé qué dedo toca la fundamental para encontrar las otras inversiones.",
+   "drop2/drop2-top": "En las cuerdas agudas el ii–V–I se mueve con pasos chiquitos: cada voz va a la nota más cercana del siguiente acorde.",
+   "drop2/drop2-middle": "En las cuerdas 2 a 5 los mismos voicings suenan más cálidos y dejan las cuerdas agudas libres para la melodía.",
+   "drop3/drop3-quiz": "El drop 3 baja una octava la tercera nota desde arriba, y deja un hueco entre el bajo y las tres notas de arriba.",
+   "drop3/g7-drop3": "G7 con el bajo en la 6ª cuerda saltea la 5ª: apagala con el dedo que toca el bajo.",
+   "drop3/drop3-ii-v-i": "Los ii–V–I en drop 3 alternan el bajo entre la 5ª y la 6ª cuerda, como un bajo caminante debajo de los acordes.",
+   "voice-leading/lead-quiz": "La séptima de un acorde suele bajar por grado a la tercera del siguiente. Ese movimiento chico es el centro de una conducción de voces suave.",
+   "voice-leading/lead-drop2": "I–vi–ii–V con drop 2: mantené las notas comunes y mové el resto por grado. La nota de arriba tiene que sonar como una pequeña melodía.",
+   "voice-leading/lead-triads": "C–Am–F–G con tríadas en las cuerdas agudas: elegí cada inversión para que la nota de arriba se mueva lo menos posible.",
+   "guide-tones/guide-quiz": "En Dm7 las notas guía son F y C; en G7, B y F; en Cmaj7, E y B. F se queda de Dm7 a G7 mientras C baja a B; después F baja a E.",
+   "guide-tones/guide-pairs": "Dos notas por acorde alcanzan para escuchar la progresión. La séptima de cada acorde baja medio tono a la tercera del siguiente.",
+   "guide-tones/guide-line-c": "Una línea de notas guía une las terceras y séptimas en una sola melodía. Tocala sola: si la progresión se sigue escuchando, la línea funciona.",
+   "guide-tones/guide-line-d": "En Re pasa lo mismo dos trastes más arriba: G se queda de Em7 a A7 mientras D baja a C#, y después G baja a F# en Dmaj7.",
+   "jazz-ii-v-i/ii-v-i-quiz": "Encontrá primero la dominante (el único acorde de séptima), después fijate que antes haya un m7 una quinta arriba y después un maj7 una cuarta arriba.",
+   "jazz-ii-v-i/ii-v-i-c-shells": "Primero shells: tres notas por acorde mantienen la atención en el movimiento de terceras y séptimas.",
+   "jazz-ii-v-i/keys-1": "C, F, B♭, E♭: cada tonalidad está una cuarta arriba de la anterior. Moverse por cuartas es como suelen viajar los temas de jazz.",
+   "jazz-ii-v-i/keys-2": "A♭, D♭, G♭, B: las tonalidades con bemoles. Las formas no cambian; solo su lugar en el mástil.",
+   "jazz-ii-v-i/keys-3": "E, A, D y G completan las doce. Después de estas, tocaste un ii–V–I en todas las tonalidades.",
+   "minor-ii-v-i-jazz/minor-quiz": "El ii–V–i menor se reconoce fácil por su primer acorde: un m7♭5 (semidisminuido) una quinta arriba de la dominante.",
+   "minor-ii-v-i-jazz/minor-drop2": "Bm7♭5 – E7♭9 – Am6 en drop 2: la F de Bm7♭5 se queda como ♭9 de E7 y después baja a E. Escuchá qué pocas notas se mueven.",
+   "minor-ii-v-i-jazz/minor-shells": "En Re menor: Em7♭5, A7, Dm7. Los shells de un ii–V–i menor son las mismas formas que en mayor; la quinta del ii, cuando se toca, va bajada.",
+   "minor-ii-v-i-jazz/minor-chart": "Tres tonalidades menores seguidas: escuchá el sonido más oscuro de la ♭9 en cada dominante.",
+   "turnarounds/turnaround-quiz": "Los turnarounds se arman con movimiento ii–V: cada acorde es el V o el ii del siguiente. Leelos hacia atrás desde el I.",
+   "turnarounds/i-vi-ii-v": "Cmaj7–Am7–Dm7–G7: las fundamentales bajan una tercera y después suben una cuarta dos veces. Dos compases que te llevan de vuelta al principio.",
+   "turnarounds/iii-vi-ii-v": "Em7–A7–Dm7–G7: el A7 es una dominante secundaria (V7/ii). Ahora cada acorde está una quinta arriba del siguiente.",
+   "turnarounds/turnaround-chart": "Tocar los tres turnarounds seguidos entrena el oído para escucharlos como variaciones de una misma idea.",
+   "tritone-sub/sub-quiz": "Una dominante y su sustituta por tritono están a seis trastes y comparten la misma 3ª y 7ª, intercambiadas.",
+   "tritone-sub/sub-guide": "Tocá solo las notas guía de G7 y D♭7: son las mismas dos notas. Por eso la sustitución suena tan natural.",
+   "tritone-sub/sub-shells": "Dm7–D♭7–Cmaj7: el bajo baja por semitonos, D–D♭–C, una línea cromática suave.",
+   "jazz-blues/blues-first-bars": "F7–B♭7–F7–Cm7–F7: el Cm7–F7 del compás 4 es un ii–V hacia B♭7. El jazz blues salpica ii–V sobre la vieja forma de 12 compases.",
+   "jazz-blues/blues-slow": "Seguí la forma: las tres líneas de cuatro compases siguen ahí, ahora con acordes extra que llevan a cada uno nuevo.",
+   "jazz-blues/blues-full": "A tempo completo, pensá en bloques de dos compases: cada bloque tiene un acorde objetivo y todo lo demás lleva hacia él.",
+   "song-form/bridge-shells": "El puente visita el IV, pide prestado el iv menor y vuelve con ii–V: Fmaj7, Fm6, Em7, A7, Dm7, G7.",
+   "song-form/form-slow": "A A B A: contá ocho compases por sección. El puente es donde la mayoría se pierde, así que marcá su primer compás en la cabeza.",
+   "song-form/form-full": "A tempo completo, saber la forma libera la atención para el sonido. Treinta y dos compases, cuatro secciones, una historia.",
+   "comping/comp-four": "Cuatro por compás: acordes cortos y parejos en cada tiempo, con un leve acento en el 2 y el 4. Es el pulso de la guitarra rítmica de swing.",
+   "comping/comp-charleston": "El ritmo Charleston: tiempo 1 y el \"y\" del 2. Dos golpes cortos por compás dejan mucho espacio y swinguean fuerte.",
+   "comping/comp-anticipation": "Anticipar el acorde siguiente en el \"y\" del 4 hace llegar la armonía antes y empuja la música hacia adelante.",
+   "comping/comp-space": "Acompañar es escuchar: un acorde por compás deja espacio al solista. Menos puede swinguear más.",
+   "swing-feel/light-swing": "Swing liviano: la corchea a contratiempo llega apenas tarde. Sentilo, no lo calcules.",
+   "swing-feel/hard-swing": "Swing marcado: el contratiempo cae en la última nota de un tresillo. Los golpes hacia arriba en los contratiempos lo hacen rebotar.",
+   "walking-bass/walk-ii-v-i": "Fundamental en el tiempo 1, notas del acorde en el 2 y el 3, una aproximación de medio tono en el 4. Cuatro reglas simples te dan una línea caminante sobre cualquier progresión.",
+   "walking-bass/walk-blues": "Sobre el blues las fundamentales se mueven una cuarta: de F a B♭ y de vuelta. Aproximá cada fundamental nueva desde medio tono arriba o abajo.",
+   "arpeggios-changes/arp-ii-v-i": "Un arpegio por acorde, en una posición: vas a escuchar los cambios aunque no haya acompañamiento.",
+   "arpeggios-changes/arp-turnaround": "Em7–A7–Dm7–G7 en el traste 7: empezá cada arpegio en su fundamental y después probá empezar en la nota del acorde más cercana.",
+   "approach-notes/approach-3rds": "Aproximá cada tercera desde medio tono abajo, del contratiempo al tiempo. El objetivo cae en el tiempo, así el acorde se escucha justo a tiempo.",
+   "approach-notes/approach-7ths": "Apuntar a las séptimas le da a la línea un sonido más sofisticado: la séptima define el tipo de acorde junto con la tercera.",
+   "enclosures/enclose-3": "Nota de la escala arriba, medio tono abajo, objetivo: tres notas que rodean la tercera antes de caer en ella.",
+   "enclosures/enclose-7": "Rodear la séptima funciona igual. La demora genera tensión y la llegada la resuelve.",
+   "enclosures/enclose-1": "Rodear las fundamentales de Em7–A7–Dm7–G7 hace audible cada cambio. Es el lugar más simple para empezar a escuchar los rodeos.",
+   "eighth-lines/eighths-3": "Empezá en la tercera en el tiempo 1 y recorré la escala del acorde en corcheas. Las notas del acorde caen en los tiempos cuando la línea empieza en una de ellas.",
+   "eighth-lines/eighths-7": "Empezar en la séptima y bajar le da a la línea una forma descendente que resuelve natural en la tercera del acorde siguiente.",
+   "jazz-etudes/etude-small-steps": "Formas de arpegio conectadas por grado: la séptima de cada acorde baja a la tercera del siguiente, como una línea de notas guía dentro de una melodía.",
+   "jazz-etudes/etude-minor-turn": "La F sobre E7 es la ♭9: una nota de La menor que hace sonar oscura a la dominante y la lleva a casa.",
+   "jazz-etudes/etude-blue-f": "Notas del acorde más la blue note (la ♭3, A♭ en Fa) sobre el acorde mayor: el blues dentro del jazz.",
+   "tone-rows/row-low": "Doce notas, sin repetir, sin tonalidad: leé cada nota y encontrala en los trastes graves. Es conocimiento del mástil en estado puro.",
+   "tone-rows/row-mid": "El mismo desafío alrededor del traste 5: las notas se mudan a otras cuerdas. Nombralas antes de tocar.",
+   "fingers/chromatic-up": "Cada traste es un semitono, así que este recorrido toca todas las notas en orden: la escala cromática. Todavía no se trata de música; se trata de que cada dedo sea dueño de su traste.",
+   "fingers/chromatic-down": "Bajando, tené los dedos de abajo listos pero relajados y levantá cada dedo recién cuando suena la nota siguiente. Esa pequeña superposición es lo que une las notas.",
+   "fingers/finger-independence": "Cambiar el orden de los dedos rompe la costumbre de moverlos en fila. Los dedos 3 y 4 comparten tendones, así que aprenden de a poco a moverse por separado.",
+   "fingers/clean-quiz": "Casi todas las notas que suenan mal tienen pocas causas: la distancia del dedo al traste, un dedo que toca la cuerda vecina o tocar antes de pisar.",
+   "key-signatures/keysig-quiz": "Subir una quinta agrega un sostenido (C, G, D, A…); bajar una quinta agrega un bemol (C, F, B♭, E♭…). Esa cadena es el círculo de quintas.",
+   "key-signatures/d-major": "Re mayor tiene F# y C#, los dos primeros sostenidos del orden. Decí cada sostenido en voz alta cuando lo tocás.",
+   "key-signatures/f-major": "Fa mayor tiene un solo bemol, B♭: el 4º grado. Sin él, la escala sonaría a Fa lidio.",
+   "fingerstyle/c-arpeggio": "El pulgar toca la fundamental en la 5ª cuerda y después i-m-a suben por las tres cuerdas agudas y vuelven. Sostené todo el acorde de C para que cada nota siga sonando.",
+   "fingerstyle/am-arpeggio": "El mismo patrón de mano derecha con otro acorde: en fingerstyle el patrón queda y los acordes cambian por debajo.",
+   "fingerstyle/g-arpeggio": "Cuando la fundamental está en la 6ª cuerda, el pulgar va ahí. El pulgar sigue al bajo; los otros dedos se quedan en sus cuerdas.",
+   "metal-chug/chug-eighths": "Todo hacia abajo: la púa vuelve por encima de la cuerda sin tocarla. Dejá la palma sobre el puente para que todas las notas sean igual de cortas.",
+   "metal-chug/gallop": "Corchea y dos semicorcheas por tiempo. Tocalo abajo-abajo-arriba o abajo-arriba-abajo; los dos sirven, pero el ritmo tiene que quedar parejo: las dos semicorcheas valen justo la mitad de la corchea.",
+   "metal-chug/reverse-gallop": "Dos semicorcheas y una corchea: el acento se corre al final del tiempo. Contá \"1 e y\" y sentí el empuje hacia el tiempo siguiente.",
+   "pedal-riffs/pedal-minor": "La E al aire vuelve entre cada nota pisada. G (traste 3), A (5) y B (7) son la tercera menor, la cuarta y la quinta de Mi: un sonido menor armado en una sola cuerda.",
+   "pedal-riffs/pedal-phrygian": "F contra E es una segunda menor: el intervalo más tenso que existe. La segunda menor del frigio es la firma de muchísimos riffs pesados.",
+   "pedal-riffs/chromatic-climb": "A (5), B♭ (6), B (7): una subida cromática que pasa por la quinta disminuida. Las notas cromáticas entre notas de la escala agregan amenaza sin salir de la tonalidad.",
+   "metal-power/chug-chart": "E5–C5–D5 es i–♭VI–♭VII: la subida épica en menor. Tocá todas las corcheas hacia abajo y mantené el palm mute parejo en los cambios.",
+   "metal-power/gallop-chart": "El rasgueo de galope (abajo en el 1 y después abajo-arriba en \"y\" y \"a\") sobre E5 y F5. El semitono entre los dos es todo el riff.",
+   "metal-intervals/dark-ear": "La quinta suena sólida, la octava como la misma nota, el tritono inestable y flotante, y la segunda menor apretada y áspera.",
+   "metal-intervals/dark-play": "En una cuerda: un traste (segunda menor), seis trastes (tritono) y doce (octava). Entre cuerdas, la octava está dos cuerdas arriba y dos trastes adelante.",
+   "metal-intervals/metal-tech-quiz": "La posición de la palma, la púa hacia abajo, el galope y el tritono: el vocabulario técnico de la guitarra rítmica de metal.",
+   "metal-scales/e-minor-open": "Mi menor en posición abierta usa las cuerdas al aire como notas de la escala: el lugar más grave y pesado para tocar metal en afinación estándar.",
+   "metal-scales/e-harmonic": "D# es la séptima elevada, medio tono debajo de E. Escuchá cómo tira hacia la fundamental: ese tirón es el sonido neoclásico.",
+   "metal-scales/a-phrygian": "La frigio tiene las notas de Fa mayor centradas en A. B♭, medio tono arriba de A, es la nota donde apoyarse.",
+   "sequences/threes-down": "Cada grupo empieza una nota más abajo que el anterior: C-A-G, A-G-E, G-E-D… Los grupos de tres sobre semicorcheas corren el acento, por eso suenan tan inquietos.",
+   "sequences/fours-up": "Los grupos de cuatro entran justo en un tiempo de semicorcheas: cada grupo empieza en un tiempo. Subí cuatro, empezá una nota más arriba y repetí.",
+   "tremolo/tremolo-e": "Púa alternada estricta en semicorcheas: cuatro notas por clic, todas iguales. Cuando sale limpio a 70, subí el tempo de a pocos BPM.",
+   "metal-bends/bend-g12": "Arriba en el mástil las cuerdas se estiran con más facilidad, así que es más fácil pasarse. Controlá el objetivo: el traste 14 de la misma cuerda.",
+   "metal-bends/bend-b15": "De D a E: un tono que cae en la fundamental de Mi menor. Sostenelo afinado antes de cualquier vibrato: el grito funciona solo si está en la nota.",
+   "metal-bends/lead-tech-quiz": "Armónicos artificiales, trémolo, bends y vibrato comparten una regla: control. Los sonidos salvajes se hacen con manos precisas.",
+   "pedal-licks/pedal-harmonic": "La melodía E-D#-E-F#-G-F#-E-D# se mueve sobre una B repetida (traste 7). D# es la séptima elevada de la menor armónica; contra el pedal de B dibuja un acorde de Si mayor, el V de Mi menor.",
+   "pedal-licks/pedal-pentatonic": "En la cuerda B con E (traste 5) como pedal: G, F# y A por encima. Repetir una célula chica es cómo los licks rápidos quedan limpios: la mano aprende un solo movimiento.",
+   "twin-harmony/melody-line": "E, F#, G, A y de vuelta a E, después D: una línea por grados en Mi menor. Aprendela hasta que salga sola antes de sumar la armonía.",
+   "twin-harmony/harmony-line": "G, A, B, C, B, A, G, F#: cada nota dos grados por encima de la melodía. E→G, F#→A y A→C son terceras menores (3 trastes); G→B y D→F# son mayores (4 trastes): la tonalidad decide.",
+   "metal-arpeggios/em-sweep": "E (cuerda G, traste 9), G, B y la E aguda: la tríada de Mi menor de ida y vuelta. El ligado de arriba deja que la púa cambie de dirección sin cortes.",
+   "metal-arpeggios/dim-arpeggio": "D#-F#-A es el vii° de Mi menor armónica; resuelve medio tono arriba a la tríada de Mi menor. Tensión y resolución en ocho notas.",
+   "metal-song/song-slow": "Cinco secciones, una tonalidad (Mi menor). Mirá los nombres de las secciones: cada una cambia la sensación aunque los acordes se repitan.",
+   "metal-song/song-full": "A tempo completo manda la mano derecha: mantené la púa hacia abajo relajada y dejá que el palm mute haga el trabajo pesado."
   }
  }
 }

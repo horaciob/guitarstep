@@ -354,7 +354,7 @@ def test_lesson_continue_keys_and_result_ring(app_page):
 def test_course_shows_progress_per_level(app_page):
     onboarded(app_page)
     go(app_page, "course")
-    expect(app_page.locator(".level").first.locator(".lvl-prog")).to_contain_text("0 of 5 lessons")
+    expect(app_page.locator(".level").first.locator(".lvl-prog")).to_contain_text("0 of 6 lessons")
 
 
 def test_quiz_exercise_is_answered_and_graded_on_the_server(app_page):
@@ -922,3 +922,24 @@ def test_chart_guide_shows_the_chords_on_demand(app_page):
     expect(ex.locator(".bars-section")).to_have_count(0)        # a single section needs no label
     app_page.reload()                                           # remembered
     expect(app_page.locator('.exercise[data-id="waltz-chart"] .g-shapes .mini-chord')).to_have_count(3)
+
+
+def test_exercise_theory_and_the_optional_metal_course(app_page):
+    onboarded(app_page)
+    go(app_page, "lesson/three-four")
+    ex = app_page.locator('.exercise[data-id="waltz-chart"]')
+    th = ex.locator(".ex-theory")
+    expect(th).to_be_hidden()
+    ex.locator("[data-act=theory]").click()                    # 📖 opens a short piece of theory
+    expect(th).to_be_visible()
+    expect(th).to_contain_text("three beats")
+    expect(ex.locator("[data-act=theory]")).to_have_attribute("aria-expanded", "true")
+    go(app_page, "course")
+    expect(app_page.get_by_role("heading", name="Optional courses")).to_be_visible()
+    metal = app_page.locator("section.level.optional")
+    expect(metal).to_have_count(3)
+    expect(metal.first.locator(".lvl-num")).to_have_text("M1")
+    expect(metal.first).to_contain_text("Metal rhythm")
+    go(app_page, "lesson/metal-chug")
+    expect(app_page.locator(".lesson-head small")).to_contain_text("M1")
+    expect(app_page.locator('.exercise[data-id="gallop"] [data-act=theory]')).to_be_visible()
