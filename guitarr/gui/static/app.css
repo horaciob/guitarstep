@@ -350,9 +350,24 @@ kbd { font: 600 11px ui-monospace, Menlo, monospace; border: 1px solid var(--bor
 /* ---------- level meter (setup, settings) */
 .gl .lv { position: relative; height: 14px; border-radius: 99px; background: var(--gl-panel-2); border: 1px solid var(--border); overflow: hidden; margin: 8px 0 6px; }
 .gl .lv-fill { position: absolute; inset: 0 auto 0 0; width: 0; background: var(--gl-ok); transition: width .06s linear; z-index: 1; }
-.gl .lv.hot .lv-fill { background: var(--gl-err); }
-.gl .lv-zone { position: absolute; top: 0; bottom: 0; background: color-mix(in srgb, var(--gl-ok) 16%, transparent); border-left: 1px dashed color-mix(in srgb, var(--gl-ok) 60%, transparent); border-right: 1px dashed color-mix(in srgb, var(--gl-ok) 60%, transparent); }
-.gl .lv-gate { position: absolute; top: -2px; bottom: -2px; width: 2px; background: var(--gl-warn); z-index: 2; transition: left .1s; }
+.gl .lv-zones { position: absolute; inset: 0; }
+.gl .lv-zones .lv-zone { position: absolute; top: 0; bottom: 0; opacity: .28; }
+.gl .lv-fill.lit { width: auto; inset: 0; background: none; transition: clip-path .06s linear; }
+.gl .lv-fill.lit .lv-zone { opacity: 1; }
+.gl .lv-zone.low { background: var(--muted); }
+.gl .lv-zone.ok { background: var(--gl-ok); }
+.gl .lv-zone.warn { background: var(--gl-warn); }
+.gl .lv-zone.err { background: var(--gl-err); }
+.gl .lv-zones:not(.lit) .lv-zone.low { opacity: .12; }
+.gl .lv-peak { position: absolute; top: 0; bottom: 0; width: 3px; margin-left: -1px; background: var(--text); z-index: 2; }
+.gl .lv-peak.err { background: var(--gl-err); }
+.gl .lv-legend { display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: center; color: var(--muted); }
+.gl .lv-legend .sw { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+.gl .lv-legend .sw.ok { background: var(--gl-ok); }
+.gl .lv-legend .sw.warn { background: var(--gl-warn); }
+.gl .lv-legend .sw.err { background: var(--gl-err); }
+.gl .lv-legend [data-lv-now] { margin-left: auto; font-variant-numeric: tabular-nums; }
+.gl .lv-gate { position: absolute; top: -2px; bottom: -2px; width: 2px; background: var(--gl-info); z-index: 3; transition: left .1s; }
 .gl .listen-box { border: 1px solid var(--border); background: var(--gl-panel-2); border-radius: 12px; padding: 14px 16px; margin: 16px 0; }
 .gl .listen-box.slim { padding: 6px 14px; }
 .gl .listen-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }

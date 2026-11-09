@@ -333,7 +333,7 @@
    "calibrate_hint": "Vas a escuchar 4 clicks para agarrar el pulso y después 12 más. Tocá las cuerdas <b>muteadas</b> (un golpe seco con la púa) justo con cada click. Usá auriculares.",
    "calibrate_start": "Empezar calibración",
    "tips": "Consejos",
-   "tip_level": "El nivel tiene que andar entre −30 y −10 dB al tocar. Si se pone rojo, bajá la ganancia.",
+   "tip_level": "El nivel tiene que quedar en la zona verde (−30 a −10 dB) al tocar. Si llega a la roja, bajá la ganancia.",
    "tip_clean": "Mejor señal limpia (sin distorsión); los efectos los podés monitorear aparte.",
    "tip_soft": "Si no detecta ataques suaves, subí la sensibilidad o bajá la puerta de ruido.",
    "n_channels_one": "{{count}} canal",
@@ -357,7 +357,7 @@
    "test_title": "Probá tu entrada",
    "test_start": "Escuchar",
    "test_stop": "Parar",
-   "test_hint": "Tocá Escuchar y tocá: la barra tiene que llegar a la zona sombreada y pasar la línea amarilla.",
+   "test_hint": "Tocá Escuchar y tocá: la barra tiene que quedar en la zona verde, no llegar nunca a la roja y pasar la línea azul (el noise gate).",
    "autosave": "Los cambios se guardan solos en {{path}}",
    "saving": "Guardando…",
    "channel_n": "Canal {{n}}",
@@ -690,7 +690,7 @@
    "skip_all": "Saltear, prefiero explorar",
    "lets_go": "Vamos",
    "input_title": "¿Por dónde entra tu guitarra?",
-   "input_lead": "Elegí la entrada y tocá una cuerda: la barra se tiene que mover y caer en la zona sombreada.",
+   "input_lead": "Elegí la entrada y tocá una cuerda: la barra se tiene que mover y caer en la zona verde.",
    "builtin_hint": "funciona, pero es menos preciso",
    "recommended": "recomendada",
    "no_inputs": "No encontré entradas de audio. Conectá tu interfaz o cable y recargá la página.",
@@ -2053,6 +2053,15 @@
    "with_click": "Con el metrónomo",
    "bpm": "♩ = {{bpm}}",
    "bpm_change": "♩ = {{from}} → {{to}}"
+  },
+  "meter": {
+   "zone_ok": "−30 a −10 dB: mantenete acá",
+   "zone_warn": "atención: algo bajo o muy cerca del límite",
+   "zone_err": "más de −4 dB: no llegues acá (distorsiona)",
+   "now_ok": "bien",
+   "now_warn": "atención",
+   "now_err": "demasiado fuerte",
+   "now_low": "muy bajo"
   }
  },
  "content": {

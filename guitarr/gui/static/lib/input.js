@@ -21,20 +21,56 @@ export function openInput({ device = null, channel = null, onReading, onSource, 
   return { close() { closed = true; try { ws.close(); } catch { /* already closed */ } } };
 }
 
-/** Markup for a level meter; `gateDb` draws the noise-gate marker. */
+/** The meter's zones, in dB (the same limits levelVerdict uses): green is where your playing should stay,
+ *  yellow is a warning (a bit quiet, or getting hot) and red is where it should never get (it distorts). */
+export const LEVEL_ZONES = [
+  { kind: "warn", from: -42, to: -30 },
+  { kind: "ok", from: -30, to: -10 },
+  { kind: "warn", from: -10, to: -4 },
+  { kind: "err", from: -4, to: 0 },
+];
+const zoneOf = d => (LEVEL_ZONES.find(z => d >= z.from && d < z.to) || (d >= 0 ? LEVEL_ZONES[LEVEL_ZONES.length - 1] : null));
+
+/** Markup for a level meter: green / yellow / red zones, the noise-gate marker (`gateDb`) and a legend in words. */
 export function meterHtml(id, gateDb = null) {
   const gate = gateDb == null ? "" : `<i class="lv-gate" style="left:${pctOf(gateDb)}%" title="${esc(t("settings.gate"))}"></i>`;
-  return `<div class="lv" id="${id}"><div class="lv-fill"></div>${gate}
-    <div class="lv-zone" style="left:${pctOf(-30)}%;width:${pctOf(-10) - pctOf(-30)}%"></div></div>`;
+  const zones = [{ kind: "low", from: LEVEL_MIN, to: LEVEL_ZONES[0].from }, ...LEVEL_ZONES]
+    .map(z => `<div class="lv-zone ${z.kind}" style="left:${pctOf(z.from)}%;width:${pctOf(z.to) - pctOf(z.from)}%"></div>`).join("");
+  // the zones are always there, dim; what your signal reaches lights up in the color of each zone
+  return `<div class="lv" id="${id}"><div class="lv-zones">${zones}</div><div class="lv-fill lv-zones lit" style="clip-path:inset(0 100% 0 0)">${zones}</div>
+    <i class="lv-peak" hidden></i>${gate}</div>
+    <div class="lv-legend small">
+      <span><i class="sw ok"></i>${esc(t("meter.zone_ok"))}</span>
+      <span><i class="sw warn"></i>${esc(t("meter.zone_warn"))}</span>
+      <span><i class="sw err"></i>${esc(t("meter.zone_err"))}</span>
+      <span class="muted" data-lv-now aria-live="off"></span>
+    </div>`;
 }
 
 export const pctOf = d => Math.max(0, Math.min(100, (d - LEVEL_MIN) / -LEVEL_MIN * 100));
 
+/** Moves the bar; its color and the word next to the legend say which zone you're in, and a thin mark holds the
+ *  recent peak for a moment, so a hit that touched the red doesn't go unnoticed. */
 export function setMeter(el, levelDb) {
   if (!el) return;
   const fill = el.querySelector(".lv-fill");
-  fill.style.width = pctOf(levelDb).toFixed(1) + "%";
-  el.classList.toggle("hot", levelDb > -6);
+  if (fill.classList.contains("lit")) fill.style.clipPath = `inset(0 ${(100 - pctOf(levelDb)).toFixed(1)}% 0 0)`;
+  else fill.style.width = pctOf(levelDb).toFixed(1) + "%";
+  const z = levelDb > LEVEL_MIN ? zoneOf(levelDb) : null;
+  el.classList.toggle("z-ok", z?.kind === "ok");
+  el.classList.toggle("z-warn", z?.kind === "warn");
+  el.classList.toggle("z-err", z?.kind === "err");
+  const now = performance.now(), st = el._peak || (el._peak = { db: -120, at: 0 });
+  if (levelDb >= st.db || now - st.at > 1500) { st.db = levelDb; st.at = now; }
+  const pk = el.querySelector(".lv-peak");
+  if (pk) {
+    pk.hidden = st.db <= LEVEL_MIN;
+    pk.style.left = pctOf(st.db) + "%";
+    const pz = zoneOf(st.db);
+    pk.className = `lv-peak ${pz ? pz.kind : ""}`;
+  }
+  const word = el.parentElement && el.parentElement.querySelector("[data-lv-now]");
+  if (word) word.textContent = levelDb > LEVEL_MIN ? `${Math.round(levelDb)} dB` + (z ? ` · ${t(`meter.now_${z.kind}`)}` : ` · ${t("meter.now_low")}`) : "";
 }
 
 export function setGate(el, gateDb) {

@@ -837,3 +837,19 @@ def test_listen_to_the_take_with_the_metronome(app_page):
     assert audio.get_attribute("src").endswith("take-1.wav?click=1")
     player.locator("[data-take-click]").uncheck()
     expect(audio).to_have_attribute("src", re.compile(r"take-1\.wav$"))
+
+
+def test_input_meter_has_green_yellow_and_red_zones(app_page):
+    onboarded(app_page)
+    go(app_page, "settings")
+    meter = app_page.locator("#sMeter")
+    for kind in ("ok", "warn", "err"):
+        expect(meter.locator(f".lv-zones:not(.lit) .lv-zone.{kind}").first).to_be_attached()
+    box = app_page.locator("#sMeterBox")
+    expect(box).to_contain_text("stay here")
+    expect(box).to_contain_text("don't get here")
+    for db, cls, word in [(-20, "z-ok", "good"), (-7, "z-warn", "warning"), (-2, "z-err", "too loud")]:
+        app_page.evaluate("async db => (await import('/static/lib/input.js')).setMeter(document.querySelector('#sMeter'), db)", db)
+        expect(meter).to_have_class(re.compile(cls))
+        expect(box.locator("[data-lv-now]")).to_contain_text(word)
+    expect(meter.locator(".lv-peak")).to_have_class(re.compile("err"))      # the hit that touched the red stays marked

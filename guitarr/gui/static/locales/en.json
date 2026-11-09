@@ -333,7 +333,7 @@
    "calibrate_hint": "You'll hear 4 clicks to catch the pulse and then 12 more. Hit the <b>muted</b> strings (a short pick stroke) right on every click. Use headphones.",
    "calibrate_start": "Start calibration",
    "tips": "Tips",
-   "tip_level": "Your level should be between −30 and −10 dB while playing. If it turns red, lower the gain.",
+   "tip_level": "Your level should stay in the green zone (−30 to −10 dB) while playing. If it reaches the red, lower the gain.",
    "tip_clean": "A clean signal (no distortion) works best; monitor your effects separately.",
    "tip_soft": "If soft attacks aren't detected, raise the sensitivity or lower the noise gate.",
    "n_channels_one": "{{count}} channel",
@@ -357,7 +357,7 @@
    "test_title": "Test your input",
    "test_start": "Listen",
    "test_stop": "Stop",
-   "test_hint": "Press Listen and play: the bar should reach the shaded zone and pass the yellow gate line.",
+   "test_hint": "Press Listen and play: the bar should stay in the green zone, never reach the red, and pass the blue line (the noise gate).",
    "autosave": "Changes save automatically to {{path}}",
    "saving": "Saving…",
    "channel_n": "Channel {{n}}",
@@ -690,7 +690,7 @@
    "skip_all": "Skip, I'll explore",
    "lets_go": "Let's go",
    "input_title": "Where does your guitar come in?",
-   "input_lead": "Choose the input and play a string: the bar should move and land in the shaded zone.",
+   "input_lead": "Choose the input and play a string: the bar should move and land in the green zone.",
    "builtin_hint": "works, but less accurate",
    "recommended": "recommended",
    "no_inputs": "No audio inputs found. Plug in your interface or cable and reload the page.",
@@ -2053,6 +2053,15 @@
    "with_click": "With the metronome",
    "bpm": "♩ = {{bpm}}",
    "bpm_change": "♩ = {{from}} → {{to}}"
+  },
+  "meter": {
+   "zone_ok": "−30 to −10 dB: stay here",
+   "zone_warn": "warning: a bit quiet or getting hot",
+   "zone_err": "above −4 dB: don't get here (it distorts)",
+   "now_ok": "good",
+   "now_warn": "warning",
+   "now_err": "too loud",
+   "now_low": "too quiet"
   }
  },
  "content": {}
