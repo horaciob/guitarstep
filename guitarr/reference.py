@@ -229,6 +229,58 @@ def _midi_instruments(pm):
     return [i for i in pm.instruments if not i.is_drum and i.notes]
 
 
+def string_groups(path: Path, pm=None) -> list[dict]:
+    """Instruments written as tab with one MIDI channel per string (Songsterr's export): a named track opens each
+    instrument and the unnamed tracks after it hold one string each, channel 0 being the highest string.
+    → [{name, tuning (string 1 first), notes: [Note with string and fret]}]; [] when the file isn't laid out like that.
+    The tuning starts from standard and drops a string to its lowest note when a note goes below it."""
+    import mido
+    import pretty_midi
+
+    pm = pm or pretty_midi.PrettyMIDI(str(path))
+    mid = mido.MidiFile(str(path))
+    groups: list[dict] = []
+    cur: dict | None = None
+    for tr in mid.tracks:
+        name, program, at, notes, chans, on = None, 0, 0, [], set(), {}
+        for msg in tr:
+            at += msg.time
+            if msg.type == "track_name" and msg.name.strip():
+                name = msg.name.strip()
+            elif msg.type == "program_change":
+                program = msg.program
+            elif msg.type == "note_on" and msg.velocity > 0:
+                on[(msg.channel, msg.note)] = (at, msg.velocity)
+                chans.add(msg.channel)
+            elif msg.type in ("note_off", "note_on"):
+                start = on.pop((msg.channel, msg.note), None)
+                if start:
+                    notes.append((start[0], at, msg.note, start[1], msg.channel))
+        if name and not notes:                           # the header track: a new instrument starts
+            cur = dict(name=name, program=program, notes=[], channels=set())
+            groups.append(cur)
+            continue
+        if not notes or cur is None or 9 in chans or len(chans) != 1 or (chans & cur["channels"]):
+            cur = None if notes else cur
+            continue
+        cur["channels"] |= chans
+        cur["notes"] += notes
+    out = []
+    for g in groups:
+        chans = g["channels"]
+        if not (4 <= len(chans) <= 8 and max(chans) < 8) or 32 <= g["program"] <= 39:     # basses stay out: guitar app
+            continue
+        n_strings = max(6, max(chans) + 1)
+        tuning = list(STANDARD_TUNING[:n_strings]) + [STANDARD_TUNING[-1] - 5 * k for k in range(1, n_strings - 5)]
+        for c in chans:                                  # a string can be tuned lower than standard (drop tunings)
+            low = min(n[2] for n in g["notes"] if n[4] == c)
+            tuning[c] = min(tuning[c], low)
+        notes = sorted((Note(pm.tick_to_time(a), pm.tick_to_time(b), pitch, vel / 127, string=c + 1, fret=pitch - tuning[c])
+                        for a, b, pitch, vel, c in g["notes"]), key=lambda n: (n.start, n.pitch))
+        out.append(dict(name=g["name"], tuning=tuning, notes=notes))
+    return out
+
+
 def _pick(items, track: str | None, name_of, is_guitar, path: Path, log: Log):
     if track is not None:
         sel = [x for k, x in enumerate(items) if track == str(k) or track.lower() in (name_of(x) or "").lower()]
@@ -247,18 +299,25 @@ def load_midi(path: Path, track: str | None = None, log: Log = print) -> Referen
     import pretty_midi
 
     pm = pretty_midi.PrettyMIDI(str(path))
-    insts = _midi_instruments(pm)
+    tabbed = string_groups(path, pm)
+    insts = tabbed or _midi_instruments(pm)
     if not insts:
         raise ReferenceError("The MIDI file has no tracks with notes.")
-    inst = _pick(insts, track, lambda i: i.name, lambda i: 24 <= i.program <= 31, path, log)
-    notes = sorted((Note(n.start, n.end, n.pitch, n.velocity / 127) for n in inst.notes),
-                   key=lambda n: (n.start, n.pitch))
+    if tabbed:                                           # one channel per string: the tab is in the file already
+        g = _pick(tabbed, track, lambda x: x["name"], lambda x: len(x["tuning"]) == 6, path, log)
+        inst, notes = None, g["notes"]
+    else:
+        inst = _pick(insts, track, lambda i: i.name, lambda i: 24 <= i.program <= 31, path, log)
+        notes = sorted((Note(n.start, n.end, n.pitch, n.velocity / 127) for n in inst.notes),
+                       key=lambda n: (n.start, n.pitch))
     beats = pm.get_beats()
     downs = pm.get_downbeats()
     bar_starts = np.unique(np.clip(np.searchsorted(beats, downs - 1e-6), 0, len(beats) - 1))
     sigs = pm.time_signature_changes
     bpb = sigs[-1].numerator if sigs else 4
     grid = Grid(beats, bpb, bar_starts)
+    if tabbed:
+        return Reference(notes, grid, name=path.stem, path=str(path), track=g["name"], tuning=g["tuning"][:6])
     tuning = config.instrument_tuning()
     assign_tab(notes, tuning)
     return Reference(notes, grid, name=path.stem, path=str(path), track=inst.name or track, tuning=tuning)
@@ -426,6 +485,10 @@ def list_tracks(path: Path) -> list[dict]:
         import pretty_midi
 
         pm = pretty_midi.PrettyMIDI(str(path))
+        tabbed = string_groups(path, pm)
+        if tabbed:                                       # one channel per string: one row per instrument, not per string
+            return [dict(index=k, name=g["name"], kind="guitar", notes=len(g["notes"]))
+                    for k, g in enumerate(tabbed)]
         for k, i in enumerate(_midi_instruments(pm)):
             kind = "guitar" if 24 <= i.program <= 31 else pretty_midi.program_to_instrument_name(i.program)
             out.append(dict(index=k, name=i.name or "(unnamed)", kind=kind, notes=len(i.notes)))

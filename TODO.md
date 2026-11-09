@@ -252,7 +252,7 @@ bass world and bass drills stay out). The text is ours, rewritten in English wit
 105. **Weak spots by fact** ✅. Review the exact note, interval or chord you missed, not the whole exercise.
 106. **A song's theory** ✅. Key, the chords of the key it uses, the main progression and a bar-by-bar
      reading of a Guitar Pro file.
-107. **One-channel-per-string MIDI** (S). Import tab exported as MIDI with one channel per string, keeping the
+107. **One-channel-per-string MIDI** ✅. Import tab exported as MIDI with one channel per string, keeping the
      exact string and fret.
 
 ---
