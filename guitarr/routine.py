@@ -81,7 +81,7 @@ def build(today: date | None = None) -> dict:
             route = f"#/song/{ref}"
             sid = None
         add(f"queue:{q['ref']}:{q['section']}", "queued", BARS_MIN, route, bool(sid) and _played_today(sid, t), "repertoire",
-            ref=q["ref"], section=q["section"], kind=kind, name=ref)
+            ref=q["ref"], section=q["section"], source=kind, name=ref)
 
     # due reviews, plus the ones you already did today (so they stay on the list, ticked)
     due = [k for k, _ in progress.due_reviews(d, today)]

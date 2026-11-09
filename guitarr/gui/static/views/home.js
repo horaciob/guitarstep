@@ -37,13 +37,22 @@ function todayHtml(r) {
         `<button data-budget="${b ?? ""}" class="${(r.budget ?? null) === b ? "active" : ""}" aria-pressed="${(r.budget ?? null) === b}">${esc(b ? t("today.budget_n", { n: b }) : t("today.budget_auto"))}</button>`).join("")}</div></div>
     <ol class="today-steps">${r.steps.map(s => `<li class="${s.done ? "done" : ""}">
       <span class="tick" aria-hidden="true">${s.done ? "✓" : ""}</span>
-      <span class="what"><b>${esc(stepTitle(s))}</b><small class="muted">${esc(t(`today.why_${s.kind}`))} · ${s.minutes} min</small></span>
+      <span class="what"><b>${esc(stepTitle(s))}</b><small class="muted"><span class="why-chip">${esc(t(`today.why_${s.kind}`))}</span> · ${s.minutes} min</small></span>
+      ${s.kind === "queued" ? `<button class="ib" data-unqueue="${esc(s.params.ref)}" data-section="${esc(s.params.section)}" aria-label="${esc(t("today.unqueue"))}" title="${esc(t("today.unqueue"))}">✕</button>` : ""}
       ${s.kind === "tune" ? `<button class="btn small${s.done ? "" : " ghost"}" data-tick="${esc(s.id)}" aria-pressed="${s.done}">${esc(t(s.done ? "today.ticked" : "today.tick"))}</button>` : ""}
       <a class="btn small${s.done ? "" : " primary"}" href="${esc(s.route)}">${esc(t(s.done ? "today.again" : "today.go"))}</a></li>`).join("")}</ol>
+    ${r.steps.some(x => x.kind === "queued") ? `<p class="row left"><button class="btn small ghost" id="clearQueue">${esc(t("today.clear_queue"))}</button></p>` : ""}
     ${r.done === r.steps.length ? `<p class="note ok">🎉 ${esc(t("today.all_done"))}</p>` : ""}`;
 }
 
 function bindToday(el) {
+  const redraw = r => { $("#todayPlan", el).innerHTML = todayHtml(r); bindToday(el); };
+  $$("[data-unqueue]", el).forEach(b => b.onclick = async () => {
+    try { redraw(await api(`/api/today/queue?ref=${encodeURIComponent(b.dataset.unqueue)}&section=${encodeURIComponent(b.dataset.section)}`, { method: "DELETE" })); }
+    catch (e) { toast(e.message); }
+  });
+  const clear = $("#clearQueue", el);
+  if (clear) clear.onclick = async () => { try { redraw(await api("/api/today/queue", { method: "DELETE" })); } catch (e) { toast(e.message); } };
   $$("[data-budget]", el).forEach(b => b.onclick = async () => {
     try {
       const r = await api("/api/today/budget", { json: { minutes: b.dataset.budget ? +b.dataset.budget : null } });

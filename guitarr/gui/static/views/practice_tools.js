@@ -39,6 +39,7 @@ export function metronome(box) {
         <button class="btn primary" id="play">${esc(t("tools.start"))}</button>
       </div>
       <p class="muted small center">${esc(t("tools.tap_hint"))}</p>
+      <p class="kbd-hint muted small center">${t("keys.metronome_html")}</p>
     </div>`;
   const setBpm = v => { bpm = Math.max(40, Math.min(240, Math.round(v))); $("#bpm", box).textContent = bpm; $("#bpmR", box).value = bpm; };
   const label = a => t(a === 2 ? "metro.accent" : a === 1 ? "metro.normal" : "metro.silent");
@@ -66,7 +67,13 @@ export function metronome(box) {
     }
   };
   $("#tap", box).onclick = tap;
-  const onKey = e => { if (e.code === "Space" && document.body.contains(box) && !e.target.closest("button, input, select")) { e.preventDefault(); tap(); } };
+  const onKey = e => {
+    if (!document.body.contains(box) || e.target.closest("button, input, select")) return;
+    if (e.code === "Space") { e.preventDefault(); tap(); }
+    else if (e.key === "m" || e.key === "M") { e.preventDefault(); $("#play", box).click(); }      // M: start / stop
+    else if (e.key === "+" || e.key === "=") setBpm(bpm + 1);
+    else if (e.key === "-") setBpm(bpm - 1);
+  };
   document.addEventListener("keydown", onKey);
   const state = $("#metroState", box);
   const m = {

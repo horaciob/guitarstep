@@ -25,10 +25,17 @@ export async function mount(el) {
             const passed = ls.exercises.filter(e => e.passed).length;
             const meta = [t("course.minutes", { n: ls.minutes }), t("course.n_exercises", { count: ls.exercises.length }),
                           (ls.chords || []).join(", ")].filter(Boolean).join(" · ");
-            return `<a class="lesson${ls.done ? " done" : ""}${r.next && r.next.id === ls.id ? " next" : ""}" href="#/lesson/${encodeURIComponent(ls.id)}">
-              <span class="state">${ls.done ? "✓" : passed ? `${passed}/${ls.exercises.length}` : "○"}</span>
-              <span><b>${esc(title(ls, lv))}</b><small class="muted">${esc(meta)}</small></span>
-            </a>`;
+            const exName = e => e.from ? tc(`exercises.${e.from}`, e.title) : tc(`exercises.${ls.id}/${e.id}`, e.title);
+            return `<details class="lesson-row${ls.done ? " done" : ""}${r.next && r.next.id === ls.id ? " next" : ""}">
+              <summary class="lesson${ls.done ? " done" : ""}${r.next && r.next.id === ls.id ? " next" : ""}">
+                <span class="state">${ls.done ? "✓" : passed ? `${passed}/${ls.exercises.length}` : "○"}</span>
+                <span><b>${esc(title(ls, lv))}</b><small class="muted">${esc(meta)}</small></span><span class="chev" aria-hidden="true">▸</span>
+              </summary>
+              <div class="lesson-peek">
+                <ul class="peek-list">${ls.exercises.map(e => `<li class="${e.passed ? "ok" : ""}">${e.passed ? "✓" : "○"} ${esc(exName(e))}</li>`).join("")}</ul>
+                <a class="btn small primary" href="#/lesson/${encodeURIComponent(ls.id)}">${esc(t("course.open_lesson"))}</a>
+              </div>
+            </details>`;
           }).join("")}
         </div>
       </section>`;

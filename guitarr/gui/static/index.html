@@ -11,6 +11,7 @@
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="description" content="A guitar practice companion that listens to you.">
+<link rel="stylesheet" href="/static/tokens.css">
 <link rel="stylesheet" href="/static/app.css">
 </head>
 <body>
@@ -39,6 +40,7 @@
       <a href="#/history" data-route="history"><span class="ico" data-icon="history"></span><span data-i18n="nav.history">History</span></a>
     </nav>
     <div class="rail-foot">
+      <button type="button" class="btn small dock-toggle" id="dockToggle" aria-pressed="false" data-i18n="nav.dock">Bottom dock</button>
       <div class="rig-pill timer-pill" id="timerPill" hidden><a href="#/plan" id="timerPillName"></a><button type="button" id="timerPillPause">❚❚</button></div>
       <a class="rail-today" id="railToday" href="#/plan" hidden></a>
       <div class="rig-pill" id="rigPill" hidden><a href="#/rig" id="rigPillName"></a><button type="button" id="rigPillOff" data-icon="power" data-size="15"></button></div>
@@ -286,6 +288,7 @@
       </div>
     </div>
   </div>
+  <div class="panel" id="sSources" aria-live="polite"></div>
 </section>
   </main>
 </div>

@@ -3,6 +3,7 @@ import { t, tc } from "../lib/i18n.js";
 import { $, api, esc, toast } from "../lib/ui.js";
 import { barsHtml, strumHtml } from "./charts.js";
 import { renderSections } from "../lib/sections.js";
+import { chipsHtml } from "../lib/chips.js";
 
 const TEMPLATE = `title: My chart
 bpm: 80
@@ -66,7 +67,7 @@ export async function mount(el, { segs, params = {} }) {
     const r = await api("/api/charts/validate", { json: { text: txt.value } });
     if (!r.chart) { pv.innerHTML = `<p class="err">⚠️ ${esc(r.error)}</p>`; return r; }
     const c = r.chart;
-    pv.innerHTML = `<h2>${esc(c.title)}</h2><p class="muted small">♩=${c.bpm} · ${c.beats_per_bar}/4${c.capo ? ` · ${esc(t("charts.capo", { n: c.capo }))}` : ""}</p>
+    pv.innerHTML = `<h2>${esc(c.title)}</h2>${chipsHtml({ tuning: c.tuning, bpm: c.bpm, time: `${c.beats_per_bar}/4`, capo: c.capo, swing: c.swing })}
       ${r.unknown && r.unknown.length ? `<p class="err">⚠️ ${t("chart.unknown_html", { chords: esc(r.unknown.join(", ")), interpolation: { escapeValue: false } })}</p>` : ""}
       ${strumHtml(c.strum)}${barsHtml(c)}`;
     return r;

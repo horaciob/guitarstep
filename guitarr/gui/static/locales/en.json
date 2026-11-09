@@ -23,7 +23,8 @@
    "menu": "Menu",
    "plan_short": "Plan",
    "rig_short": "Amp",
-   "setlists": "Setlists"
+   "setlists": "Setlists",
+   "dock": "Bottom dock"
   },
   "common": {
    "upload": "Upload",
@@ -31,7 +32,9 @@
    "save": "Save",
    "back": "Back",
    "days_one": "{{count}} day",
-   "days_other": "{{count}} days"
+   "days_other": "{{count}} days",
+   "yes": "yes",
+   "no": "no"
   },
   "level": {
    "label": "Level {{n}}",
@@ -397,7 +400,8 @@
    "n_exercises_one": "{{count}} exercise",
    "n_exercises_other": "{{count}} exercises",
    "level_progress": "{{done}} of {{total}} lessons",
-   "level_done": "✓ level complete"
+   "level_done": "✓ level complete",
+   "open_lesson": "Open the lesson"
   },
   "lesson": {
    "not_found": "That lesson doesn't exist.",
@@ -1212,7 +1216,9 @@
    "budget_auto": "auto",
    "budget_n": "{{n}} min",
    "step_queued": "Section: {{section}} ({{name}})",
-   "why_queued": "you added it"
+   "why_queued": "you added it",
+   "unqueue": "Remove from today",
+   "clear_queue": "Clear the sections you added"
   },
   "reminder": {
    "title": "Daily reminder",
@@ -1493,7 +1499,13 @@
    "hint_string": "string {{s}}",
    "hint_fret": "fret {{f}}",
    "with_hints_one": "with {{count}} hint",
-   "with_hints_other": "with {{count}} hints"
+   "with_hints_other": "with {{count}} hints",
+   "state_preparing": "preparing",
+   "state_ready": "ready",
+   "state_playing": "playing",
+   "state_feedback": "feedback",
+   "state_audio_unavailable": "audio unavailable",
+   "no_audio_html": "No guitar input right now ({{error}}). Plug in your interface and check <a href=\"#/settings\">Settings</a> or run the <a href=\"#/signal\">signal check</a>. Quizzes and picking notes on the neck still work."
   },
   "sections": {
    "title": "Your progress by section",
@@ -1591,7 +1603,11 @@
    "tempo": "Tempo over time",
    "song": "Song or chart",
    "no_tempo": "Practice a song or chart with the listener and your tempo shows up here.",
-   "tempo_label": "{{name}}: from {{from}} to {{to}}"
+   "tempo_label": "{{name}}: from {{from}} to {{to}}",
+   "big_songs": "songs",
+   "big_sessions": "sessions",
+   "big_hours": "hours",
+   "big_streak": "days in a row"
   },
   "chips": {
    "tuning": "Tuning",
@@ -1659,6 +1675,51 @@
    "last": "Last song",
    "open": "Stage",
    "keys_html": "<kbd>←</kbd> <kbd>→</kbd> or <kbd>PageUp</kbd> <kbd>PageDown</kbd> (foot pedal) change song · <kbd>Space</kbd> scroll · <kbd>↑</kbd> <kbd>↓</kbd> speed · <kbd>M</kbd> click · <kbd>+</kbd> <kbd>−</kbd> size · <kbd>Esc</kbd> exit"
+  },
+  "next": {
+   "not_heard": "Nothing was heard. Check that your guitar is plugged in, then play a little louder.",
+   "quiz_retry": "Read the explanations of the ones you missed and try a new set: you need {{need}}%.",
+   "retry_slower": "It's a lot at once: loop it in Practice at 70% and speed up as it settles.",
+   "retry_with_help": "Go back to full help (tab and names) and use a hint on the note that stops you.",
+   "almost": "Almost: {{missing}}% more. Play it once more right away, while it's fresh.",
+   "less_help": "Passed. Now try it with less help on screen ({{level}}), so it lives in your hands, not on the screen.",
+   "try_variation": "Passed. Try it in another key: it checks you learned the shape, not one place on the neck.",
+   "next_exercise": "Next: {{title}}. It builds on what you just played.",
+   "next_lesson": "Lesson done! Next: {{title}}.",
+   "lesson_review": "Every exercise here is passed. It will come back for review in a few days.",
+   "all_done": "That was the last lesson. Keep it alive with the reviews and the songs.",
+   "variant_done": "It works in another key too: you learned the relationship, not a picture.",
+   "variant_retry": "The new key is harder. Look at where the root is, then try again.",
+   "do_less_help": "Try with less help",
+   "do_open": "Open it"
+  },
+  "keys": {
+   "title": "Keyboard shortcuts",
+   "global": "Anywhere",
+   "global_html": "<kbd>?</kbd> this help · <kbd>Esc</kbd> close a dialog or a full screen",
+   "exercise": "Exercise screen",
+   "exercise_html": "<kbd>Space</kbd> start / stop · <kbd>Enter</kbd> next exercise · <kbd>Esc</kbd> back to the lesson",
+   "quiz": "Questions",
+   "quiz_html": "<kbd>1</kbd>–<kbd>6</kbd> choose an answer · <kbd>Enter</kbd> next question",
+   "stage": "Stage mode",
+   "stage_html": "<kbd>←</kbd> <kbd>→</kbd> or <kbd>PageUp</kbd> <kbd>PageDown</kbd> change song · <kbd>Space</kbd> scroll · <kbd>↑</kbd> <kbd>↓</kbd> speed · <kbd>M</kbd> click · <kbd>+</kbd> <kbd>−</kbd> size",
+   "metronome": "Metronome",
+   "metronome_html": "<kbd>M</kbd> start / stop · <kbd>Space</kbd> tap tempo · <kbd>+</kbd> <kbd>−</kbd> tempo"
+  },
+  "sources": {
+   "title": "Where each value comes from",
+   "hint": "So a value set somewhere else is never a mystery.",
+   "env": "environment ({{env}})",
+   "saved": "saved by you",
+   "auto": "auto-detected",
+   "default": "default",
+   "k_home": "Data folder",
+   "k_device": "Input",
+   "k_channel": "Input channel",
+   "k_output_device": "Metronome output",
+   "k_latency_ms": "Latency (ms)",
+   "k_tuning": "Tuning",
+   "k_left_handed": "Left-handed"
   }
  },
  "content": {}

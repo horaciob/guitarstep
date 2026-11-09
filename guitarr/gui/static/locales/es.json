@@ -23,7 +23,8 @@
    "menu": "Menú",
    "plan_short": "Plan",
    "rig_short": "Ampli",
-   "setlists": "Setlists"
+   "setlists": "Setlists",
+   "dock": "Dock inferior"
   },
   "common": {
    "upload": "Subir",
@@ -31,7 +32,9 @@
    "save": "Guardar",
    "back": "Volver",
    "days_one": "{{count}} día",
-   "days_other": "{{count}} días"
+   "days_other": "{{count}} días",
+   "yes": "sí",
+   "no": "no"
   },
   "level": {
    "label": "Nivel {{n}}",
@@ -397,7 +400,8 @@
    "n_exercises_one": "{{count}} ejercicio",
    "n_exercises_other": "{{count}} ejercicios",
    "level_progress": "{{done}} de {{total}} lecciones",
-   "level_done": "✓ nivel completo"
+   "level_done": "✓ nivel completo",
+   "open_lesson": "Abrir la lección"
   },
   "lesson": {
    "not_found": "No existe esa lección.",
@@ -1212,7 +1216,9 @@
    "budget_auto": "auto",
    "budget_n": "{{n}} min",
    "step_queued": "Sección: {{section}} ({{name}})",
-   "why_queued": "la agregaste vos"
+   "why_queued": "la agregaste vos",
+   "unqueue": "Quitar de hoy",
+   "clear_queue": "Quitar las secciones que agregaste"
   },
   "reminder": {
    "title": "Recordatorio diario",
@@ -1493,7 +1499,13 @@
    "hint_string": "cuerda {{s}}",
    "hint_fret": "traste {{f}}",
    "with_hints_one": "con {{count}} pista",
-   "with_hints_other": "con {{count}} pistas"
+   "with_hints_other": "con {{count}} pistas",
+   "state_preparing": "preparando",
+   "state_ready": "listo",
+   "state_playing": "tocando",
+   "state_feedback": "resultado",
+   "state_audio_unavailable": "sin audio",
+   "no_audio_html": "Ahora no hay entrada de guitarra ({{error}}). Conectá tu interfaz y revisá los <a href=\"#/settings\">Ajustes</a> o hacé el <a href=\"#/signal\">chequeo de señal</a>. Las preguntas y marcar notas en el mástil siguen funcionando."
   },
   "sections": {
    "title": "Tu progreso por sección",
@@ -1591,7 +1603,11 @@
    "tempo": "Tempo a lo largo del tiempo",
    "song": "Tema o cifrado",
    "no_tempo": "Practicá un tema o un cifrado con el listener y tu tempo aparece acá.",
-   "tempo_label": "{{name}}: de {{from}} a {{to}}"
+   "tempo_label": "{{name}}: de {{from}} a {{to}}",
+   "big_songs": "temas",
+   "big_sessions": "sesiones",
+   "big_hours": "horas",
+   "big_streak": "días seguidos"
   },
   "chips": {
    "tuning": "Afinación",
@@ -1659,6 +1675,51 @@
    "last": "Último tema",
    "open": "Escenario",
    "keys_html": "<kbd>←</kbd> <kbd>→</kbd> o <kbd>RePág</kbd> <kbd>AvPág</kbd> (pedal) cambian de tema · <kbd>Espacio</kbd> desplazar · <kbd>↑</kbd> <kbd>↓</kbd> velocidad · <kbd>M</kbd> clic · <kbd>+</kbd> <kbd>−</kbd> tamaño · <kbd>Esc</kbd> salir"
+  },
+  "next": {
+   "not_heard": "No se escuchó nada. Revisá que la guitarra esté conectada y tocá un poco más fuerte.",
+   "quiz_retry": "Leé las explicaciones de las que te equivocaste y probá una tanda nueva: necesitás {{need}}%.",
+   "retry_slower": "Es mucho junto: loopealo en Práctica al 70% y subí la velocidad a medida que se asienta.",
+   "retry_with_help": "Volvé a la ayuda completa (tab y nombres) y pedí una pista en la nota que te frena.",
+   "almost": "Casi: te falta {{missing}}%. Tocalo otra vez ya, mientras está fresco.",
+   "less_help": "Aprobado. Ahora probalo con menos ayuda en pantalla ({{level}}), para que quede en tus manos y no en la pantalla.",
+   "try_variation": "Aprobado. Probalo en otra tonalidad: comprueba que aprendiste la forma y no un solo lugar del mástil.",
+   "next_exercise": "Sigue: {{title}}. Se apoya en lo que acabás de tocar.",
+   "next_lesson": "¡Lección completa! Sigue: {{title}}.",
+   "lesson_review": "Todos los ejercicios de acá están aprobados. Va a volver para repasar en unos días.",
+   "all_done": "Esa era la última lección. Mantenela viva con los repasos y los temas.",
+   "variant_done": "También funciona en otra tonalidad: aprendiste la relación, no un dibujo.",
+   "variant_retry": "La tonalidad nueva cuesta más. Fijate dónde está la fundamental y probá de nuevo.",
+   "do_less_help": "Probar con menos ayuda",
+   "do_open": "Abrir"
+  },
+  "keys": {
+   "title": "Atajos de teclado",
+   "global": "En cualquier lado",
+   "global_html": "<kbd>?</kbd> esta ayuda · <kbd>Esc</kbd> cerrar un diálogo o una pantalla completa",
+   "exercise": "Pantalla del ejercicio",
+   "exercise_html": "<kbd>Espacio</kbd> empezar / parar · <kbd>Enter</kbd> siguiente ejercicio · <kbd>Esc</kbd> volver a la lección",
+   "quiz": "Preguntas",
+   "quiz_html": "<kbd>1</kbd>–<kbd>6</kbd> elegir una respuesta · <kbd>Enter</kbd> siguiente pregunta",
+   "stage": "Modo escenario",
+   "stage_html": "<kbd>←</kbd> <kbd>→</kbd> o <kbd>RePág</kbd> <kbd>AvPág</kbd> cambiar de tema · <kbd>Espacio</kbd> desplazar · <kbd>↑</kbd> <kbd>↓</kbd> velocidad · <kbd>M</kbd> clic · <kbd>+</kbd> <kbd>−</kbd> tamaño",
+   "metronome": "Metrónomo",
+   "metronome_html": "<kbd>M</kbd> empezar / parar · <kbd>Espacio</kbd> marcar el tempo · <kbd>+</kbd> <kbd>−</kbd> tempo"
+  },
+  "sources": {
+   "title": "De dónde sale cada valor",
+   "hint": "Así un valor puesto en otro lado nunca es un misterio.",
+   "env": "entorno ({{env}})",
+   "saved": "guardado por vos",
+   "auto": "detectado automáticamente",
+   "default": "por defecto",
+   "k_home": "Carpeta de datos",
+   "k_device": "Entrada",
+   "k_channel": "Canal de entrada",
+   "k_output_device": "Salida del metrónomo",
+   "k_latency_ms": "Latencia (ms)",
+   "k_tuning": "Afinación",
+   "k_left_handed": "Zurdo"
   }
  },
  "content": {

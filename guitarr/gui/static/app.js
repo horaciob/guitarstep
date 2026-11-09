@@ -859,9 +859,24 @@ export function showBrowserNotification(title, body) {
   else toast(body);
 }
 
+/** Where each setting comes from (environment, saved by you, auto-detected or default), so a hidden override
+ * is never a mystery. */
+async function loadSources() {
+  const box = $("#sSources");
+  if (!box) return;
+  let r;
+  try { r = await api("/api/settings/sources"); } catch { box.hidden = true; return; }
+  const rows = ["home", "device", "channel", "output_device", "latency_ms", "tuning", "left_handed"];
+  const val = (k, v) => v == null || v === "" ? "—" : k === "tuning" ? t(`instrument.t_${v}`) : k === "left_handed" ? t(v ? "common.yes" : "common.no") : String(v);
+  box.innerHTML = `<h2>${esc(t("sources.title"))}</h2><p class="muted small">${esc(t("sources.hint"))}</p>
+    <table class="sources"><tbody>${rows.map(k => `<tr><th scope="row">${esc(t(`sources.k_${k}`))}</th><td class="mono small">${esc(val(k, r[k].value))}</td>
+      <td><span class="how-chip src-${r[k].source}">${esc(t(`sources.${r[k].source}`, { env: r[k].env || "" }))}</span></td></tr>`).join("")}</tbody></table>`;
+}
+
 async function loadSettings() {
   loadReminder();
   loadInstrumentPanel();
+  loadSources();
   const [dv, cfg] = await Promise.all([api("/api/devices"), api("/api/config")]);
   if (dv.error) toast(dv.error);
   Settings.devices = dv.inputs;

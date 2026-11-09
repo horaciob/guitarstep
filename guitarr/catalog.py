@@ -642,3 +642,35 @@ def print_charts(cid: str | None = None) -> None:
         acc = (acc + b["beats"]) % c["beats_per_bar"]
     if line:
         print("  " + " | ".join(line))
+
+
+# ---------------------------------------------------------------- what to do next, and why
+def next_step(lid: str, eid: str, award: dict, prog: dict) -> dict:
+    """After a take or a quiz: one suggestion as {code, params} (the UI says it in any language)."""
+    ls = get_lesson(lid)
+    ex = next(e for e in ls["exercises"] if e["id"] == eid)
+    key = f"{lid}/{eid}"
+    score, need = award.get("score"), award.get("need", ex.get("min", 80))
+    if award.get("variant"):
+        return dict(code="variant_done" if award.get("passed") else "variant_retry")
+    if not award.get("passed"):
+        if score is None:
+            return dict(code="not_heard")
+        if ex["kind"] in ("quiz", "pick"):
+            return dict(code="quiz_retry", params=dict(need=need))
+        if score < 50:
+            return dict(code="retry_slower" if ex["kind"] == "chart" else "retry_with_help")
+        return dict(code="almost", params=dict(missing=round(need - score)))
+    if award.get("lesson_done"):
+        lessons_ = lessons()
+        i = next(k for k, x in enumerate(lessons_) if x["id"] == lid)
+        nxt = lessons_[i + 1] if i + 1 < len(lessons_) else None
+        return dict(code="next_lesson", params=dict(lesson=nxt["id"], title=nxt["title"])) if nxt else dict(code="all_done")
+    if ex["kind"] in FADEABLE and (prog["guidance"].get(key) or 0) < 2:
+        return dict(code="less_help", params=dict(level=(prog["guidance"].get(key) or 0) + 1))
+    if variation(ex) is not None and prog["variations"].get(key, -1) < need:
+        return dict(code="try_variation")
+    after = next((e for e in ls["exercises"] if prog["exercises"].get(f"{lid}/{e['id']}", -1) < e.get("min", 80)), None)
+    if after:
+        return dict(code="next_exercise", params=dict(exercise=after["id"], title=after["title"]))
+    return dict(code="lesson_review")

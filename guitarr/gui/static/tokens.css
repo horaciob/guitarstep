@@ -1,0 +1,48 @@
+/* guitarr — design tokens. Every color, radius, shadow and spacing the UI uses starts here.
+   - Colors come in dark (default) and light, by system preference or data-theme on <html>.
+   - Status colors (ok, warn, err, info) never stand alone: the UI pairs them with a word or a number.
+   - The tone rig's hardware finishes keep their own fixed colors (they look the same in both themes) but take
+     radius, piping and shadow depth from here. */
+:root {
+  --bg: #0e1014;
+  --gl-panel: #161920;
+  --gl-panel-2: #1c2029;
+  --border: #272c38;
+  --text: #e8eaf0;
+  --muted: #959cb0;
+  --gl-accent: #f4b740;
+  --gl-accent-ink: #1a1405;
+  --gl-ok: #37c98b;
+  --gl-warn: #f4b740;
+  --gl-err: #ff5f5f;
+  --gl-info: #5aa8ff;
+  --gl-octave: #c792ea;
+  --gl-string: #3a4152;
+  --gl-radius: 12px;
+  --gl-shadow: 0 1px 0 rgba(255,255,255,.03) inset, 0 8px 24px rgba(0,0,0,.25);
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #f5f6f8; --gl-panel: #ffffff; --gl-panel-2: #f0f2f5; --border: #dde1e8; --text: #1b1f27;
+    --muted: #5a6273; --gl-accent: #e0a020; --gl-accent-ink: #1a1405; --gl-string: #c3c9d4;
+    --gl-ok: #15803d; --gl-warn: #a15c07; --gl-err: #c62828; --gl-info: #1d5fd1; --gl-octave: #7b3fb0;
+    --gl-shadow: 0 1px 2px rgba(0,0,0,.06); color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg: #f5f6f8; --gl-panel: #ffffff; --gl-panel-2: #f0f2f5; --border: #dde1e8; --text: #1b1f27;
+  --muted: #5a6273; --gl-accent: #e0a020; --gl-accent-ink: #1a1405; --gl-string: #c3c9d4;
+  --gl-ok: #15803d; --gl-warn: #a15c07; --gl-err: #c62828; --gl-info: #1d5fd1; --gl-octave: #7b3fb0;
+  --gl-shadow: 0 1px 2px rgba(0,0,0,.06); color-scheme: light;
+}
+:root {
+  /* radii */
+  --r-sm: 6px; --r-md: 10px; --r-lg: 14px; --r-pill: 99px;
+  /* spacing scale */
+  --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px;
+  /* elevation */
+  --e-1: 0 1px 2px rgba(0,0,0,.12); --e-2: var(--gl-shadow); --e-hw: 0 12px 24px rgba(0,0,0,.4);
+  /* the rig's hardware */
+  --hw-radius: var(--r-lg); --hw-piping: #d8d2c4; --hw-screw: #c9ccd1;
+}

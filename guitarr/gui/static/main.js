@@ -73,6 +73,29 @@ async function route() {
   await mod.mount(view, { segs, params });
 }
 
+// Navigation as a bottom dock on desktop (an alternative to the side rail; remembered in this browser only).
+const DOCK_KEY = "guitarr.nav.dock";
+function setDock(on) {
+  document.body.classList.toggle("nav-dock", on);
+  $("#dockToggle").setAttribute("aria-pressed", String(on));
+  try { localStorage.setItem(DOCK_KEY, on ? "1" : "0"); } catch { /* a convenience only */ }
+}
+try { setDock(localStorage.getItem(DOCK_KEY) === "1"); } catch { setDock(false); }
+$("#dockToggle").onclick = () => setDock(!document.body.classList.contains("nav-dock"));
+
+// "?" shows the keyboard shortcuts, anywhere
+const KEY_GROUPS = ["global", "exercise", "quiz", "stage", "metronome"];
+function showKeys() {
+  let dlg = $("#keysDialog");
+  if (!dlg) { dlg = document.createElement("dialog"); dlg.id = "keysDialog"; dlg.className = "rig-dialog keys-dialog"; document.body.append(dlg); }
+  dlg.innerHTML = `<form method="dialog" class="dlg-head"><h2>${esc(t("keys.title"))}</h2><button class="btn small ghost" value="close" aria-label="${esc(t("rig.close"))}">✕</button></form>
+    ${KEY_GROUPS.map(g => `<h3>${esc(t(`keys.${g}`))}</h3><p class="small">${t(`keys.${g}_html`)}</p>`).join("")}`;
+  dlg.showModal();
+}
+document.addEventListener("keydown", e => {
+  if (e.key === "?" && !e.target.closest("input, textarea, select, [contenteditable]")) { e.preventDefault(); showKeys(); }
+});
+
 async function refreshProgress() {
   try {
     const p = await api("/api/progress");

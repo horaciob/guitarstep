@@ -34,7 +34,9 @@ async function renderStats(box) {
     const k = i + offset, x = Math.floor(k / 7) * (cell + gap), y = (k % 7) * (cell + gap);
     return `<rect class="hm l${levelOf(d.minutes)}" x="${x}" y="${y}" width="${cell}" height="${cell}" rx="2"><title>${esc(t("stats.day_minutes", { date: fmt(d.date), count: d.minutes }))}</title></rect>`;
   }).join("");
+  const big = [["songs", s.totals.songs], ["sessions", s.totals.sessions], ["hours", (s.totals.minutes / 60).toFixed(1)], ["streak", s.totals.streak]];
   box.innerHTML = `
+    <div class="stats-header">${big.map(([k, v]) => `<div class="stat-big"><b>${esc(String(v))}</b><small>${esc(t(`stats.big_${k}`))}</small></div>`).join("")}</div>
     <section class="panel stats-panel" aria-labelledby="hmTitle">
       <div class="sec-progress-head"><h2 id="hmTitle">${esc(t("stats.consistency"))}</h2>
         <span class="muted small">${esc(t("stats.totals", { days: s.totals.active_days, hours: (s.totals.minutes / 60).toFixed(1) }))}</span></div>

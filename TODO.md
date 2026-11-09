@@ -193,7 +193,7 @@ Sizes: **S** ≈ an afternoon, **M** ≈ a few days, **L** ≈ a week or more.
 80. **Capture your own amp (research)** (L). Record a DI and the amp's output, fit a small model offline,
     and load it as an amp type. A research spike, written from scratch.
 
-## H. Interface and usability
+## H. Interface and usability — ✅ done
 
 81. **Status chips in every header** (S). Tuning · key · BPM · time signature as small chips on song,
     chart and exercise screens. Each chip has a label, not only a color.

@@ -1,37 +1,4 @@
-/* guitarr — web UI. Own palette (dark and light), everything scoped to .gl. */
-:root {
-  --bg: #0e1014;
-  --gl-panel: #161920;
-  --gl-panel-2: #1c2029;
-  --border: #272c38;
-  --text: #e8eaf0;
-  --muted: #959cb0;
-  --gl-accent: #f4b740;
-  --gl-accent-ink: #1a1405;
-  --gl-ok: #37c98b;
-  --gl-warn: #f4b740;
-  --gl-err: #ff5f5f;
-  --gl-info: #5aa8ff;
-  --gl-octave: #c792ea;
-  --gl-string: #3a4152;
-  --gl-radius: 12px;
-  --gl-shadow: 0 1px 0 rgba(255,255,255,.03) inset, 0 8px 24px rgba(0,0,0,.25);
-  color-scheme: dark;
-}
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme="dark"]) {
-    --bg: #f5f6f8; --gl-panel: #ffffff; --gl-panel-2: #f0f2f5; --border: #dde1e8; --text: #1b1f27;
-    --muted: #5a6273; --gl-accent: #e0a020; --gl-accent-ink: #1a1405; --gl-string: #c3c9d4;
-    --gl-ok: #15803d; --gl-warn: #a15c07; --gl-err: #c62828; --gl-info: #1d5fd1; --gl-octave: #7b3fb0;
-    --gl-shadow: 0 1px 2px rgba(0,0,0,.06); color-scheme: light;
-  }
-}
-:root[data-theme="light"] {
-  --bg: #f5f6f8; --gl-panel: #ffffff; --gl-panel-2: #f0f2f5; --border: #dde1e8; --text: #1b1f27;
-  --muted: #5a6273; --gl-accent: #e0a020; --gl-accent-ink: #1a1405; --gl-string: #c3c9d4;
-  --gl-ok: #15803d; --gl-warn: #a15c07; --gl-err: #c62828; --gl-info: #1d5fd1; --gl-octave: #7b3fb0;
-  --gl-shadow: 0 1px 2px rgba(0,0,0,.06); color-scheme: light;
-}
+/* guitarr — web UI. Tokens (colors, radii, spacing) live in tokens.css; everything here is scoped to .gl. */
 * { box-sizing: border-box; }
 html, body { margin: 0; min-height: 100%; }
 body { background: var(--bg); color: var(--text); font: 14px/1.5 "Inter", system-ui, -apple-system, "Segoe UI", sans-serif; }
@@ -822,11 +789,11 @@ body.is-setup #main { margin: 0 auto; max-width: 760px; padding-top: 48px; }
 .gl .pedal.stomp .footswitch:focus-visible { outline: 3px solid var(--gl-accent); outline-offset: 6px; }
 
 /* amp: head with tolex, logo, control panel and a pilot light; each archetype has its own finish */
-.gl .amp { --tolex: #151515; --tolex-img: none; --pipe: #d8d2c4; --front: #262626; --front-img: none; --logo: #e9e3d3;
+.gl .amp { --tolex: #151515; --tolex-img: none; --pipe: var(--hw-piping); --front: #262626; --front-img: none; --logo: #e9e3d3;
   --logo-font: "Snell Roundhand", "Brush Script MT", "Segoe Script", cursive; --panel: linear-gradient(#cfd3d8, #9ea4ac);
   --panel-ink: #1a1a1a; --knob-cap: #121212; --knob-ink: #f2ead6; --jewel: #ff3b30;
-  position: relative; border-radius: 16px; padding: 22px 16px 16px; background: var(--tolex-img), var(--tolex);
-  box-shadow: inset 0 0 0 2px rgba(255,255,255,.04), inset 0 -8px 0 rgba(0,0,0,.35), 0 14px 28px rgba(0,0,0,.4); }
+  position: relative; border-radius: var(--hw-radius); padding: 22px 16px 16px; background: var(--tolex-img), var(--tolex);
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,.04), inset 0 -8px 0 rgba(0,0,0,.35), var(--e-hw); }
 .gl .amp-handle { position: absolute; top: -10px; left: 50%; width: 120px; height: 18px; margin-left: -60px; border-radius: 10px 10px 4px 4px; background: linear-gradient(#2b2b2b, #0e0e0e); box-shadow: 0 2px 0 rgba(255,255,255,.08) inset; }
 .gl .amp-front { height: 86px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
   background: var(--front-img), var(--front); box-shadow: inset 0 0 0 3px var(--pipe), inset 0 0 0 5px rgba(0,0,0,.4); }
@@ -1117,3 +1084,51 @@ body.is-stage #main { max-width: none; padding: 12px 18px; }
 .gl .stack-box summary { cursor: pointer; font-weight: 700; }
 .gl .stack-box .muted { color: inherit; opacity: .8; }
 .gl .recipe-chain { flex-basis: 100%; }
+
+/* ---------- interface and usability */
+.gl .f-state { display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; padding: 2px 10px; border-radius: var(--r-pill); border: 1px solid var(--border); color: var(--muted); margin-bottom: 6px; }
+.gl .f-state.st-playing { border-color: var(--gl-info); color: var(--gl-info); }
+.gl .f-state.st-feedback { border-color: var(--gl-accent); color: var(--gl-accent); }
+.gl .f-state.st-audio_unavailable { border-color: var(--gl-err); color: var(--gl-err); }
+.gl .f-next { margin: 0; text-align: center; min-height: 20px; display: flex; gap: 8px; justify-content: center; align-items: center; flex-wrap: wrap; }
+.gl .first-action { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin: 0 0 14px; }
+.gl .first-action .meters-row { margin: 0; }
+.gl .why-chip { display: inline-block; padding: 0 8px; border-radius: var(--r-pill); border: 1px solid var(--border); font-size: 11px; }
+.gl .stats-header { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 16px; }
+.gl .stat-big { display: grid; justify-items: center; padding: 14px 8px; border-radius: var(--r-md); border: 1px solid var(--border); background: var(--gl-panel); }
+.gl .stat-big b { font-size: 30px; line-height: 1; font-variant-numeric: tabular-nums; }
+.gl .stat-big small { color: var(--muted); text-transform: uppercase; letter-spacing: .08em; font-size: 11px; margin-top: 4px; }
+@media (max-width: 600px) { .gl .stats-header { grid-template-columns: repeat(2, 1fr); } }
+.gl .lesson-row { border-radius: var(--r-md); }
+.gl .lesson-row summary { list-style: none; cursor: pointer; }
+.gl .lesson-row summary::-webkit-details-marker { display: none; }
+.gl .lesson-row .chev { margin-left: auto; color: var(--muted); transition: transform .15s; }
+.gl .lesson-row[open] .chev { transform: rotate(90deg); }
+.gl .lesson-peek { padding: 8px 12px 12px; display: grid; gap: 8px; }
+.gl .peek-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; font-size: 13px; }
+.gl .peek-list li.ok { color: var(--gl-ok); }
+.gl table.sources { width: 100%; border-collapse: collapse; }
+.gl table.sources th, .gl table.sources td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--border); }
+.gl .src-env { border-color: var(--gl-warn); color: var(--gl-warn); } .gl .src-saved { border-color: var(--gl-ok); color: var(--gl-ok); }
+.keys-dialog p { line-height: 2; }
+.dock-toggle { align-self: flex-start; background: var(--gl-panel-2); color: var(--text); border: 1px solid var(--border); border-radius: var(--r-md); padding: 6px 10px; font-size: 12px; cursor: pointer; }
+.dock-toggle[aria-pressed="true"] { border-color: var(--gl-accent); }
+/* bottom dock on desktop: the rail becomes a floating bar of icons */
+@media (min-width: 901px) {
+  body.nav-dock .shell { grid-template-columns: 1fr; }
+  body.nav-dock .rail { position: fixed; top: auto; bottom: 14px; left: 50%; transform: translateX(-50%); height: auto; width: auto; z-index: 20;
+    flex-direction: row; align-items: center; padding: 6px 10px; border: 1px solid var(--border); border-radius: 18px; box-shadow: var(--e-hw); }
+  body.nav-dock .rail .logo, body.nav-dock .rail .rail-group, body.nav-dock .rail-foot > :not(.dock-toggle) { display: none; }
+  body.nav-dock #nav { flex-direction: row; gap: 2px; }
+  body.nav-dock #nav a { padding: 8px; } body.nav-dock #nav a span:not(.ico) { display: none; }
+  body.nav-dock .rail-foot { margin: 0 0 0 6px; padding: 0; flex-direction: row; }
+  body.nav-dock #main { padding-bottom: 90px; }
+}
+/* phone-first practice: start, stop, repeat and hint sit at the bottom, big, reachable with the guitar on your lap */
+@media (max-width: 600px) {
+  .gl .focus-foot { position: sticky; bottom: 0; background: var(--bg); padding-top: 8px; box-shadow: 0 -8px 16px var(--bg); }
+  .gl .focus-foot .row.center { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .gl .focus-foot .btn { min-height: 52px; justify-content: center; }
+  .gl .focus-foot .btn.xl { grid-column: 1 / -1; order: -1; }
+  .gl .focus-foot .f-result svg { width: 96px; height: 96px; }
+}

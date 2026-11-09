@@ -5,6 +5,7 @@ import { listen } from "../lib/listen.js";
 import { runAnswers, say } from "../lib/answer.js";
 import { neck } from "../lib/fretboard.js";
 import { linkTerms, loadGlossary, metersHtml, openTerms, stepperHtml } from "../lib/flow.js";
+import { chipsHtml } from "../lib/chips.js";
 import { chartGuide, playChart } from "./charts.js";
 
 const ANSWER_KINDS = ["quiz", "pick"], DRAWN_KINDS = ["find_note", "play_interval", "tone_row", "echo"];
@@ -98,7 +99,10 @@ export async function mount(el, { segs, params = {} }) {
       <h1>${esc(lt("title", ls.title))} ${ls.done ? `<span class="pill ok">${esc(t(ls.tested_out ? "lesson.tested_out" : "lesson.complete"))}</span>` : ""}</h1></div>
       ${!ls.done && !ls.recap ? `<button class="btn" id="testOut">${esc(t("lesson.testout_button"))}</button>` : ""}</div>
     ${stepperHtml(ls.flow)}
-    ${metersHtml(ls)}
+    <div class="first-action">
+      <button class="btn primary xl" id="exContinueTop">▶ ${esc(upNext ? t("lesson.continue_with", { title: exTitle(upNext) }) : t("lesson.practice_again"))}</button>
+      ${metersHtml(ls)}
+    </div>
     <div class="lesson-layout">
       <div class="stack">
         <div class="panel"><h2>${esc(t("lesson.idea"))}</h2><ul class="theory">${theory.map(x => `<li>${linkTerms(x, terms, used)}</li>`).join("")}</ul>
@@ -141,7 +145,7 @@ export async function mount(el, { segs, params = {} }) {
     <dialog class="ex-focus" aria-labelledby="fTitle"><div class="focus-inner" tabindex="-1">
       <div class="focus-top"><button class="btn small" data-f="back">← ${esc(t("lesson.focus_back"))}</button>
         <small class="muted">${esc(lt("title", ls.title))}</small></div>
-      <div class="focus-head"><h1 id="fTitle"></h1><p class="muted" id="fTarget"></p>
+      <div class="focus-head"><span class="f-state" id="fState" aria-live="polite"></span><h1 id="fTitle"></h1><p class="muted" id="fTarget"></p>
         <div class="seg mini f-guide" id="fGuide" role="group" aria-label="${esc(t("flow.guide_label"))}" hidden></div></div>
       <div class="focus-body"></div>
       <div class="focus-foot">
@@ -149,6 +153,7 @@ export async function mount(el, { segs, params = {} }) {
         <div class="ex-progress"><i></i></div>
         <div class="f-result" hidden></div>
         <div class="ex-msg muted" aria-live="polite"></div>
+        <p class="f-next" aria-live="polite"></p>
         <div class="row center"><button class="btn" data-f="hear"></button>
           <button class="btn" data-f="hint" hidden>💡 ${esc(t("flow.hint"))}</button>
           <button class="btn primary xl" data-f="go"></button>
@@ -212,6 +217,7 @@ export async function mount(el, { segs, params = {} }) {
     else if (e.key === "Enter" && !next.hidden) { e.preventDefault(); next.click(); }
   });
   $("#exContinue", el).onclick = () => openFocus(el, segs, ls, upNext || ls.exercises[0], chordData, exTitle);
+  $("#exContinueTop", el).onclick = () => openFocus(el, segs, ls, upNext || ls.exercises[0], chordData, exTitle);
 }
 
 /** Chart exercises: plays the chart at the exercise's speed while the views (guide, metronome) follow it. */
@@ -311,7 +317,8 @@ async function openFocus(el, segs, ls, ex, chordData, exTitle, start = false, mo
   const views = [];
   let now = null;
   if (g) {
-    body.innerHTML = `<div class="f-metro-box"></div><div class="ex-guide focus-guide"></div>`;
+    body.innerHTML = `${chipsHtml({ tuning: g.chart.tuning, bpm: Math.round(g.chart.bpm * ex.speed), time: `${g.chart.beats_per_bar}/4`, capo: g.chart.capo, swing: g.chart.swing })}
+      <div class="f-metro-box"></div><div class="ex-guide focus-guide"></div>`;
     views.push(metronomeView($(".f-metro-box", body), g.chart.beats_per_bar, Math.round(g.chart.bpm * ex.speed)));
     const note = g.chart.note && tc(`charts.${g.chart.id}.note`, g.chart.note);
     views.push(chartGuide($(".focus-guide", body), g.chart, { speed: ex.speed, note }));
@@ -345,6 +352,8 @@ async function openFocus(el, segs, ls, ex, chordData, exTitle, start = false, mo
   go.onclick = () => run(el, segs, ls, ex, chordData, exTitle);
   $("[data-f=hint]", dlg).hidden = true;
   $(".f-result", dlg).hidden = true;
+  $(".f-next", dlg).innerHTML = "";
+  setState(dlg, "ready");
   if (!dlg.open) dlg.showModal();
   $(".focus-inner", dlg).focus();   // so Space and Enter reach the shortcuts, not the Back button
   if (start) run(el, segs, ls, ex, chordData, exTitle);
@@ -406,11 +415,39 @@ function promptView(box, list) {
   };
 }
 
+/** The practice state, as a word: preparing → ready → playing → feedback, or "audio unavailable". */
+function setState(dlg, state) {
+  const b = $("#fState", dlg);
+  if (!b) return;
+  b.className = `f-state st-${state}`;
+  b.textContent = t(`flow.state_${state}`);
+}
+
+/** "Next, and why": the server's suggestion after a take, with a button when it can take you there. */
+function showNext(el, segs, ls, ex, chordData, exTitle, n) {
+  const box = $(".ex-focus .f-next", el);
+  if (!box) return;
+  box.innerHTML = "";
+  if (!n) return;
+  const p = { ...(n.params || {}) };
+  if (n.code === "less_help") p.level = t(`flow.guide_${p.level}`);
+  if (n.code === "next_exercise") p.title = exTitle(ls.exercises.find(e => e.id === p.exercise) || { id: p.exercise, title: p.title });
+  if (n.code === "next_lesson") p.title = tc(`lessons.${p.lesson}.title`, p.title);
+  box.innerHTML = `<span>💡 ${esc(t(`next.${n.code}`, p))}</span>`;
+  const btn = (label, fn) => { const b = document.createElement("button"); b.className = "btn small"; b.textContent = label; b.onclick = fn; box.append(" ", b); };
+  if (n.code === "less_help") btn(t("next.do_less_help"), () => { focus.guidance = n.params.level; openFocus(el, segs, ls, ex, chordData, exTitle); });
+  if (n.code === "try_variation") btn(t("flow.try_vary"), () => openFocus(el, segs, ls, ex, chordData, exTitle, false, { variant: true }));
+  if (n.code === "next_exercise") btn(t("next.do_open"), () => openFocus(el, segs, ls, ls.exercises.find(e => e.id === n.params.exercise), chordData, exTitle));
+  if (n.code === "next_lesson") { const a = document.createElement("a"); a.className = "btn small primary"; a.href = `#/lesson/${encodeURIComponent(n.params.lesson)}`; a.textContent = t("next.do_open"); box.append(" ", a); }
+}
+
 /** Shows how a take or a quiz went: message, result ring, and the next exercise when you passed. */
 function showOutcome(el, segs, ls, ex, chordData, exTitle, rep) {
   const dlg = $(".ex-focus", el), msg = $(".ex-msg", dlg), next = $("[data-f=next]", dlg);
   const a = rep.award || {};
   const score = rep.summary.score;
+  setState(dlg, "feedback");
+  showNext(el, segs, ls, ex, chordData, exTitle, a.next);
   msg.className = "ex-msg " + (a.passed ? "ok" : "err");
   msg.textContent = a.passed
     ? t("lesson.passed", { score: Math.round(score) }) + (a.xp ? ` · +${a.xp} XP` : "") + (a.lesson_done ? ` · ${t("lesson.lesson_done")}` : "")
@@ -506,6 +543,7 @@ async function runAnswer(el, segs, ls, ex, chordData, exTitle) {
   msg.className = "ex-msg muted";
   msg.textContent = "";
   btn.textContent = t("lesson.stop");
+  setState(dlg, "playing");
   task = runAnswers($(".focus-body", dlg), { lesson: ls.id, exercise: ex.id,
     onProgress: (k, n) => { bar.style.width = `${Math.round(100 * k / n)}%`; } });
   btn.onclick = () => task && task.stop();
@@ -575,8 +613,12 @@ async function run(el, segs, ls, ex, chordData, exTitle) {
         hintLevel >= 3 ? r.hint.label : ""].filter(Boolean).join(" · ");
     } catch { /* the take just ended */ }
   };
+  setState(dlg, "preparing");
+  $(".f-next", dlg).innerHTML = "";
+  let playing = false;
   task = listen({ exercise: { lesson: ls.id, exercise: ex.id, guidance: focus.guidance, variant: focus.variant, testout: focus.testout }, click: true }, {
     onState: s => {
+      if (!playing) { playing = true; setState(dlg, "playing"); }
       bar.style.width = `${Math.round(100 * Math.min(s.k, s.total) / s.total)}%`;
       if (s.countdown) msg.textContent = t("lesson.count_in", { n: s.countdown });
       if (now && s.lane) now.update(s);
@@ -591,7 +633,10 @@ async function run(el, segs, ls, ex, chordData, exTitle) {
     if (now && now.reveal) now.reveal();
   } catch (e) {
     msg.className = "ex-msg err";
-    msg.textContent = e.message;
+    if (e.code === "audio" || e.code === "no_device") {            // no input: say why and how to fix it
+      setState(dlg, "audio_unavailable");
+      msg.innerHTML = t("flow.no_audio_html", { error: esc(e.message), interpolation: { escapeValue: false } });
+    } else msg.textContent = e.message;
   } finally {
     views.forEach(v => v.setClock(null));
     task = null;

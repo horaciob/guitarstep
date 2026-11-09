@@ -17,6 +17,7 @@ guitarr gui          # opens http://127.0.0.1:8765
 
 ## Contents
 
+- [Screenshots](#screenshots)
 - [Features](#features)
 - [Requirements](#requirements)
 - [Installation](#installation)
@@ -34,6 +35,18 @@ guitarr gui          # opens http://127.0.0.1:8765
 - [Data and files](#data-and-files)
 - [Development](#development)
 - [Third-party software](#third-party-software)
+
+## Screenshots
+
+| | |
+|---|---|
+| ![Home: today's plan](docs/screenshots/home-dark.png) | ![A lesson with its five steps](docs/screenshots/lesson-dark.png) |
+| ![The course](docs/screenshots/course-dark.png) | ![Amp and effects](docs/screenshots/rig-dark.png) |
+| ![Chord finder: voice leading](docs/screenshots/chord-finder-dark.png) | ![Practice plan and consistency](docs/screenshots/plan-dark.png) |
+
+Light-theme versions are in [docs/screenshots](docs/screenshots). They're generated, not hand-made:
+`.venv/bin/python scripts/screenshots.py` boots the app with a temporary data folder and demo data and
+retakes them in both themes.
 
 ## Features
 

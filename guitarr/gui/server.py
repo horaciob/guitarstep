@@ -320,6 +320,7 @@ def exercise_finish(body: dict):
     except quiz.QuizError as e:
         fail(400, "quiz_expired", str(e))
     award = progress.exercise_answered(r["lesson"], r["exercise"], r["score"], r["need"])
+    award["next"] = catalog.next_step(r["lesson"], r["exercise"], award, progress.get())
     award.pop("progress", None)
     return dict(summary=dict(score=r["score"]), award=award)
 
@@ -478,8 +479,11 @@ def stats():
                                 score=score))
         if len(pts) >= 1:
             tempo.append(dict(id=song["id"], name=song["name"], points=pts[-60:]))
+    songs_played = history.songs()
     return dict(days=grid, tempo=tempo, totals=dict(minutes=sum(g["minutes"] for g in grid),
-                                                     active_days=sum(g["minutes"] > 0 for g in grid)))
+                                                     active_days=sum(g["minutes"] > 0 for g in grid),
+                                                     songs=len(songs_played), sessions=sum(x["sessions"] for x in songs_played),
+                                                     streak=progress.get()["streak"]))
 
 
 @app.get("/api/glossary")
@@ -613,6 +617,25 @@ def api_progress_tutorial(body: dict):
 
 
 # ---------------------------------------------------------------- status / settings
+@app.get("/api/settings/sources")
+def settings_sources():
+    """Where each setting's value comes from: the environment, what you saved, auto-detected, or the default."""
+    import os
+
+    saved = config.load()
+    audio, inst = saved.get("audio", {}), saved.get("instrument", {})
+    src = lambda d, k, auto=False: "saved" if d.get(k) is not None else ("auto" if auto else "default")
+    return dict(
+        home=dict(value=str(config.HOME), source="env" if os.environ.get("GUITARR_HOME") else "default", env="GUITARR_HOME"),
+        device=dict(value=audio_settings().get("device"), source=src(audio, "device", auto=True)),
+        channel=dict(value=audio_settings().get("channel"), source=src(audio, "channel")),
+        output_device=dict(value=audio.get("output_device"), source=src(audio, "output_device", auto=True)),
+        latency_ms=dict(value=audio.get("latency_ms") or 0, source=src(audio, "latency_ms")),
+        tuning=dict(value=config.instrument()["tuning"], source=src(inst, "tuning")),
+        left_handed=dict(value=config.instrument()["left_handed"], source=src(inst, "left_handed")),
+    )
+
+
 @app.get("/api/status")
 def status():
     return dict(version=__version__, home=str(config.HOME),
@@ -1199,6 +1222,8 @@ def live_start(body: dict):
                 if ctx["type"] == "practice" and rep["summary"]["judged"] and not opts.simulate:
                     history.save(rep, S.section)
                 rep["award"] = progress.on_session(ctx, rep)
+                if ctx and ctx.get("type") == "exercise":
+                    rep["award"]["next"] = catalog.next_step(ctx["lesson"], ctx["exercise"], rep["award"], progress.get())
                 rep["award"]["practice_s"] = plan.record_session(ctx, rep)
                 rep["context"] = ctx
                 S.final = rep

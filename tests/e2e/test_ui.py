@@ -731,3 +731,55 @@ def test_new_pedals_render_offline(app_page):
     }""")
     for pid, r in out.items():
         assert r["finite"] and r["peak"] > 0.001, (pid, r)
+
+
+def test_nothing_starts_on_its_own(app_page):
+    """Settings and progress come back on reload, but nothing starts listening or playing by itself."""
+    onboarded(app_page)
+    started = []
+    app_page.on("request", lambda r: "/api/live/start" in r.url and started.append(r.url))
+    for route in ["rig", "lesson/major-scale?ex=g-position", "stage?chart=01-em-am", "tools?tab=metronome", "home"]:
+        go(app_page, route)
+        app_page.wait_for_timeout(400)
+        app_page.reload()
+        app_page.wait_for_timeout(400)
+    assert started == []
+    go(app_page, "rig")
+    expect(app_page.locator("#rigPower")).to_have_attribute("aria-pressed", "false")
+
+
+def test_dock_keys_course_peek_and_sources(app_page):
+    onboarded(app_page)
+    go(app_page, "home")
+    app_page.locator("#dockToggle").click()
+    expect(app_page.locator("body")).to_have_class(re.compile("nav-dock"))
+    app_page.reload()
+    expect(app_page.locator("body")).to_have_class(re.compile("nav-dock"))     # remembered in this browser
+    app_page.locator("#dockToggle").click()
+    app_page.keyboard.press("?")
+    expect(app_page.locator("#keysDialog")).to_contain_text("Stage mode")
+    app_page.keyboard.press("Escape")
+    go(app_page, "course")
+    row = app_page.locator(".lesson-row").first
+    row.locator("summary").click()
+    expect(row.locator(".lesson-peek")).to_contain_text("Play the 6 open strings")
+    expect(app_page).to_have_url(re.compile("#/course"))                       # opened in place
+    go(app_page, "settings")
+    expect(app_page.locator("#sSources")).to_contain_text("Data folder")
+    expect(app_page.locator("#sSources")).to_contain_text("default")
+
+
+def test_practice_states_and_next_step(app_page):
+    onboarded(app_page)
+    _fake_listener(app_page, {"award": {"passed": True, "need": 80, "xp": 15, "next": {"code": "less_help", "params": {"level": 1}}},
+                              "summary": {"score": 92}})
+    go(app_page, "lesson/major-scale?ex=g-position")
+    focus = app_page.locator("dialog.ex-focus")
+    expect(focus.locator("#fState")).to_have_text("ready")
+    app_page.keyboard.press(" ")
+    expect(focus.locator("#fState")).to_have_text("playing")
+    app_page.keyboard.press(" ")
+    expect(focus.locator("#fState")).to_have_text("feedback")
+    expect(focus.locator(".f-next")).to_contain_text("less help")
+    focus.locator(".f-next button").click()
+    expect(focus.locator('#fGuide button[data-g="1"]')).to_have_attribute("aria-pressed", "true")
