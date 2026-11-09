@@ -112,10 +112,11 @@ def test_loopback_longer_than_a_beat_is_still_the_same_click(monkeypatch):
 def test_loopback_ignores_sounds_that_arent_its_clicks(monkeypatch):
     _fakes(monkeypatch, 0.02, plain=True)                  # something else comes back (the ordinary 1000/1600 Hz click)
     r = tuner.calibrate(0, 2, loopback=True)
-    assert not r["ok"] and r["code"] == "no_loop"
+    assert not r["ok"] and r["code"] == "loop_other_sound" and r["heard"] >= 10 and r["channel"] == 2
 
 
 def test_loopback_with_nothing_coming_back(monkeypatch):
-    _fakes(monkeypatch, 5.0)                               # clicks never arrive in the window
+    _fakes(monkeypatch, 30.0)                              # clicks never arrive while it listens
     r = tuner.calibrate(0, 2, loopback=True)
-    assert not r["ok"] and r["code"] == "no_loop"
+    assert not r["ok"] and r["code"] == "no_loop" and r["heard"] == 0 and r["peak_db"] < -100
+    assert (config.CACHE_DIR / "cable-test.wav").exists()  # kept, to check what came back

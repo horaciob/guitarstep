@@ -121,6 +121,17 @@ def run_tuner_cli(src) -> None:
 
 
 # ---------------------------------------------------------------- latency calibration
+def _save_cable_test(x: np.ndarray, sr: int) -> None:
+    """Keeps the last cable test's recording (cache/cable-test.wav), to check what came back."""
+    import soundfile as sf
+    from . import config
+    try:
+        config.CACHE_DIR.mkdir(parents=True, exist_ok=True)
+        sf.write(config.CACHE_DIR / "cable-test.wav", x, sr)
+    except OSError:
+        pass
+
+
 def _tone_index(x: np.ndarray, sr: int, t: float, tones) -> int | None:
     """Which of `tones` sounds just after `t` (s), or None if none of them is clearly there."""
     a = max(0, int((t - 0.002) * sr))
@@ -189,10 +200,19 @@ def calibrate(device, channel: int, output_device=None, bpm: float = 90, beats: 
             near = [o - ct for o in onsets if -0.15 <= o - ct <= 0.35]
         if near:
             offs.append(min(near, key=abs))
+    if loopback:
+        _save_cable_test(rec.audio(), src.sr)
     if len(offs) < beats // 2:
         if loopback:
-            return dict(ok=False, code="no_loop", hits=len(offs),
-                        message="The clicks didn't come back. Check the cable, the input channel and its gain.")
+            x = rec.audio()
+            peak = round(float(20 * np.log10(np.max(np.abs(x)) + 1e-9)), 1) if len(x) else -120.0
+            heard = sum(1 for o in onsets if o >= t_first - 0.1)
+            diag = dict(hits=len(offs), heard=heard, peak_db=peak, channel=channel)
+            if heard:
+                return dict(ok=False, code="loop_other_sound", **diag,
+                            message=f"Input {channel} heard {heard} sounds, but none was a returning click.")
+            return dict(ok=False, code="no_loop", **diag,
+                        message=f"Input {channel} heard nothing (peak {peak} dB). Check the cable, the input and its gain.")
         return dict(ok=False, code="too_few_hits", hits=len(offs),
                     message="Not enough hits detected. Raise the gain or play harder, without distortion.")
     offs = np.array(offs)

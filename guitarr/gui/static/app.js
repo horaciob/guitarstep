@@ -1084,9 +1084,10 @@ function runCalibration(body, status) {
           status.innerHTML = `<b style="color:var(--gl-ok)">✓ ${esc(msg)}</b>`;
           if (r.status) { $("#sLatency").value = r.status.applied_ms; Settings.saved.latency_ms = r.status.applied_ms; }
         } else {
-          const known = { too_few_hits: "settings.cal_few_hits", no_loop: "latency.no_loop", loop_unsteady: "latency.loop_unsteady" }[r.code];
-          status.innerHTML = `<span style="color:var(--gl-err)">${esc(known ? t(known) : (r.message || t("settings.cal_failed")))}</span>`;
-          if (r.code === "no_loop" || r.code === "loop_unsteady") $("#cableHelp").open = true;   // the guide has the fixes
+          const known = { too_few_hits: "settings.cal_few_hits", no_loop: "latency.no_loop", loop_unsteady: "latency.loop_unsteady",
+            loop_other_sound: "latency.loop_other_sound" }[r.code];
+          status.innerHTML = `<span style="color:var(--gl-err)">${esc(known ? t(known, r) : (r.message || t("settings.cal_failed")))}</span>`;
+          if (r.code?.startsWith("loop") || r.code === "no_loop") $("#cableHelp").open = true;   // the guide has the fixes
         }
         loadLatency();
       }, 150);
