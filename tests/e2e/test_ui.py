@@ -98,13 +98,23 @@ def test_rig_effects_and_presets(app_page):
     app_page.locator("#fxDialog .pick[data-id=fuzz]").click()
     expect(app_page.locator("#sec-pedals .pedal[data-uid]")).to_have_count(before + 1)
 
-    app_page.get_by_role("button", name="Save", exact=True).click()
+    app_page.locator("#mySave").click()                       # "Save the current sound" card in My sounds
     app_page.locator("#presetName").fill("My test tone")
     app_page.locator("#saveForm button[type=submit]").click()
     expect(app_page.locator("#rigPreset")).to_contain_text("My test tone")
+    mine = app_page.locator("#mySounds .quick[data-user]")
+    expect(mine).to_have_count(1)
+    expect(mine).to_contain_text("My test tone")
+    expect(mine).to_contain_text("active")
+    app_page.locator(".quick[data-id]").first.click()          # a quick sound, then back to mine
+    expect(mine).not_to_contain_text("active")
+    mine.click()
+    expect(mine).to_contain_text("active")
+    expect(app_page.locator("#sec-pedals .pedal[data-uid]")).to_have_count(before + 1)
     app_page.locator("#rigDel").click()
     app_page.locator("#rigDelYes").click()
     expect(app_page.locator("#rigPreset")).not_to_contain_text("My test tone")
+    expect(app_page.locator("#mySounds .quick[data-user]")).to_have_count(0)
 
 
 def test_settings_and_language(app_page):

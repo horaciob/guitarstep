@@ -872,6 +872,8 @@ body.is-setup #main { margin: 0 auto; max-width: 760px; padding-top: 48px; }
 .gl .quick.on { border-color: var(--gl-accent); box-shadow: inset 0 0 0 1px var(--gl-accent); }
 .gl .quick b { font-size: 13px; } .gl .quick small { color: var(--muted); font-size: 11px; line-height: 1.3; }
 .gl .quick-on { margin-top: 4px; font-size: 11px; font-weight: 700; color: var(--gl-accent); }
+.gl .quick-add { border-style: dashed; justify-content: center; color: var(--muted); }
+.gl .quick-add b { color: var(--text); }
 @media (max-width: 700px) {
   .gl .board { justify-content: center; gap: 12px; }
   .gl .board .cable { display: none; }
@@ -1235,3 +1237,4 @@ body.is-stage #main { max-width: none; padding: 12px 18px; }
 .gl .cable-help ol, .gl .cable-help ul { padding-left: 20px; margin: 4px 0; }
 .gl .cable-help li { margin: 4px 0; }
 .gl .cable-diagram svg { width: 100%; max-width: 520px; height: auto; display: block; margin: 8px auto 0; color: var(--text); }
+.gl #rigSave { white-space: nowrap; }
