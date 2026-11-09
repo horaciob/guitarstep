@@ -36,6 +36,7 @@ def L(code: str, **params) -> dict:
 SIMPLE = ["m2", "M2", "m3", "M3", "P4", "A4", "P5", "m6", "M6", "m7", "M7", "P8"]
 NATURALS = ["C", "D", "E", "F", "G", "A", "B"]
 KEYS = ["C", "G", "D", "A", "E", "F", "Bb", "Eb"]
+ROOTS = ["C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"]
 ENHARMONIC = [("C#", "Db"), ("D#", "Eb"), ("F#", "Gb"), ("G#", "Ab"), ("A#", "Bb"), ("E", "Fb"), ("B", "Cb"), ("E#", "F"), ("B#", "C")]
 OPEN_NAMES = {6: "E", 5: "A", 4: "D", 3: "G", 2: "B", 1: "E"}
 
@@ -406,7 +407,27 @@ def q_staff_fact(rng, ex):
     return _q(L(code), ch, ans)
 
 
-QUIZ = {f.__name__[2:]: f for f in [q_read_note, q_staff_fact, q_figure_value, q_rhythm_dictation, q_tritone_sub, q_shared_tones, q_ii_v_i, q_turnaround,q_interval_frets, q_interval_ear, q_enharmonic, q_half_step, q_tab_read, q_open_string,
+# ---------------------------------------------------------------- CAGED
+def q_caged(rng, ex):
+    """The order of the shapes, which chord a moved shape makes, and which string holds each root."""
+    ask = rng.choice(ex.get("asks", ["next", "chord", "string"]))
+    order = th.CAGED_ORDER
+    if ask == "next":
+        k = rng.randrange(5)
+        ch, ans = _choices(rng, order[(k + 1) % 5], list(order), label=lambda x: L("shape_of", shape=x))
+        return _q(L("caged_next", shape=order[k]), ch, ans)
+    if ask == "chord":
+        shape = rng.choice("EA")
+        string, fret = th.CAGED[shape]["string"], rng.randint(1, 10)
+        name = th.plain_name(th.fret_pitch(string, fret))
+        ch, ans = _choices(rng, name, NATURALS + ["Bb", "Eb", "F#", "Ab", "C#"], label=lambda x: x)
+        return _q(L("caged_chord", shape=shape, string=string, fret=fret), ch, ans)
+    shape = rng.choice(order)
+    ch, ans = _choices(rng, th.CAGED[shape]["string"], [6, 5, 4, 3], label=lambda x: L("string_n", n=x))
+    return _q(L("caged_string", shape=shape), ch, ans)
+
+
+QUIZ = {f.__name__[2:]: f for f in [q_caged, q_read_note, q_staff_fact, q_figure_value, q_rhythm_dictation, q_tritone_sub, q_shared_tones, q_ii_v_i, q_turnaround,q_interval_frets, q_interval_ear, q_enharmonic, q_half_step, q_tab_read, q_open_string,
                                      q_scale_degree, q_relative_minor, q_hear_quality, q_mode_color, q_chord_tones,
                                      q_chord_formula, q_inversion, q_roman, q_pentatonic, q_symmetric, q_bebop, q_altered,
                                      q_guide_tones, q_drop, q_extension, q_voice_lead]}
@@ -436,6 +457,20 @@ def pick_item(rng, ex) -> dict:
         name = ex.get("scale", "major")
         want = {s["pc"] for s in th.scale(key, name)}
         prompt, mode = L("pick_scale", key=key, scale=name, lo=lo, hi=hi), "all"
+    elif what == "caged":                           # every chord tone inside one CAGED shape
+        quality = ex.get("quality", "maj")
+        for _ in range(50):
+            root, shape = rng.choice(ex.get("keys", ROOTS)), rng.choice(ex.get("caged", th.CAGED_ORDER))
+            try:
+                c = th.caged(root, quality, shape)
+                break
+            except th.TheoryError:
+                continue
+        lo, hi = c["lo"], c["hi"]
+        want = {t["pc"] for t in th.chord(th.chord_symbol(root, quality))["tones"]}
+        prompt, mode = L("pick_caged", chord=th.chord_symbol(root, quality), shape=shape + ("m" if quality == "min" else ""),
+                         string=th.CAGED[shape]["string"], fret=c["root_fret"]), "all"
+        strings = [6, 5, 4, 3, 2, 1]
     elif what == "staff":                           # read the note, click it at the exact height (not an octave off)
         _, _, pitch, flats = staff_target(rng, ex)
         expected = sorted((s, f) for s in strings for f in range(lo, hi + 1) if th.fret_pitch(s, f) == pitch)

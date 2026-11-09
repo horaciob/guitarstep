@@ -3774,8 +3774,332 @@
    ]
   },
   {
-   "id": "n12",
+   "id": "n19",
+   "title": "CAGED",
+   "subtitle": "Five chord shapes that fit together and cover the whole neck.",
    "number": 15,
+   "lessons": [
+    {
+     "id": "caged-idea",
+     "title": "One chord, five places",
+     "minutes": 12,
+     "theory": [
+      "The open chords C, A, G, E and D all look different. The idea of CAGED is that these five shapes, moved up with a barre, play any major chord in five regions of the neck, each one touching the next.",
+      "Going up the neck the order is always C → A → G → E → D, and then it starts again. Knowing which shape you're in tells you where the root, the 3rd and the 5th are, with nothing else to memorize."
+     ],
+     "tips": [
+      "Two neighboring shapes share notes where they meet: the edge of one is the start of the next. That's why they cover the neck with no gaps."
+     ],
+     "tutorials": [
+      "caged system explained guitar",
+      "caged chord shapes up the neck"
+     ],
+     "figures": [
+      {
+       "type": "fretboard",
+       "chord": "C",
+       "frets": [
+        0,
+        15
+       ]
+      }
+     ],
+     "captions": [
+      "Every note of C major (1, 3, 5) up to the 15th fret. Each shape is a slice of this map."
+     ],
+     "exercises": [
+      {
+       "id": "caged-quiz",
+       "kind": "quiz",
+       "title": "The shapes and their order",
+       "quiz": "caged",
+       "count": 6,
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "e-shape",
+     "title": "The E shape",
+     "minutes": 10,
+     "theory": [
+      "The E shape is the most used barre: the root sits on the 6th string under finger 1, and the rest of the chord in the next two frets."
+     ],
+     "tips": [],
+     "tutorials": [],
+     "figures": [
+      {
+       "type": "fretboard",
+       "chord": "C",
+       "frets": [
+        8,
+        11
+       ]
+      }
+     ],
+     "captions": [
+      "C in the E shape, root on the 8th fret."
+     ],
+     "exercises": [
+      {
+       "id": "e-shape-pick",
+       "kind": "pick",
+       "title": "Find the chord in the E shape",
+       "pick": "caged",
+       "quality": "maj",
+       "count": 6,
+       "min": 80,
+       "caged": "E"
+      },
+      {
+       "id": "e-shape-play",
+       "kind": "caged",
+       "title": "Play G in the E shape, low to high",
+       "chord": "G",
+       "min": 80,
+       "caged": "E"
+      }
+     ]
+    },
+    {
+     "id": "a-shape",
+     "title": "The A shape",
+     "minutes": 10,
+     "theory": [
+      "In the A shape the root sits on the 5th string under finger 1. It's the other everyday barre."
+     ],
+     "tips": [],
+     "tutorials": [],
+     "figures": [
+      {
+       "type": "fretboard",
+       "chord": "C",
+       "frets": [
+        3,
+        6
+       ]
+      }
+     ],
+     "captions": [
+      "C in the A shape, root on the 3rd fret."
+     ],
+     "exercises": [
+      {
+       "id": "a-shape-pick",
+       "kind": "pick",
+       "title": "Find the chord in the A shape",
+       "pick": "caged",
+       "quality": "maj",
+       "count": 6,
+       "min": 80,
+       "caged": "A"
+      },
+      {
+       "id": "a-shape-play",
+       "kind": "caged",
+       "title": "Play C in the A shape, low to high",
+       "chord": "C",
+       "min": 80,
+       "caged": "A"
+      }
+     ]
+    },
+    {
+     "id": "d-shape",
+     "title": "The D shape",
+     "minutes": 10,
+     "theory": [
+      "In the D shape the root sits on the 4th string. The shape is small and lives on the high strings: great for chords up the neck."
+     ],
+     "tips": [],
+     "tutorials": [],
+     "figures": [
+      {
+       "type": "fretboard",
+       "chord": "C",
+       "frets": [
+        10,
+        13
+       ]
+      }
+     ],
+     "captions": [
+      "C in the D shape, root on the 10th fret."
+     ],
+     "exercises": [
+      {
+       "id": "d-shape-pick",
+       "kind": "pick",
+       "title": "Find the chord in the D shape",
+       "pick": "caged",
+       "quality": "maj",
+       "count": 6,
+       "min": 80,
+       "caged": "D"
+      }
+     ]
+    },
+    {
+     "id": "c-shape",
+     "title": "The C shape",
+     "minutes": 10,
+     "theory": [
+      "In the C shape the root is on the 5th string again, but under finger 3 or 4: the chord reaches back toward the nut."
+     ],
+     "tips": [],
+     "tutorials": [],
+     "figures": [
+      {
+       "type": "fretboard",
+       "chord": "D",
+       "frets": [
+        2,
+        5
+       ]
+      }
+     ],
+     "captions": [
+      "D in the C shape, root on the 5th fret."
+     ],
+     "exercises": [
+      {
+       "id": "c-shape-pick",
+       "kind": "pick",
+       "title": "Find the chord in the C shape",
+       "pick": "caged",
+       "quality": "maj",
+       "count": 6,
+       "min": 80,
+       "caged": "C"
+      }
+     ]
+    },
+    {
+     "id": "g-shape",
+     "title": "The G shape",
+     "minutes": 10,
+     "theory": [
+      "The G shape also reaches back, with the root on the 6th string under finger 3 or 4. It's the widest of the five, and many players use only part of it."
+     ],
+     "tips": [],
+     "tutorials": [],
+     "figures": [
+      {
+       "type": "fretboard",
+       "chord": "C",
+       "frets": [
+        5,
+        8
+       ]
+      }
+     ],
+     "captions": [
+      "C in the G shape, root on the 8th fret."
+     ],
+     "exercises": [
+      {
+       "id": "g-shape-pick",
+       "kind": "pick",
+       "title": "Find the chord in the G shape",
+       "pick": "caged",
+       "quality": "maj",
+       "count": 6,
+       "min": 80,
+       "caged": "G"
+      }
+     ]
+    },
+    {
+     "id": "caged-connect",
+     "title": "Connecting the five shapes",
+     "minutes": 12,
+     "theory": [
+      "Now all of them together. The app picks the chord and the shape; you find 1, 3 and 5 in that position. Before you click, remember the order C → A → G → E → D and where each shape keeps its root."
+     ],
+     "tips": [],
+     "tutorials": [],
+     "figures": [
+      {
+       "type": "fretboard",
+       "chord": "G",
+       "frets": [
+        0,
+        15
+       ]
+      }
+     ],
+     "captions": [
+      "G major over the whole neck: try to see the five shapes, one after another."
+     ],
+     "exercises": [
+      {
+       "id": "connect-pick",
+       "kind": "pick",
+       "title": "Any chord, any shape",
+       "pick": "caged",
+       "quality": "maj",
+       "count": 10,
+       "min": 80,
+       "caged": "CAGED"
+      },
+      {
+       "id": "connect-play",
+       "kind": "caged",
+       "title": "The five shapes of G, up the neck",
+       "chord": "G",
+       "min": 75,
+       "caged": "CAGED"
+      }
+     ]
+    },
+    {
+     "id": "caged-minor",
+     "title": "Minor shapes",
+     "minutes": 10,
+     "theory": [
+      "The E, A and D shapes also come in minor: just lower the 3rd a half step. With them you can play any minor chord in three regions."
+     ],
+     "tips": [],
+     "tutorials": [],
+     "figures": [
+      {
+       "type": "fretboard",
+       "chord": "Am",
+       "frets": [
+        5,
+        8
+       ]
+      }
+     ],
+     "captions": [
+      "Am in the Em shape, root on the 5th fret."
+     ],
+     "exercises": [
+      {
+       "id": "minor-pick",
+       "kind": "pick",
+       "title": "Find the minor chord in the Em, Am or Dm shape",
+       "pick": "caged",
+       "quality": "min",
+       "count": 9,
+       "min": 80,
+       "caged": "EAD"
+      },
+      {
+       "id": "minor-play",
+       "kind": "caged",
+       "title": "Play Am in the Em and Am shapes",
+       "chord": "Am",
+       "min": 80,
+       "caged": "EA"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "n12",
+   "number": 16,
    "title": "Harmony",
    "subtitle": "The chords that live in a key, written as roman numerals, in major and minor.",
    "lessons": [
@@ -3964,7 +4288,7 @@
   },
   {
    "id": "n13",
-   "number": 16,
+   "number": 17,
    "title": "Voicings",
    "subtitle": "Shells, drop-2, drop-3, voice leading and guide tones: chords the way jazz guitarists play them.",
    "lessons": [
@@ -4303,7 +4627,7 @@
   },
   {
    "id": "n14",
-   "number": 17,
+   "number": 18,
    "title": "Jazz foundations",
    "subtitle": "ii–V–I in every key, minor ii–V–i, turnarounds, tritone subs, the jazz blues, song form and comping.",
    "lessons": [
@@ -4720,7 +5044,7 @@
   },
   {
    "id": "n15",
-   "number": 18,
+   "number": 19,
    "title": "Jazz language",
    "subtitle": "Swing, walking bass, arpeggios, approach notes, enclosures, eighth-note lines and etudes.",
    "lessons": [

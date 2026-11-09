@@ -345,13 +345,13 @@ def exercise_steps(ex: dict) -> list[dict] | None:
         return parse_lick(ex["tab"], int(ex.get("shift", 0)))
     if ex["kind"] == "bend":
         return bend_steps(ex)
-    if ex["kind"] in ("scale", "arpeggio", "line"):
+    if ex["kind"] in RUN_KINDS:
         return [dict(string=s, fret=f, pitch=p, tech="pick", glide_from=None, vibrato=False) for s, f, p in _run(ex)]
     return None
 
 
 # kinds you play: scale/arpeggio/line runs and chord shapes are built by the theory engine
-RUN_KINDS = ("scale", "arpeggio", "line")
+RUN_KINDS = ("scale", "arpeggio", "line", "caged")
 ANSWER_KINDS = ("quiz", "pick", "tap")          # passed by answering (or tapping), not by the listener
 SHAPE_KINDS = ("shape", "voiced")
 
@@ -366,6 +366,16 @@ def _run(ex: dict) -> list[tuple[int, int, int]]:
                                  int(ex.get("nps", 0)), int(ex.get("octaves", 1)))
         if ex["kind"] == "arpeggio":
             return th.arpeggio_path(ex["chord"], lo, hi, ex.get("direction", "up"), int(ex.get("octaves", 1)))
+        if ex["kind"] == "caged":                       # one shape, or several in a row up the neck
+            ch = th.parse_chord(ex["chord"])
+            shapes = th.caged_along(ch["root"], ch["quality"], ex.get("caged", "CAGED"))
+            run = []
+            for c in shapes:
+                path = c["path"] + c["path"][-2::-1] if ex.get("direction") == "updown" else c["path"]
+                run += path
+            if not run:
+                raise th.TheoryError("no shape fits")
+            return run
         style = ex.get("style", "guide")
         if style == "guide":
             return th.guide_line(ex["progression"], lo, hi, int(ex.get("per_chord", 1)))
@@ -451,7 +461,7 @@ def _recap(lvl: dict) -> dict | None:
 
 # the five steps of a lesson: discover → understand → guided practice → independent practice → vary and apply
 STAGES = ("discover", "understand", "guided", "independent", "apply")
-FADEABLE = ("lick", "scale", "arpeggio", "line", "shape", "voiced", "notes")
+FADEABLE = ("lick", "scale", "arpeggio", "line", "shape", "voiced", "notes", "caged")
 
 
 def exercise_stage(ex: dict) -> str:
@@ -504,6 +514,9 @@ def variation(ex: dict) -> dict | None:
         if k == "arpeggio":
             ch = _transpose_symbol(ex["chord"], "P4")
             return {**ex, "chord": ch, "frets": _shift_window(ex.get("frets"), 5), "_label": dict(code="over", chords=ch)}
+        if k == "caged":                                # the same shapes of another chord
+            ch = _transpose_symbol(ex["chord"], "P4")
+            return {**ex, "chord": ch, "_label": dict(code="over", chords=ch)}
         if k in ("line", "voiced") and ex.get("progression"):
             prog = [_transpose_symbol(s, "P4") for s in ex["progression"]]
             out = {**ex, "progression": prog, "_label": dict(code="over", chords=" → ".join(prog))}

@@ -494,7 +494,8 @@
    "t_tap_one": "{{count}} compás para tocar a {{bpm}} BPM",
    "t_tap_other": "{{count}} compases para tocar a {{bpm}} BPM",
    "t_rhythm_one": "{{count}} compás para tocar a {{bpm}} BPM",
-   "t_rhythm_other": "{{count}} compases para tocar a {{bpm}} BPM"
+   "t_rhythm_other": "{{count}} compases para tocar a {{bpm}} BPM",
+   "t_caged": "{{chord}}: {{shapes}}"
   },
   "chords": {
    "title": "Acordes",
@@ -1519,7 +1520,13 @@
    "staff_eight_eight_bars": "Ocho compases",
    "staff_eight_octave_lower": "Que suena una octava más grave de lo escrito",
    "staff_eight_eight_notes": "Ocho notas por compás",
-   "staff_eight_fret_eight": "Que se toca en el traste 8"
+   "staff_eight_fret_eight": "Que se toca en el traste 8",
+   "pick_caged": "Todas las notas de {{chord}} en la forma de {{shape}} (fundamental en la cuerda {{string}}, traste {{fret}})",
+   "caged_next": "Subiendo por el mástil, ¿qué forma viene después de la forma de {{shape}}?",
+   "caged_chord": "La forma de {{shape}} con la fundamental en el traste {{fret}} de la cuerda {{string}}, ¿qué acorde forma?",
+   "caged_string": "¿En qué cuerda está la fundamental de la forma de {{shape}}?",
+   "shape_of": "Forma de {{shape}}",
+   "string_n": "Cuerda {{n}}"
   },
   "flow": {
    "label": "Los pasos de esta lección",
@@ -2027,6 +2034,10 @@
    "n18": {
     "title": "Leer partitura",
     "subtitle": "De la tablatura al pentagrama: la clave de sol, posición por posición."
+   },
+   "n19": {
+    "title": "CAGED",
+    "subtitle": "Cinco formas de acorde que encajan entre sí y cubren todo el mástil."
    }
   },
   "lessons": {
@@ -3383,6 +3394,100 @@
     ],
     "tutorials": [],
     "captions": []
+   },
+   "caged-idea": {
+    "title": "Un acorde, cinco lugares",
+    "theory": [
+     "Los acordes abiertos de C, A, G, E y D tienen formas distintas. La idea del CAGED es que esas cinco formas, movidas con cejilla, tocan cualquier acorde mayor en cinco regiones del mástil, cada una pegada a la siguiente.",
+     "Subiendo por el mástil el orden es siempre C → A → G → E → D, y vuelve a empezar. Saber en qué forma estás te dice dónde están la fundamental, la 3ª y la 5ª, sin memorizar nada más."
+    ],
+    "tips": [
+     "Dos formas vecinas comparten notas donde se juntan: el borde de una es el comienzo de la otra. Por eso cubren el mástil sin huecos."
+    ],
+    "tutorials": [
+     "sistema caged guitarra explicado",
+     "formas caged acordes por el mástil"
+    ],
+    "captions": [
+     "Todas las notas de Do mayor (1, 3, 5) hasta el traste 15. Cada forma es una porción de este mapa."
+    ]
+   },
+   "e-shape": {
+    "title": "La forma de E",
+    "theory": [
+     "La forma de E es la cejilla más usada: la fundamental está en la 6ª cuerda bajo el dedo 1, y el resto del acorde en los dos trastes siguientes."
+    ],
+    "tips": [],
+    "tutorials": [],
+    "captions": [
+     "Do en la forma de E, fundamental en el traste 8."
+    ]
+   },
+   "a-shape": {
+    "title": "La forma de A",
+    "theory": [
+     "En la forma de A la fundamental está en la 5ª cuerda bajo el dedo 1. Es la otra cejilla de todos los días."
+    ],
+    "tips": [],
+    "tutorials": [],
+    "captions": [
+     "Do en la forma de A, fundamental en el traste 3."
+    ]
+   },
+   "d-shape": {
+    "title": "La forma de D",
+    "theory": [
+     "En la forma de D la fundamental está en la 4ª cuerda. La forma es chica y vive en las cuerdas agudas: ideal para acordes arriba del mástil."
+    ],
+    "tips": [],
+    "tutorials": [],
+    "captions": [
+     "Do en la forma de D, fundamental en el traste 10."
+    ]
+   },
+   "c-shape": {
+    "title": "La forma de C",
+    "theory": [
+     "En la forma de C la fundamental vuelve a estar en la 5ª cuerda, pero bajo el dedo 3 o 4: el acorde se estira hacia atrás, hacia la cejuela."
+    ],
+    "tips": [],
+    "tutorials": [],
+    "captions": [
+     "Re en la forma de C, fundamental en el traste 5."
+    ]
+   },
+   "g-shape": {
+    "title": "La forma de G",
+    "theory": [
+     "La forma de G también se estira hacia atrás, con la fundamental en la 6ª cuerda bajo el dedo 3 o 4. Es la más abierta de las cinco, y mucha gente usa solo una parte."
+    ],
+    "tips": [],
+    "tutorials": [],
+    "captions": [
+     "Do en la forma de G, fundamental en el traste 8."
+    ]
+   },
+   "caged-connect": {
+    "title": "Conectar las cinco formas",
+    "theory": [
+     "Ahora todas juntas. La app elige el acorde y la forma; vos encontrás 1, 3 y 5 en esa posición. Antes de marcar, acordate del orden C → A → G → E → D y de dónde guarda cada forma su fundamental."
+    ],
+    "tips": [],
+    "tutorials": [],
+    "captions": [
+     "Sol mayor en todo el mástil: tratá de ver las cinco formas, una después de otra."
+    ]
+   },
+   "caged-minor": {
+    "title": "Formas menores",
+    "theory": [
+     "Las formas de E, A y D también existen en menor: alcanza con bajar la 3ª medio tono. Con ellas tocás cualquier acorde menor en tres regiones."
+    ],
+    "tips": [],
+    "tutorials": [],
+    "captions": [
+     "Lam en la forma de Em, fundamental en el traste 5."
+    ]
    }
   },
   "exercises": {
@@ -3613,7 +3718,19 @@
    "accidentals-staff/acc-names": "Nombrá la nota, también con sostenidos y bemoles",
    "fifth-position/fifth-neck": "Marcala en 5ª posición",
    "seventh-position/seventh-play": "Leé y tocá en 7ª posición",
-   "read-and-play/first-play": "Leé y tocá en primera posición"
+   "read-and-play/first-play": "Leé y tocá en primera posición",
+   "caged-idea/caged-quiz": "Las formas y su orden",
+   "e-shape/e-shape-pick": "Encontrá el acorde en la forma de E",
+   "e-shape/e-shape-play": "Tocá Sol en la forma de E, de grave a agudo",
+   "a-shape/a-shape-pick": "Encontrá el acorde en la forma de A",
+   "a-shape/a-shape-play": "Tocá Do en la forma de A, de grave a agudo",
+   "d-shape/d-shape-pick": "Encontrá el acorde en la forma de D",
+   "c-shape/c-shape-pick": "Encontrá el acorde en la forma de C",
+   "g-shape/g-shape-pick": "Encontrá el acorde en la forma de G",
+   "caged-connect/connect-pick": "Cualquier acorde, cualquier forma",
+   "caged-connect/connect-play": "Las cinco formas de Sol, subiendo el mástil",
+   "caged-minor/minor-pick": "Encontrá el acorde menor en la forma de Em, Am o Dm",
+   "caged-minor/minor-play": "Tocá Lam en las formas de Em y Am"
   },
   "charts": {
    "01-em-am": {

@@ -360,6 +360,48 @@ def arpeggio_path(symbol: str, lo: int, hi: int, direction: str = "up", octaves:
     return run
 
 
+# ---------------------------------------------------------------- CAGED
+# The five open-chord shapes moved up the neck. Each one: the string that holds the root, where the 4-fret
+# window starts from that root fret (C and G reach back from it), in the order they follow up the neck.
+CAGED = {"C": dict(string=5, offset=-3), "A": dict(string=5, offset=0), "G": dict(string=6, offset=-3),
+         "E": dict(string=6, offset=0), "D": dict(string=4, offset=0)}
+CAGED_ORDER = "CAGED"
+CAGED_WIDTH = 3
+
+
+def caged(root: str, quality: str = "maj", shape: str = "E", max_fret: int = 15) -> dict:
+    """One CAGED shape of a chord → {shape, lo, hi, root_fret, path: [(string, fret, pitch)] low to high}.
+    The root goes on the lowest fret of its string that keeps the whole window on the neck."""
+    if shape not in CAGED:
+        raise TheoryError(f"Unknown CAGED shape: {shape}")
+    sh = CAGED[shape]
+    pcs = {t["pc"] for t in chord(chord_symbol(root, quality))["tones"]}
+    rpc = pc(root)
+    rf = next(f for f in range(max(0, -sh["offset"]), 24) if fret_pitch(sh["string"], f) % 12 == rpc)
+    lo = rf + sh["offset"]
+    hi = lo + CAGED_WIDTH
+    if hi > max_fret:
+        raise TheoryError(f"The {shape} shape of {root} doesn't fit below fret {max_fret}")
+    by_pitch: dict[int, tuple[int, int, int]] = {}
+    for s_ in (6, 5, 4, 3, 2, 1):
+        for f in range(lo, hi + 1):
+            p = fret_pitch(s_, f)
+            if p % 12 in pcs and p not in by_pitch:
+                by_pitch[p] = (s_, f, p)
+    return dict(shape=shape, lo=lo, hi=hi, root_fret=rf, path=[by_pitch[p] for p in sorted(by_pitch)])
+
+
+def caged_along(root: str, quality: str = "maj", shapes: str = CAGED_ORDER) -> list[dict]:
+    """The shapes of one chord that fit on the neck, sorted up the neck."""
+    out = []
+    for k in shapes:
+        try:
+            out.append(caged(root, quality, k))
+        except TheoryError:
+            pass
+    return sorted(out, key=lambda c: c["lo"])
+
+
 # ---------------------------------------------------------------- voicings
 # string sets, low string first
 SETS = {"123": (3, 2, 1), "234": (4, 3, 2), "345": (5, 4, 3), "456": (6, 5, 4),

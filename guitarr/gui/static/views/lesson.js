@@ -47,6 +47,7 @@ function exerciseTarget(ex) {
   if (ex.kind === "chart") return t("lesson.chart_at", { pct: Math.round(ex.speed * 100) });
   if (ex.kind === "scale") return t("lesson.t_scale", { key: ex.key, scale: t(`quiz.scale_${ex.scale}`), lo: (ex.frets || [0])[0], hi: (ex.frets || [0, 12])[1] });
   if (ex.kind === "arpeggio") return t("lesson.t_arpeggio", { chord: ex.chord });
+  if (ex.kind === "caged") return t("lesson.t_caged", { chord: ex.chord, shapes: (ex.caged || "CAGED").split("").join(" · ") });
   if (ex.kind === "line") return ex.progression.join(" → ");
   if (ex.kind === "shape" || ex.kind === "voiced") return `${ex.shapes.map(s => s.name).join(" → ")} × ${ex.times ?? 2}`;
   if (ex.kind === "quiz") return t("lesson.t_quiz", { count: ex.count ?? 6 });
