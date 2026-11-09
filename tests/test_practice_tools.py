@@ -74,3 +74,25 @@ def test_time_budget_fits_the_plan():
     assert r["budget"] is None
     steps = [dict(kind="tune", minutes=2), dict(kind="lesson", minutes=10), dict(kind="chart", minutes=8), dict(kind="drill", minutes=2)]
     assert [s["minutes"] for s in routine.fit_budget(steps, 15)] == [2, 10, 3]           # the chart shrinks, the drill waits
+
+
+def test_interval_cycle_scores_only_the_rounds_you_heard():
+    from fastapi.testclient import TestClient
+
+    from guitarr import quiz
+    from guitarr.gui.server import CYCLE_MIN, app
+    c = TestClient(app)
+    d = c.post("/api/ear/draw", json=dict(kind="cycle", module="7ths", mode="harmonic")).json()
+    assert len(d["items"]) > 50 and all(len(it["choices"]) == 2 and not it["melodic"] for it in d["items"])
+    full = quiz._draws[d["token"]]["items"]
+    for i in range(CYCLE_MIN):                                  # the first rounds right, then you stop
+        assert c.post("/api/exercise/check", json=dict(token=d["token"], index=i, answer=full[i]["answer"])).json()["correct"]
+    c.post("/api/exercise/check", json=dict(token=d["token"], index=CYCLE_MIN, answer=""))      # no answer: a miss
+    r = c.post("/api/ear/finish", json=dict(token=d["token"], asked_only=True)).json()
+    assert r["summary"]["asked"] == CYCLE_MIN + 1 and r["summary"]["score"] == round(100 * CYCLE_MIN / (CYCLE_MIN + 1), 1)
+    assert progress.get()["ear"]["cycle-7ths"]["best"] == r["summary"]["score"]
+    d = c.post("/api/ear/draw", json=dict(kind="cycle", module="all", mode="both")).json()
+    assert len(d["items"][0]["choices"]) == 12
+    r = c.post("/api/ear/finish", json=dict(token=d["token"], asked_only=True)).json()
+    assert r["award"]["too_short"] and "cycle-all" not in progress.get()["ear"]
+    assert c.post("/api/ear/draw", json=dict(kind="cycle", module="nope")).status_code == 400

@@ -298,7 +298,7 @@ export async function earTrainer(box, params) {
   const best = k => (prog.ear || {})[k]?.best;
   box.innerHTML = `
     <div class="panel">
-      <div class="seg" id="earKind">${["chord_basic", "chord_quality", "interval", "echo"].map(k =>
+      <div class="seg" id="earKind">${["chord_basic", "chord_quality", "interval", "cycle", "echo"].map(k =>
         `<button data-k="${k}" class="${k === kind ? "active" : ""}">${esc(t(`ear.kind_${k}`))}${best(k) != null ? ` · ${Math.round(best(k))}%` : ""}</button>`).join("")}</div>
       <p class="muted">${esc(t(`ear.intro_${kind}`))}</p>
       <div class="q-box" id="earBox"></div>
@@ -308,6 +308,7 @@ export async function earTrainer(box, params) {
     </div>`;
   $$("#earKind button", box).forEach(b => b.onclick = () => { location.hash = `#/tools?tab=ear&ear=${b.dataset.k}`; });
   if (kind === "echo") return echo(box);
+  if (kind === "cycle") return intervalCycle(box, params, prog);
   let task = null;
   const go = $("#earGo", box), msg = $("#earMsg", box), out = $("#earBox", box);
   go.onclick = async () => {
@@ -327,6 +328,94 @@ export async function earTrainer(box, params) {
     } catch (e) { msg.className = "ex-msg err center"; msg.textContent = e.message; }
     finally { running.delete(task); task = null; go.textContent = `▶ ${t("lesson.focus_again")}`; }
   };
+}
+
+/** The interval cycle: a loop of four beats (hear · pause · answer · check) that keeps going after a mistake.
+ * Modules pair two intervals that are easy to mix up. The server keeps the answers and scores what you heard. */
+const MODULES = { "3-5": ["M3", "P5"], "2-4": ["M2", "P4"], "6-8": ["M6", "P8"], "7ths": ["m7", "M7"], "m3-m6": ["m3", "m6"],
+  "m2-tt": ["m2", "A4"], all: ["m2", "M2", "m3", "M3", "P4", "A4", "P5", "m6", "M6", "m7", "M7", "P8"] };
+
+function intervalCycle(box, params, prog) {
+  const module = MODULES[params.module] ? params.module : "3-5", ivs = MODULES[module];
+  const best = k => (prog.ear || {})[`cycle-${k}`]?.best;
+  const out = $("#earBox", box), go = $("#earGo", box), msg = $("#earMsg", box);
+  out.innerHTML = `
+    <div class="seg mini" id="cycMod" role="group" aria-label="${esc(t("ear.cycle_module"))}">${Object.keys(MODULES).map(m =>
+      `<button data-m="${m}" class="${m === module ? "active" : ""}">${esc(t(`ear.module_${m}`))}${best(m) != null ? ` · ${Math.round(best(m))}%` : ""}</button>`).join("")}</div>
+    <p class="muted small">${esc(t(`ear.module_${module}_tip`))}</p>
+    <div class="row center wrap">
+      <label class="field-inline">${esc(t("ear.cycle_mode"))} <select id="cycMode">${["melodic", "harmonic", "both"].map(m =>
+        `<option value="${m}">${esc(t(`ear.mode_${m}`))}</option>`).join("")}</select></label>
+      <label class="field-inline">BPM <input type="number" id="cycBpm" min="40" max="120" value="60"></label>
+    </div>
+    <div class="cycle-beats" aria-hidden="true">${["hear", "pause", "answer", "check"].map((b, i) =>
+      `<div class="cyc-beat" data-b="${i}"><b>${i + 1}</b><small>${esc(t(`ear.beat_${b}`))}</small></div>`).join("")}</div>
+    <div class="q-choices cycle-answers" role="group" aria-label="${esc(t("quiz.choices"))}">${ivs.map((iv, k) =>
+      `<button class="btn q-choice" data-iv="${iv}" disabled>${k < 9 ? `<kbd>${k + 1}</kbd> ` : ""}${esc(t(`quiz.iv_${iv}`))}</button>`).join("")}</div>
+    <p class="cycle-tally muted center" aria-live="polite"></p>`;
+  $$("#cycMod button", out).forEach(b => b.onclick = () => { location.hash = `#/tools?tab=ear&ear=cycle&module=${b.dataset.m}`; });
+  const beats = $$(".cyc-beat", out), btns = $$(".cycle-answers .q-choice", out), tally = $(".cycle-tally", out);
+  let timer = null, d = null, i = -1, beat = -1, chosen = null, right = 0, asked = 0;
+  const show = () => beats.forEach((b, k) => b.classList.toggle("on", k === beat));
+  const answer = iv => {
+    if (beat < 0 || chosen !== null || !d) return;
+    chosen = iv;
+    btns.forEach(b => b.classList.toggle("picked", b.dataset.iv === iv));
+  };
+  btns.forEach(b => b.onclick = () => answer(b.dataset.iv));
+  out.onkeydown = e => { const k = +e.key; if (k >= 1 && k <= Math.min(9, ivs.length)) { e.preventDefault(); answer(ivs[k - 1]); } };
+  const check = async () => {
+    const it = d.items[i];
+    const choice = it.choices.find(c => c.label.params.name === chosen);
+    let r;
+    try { r = await api("/api/exercise/check", { json: { token: d.token, index: i, answer: choice ? choice.id : "" } }); } catch { return; }
+    asked++;
+    if (r.correct) right++;
+    const was = it.choices.find(c => c.id === r.answer).label.params.name;
+    btns.forEach(b => { b.classList.toggle("right", b.dataset.iv === was); b.classList.toggle("wrong", b.dataset.iv === chosen && !r.correct); });
+    tally.textContent = t("ear.cycle_tally", { right, asked });
+  };
+  const tick = () => {
+    beat = (beat + 1) % 4;
+    show();
+    if (beat === 0) {                                        // 1 · hear a new interval
+      i++;
+      if (i >= d.items.length) return stop();
+      chosen = null;
+      btns.forEach(b => { b.classList.toggle("picked", false); b.classList.toggle("right", false); b.classList.toggle("wrong", false); b.disabled = false; });
+      const it = d.items[i];
+      it.play.forEach((p, k) => pluck(p, it.melodic ? k * 0.5 : k * 0.02, 0.4));
+    } else if (beat === 3) check();                          // 4 · check (no answer counts as a miss; the loop goes on)
+  };
+  const stop = async () => {
+    clearInterval(timer);
+    timer = null; beat = -1; show();
+    btns.forEach(b => { b.disabled = true; });
+    go.textContent = `▶ ${t("ear.cycle_start")}`;
+    if (!d) return;
+    const token = d.token;
+    d = null;
+    try {
+      const rep = await api("/api/ear/finish", { json: { token, asked_only: true } });
+      if (rep.award.too_short) { msg.className = "ex-msg muted center"; msg.textContent = t("ear.cycle_short"); return; }
+      msg.className = "ex-msg " + (rep.award.passed ? "ok" : "err") + " center";
+      msg.textContent = t("ear.result", { score: Math.round(rep.summary.score), best: Math.round(rep.award.best) }) + (rep.award.record ? ` · ${t("tools.new_record")}` : "") + (rep.award.xp ? ` · +${rep.award.xp} XP` : "");
+    } catch (e) { msg.className = "ex-msg err center"; msg.textContent = e.message; }
+  };
+  running.add({ stop });
+  go.textContent = `▶ ${t("ear.cycle_start")}`;
+  go.onclick = async () => {
+    if (timer) return stop();
+    try { d = await api("/api/ear/draw", { json: { kind: "cycle", module, mode: $("#cycMode", out).value } }); } catch (e) { return toast(e.message); }
+    i = -1; beat = -1; right = 0; asked = 0;
+    msg.textContent = ""; tally.textContent = "";
+    go.textContent = t("lesson.stop");
+    out.focus();
+    const ms = 60000 / Math.max(40, Math.min(120, +$("#cycBpm", out).value || 60));
+    tick();
+    timer = setInterval(tick, ms);
+  };
+  out.tabIndex = -1;
 }
 
 /** Melodic echo: the app plays a short phrase it just made up; you play it back on the metronome. */

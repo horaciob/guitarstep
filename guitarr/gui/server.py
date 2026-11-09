@@ -457,6 +457,9 @@ EAR_KINDS = {"chord_quality": dict(quiz="hear_quality", qualities=["maj", "min",
              "interval": dict(quiz="interval_ear", intervals=["m3", "M3", "P4", "P5", "m6", "M6", "m7", "P8"])}
 
 
+CYCLE_MAX, CYCLE_MIN = 200, 8                         # rounds drawn for an interval cycle, rounds that count
+
+
 @app.post("/api/ear/draw")
 def ear_draw(body: dict):
     from .. import quiz
@@ -465,6 +468,12 @@ def ear_draw(body: dict):
     if kind == "echo":
         d = quiz.draw("__tools__", quiz.TOOLS_ECHO, 75)
         return d
+    if kind == "cycle":                               # the interval cycle: a long run, scored on what you heard
+        module, mode = body.get("module") or "3-5", body.get("mode") or "melodic"
+        if module not in quiz.EAR_MODULES or mode not in ("melodic", "harmonic", "both"):
+            fail(400, "bad_kind", "Unknown interval module")
+        return quiz.draw("__tools__", dict(id=f"ear-cycle-{module}", kind="quiz", quiz="interval_ear", count=CYCLE_MAX,
+                                           intervals=quiz.EAR_MODULES[module], mode=mode, all_choices=True), 80)
     if kind not in EAR_KINDS:
         fail(400, "bad_kind", "Unknown ear-training kind")
     return quiz.draw("__tools__", dict(id=f"ear-{kind}", kind="quiz", count=int(body.get("count") or 10), **EAR_KINDS[kind]), 80)
@@ -475,12 +484,14 @@ def ear_finish(body: dict):
     from .. import quiz
 
     try:
-        r = quiz.finish(str(body.get("token", "")))
+        r = quiz.finish(str(body.get("token", "")), asked_only=bool(body.get("asked_only")))
     except quiz.QuizError as e:
         fail(400, "quiz_expired", str(e))
     kind = r["exercise"].removeprefix("ear-")
+    if r["asked"] < CYCLE_MIN and kind.startswith("cycle-"):     # a few rounds aren't a result worth keeping
+        return dict(summary=dict(score=r["score"], asked=r["asked"]), award=dict(passed=False, need=80, xp=0, too_short=True))
     award = progress.ear_result(kind, r["score"])
-    return dict(summary=dict(score=r["score"]), award=dict(award, passed=r["score"] >= 80, need=80))
+    return dict(summary=dict(score=r["score"], asked=r["asked"]), award=dict(award, passed=r["score"] >= 80, need=80))
 
 
 # ---------------------------------------------------------------- stats: consistency and tempo over time

@@ -247,7 +247,7 @@ bass world and bass drills stay out). The text is ours, rewritten in English wit
 103. **Daily warm-up** ✅. Spider, pentatonic boxes, three-notes-per-string major, arpeggios, octaves, CAGED,
      legato and sweep, with a key and position that rotate daily and a BPM goal per drill that rises.
      Random challenges on top.
-104. **Interval ear cycle** (M). Modules of two intervals, a four-beat loop (hear, pause, answer, check) that
+104. **Interval ear cycle** ✅. Modules of two intervals, a four-beat loop (hear, pause, answer, check) that
      keeps going after a mistake.
 105. **Weak spots by fact** (M). Review the exact note, interval or chord you missed, not the whole exercise.
 106. **A song's theory** (M). Key, the chords of the key it uses, the main progression and a bar-by-bar

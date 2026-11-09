@@ -140,7 +140,8 @@ export function eventText(e) {
     case "lesson_tested_out": return t("event.lesson_tested_out", { title: tc(`lessons.${p.lesson}.title`, p.lesson), ...raw });
     case "variation_passed": return t("event.variation_passed", { title: tc(`exercises.${p.lesson}/${p.exercise}`, p.exercise), ...raw });
     case "rhythm": return t("event.rhythm", { bpm: p.bpm, within: p.within });
-    case "ear": return t("event.ear", { kind: t(`ear.kind_${p.kind}`), score: Math.round(p.score) });
+    case "ear": return t("event.ear", { kind: String(p.kind).startsWith("cycle-") ? `${t("ear.kind_cycle")} · ${t(`ear.module_${p.kind.slice(6)}`)}`
+      : t(`ear.kind_${p.kind}`), score: Math.round(p.score) });
     case "chord_mastered": return t(p.via === "camera" ? "event.chord_camera" : "event.chord_ear", { chord: p.chord });
     case "drill": return t("event.drill", { chords: String(p.chords).replace("-", " ↔ "), n: p.changes });
     case "take_analysis": return t("event.take_analysis", { score: Math.round(p.score) });

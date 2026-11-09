@@ -70,9 +70,17 @@ def q_interval_frets(rng, ex):
 def q_interval_ear(rng, ex):
     pool = ex.get("intervals", SIMPLE)
     iv = rng.choice(pool)
-    root = rng.randint(48, 60)
-    ch, ans = _choices(rng, iv, pool, n=min(4, len(pool)), label=_iv)
-    return _q(L("interval_ear"), ch, ans, play=[root, root + th.INTERVALS[iv][1]], melodic=True)
+    root = rng.randint(48, 59)                       # any of the 12 notes as the lower one
+    mode = ex.get("mode", "melodic")                 # melodic (one after the other), harmonic (together) or both
+    melodic = mode == "melodic" or (mode == "both" and rng.random() < 0.5)
+    n = len(pool) if ex.get("all_choices") else min(4, len(pool))
+    ch, ans = _choices(rng, iv, pool, n=n, label=_iv)
+    return _q(L("interval_ear"), ch, ans, play=[root, root + th.INTERVALS[iv][1]], melodic=melodic)
+
+
+# the interval ear cycle: modules of two intervals that are easy to mix up (or that complete each other)
+EAR_MODULES = {"3-5": ["M3", "P5"], "2-4": ["M2", "P4"], "6-8": ["M6", "P8"], "7ths": ["m7", "M7"],
+               "m3-m6": ["m3", "m6"], "m2-tt": ["m2", "A4"], "all": SIMPLE}
 
 
 def q_enharmonic(rng, ex):
@@ -844,14 +852,17 @@ def check(token: str, index: int, answer) -> dict:
         return dict(correct=ok, answer=it["answer"], **({"reveal": it["reveal"]} if it.get("reveal") else {}))
 
 
-def finish(token: str) -> dict:
-    """Ends a quiz → {lesson, exercise, need, score} (unanswered questions count as wrong)."""
+def finish(token: str, asked_only: bool = False) -> dict:
+    """Ends a quiz → {lesson, exercise, need, score, asked} (unanswered questions count as wrong). asked_only: score
+    only the questions that were checked (a running drill you stop whenever you like, like the interval cycle)."""
     with _lock:
         d = _draws.pop(token, None)
     if d is None:
         raise QuizError("This quiz expired: start it again")
     right = sum(float(ok) for ok in d["answers"].values())
-    return dict(lesson=d["lesson"], exercise=d["exercise"], need=d["need"], score=round(100 * right / len(d["items"]), 1))
+    total = len(d["answers"]) if asked_only else len(d["items"])
+    return dict(lesson=d["lesson"], exercise=d["exercise"], need=d["need"], asked=len(d["answers"]),
+                score=round(100 * right / total, 1) if total else 0.0)
 
 
 # ---------------------------------------------------------------- variations and testing out
