@@ -1010,6 +1010,18 @@ def song_facts(name: str):
                 searches=dict(lesson=f"{q} guitar lesson", backing=f"{q} backing track", guitar=f"{q} guitar only"))
 
 
+@app.get("/api/songs/{name}/theory")
+def song_theory(name: str, track: str | None = None):
+    """The song's key, the chords of the key it uses, the main progression and a bar-by-bar reading."""
+    from .. import songtheory
+
+    try:
+        ref = load_reference(RefOptions(path=song_path(name), track=track or None), log=lambda m: None)
+    except ReferenceError as e:
+        fail(400, "reference", str(e))
+    return songtheory.analyze(ref)
+
+
 @app.get("/api/songs/{name}/sections")
 def song_sections_get(name: str):
     saved = progress.get()["sections"].get(f"song:{name}", {})

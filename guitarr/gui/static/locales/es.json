@@ -2012,6 +2012,33 @@
    "misses_one": "fallado {{count}} vez",
    "misses_other": "fallado {{count}} veces",
    "practice": "Practicar"
+  },
+  "songtheory": {
+   "title": "La teoría de esta canción",
+   "loading": "Leyendo las notas…",
+   "empty": "Este archivo no tiene notas para leer.",
+   "key_major": "{{root}} mayor",
+   "key_minor": "{{root}} menor",
+   "or": "(o quizás {{key}})",
+   "field": "Los acordes del tono",
+   "bars_one": "{{count}} compás",
+   "bars_other": "{{count}} compases",
+   "unused": "sin usar",
+   "outside": "Acordes de fuera del tono",
+   "outside_key": "fuera del tono",
+   "progression": "La progresión que más se repite",
+   "prog_where": "{{count}} veces, desde el compás {{bar}}",
+   "no_prog": "Ninguna progresión se repite: los acordes van cambiando.",
+   "by_bar": "Compás por compás",
+   "bar": "Compás",
+   "chord": "Acorde",
+   "degree": "Grado",
+   "job": "Papel",
+   "resting": "Nota de reposo",
+   "scales": "Escalas que sirven",
+   "rest_note": "{{note}} ({{degree}} del acorde)",
+   "no_chord": "sin un acorde claro",
+   "caveat": "Leído de las notas de la pista: una estimación, no una certeza. En pasajes cortos se pueden confundir tonos relativos (Sol mayor y Mi menor comparten todas las notas)."
   }
  },
  "content": {

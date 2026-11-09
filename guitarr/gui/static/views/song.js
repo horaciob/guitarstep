@@ -26,6 +26,8 @@ export async function mount(el, { segs }) {
         : `<a class="btn ghost" href="#/setlists">${esc(t("setlists.create_first"))}</a>`}
     </div>
     <section class="panel sec-progress" id="secProgress" aria-labelledby="secTitle"></section>
+    <section class="panel song-theory" id="songTheory" aria-labelledby="thTitle"><h2 id="thTitle">${esc(t("songtheory.title"))}</h2>
+      <p class="muted">${esc(t("songtheory.loading"))}</p></section>
     <section class="panel" aria-labelledby="vidTitle">
       <h2 id="vidTitle">${esc(t("song.videos"))}</h2>
       <ul class="tutorias">${["lesson", "backing", "guitar"].map(r => `<li><span class="how-chip">${esc(t(`song.role_${r}`))}</span>
@@ -36,6 +38,8 @@ export async function mount(el, { segs }) {
       <p class="field-error" id="vidErr" hidden></p>
       ${f.video ? `<p><a href="${esc(f.video)}" target="_blank" rel="noopener">${esc(t("lesson.pinned_link"))} ↗</a></p>` : ""}
     </section>`;
+  api(`/api/songs/${encodeURIComponent(name)}/theory`).then(a => theoryPanel($("#songTheory", el), a))
+    .catch(e => { $("#songTheory", el).innerHTML = `<h2 id="thTitle">${esc(t("songtheory.title"))}</h2><p class="muted">${esc(e.message)}</p>`; });
   renderSections($("#secProgress", el), { base: `/api/songs/${encodeURIComponent(name)}`, practice, queue: `song:${name}`,
     onChange: m => { $("#songRing", el).innerHTML = readinessRing(m); } });
   $("#vidForm", el).onsubmit = async ev => {
@@ -55,4 +59,33 @@ export async function mount(el, { segs }) {
     } catch (e) { toast(e.message); }
     add.value = "";
   };
+}
+
+/** The song's theory: key, the chords of the key (how many bars each), chords from outside, the progression that
+ * repeats most and a bar-by-bar reading. Every count is written out; nothing relies on color. */
+function theoryPanel(box, a) {
+  const head = `<h2 id="thTitle">${esc(t("songtheory.title"))}</h2>`;
+  if (a.empty) { box.innerHTML = `${head}<p class="muted">${esc(t("songtheory.empty"))}</p>`; return; }
+  const keyName = k => t(`songtheory.key_${k.mode}`, { root: k.root });
+  const job = j => j ? t(`quiz.fn_${j}`) : t("songtheory.outside_key");
+  const scale = s => `${s.root} ${t(`quiz.scale_${s.scale}`)}`;
+  const p = a.progression;
+  box.innerHTML = `${head}
+    <p class="th-key"><b>${esc(keyName(a.key))}</b> <span class="muted small">${esc(t("songtheory.or", { key: keyName(a.second) }))}</span></p>
+    <h3>${esc(t("songtheory.field"))}</h3>
+    <div class="th-field">${a.field.map(c => `<div class="th-cell${c.bars ? " used" : ""}"><small>${esc(c.roman)}</small><b>${esc(c.chord)}</b>
+      <span class="muted small">${esc(t(`quiz.fn_${c.job}`))}</span><span class="small">${esc(c.bars ? t("songtheory.bars", { count: c.bars }) : t("songtheory.unused"))}</span></div>`).join("")}</div>
+    ${a.outside.length ? `<h3>${esc(t("songtheory.outside"))}</h3><div class="chips">${a.outside.map(u =>
+      `<span class="chip"><b>${esc(u.chord)}</b> · ${esc(u.roman)} · ${esc(t("songtheory.bars", { count: u.bars }))}</span>`).join("")}</div>` : ""}
+    <h3>${esc(t("songtheory.progression"))}</h3>
+    ${p ? `<p class="th-prog"><b>${esc(p.chords.join(" – "))}</b> <span class="muted">(${esc(p.romans.join(" – "))})</span>
+      <span class="small muted">· ${esc(t("songtheory.prog_where", { count: p.count, bar: p.bar }))}</span></p>` : `<p class="muted">${esc(t("songtheory.no_prog"))}</p>`}
+    <details><summary>${esc(t("songtheory.by_bar"))}</summary>
+      <div class="table-wrap"><table class="th-bars"><thead><tr><th>${esc(t("songtheory.bar"))}</th><th>${esc(t("songtheory.chord"))}</th>
+        <th>${esc(t("songtheory.degree"))}</th><th>${esc(t("songtheory.job"))}</th><th>${esc(t("songtheory.resting"))}</th><th>${esc(t("songtheory.scales"))}</th></tr></thead>
+      <tbody>${a.bars.map(b => b.chord ? `<tr><td>${b.bar}</td><td><b>${esc(b.chord)}</b></td><td>${esc(b.roman)}</td><td>${esc(job(b.job))}</td>
+        <td>${b.resting ? esc(t("songtheory.rest_note", b.resting)) : "–"}</td><td>${esc(b.scales.map(scale).join(" · ") || "–")}</td></tr>`
+        : `<tr><td>${b.bar}</td><td colspan="5" class="muted">${esc(t("songtheory.no_chord"))}</td></tr>`).join("")}</tbody></table></div>
+    </details>
+    <p class="muted small">${esc(t("songtheory.caveat"))}</p>`;
 }

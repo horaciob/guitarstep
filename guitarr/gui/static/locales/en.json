@@ -2012,6 +2012,33 @@
    "misses_one": "missed {{count}} time",
    "misses_other": "missed {{count}} times",
    "practice": "Practice"
+  },
+  "songtheory": {
+   "title": "The theory of this song",
+   "loading": "Reading the notes…",
+   "empty": "There are no notes to read in this file.",
+   "key_major": "{{root}} major",
+   "key_minor": "{{root}} minor",
+   "or": "(or maybe {{key}})",
+   "field": "The chords of the key",
+   "bars_one": "{{count}} bar",
+   "bars_other": "{{count}} bars",
+   "unused": "not used",
+   "outside": "Chords from outside the key",
+   "outside_key": "outside the key",
+   "progression": "The progression that repeats most",
+   "prog_where": "{{count}} times, from bar {{bar}}",
+   "no_prog": "No progression repeats: the chords keep changing.",
+   "by_bar": "Bar by bar",
+   "bar": "Bar",
+   "chord": "Chord",
+   "degree": "Degree",
+   "job": "Job",
+   "resting": "Resting note",
+   "scales": "Scales that fit",
+   "rest_note": "{{note}} ({{degree}} of the chord)",
+   "no_chord": "no clear chord",
+   "caveat": "Read from the notes of the track: a guess, not a certainty. Short passages can mix up relative keys (G major and E minor share every note)."
   }
  },
  "content": {}
