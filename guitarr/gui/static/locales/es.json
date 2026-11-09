@@ -4450,6 +4450,67 @@
     "tutorials": [
      "estructura tema metal riffs breakdown"
     ]
+   },
+   "finger-workouts": {
+    "title": "Rutina para los dedos",
+    "theory": [
+     "Los ejercicios de dedos entrenan lo que las canciones dan por hecho: que cada dedo caiga en su traste, a tiempo, con los demás relajados.",
+     "Mantené los dedos cerca de las cuerdas. Un dedo que se aleja dos centímetros tarda más en volver: los movimientos chicos y eficientes son la materia prima de la velocidad.",
+     "Dejá los dedos apoyados cuando puedas: subiendo, el dedo 1 puede quedar pisando mientras tocan el 2, el 3 y el 4. Levantalos de a uno cuando bajás.",
+     "Las permutaciones (1-3-2-4, 4-2-3-1…) rompen la costumbre de mover los dedos siempre en el mismo orden, que es donde se esconde la torpeza. Cinco minutos por día, lento y con metrónomo, rinden más que una hora por semana."
+    ],
+    "tips": [],
+    "tutorials": [
+     "ejercicio araña guitarra independencia de dedos"
+    ]
+   },
+   "blues-licks-a": {
+    "title": "Vocabulario de blues: licks en La",
+    "theory": [
+     "Un lick es una frase corta que se aprende como una unidad, como una palabra. Los guitarristas de blues arman sus solos combinando y variando un vocabulario de licks.",
+     "Todos estos viven en la pentatónica de La menor en el traste 5, con la blue note (E♭, la ♭5) de paso entre D y E.",
+     "Aprendé cada lick lento y después tocalo sobre el chart de 12 compases: empezalo en distintos tiempos y cambiale el final. Un lick se vuelve tuyo cuando lo podés acomodar al momento."
+    ],
+    "tips": [],
+    "tutorials": [
+     "licks de blues pentatónica la menor principiante"
+    ]
+   },
+   "blues-licks-chords": {
+    "title": "Licks que siguen a los acordes",
+    "theory": [
+     "La pentatónica sirve para todo el blues, pero los mejores licks cambian con los acordes: caen en notas del acorde que está sonando.",
+     "Sobre D7 (el IV) apuntá a F#, su tercera, y a C, su ♭7. Sobre E7 (el V) apuntá a G#, su tercera: es la nota que hace inconfundible al V.",
+     "La posición abierta tiene su propio sonido: en Mi, las cuerdas al aire suenan contra las notas pisadas, y la tercera menor a mayor (G a G#) está a un ligado de distancia."
+    ],
+    "tips": [],
+    "tutorials": [
+     "licks de blues sobre el acorde iv y v"
+    ]
+   },
+   "jazz-licks-ii-v": {
+    "title": "Vocabulario de jazz: licks de ii–V–I en Do",
+    "theory": [
+     "Los guitarristas de jazz aprenden licks sobre el ii–V–I igual que los de blues sobre los 12 compases: como palabras que pueden meter en cualquier tema con esa progresión.",
+     "Todos estos licks viven alrededor de la 5ª posición y resuelven en una nota de Cmaj7, casi siempre su tercera (E) o su fundamental.",
+     "Cuando un lick te sale cómodo, llevalo a otras tonalidades: la forma queda y solo cambia el traste de partida. Así un vocabulario se vuelve usable a tempo real."
+    ],
+    "tips": [],
+    "tutorials": [
+     "licks ii v i guitarra jazz principiante"
+    ]
+   },
+   "jazz-licks-bebop": {
+    "title": "Líneas bebop, ii–V–i menor y jazz blues",
+    "theory": [
+     "Las escalas bebop agregan una nota cromática de paso para que, en una línea de corcheas, las notas del acorde caigan en los tiempos. Bajando es donde más brillan.",
+     "En un ii–V–i menor el V suele llevar una ♭9 (F sobre E7 en La menor), una nota tomada de la tonalidad que oscurece a la dominante.",
+     "El jazz blues mezcla los dos mundos: notas del acorde y movimiento bebop con la ♭3 bluesera estirada o ligada hacia la tercera."
+    ],
+    "tips": [],
+    "tutorials": [
+     "líneas escala bebop guitarra jazz"
+    ]
    }
   },
   "exercises": {
@@ -4769,7 +4830,31 @@
    "metal-arpeggios/em-sweep": "Sweep de Mi menor en tres cuerdas",
    "metal-arpeggios/dim-arpeggio": "Re# disminuido y vuelta a Mi menor",
    "metal-song/song-slow": "El tema entero al 70%",
-   "metal-song/song-full": "A velocidad completa"
+   "metal-song/song-full": "A velocidad completa",
+   "finger-workouts/spider-walk": "La araña: dedos de a pares entre cuerdas",
+   "finger-workouts/perm-4231": "Permutación 4-2-3-1 en el traste 5",
+   "finger-workouts/stretch-134": "1-3-4 en cada cuerda",
+   "finger-workouts/stretch-124": "1-2-4 en cada cuerda",
+   "finger-workouts/trills": "Trinos: 1-2, 1-3 y 1-4",
+   "finger-workouts/shifting-chromatic": "Cromático con desplazamiento: un traste más en cada cuerda",
+   "blues-licks-a/opener": "La apertura: bend a la quinta y llegada a la fundamental",
+   "blues-licks-a/blue-note-climb": "Subida por la blue note",
+   "blues-licks-a/pull-off-cascade": "Cascada de pull-offs por la caja",
+   "blues-licks-a/upper-box": "En la segunda caja: bend de D a E",
+   "blues-licks-a/bend-release-root": "Bend, soltar, fundamental, dos veces",
+   "blues-licks-chords/over-the-iv": "Sobre D7: caer en F#",
+   "blues-licks-chords/over-the-v": "Sobre E7: la línea de G#",
+   "blues-licks-chords/rising-turnaround": "Un turnaround que sube",
+   "blues-licks-chords/open-e-thirds": "Mi abierto: de tercera menor a mayor",
+   "blues-licks-chords/open-e-riff": "Mi abierto: riff grave con la blue note",
+   "jazz-licks-ii-v/ii-v-i-arpeggios": "Dm7 subiendo, G7 bajando, caer en E",
+   "jazz-licks-ii-v/enclose-e": "G7 y después rodear la E",
+   "jazz-licks-ii-v/flat-nine": "La ♭9 sobre G7",
+   "jazz-licks-ii-v/upper-structure": "Arpegios desde la tercera y desde la novena",
+   "jazz-licks-bebop/major-bebop-down": "Do mayor bebop, bajando",
+   "jazz-licks-bebop/dominant-bebop-down": "Sol dominante bebop, bajando",
+   "jazz-licks-bebop/minor-ii-v-i-line": "ii–V–i menor en La: Bm7♭5, E7♭9, Am",
+   "jazz-licks-bebop/jazz-blues-f": "Jazz blues en Fa: la tercera bluesera"
   },
   "charts": {
    "01-em-am": {
@@ -5545,7 +5630,31 @@
    "metal-arpeggios/em-sweep": "E (cuerda G, traste 9), G, B y la E aguda: la tríada de Mi menor de ida y vuelta. El ligado de arriba deja que la púa cambie de dirección sin cortes.",
    "metal-arpeggios/dim-arpeggio": "D#-F#-A es el vii° de Mi menor armónica; resuelve medio tono arriba a la tríada de Mi menor. Tensión y resolución en ocho notas.",
    "metal-song/song-slow": "Cinco secciones, una tonalidad (Mi menor). Mirá los nombres de las secciones: cada una cambia la sensación aunque los acordes se repitan.",
-   "metal-song/song-full": "A tempo completo manda la mano derecha: mantené la púa hacia abajo relajada y dejá que el palm mute haga el trabajo pesado."
+   "metal-song/song-full": "A tempo completo manda la mano derecha: mantené la púa hacia abajo relajada y dejá que el palm mute haga el trabajo pesado.",
+   "finger-workouts/spider-walk": "Los dedos 1 y 2 tocan en dos cuerdas vecinas y después el 3 y el 4 hacen lo mismo. Cada dedo queda apoyado hasta que toca su pareja: esa independencia es todo el sentido del ejercicio.",
+   "finger-workouts/perm-4231": "Empezar con el meñique y saltar entre dedos entrena primero al dedo más débil. Dejá la mano quieta en 5ª posición: solo se mueven los dedos.",
+   "finger-workouts/stretch-134": "1-3-4 (un tono y después un semitono) es uno de los dos grupos de dedos de casi todas las digitaciones de la escala mayor. El anular y el meñique trabajan en equipo.",
+   "finger-workouts/stretch-124": "1-2-4 (un semitono y después un tono) es el otro grupo. Con 1-3-4 y 1-2-4 podés tocar cualquier escala mayor o menor en una posición.",
+   "finger-workouts/trills": "Un trino alterna dos notas con ligados. El dedo 1 queda apoyado todo el tiempo y el de arriba hace todo el trabajo. Todas las notas tienen que sonar al mismo volumen.",
+   "finger-workouts/shifting-chromatic": "La mano sube un traste cada vez que cambia de cuerda. Desplazala en la última nota de la cuerda, moviendo toda la mano, así la cuerda siguiente ya empieza en su lugar.",
+   "blues-licks-a/opener": "D estirada hasta E (la cuarta empujada a la quinta), después E, la A aguda y la bajada a la A de la 4ª cuerda. Empezar con un bend anuncia el solo.",
+   "blues-licks-a/blue-note-climb": "D, E♭, E: la ♭5 como nota de paso cromática al subir. Sola, E♭ suena mal; pasando por ella, suena a blues.",
+   "blues-licks-a/pull-off-cascade": "Dos notas por cuerda con un solo golpe de púa cada vez: C-A, G-E, D-C, A-G, y después E y la A grave. Los pull-offs hacen que la línea ruede cuesta abajo.",
+   "blues-licks-a/upper-box": "La segunda caja pentatónica está justo encima de la primera (trastes 8 a 10). Las mismas notas en otro lugar dan bends nuevos: acá D hasta E en la cuerda aguda, terminando en E con vibrato.",
+   "blues-licks-a/bend-release-root": "G estirada a A y soltada, respondida por la A aguda, dos veces. La repetición es el recurso favorito del blues: decilo una vez, decilo otra, y después andá a otro lado.",
+   "blues-licks-chords/over-the-iv": "A, C, D, F#, A, F#: la quinta, la ♭7, la fundamental y la tercera de D7. Terminar en F# con vibrato le dice al oído que la armonía pasó al IV.",
+   "blues-licks-chords/over-the-v": "E, G#, B, G#, D, G#: un arpegio de E7 que vuelve una y otra vez a G#. Esa nota no está en la pentatónica de La menor, y justamente por eso se destaca en el V.",
+   "blues-licks-chords/rising-turnaround": "A, y después E subiendo por semitonos hasta G, y la bajada a E: la subida de la quinta a la ♭7 genera tensión y cae en el V, listo para volver al principio.",
+   "blues-licks-chords/open-e-thirds": "E, después G ligada a G#, A, B y otra vez el ligado G-G#, terminando en la E grave. La cuerda G al aire da la tercera menor; un traste más arriba está la mayor.",
+   "blues-licks-chords/open-e-riff": "E, G, A, B♭, B, después la E una octava arriba y de vuelta. B♭ es la ♭5 de Mi: en el registro grave gruñe.",
+   "jazz-licks-ii-v/ii-v-i-arpeggios": "D-F-A-C subiendo por el arpegio de Dm7, después B-G-F-D bajando por G7, y E. C (la séptima de Dm7) pasa a B (la tercera de G7) y la línea termina en E, la tercera de C: notas guía escondidas en una melodía.",
+   "jazz-licks-ii-v/enclose-e": "G-B-D-F arma G7; después F (arriba) y E♭ (abajo) rodean a E antes de caer en ella. El rodeo demora la tercera de C y hace que su llegada se sienta inevitable.",
+   "jazz-licks-ii-v/flat-nine": "B, D, F, A♭: un arpegio de G7♭9 desde la tercera. A♭ baja a G y B sube a C: dos semitonos que resuelven la tensión en Cmaj7.",
+   "jazz-licks-ii-v/upper-structure": "F-A-C-E sobre Dm7 es su 3-5-7-9 (una forma de Fmaj7); A-F-D-B sobre G7 es 9-7-5-3. Empezar los arpegios en la tercera o en la novena suena más rico que empezar en la fundamental.",
+   "jazz-licks-bebop/major-bebop-down": "C B A A♭ G F E D C: la A♭ de paso entre A y G pone C, A, G y E en los tiempos. Tocala en corcheas parejas y el acorde se escucha aunque no haya acompañamiento.",
+   "jazz-licks-bebop/dominant-bebop-down": "G F# F E D C B A G: la F# de paso entre G y F mantiene G, F, D y B (las notas de G7) en los tiempos.",
+   "jazz-licks-bebop/minor-ii-v-i-line": "B-D-F-A (Bm7♭5), G#-B-D-F (E7♭9 sin la fundamental), y después E y C. F, la ♭9 de E7, baja a E, la quinta de Am, y la línea descansa en C, la tercera menor.",
+   "jazz-licks-bebop/jazz-blues-f": "F, A♭ ligada a A, C, D, C, A, F: la ♭3 deslizándose hacia la tercera, y después la sexta (D) para un color dulce y swingueado. Tocá las corcheas con swing."
   }
  }
 }

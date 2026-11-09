@@ -1418,6 +1418,70 @@
      ]
     },
     {
+     "id": "finger-workouts",
+     "title": "Finger workouts",
+     "minutes": 12,
+     "theory": [
+      "Finger exercises train what songs take for granted: each finger landing on its fret, on time, with the others relaxed.",
+      "Keep the fingers close to the strings. A finger that flies two centimeters away takes longer to come back: small, efficient motions are what speed is made of.",
+      "Leave fingers down when you can: in an ascending run, finger 1 can stay pressed while 2, 3 and 4 play. Lift them one by one as you come back down.",
+      "Permutations (1-3-2-4, 4-2-3-1…) break the habit of always moving fingers in the same order, which is where clumsiness hides. Five minutes a day, slow and with a metronome, beats an hour once a week."
+     ],
+     "tutorials": [
+      "guitar spider exercise finger independence"
+     ],
+     "exercises": [
+      {
+       "id": "spider-walk",
+       "kind": "lick",
+       "title": "The spider: fingers in pairs across strings",
+       "tab": "6:5 5:6 6:7 5:8 5:5 4:6 5:7 4:8 4:5 3:6 4:7 3:8 3:5 2:6 3:7 2:8",
+       "min": 75,
+       "theory": "Fingers 1 and 2 play on two neighbouring strings, then 3 and 4 do the same. Each finger stays down until its partner plays: that independence is the whole point."
+      },
+      {
+       "id": "perm-4231",
+       "kind": "lick",
+       "title": "Permutation 4-2-3-1 at fret 5",
+       "tab": "6:8 6:6 6:7 6:5 5:8 5:6 5:7 5:5 4:8 4:6 4:7 4:5 3:8 3:6 3:7 3:5",
+       "min": 75,
+       "theory": "Starting with the pinky and jumping between fingers trains the weakest finger first. Keep the hand still in 5th position: only the fingers move."
+      },
+      {
+       "id": "stretch-134",
+       "kind": "lick",
+       "title": "1-3-4 on every string",
+       "tab": "6:5 6:7 6:8 5:5 5:7 5:8 4:5 4:7 4:8 3:5 3:7 3:8",
+       "min": 75,
+       "theory": "1-3-4 (a whole step, then a half step) is one of the two finger groups of almost every major-scale fingering. The ring and pinky work as a team."
+      },
+      {
+       "id": "stretch-124",
+       "kind": "lick",
+       "title": "1-2-4 on every string",
+       "tab": "6:5 6:6 6:8 5:5 5:6 5:8 4:5 4:6 4:8 3:5 3:6 3:8",
+       "min": 75,
+       "theory": "1-2-4 (a half step, then a whole step) is the other group. With 1-3-4 and 1-2-4 you can play any major or minor scale in one position."
+      },
+      {
+       "id": "trills",
+       "kind": "lick",
+       "title": "Trills: 1-2, 1-3 and 1-4",
+       "tab": "3:5h6p5h6p5 3:5h7p5h7p5 3:5h8p5h8p5",
+       "min": 75,
+       "theory": "A trill alternates two notes with hammer-ons and pull-offs. Finger 1 stays down the whole time; the upper finger does all the work. Every note should sound equally loud."
+      },
+      {
+       "id": "shifting-chromatic",
+       "kind": "lick",
+       "title": "Shifting chromatic: one fret up on every string",
+       "tab": "6:1 6:2 6:3 6:4 5:2 5:3 5:4 5:5 4:3 4:4 4:5 4:6 3:4 3:5 3:6 3:7 2:5 2:6 2:7 2:8 1:6 1:7 1:8 1:9",
+       "min": 75,
+       "theory": "The hand moves up one fret each time it changes string. Shift on the last note of the string, sliding the whole hand, so the next string starts already in place."
+      }
+     ]
+    },
+    {
      "id": "bends-vibrato",
      "title": "Bends and vibrato",
      "minutes": 12,
@@ -1835,6 +1899,116 @@
        "speed": 1.0,
        "min": 80,
        "theory": "At full speed, feel the form in two halves of four bars. The second half ends with the turnaround that takes you back to the top."
+      }
+     ]
+    },
+    {
+     "id": "blues-licks-a",
+     "title": "Blues vocabulary: licks in A",
+     "minutes": 15,
+     "theory": [
+      "A lick is a short phrase you learn as a unit, like a word. Blues players build solos by combining and varying a vocabulary of licks.",
+      "All of these live in the A minor pentatonic at fret 5, with the blue note (E♭, the ♭5) passing between D and E.",
+      "Learn each lick slowly, then play it over the 12-bar chart: start it on different beats and change its ending. A lick only becomes yours when you can bend it to the moment."
+     ],
+     "tutorials": [
+      "blues licks a minor pentatonic beginner"
+     ],
+     "exercises": [
+      {
+       "id": "opener",
+       "kind": "lick",
+       "title": "The opener: bend to the fifth, land on the root",
+       "tab": "3:7b9 2:5 1:5 2:5 3:7 4:7",
+       "min": 75,
+       "theory": "D bent up to E (the 4th pushed to the 5th), then E, the high A, and down to the A on the 4th string. Starting on a bend announces the solo."
+      },
+      {
+       "id": "blue-note-climb",
+       "kind": "lick",
+       "title": "Climbing through the blue note",
+       "tab": "5:5 5:6 5:7 4:5 4:7 3:5",
+       "min": 75,
+       "theory": "D, E♭, E: the ♭5 used as a chromatic passing note on the way up. On its own E♭ sounds wrong; passing through it, it sounds like the blues."
+      },
+      {
+       "id": "pull-off-cascade",
+       "kind": "lick",
+       "title": "Pull-off cascade down the box",
+       "tab": "1:8p5 2:8p5 3:7p5 4:7p5 5:7 6:5",
+       "min": 75,
+       "theory": "Two notes per string with one pick stroke each: C-A, G-E, D-C, A-G, then E and the low A. The pull-offs make the line roll downhill."
+      },
+      {
+       "id": "upper-box",
+       "kind": "lick",
+       "title": "In the second box: bend D to E",
+       "tab": "1:10b12 1:10 1:8 2:10 2:8 3:9~",
+       "min": 75,
+       "theory": "The second pentatonic box sits just above the first (frets 8 to 10). The same notes in a new place give new bends: here D up to E on the high string, ending on E with vibrato."
+      },
+      {
+       "id": "bend-release-root",
+       "kind": "lick",
+       "title": "Bend, release, root, twice",
+       "tab": "2:8b10r8 1:5 2:8b10r8 1:5 2:5 3:7 4:7",
+       "min": 75,
+       "theory": "G bent to A and released, answered by the high A, twice. Repetition is the blues' favorite device: say it once, say it again, then go somewhere else."
+      }
+     ]
+    },
+    {
+     "id": "blues-licks-chords",
+     "title": "Licks that follow the chords",
+     "minutes": 15,
+     "theory": [
+      "The pentatonic works over the whole blues, but the best licks change with the chords: they land on notes of the chord that's sounding.",
+      "Over D7 (the IV) aim for F#, its 3rd, and C, its ♭7. Over E7 (the V) aim for G#, its 3rd: it's the note that makes the V unmistakable.",
+      "Open position has its own sound: in E, the open strings ring against fretted notes, and the minor-to-major third (G to G#) is one hammer-on away."
+     ],
+     "tutorials": [
+      "blues licks over the iv and v chord"
+     ],
+     "exercises": [
+      {
+       "id": "over-the-iv",
+       "kind": "lick",
+       "title": "Over D7: land on F#",
+       "tab": "4:7 3:5 3:7 2:7 1:5 2:7~",
+       "min": 75,
+       "theory": "A, C, D, F#, A, F#: the 5th, ♭7, root and 3rd of D7. Ending on F# with vibrato tells the ear the harmony moved to the IV."
+      },
+      {
+       "id": "over-the-v",
+       "kind": "lick",
+       "title": "Over E7: the G# line",
+       "tab": "2:5 2:9 1:7 2:9 3:7 4:6",
+       "min": 75,
+       "theory": "E, G#, B, G#, D, G#: an E7 arpeggio that keeps returning to G#. That note isn't in the A minor pentatonic, which is exactly why it stands out on the V."
+      },
+      {
+       "id": "rising-turnaround",
+       "kind": "lick",
+       "title": "A rising turnaround",
+       "tab": "5:0 4:2 4:3 4:4 4:5 5:7",
+       "min": 75,
+       "theory": "A, then E rising by half steps to G, and down to E: the climb from the 5th to the ♭7 builds tension and lands on the V, ready for the top of the form."
+      },
+      {
+       "id": "open-e-thirds",
+       "kind": "lick",
+       "title": "Open E: minor to major third",
+       "tab": "4:2 3:0h1 3:2 2:0 3:0h1 4:2 6:0",
+       "min": 75,
+       "theory": "E, then G hammered to G#, A, B, and the G-G# hammer again, ending on the low E. The open G string makes the minor third; one fret up is the major third."
+      },
+      {
+       "id": "open-e-riff",
+       "kind": "lick",
+       "title": "Open E: low riff with the blue note",
+       "tab": "6:0 6:3 5:0 5:1 5:2 4:2 5:2 6:3",
+       "min": 75,
+       "theory": "E, G, A, B♭, B, then the E an octave up and back down. B♭ is the ♭5 of E: in the low register it growls."
       }
      ]
     },
@@ -6898,6 +7072,100 @@
        "direction": "down",
        "min": 80,
        "theory": "Starting on the 7th and going down gives the line a falling shape that resolves naturally into the next chord's 3rd."
+      }
+     ]
+    },
+    {
+     "id": "jazz-licks-ii-v",
+     "title": "Jazz vocabulary: ii–V–I licks in C",
+     "minutes": 15,
+     "theory": [
+      "Jazz players learn licks over the ii–V–I the way blues players learn them over the 12 bars: as words they can drop into any tune that has that progression.",
+      "Every lick here lives around 5th position and resolves to a note of Cmaj7, usually its 3rd (E) or its root.",
+      "Once a lick is comfortable, move it to other keys: the shape stays, only the starting fret changes. That's how a vocabulary becomes usable at real tempo."
+     ],
+     "tutorials": [
+      "ii v i jazz guitar licks beginner"
+     ],
+     "exercises": [
+      {
+       "id": "ii-v-i-arpeggios",
+       "kind": "lick",
+       "title": "Dm7 up, G7 down, land on E",
+       "tab": "5:5 5:8 4:7 3:5 3:4 4:5 5:8 5:5 5:7",
+       "min": 75,
+       "theory": "D-F-A-C up the Dm7 arpeggio, then B-G-F-D down G7, and E. C (the 7th of Dm7) moves to B (the 3rd of G7), and the line ends on E, the 3rd of C: guide tones hidden in a melody."
+      },
+      {
+       "id": "enclose-e",
+       "kind": "lick",
+       "title": "G7, then enclose the E",
+       "tab": "4:5 3:4 3:7 2:6 2:4 2:5",
+       "min": 75,
+       "theory": "G-B-D-F spells G7; then F (above) and E♭ (below) surround E before landing on it. The enclosure delays the 3rd of C and makes its arrival feel inevitable."
+      },
+      {
+       "id": "flat-nine",
+       "kind": "lick",
+       "title": "The ♭9 on G7",
+       "tab": "3:4 3:7 2:6 2:9 2:8 1:7 1:8",
+       "min": 75,
+       "theory": "B, D, F, A♭: a G7♭9 arpeggio from the 3rd. A♭ falls to G and B rises to C: two half steps that resolve the tension into Cmaj7."
+      },
+      {
+       "id": "upper-structure",
+       "kind": "lick",
+       "title": "Arpeggios from the 3rd and from the 9th",
+       "tab": "5:8 4:7 3:5 2:5 1:5 2:6 3:7 3:4 3:5",
+       "min": 75,
+       "theory": "F-A-C-E over Dm7 is its 3-5-7-9 (an Fmaj7 shape); A-F-D-B over G7 is 9-7-5-3. Starting arpeggios on the 3rd or the 9th sounds richer than starting on the root."
+      }
+     ]
+    },
+    {
+     "id": "jazz-licks-bebop",
+     "title": "Bebop lines, minor ii–V–i and jazz blues",
+     "minutes": 15,
+     "theory": [
+      "Bebop scales add one chromatic passing note so that, in a run of eighth notes, the chord tones fall on the beats. Descending runs are where they shine.",
+      "In a minor ii–V–i the V usually carries a ♭9 (F over E7 in A minor), a note borrowed from the key that makes the dominant sound dark.",
+      "Jazz blues mixes both worlds: chord tones and bebop motion with the bluesy ♭3 bent or hammered toward the 3rd."
+     ],
+     "tutorials": [
+      "bebop scale lines jazz guitar"
+     ],
+     "exercises": [
+      {
+       "id": "major-bebop-down",
+       "kind": "lick",
+       "title": "C major bebop, descending",
+       "tab": "1:8 1:7 1:5 1:4 2:8 2:6 2:5 3:7 3:5",
+       "min": 75,
+       "theory": "C B A A♭ G F E D C: the passing A♭ between A and G puts C, A, G and E on the beats. Play it as even eighths and the chord is heard even without accompaniment."
+      },
+      {
+       "id": "dominant-bebop-down",
+       "kind": "lick",
+       "title": "G dominant bebop, descending",
+       "tab": "2:8 2:7 2:6 2:5 3:7 3:5 3:4 4:7 4:5",
+       "min": 75,
+       "theory": "G F# F E D C B A G: the passing F# between G and F keeps G, F, D and B (the notes of G7) on the beats."
+      },
+      {
+       "id": "minor-ii-v-i-line",
+       "kind": "lick",
+       "title": "Minor ii–V–i in A: Bm7♭5, E7♭9, Am",
+       "tab": "6:7 5:5 5:8 4:7 4:6 3:4 3:7 2:6 2:5 3:5",
+       "min": 75,
+       "theory": "B-D-F-A (Bm7♭5), G#-B-D-F (E7♭9 without its root), then E and C. F, the ♭9 of E7, falls to E, the 5th of Am, and the line rests on C, the minor 3rd."
+      },
+      {
+       "id": "jazz-blues-f",
+       "kind": "lick",
+       "title": "Jazz blues in F: the bluesy third",
+       "tab": "4:3 4:6h7 3:5 3:7 3:5 4:7 4:3",
+       "min": 75,
+       "theory": "F, A♭ hammered to A, C, D, C, A, F: the ♭3 slipping into the 3rd, then the 6th (D) for a sweet, swinging color. Swing the eighths."
       }
      ]
     },
