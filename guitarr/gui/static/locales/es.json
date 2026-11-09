@@ -22,7 +22,8 @@
    "plan": "Plan de práctica",
    "menu": "Menú",
    "plan_short": "Plan",
-   "rig_short": "Ampli"
+   "rig_short": "Ampli",
+   "setlists": "Setlists"
   },
   "common": {
    "upload": "Subir",
@@ -208,7 +209,8 @@
    "backing": "Acompañamiento de bajo y batería (usá auriculares)",
    "tab_label": "Tablatura",
    "string_fret": "cuerda {{s}} traste {{f}}",
-   "tab_now": "Tablatura. Ahora: {{label}} ({{where}}), {{k}} de {{total}}"
+   "tab_now": "Tablatura. Ahora: {{label}} ({{where}}), {{k}} de {{total}}",
+   "song_page": "Página del tema"
   },
   "report": {
    "title": "Resultado",
@@ -1510,6 +1512,73 @@
    "song": "Tema o cifrado",
    "no_tempo": "Practicá un tema o un cifrado con el listener y tu tempo aparece acá.",
    "tempo_label": "{{name}}: de {{from}} a {{to}}"
+  },
+  "chips": {
+   "tuning": "Afinación",
+   "key": "Tonalidad",
+   "bpm": "BPM",
+   "time": "Compás",
+   "capo": "Cejilla",
+   "feel": "Toque",
+   "swing": "swing",
+   "readiness": "{{pct}}% listo"
+  },
+  "song": {
+   "not_found": "Ese tema no está en tu carpeta de temas.",
+   "videos": "Videos",
+   "role_lesson": "clase",
+   "role_backing": "pista de acompañamiento",
+   "role_guitar": "solo guitarra",
+   "pin_label": "Fijá un video para este tema",
+   "bad_url": "Un enlace empieza con http:// o https://."
+  },
+  "setlists": {
+   "title": "Setlists",
+   "subtitle": "Temas y cifrados en el orden en que los vas a tocar. Aparece un aviso donde cambia la afinación.",
+   "new_name": "Setlist nuevo",
+   "create": "Crear",
+   "n_items_one": "{{count}} tema",
+   "n_items_other": "{{count}} temas",
+   "n_retunes_one": "{{count}} cambio de afinación",
+   "n_retunes_other": "{{count}} cambios de afinación",
+   "stage": "Empezar en el escenario",
+   "delete": "Borrar setlist",
+   "delete_confirm": "¿Borrar “{{name}}”?",
+   "retune": "Cambio de afinación: {{from}} → {{to}}",
+   "kind_chart": "cifrado",
+   "kind_song": "tema",
+   "missing": "no encontrado",
+   "up": "Subir",
+   "down": "Bajar",
+   "remove": "Quitar",
+   "remove_confirm": "¿Quitar?",
+   "empty": "Agregá cifrados o temas abajo.",
+   "add_chart": "Agregar un cifrado",
+   "add_song": "Agregar un tema",
+   "pick": "Abrí un setlist para editarlo.",
+   "add_to": "Agregar a un setlist",
+   "create_first": "Crear un setlist",
+   "added": "Agregado a {{name}}",
+   "err_empty_name": "Ponele un nombre al setlist.",
+   "err_long_name": "Usá 80 caracteres o menos.",
+   "err_duplicate_name": "Ya hay un setlist con ese nombre."
+  },
+  "stage": {
+   "nothing": "No hay nada para mostrar en el escenario",
+   "exit": "Salir",
+   "n_of": "{{n}} de {{total}}",
+   "smaller": "Texto más chico",
+   "bigger": "Texto más grande",
+   "click": "Clic {{bpm}}",
+   "tune": "Afinador",
+   "prev": "Anterior",
+   "next": "Siguiente",
+   "scroll": "Desplazar",
+   "off": "no",
+   "up_next": "A continuación",
+   "last": "Último tema",
+   "open": "Escenario",
+   "keys_html": "<kbd>←</kbd> <kbd>→</kbd> o <kbd>RePág</kbd> <kbd>AvPág</kbd> (pedal) cambian de tema · <kbd>Espacio</kbd> desplazar · <kbd>↑</kbd> <kbd>↓</kbd> velocidad · <kbd>M</kbd> clic · <kbd>+</kbd> <kbd>−</kbd> tamaño · <kbd>Esc</kbd> salir"
   }
  },
  "content": {

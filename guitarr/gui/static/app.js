@@ -203,6 +203,10 @@ function refBody(prefix) {
 }
 
 $("#pSong").addEventListener("change", () => onSongChange("p"));
+// the song page: what the file says, progress per section, videos (not for the built-in charts)
+const songPageLink = () => { const a = $("#pSongPage"), v = $("#pSong").value; if (a) { a.hidden = !v; a.href = `#/song/${encodeURIComponent(v)}`; } };
+$("#pSong").addEventListener("change", songPageLink);
+setInterval(songPageLink, 1000);
 $("#aSong").addEventListener("change", () => onSongChange("a"));
 $("#pTrack").addEventListener("change", loadPreview);
 $("#pStart").addEventListener("change", loadPreview);

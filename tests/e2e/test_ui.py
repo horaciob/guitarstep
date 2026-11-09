@@ -618,3 +618,64 @@ def test_stats_and_time_budget(app_page):
     go(app_page, "chart/new?strum=D.D.D.&time=3/4")
     expect(app_page.locator("#txt")).to_have_value(re.compile(r"strum: D\.D\.D\.\n"))
     expect(app_page.locator("#txt")).to_have_value(re.compile(r"time: 3/4"))
+
+
+def test_setlist_and_stage(app_page):
+    onboarded(app_page)
+    go(app_page, "setlists")
+    app_page.locator("#newForm button[type=submit]").click()
+    expect(app_page.locator("#newErr")).to_contain_text("name")              # the error goes under the field
+    app_page.locator("#newName").fill("Gig")
+    app_page.locator("#newForm button[type=submit]").click()
+    expect(app_page.locator("#openTitle")).to_have_text("Gig")
+    app_page.locator("#addChart").select_option("01-em-am")
+    expect(app_page.locator(".setlist-item")).to_have_count(1)
+    app_page.locator("#addChart").select_option("02-d-a-e")
+    expect(app_page.locator(".setlist-item")).to_have_count(2)
+    app_page.locator(".setlist-item").nth(1).locator("[data-act=up]").click()
+    expect(app_page.locator(".setlist-item").first).to_contain_text("D, A and E")
+    app_page.locator(".setlist-item").nth(1).locator("[data-act=remove]").click()
+    app_page.locator(".setlist-item").nth(1).locator("[data-no]").click()       # confirm in place: No keeps it
+    expect(app_page.locator(".setlist-item")).to_have_count(2)
+    app_page.get_by_role("link", name="Start on stage").click()
+    expect(app_page.locator(".stage-title")).to_contain_text("D, A and E")
+    expect(app_page.locator(".rail")).to_be_hidden()
+    expect(app_page.locator(".stage-next")).to_contain_text("First change")
+    app_page.keyboard.press("PageDown")                                       # a foot pedal sends PageDown
+    expect(app_page.locator(".stage-title")).to_contain_text("First change")
+    app_page.keyboard.press("+")
+    expect(app_page.locator(".stage-mode")).to_have_attribute("style", re.compile("1.2"))
+    app_page.keyboard.press("Escape")
+    expect(app_page).to_have_url(re.compile("#/setlists"))
+
+
+def test_song_page_from_a_guitar_pro_file(app_page):
+    import guitarpro
+    from guitarpro import models as m
+
+    from guitarr import config
+    song = m.Song(tempo=100)
+    song.title = "My tune"
+    for _ in range(3):
+        song.newMeasure()
+    song.measureHeaders[0].marker = m.Marker(title="Intro")
+    song.measureHeaders[2].marker = m.Marker(title="Chorus")
+    voice = song.tracks[0].measures[0].voices[0]                              # a few notes, so Practice can preview it
+    for k, (s, f) in enumerate([(6, 0), (5, 2), (4, 2)]):
+        b = m.Beat(voice, start=song.tracks[0].measures[0].start + k * 960, status=m.BeatStatus.normal, duration=m.Duration(value=4))
+        b.notes.append(m.Note(b, value=f, string=s, type=m.NoteType.normal))
+        voice.beats.append(b)
+    config.SONGS_DIR.mkdir(parents=True, exist_ok=True)
+    guitarpro.write(song, str(config.SONGS_DIR / "mine.gp5"))
+    onboarded(app_page)
+    go(app_page, "song/mine.gp5")
+    expect(app_page.locator("#view h1")).to_have_text("My tune")
+    expect(app_page.locator(".status-chips")).to_contain_text("BPM 100")
+    expect(app_page.locator(".sec-row")).to_have_count(2)
+    app_page.locator(".sec-row").first.locator('[data-st="solid"]').click()
+    expect(app_page.locator(".ready-ring")).to_contain_text("38%")
+    expect(app_page.locator(".tutorias li")).to_have_count(3)
+    app_page.locator("#vidUrl").fill("not a link")
+    app_page.locator("#vidForm button").click()
+    expect(app_page.locator("#vidErr")).to_contain_text("http")
+    expect(app_page.locator("#vidUrl")).to_have_value("not a link")          # what you typed stays

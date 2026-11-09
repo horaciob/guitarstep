@@ -1,6 +1,7 @@
 // Chord charts: built-in exercises + your own. Play them with listening, view or edit them.
 import { t, tc } from "../lib/i18n.js";
 import { $, $$, api, audioCtx, click, esc, strum } from "../lib/ui.js";
+import { readinessRing } from "../lib/chips.js";
 
 export function strumHtml(pattern) {
   if (!pattern) return "";
@@ -122,7 +123,7 @@ export async function mount(el) {
       <header><div><b>${esc(title(c))}</b>
         <div class="muted small">${esc([c.level ? t("charts.level", { n: c.level }) : "", `♩=${c.bpm}`, `${c.beats_per_bar}/4`,
           c.capo ? t("charts.capo", { n: c.capo }) : "", t("charts.n_chords", { count: c.bars })].filter(Boolean).join(" · "))}</div></div>
-        ${c.mine ? `<span class="pill">${esc(t("charts.yours"))}</span>` : ""}</header>
+        ${c.mine ? `<span class="pill">${esc(t("charts.yours"))}</span>` : ""}${readinessRing(c.readiness, 44)}</header>
       <div class="chips">${c.chords.map(x => `<a class="chip" href="#/chords" title="${esc(t("charts.see_dictionary"))}">${esc(x)}</a>`).join("")}</div>
       ${strumHtml(c.strum)}
       ${c.note ? `<p class="muted small">${esc(note(c))}</p>` : ""}
@@ -131,6 +132,7 @@ export async function mount(el) {
         <a class="btn small primary" href="#/practice?chart=${encodeURIComponent(c.id)}">${esc(t("charts.play"))}</a>
         <button class="btn small" data-act="view">${esc(t("charts.view"))}</button>
         <a class="btn small" href="#/chart/${encodeURIComponent(c.id)}">${esc(t(c.mine ? "charts.edit" : "charts.duplicate"))}</a>
+        <a class="btn small ghost" href="#/stage?chart=${encodeURIComponent(c.id)}">${esc(t("stage.open"))}</a>
       </div>
     </article>`;
   el.innerHTML = `

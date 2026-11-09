@@ -22,7 +22,8 @@
    "plan": "Practice plan",
    "menu": "Menu",
    "plan_short": "Plan",
-   "rig_short": "Amp"
+   "rig_short": "Amp",
+   "setlists": "Setlists"
   },
   "common": {
    "upload": "Upload",
@@ -208,7 +209,8 @@
    "backing": "Bass & drums backing (use headphones)",
    "tab_label": "Tablature",
    "string_fret": "string {{s}} fret {{f}}",
-   "tab_now": "Tablature. Now: {{label}} ({{where}}), {{k}} of {{total}}"
+   "tab_now": "Tablature. Now: {{label}} ({{where}}), {{k}} of {{total}}",
+   "song_page": "Song page"
   },
   "report": {
    "title": "Result",
@@ -1510,6 +1512,73 @@
    "song": "Song or chart",
    "no_tempo": "Practice a song or chart with the listener and your tempo shows up here.",
    "tempo_label": "{{name}}: from {{from}} to {{to}}"
+  },
+  "chips": {
+   "tuning": "Tuning",
+   "key": "Key",
+   "bpm": "BPM",
+   "time": "Time",
+   "capo": "Capo",
+   "feel": "Feel",
+   "swing": "swing",
+   "readiness": "{{pct}}% ready"
+  },
+  "song": {
+   "not_found": "That song isn't in your songs folder.",
+   "videos": "Videos",
+   "role_lesson": "lesson",
+   "role_backing": "backing track",
+   "role_guitar": "guitar only",
+   "pin_label": "Pin a video for this song",
+   "bad_url": "A link starts with http:// or https://."
+  },
+  "setlists": {
+   "title": "Setlists",
+   "subtitle": "Songs and charts in the order you'll play them. A warning shows wherever the tuning changes.",
+   "new_name": "New setlist",
+   "create": "Create",
+   "n_items_one": "{{count}} song",
+   "n_items_other": "{{count}} songs",
+   "n_retunes_one": "{{count}} retune",
+   "n_retunes_other": "{{count}} retunes",
+   "stage": "Start on stage",
+   "delete": "Delete setlist",
+   "delete_confirm": "Delete “{{name}}”?",
+   "retune": "Retune: {{from}} → {{to}}",
+   "kind_chart": "chart",
+   "kind_song": "song",
+   "missing": "not found",
+   "up": "Move up",
+   "down": "Move down",
+   "remove": "Remove",
+   "remove_confirm": "Remove?",
+   "empty": "Add charts or songs below.",
+   "add_chart": "Add a chart",
+   "add_song": "Add a song",
+   "pick": "Open a setlist to edit it.",
+   "add_to": "Add to a setlist",
+   "create_first": "Create a setlist",
+   "added": "Added to {{name}}",
+   "err_empty_name": "Give the setlist a name.",
+   "err_long_name": "Use 80 characters or fewer.",
+   "err_duplicate_name": "There's already a setlist with that name."
+  },
+  "stage": {
+   "nothing": "Nothing to show on stage",
+   "exit": "Exit",
+   "n_of": "{{n}} of {{total}}",
+   "smaller": "Smaller text",
+   "bigger": "Bigger text",
+   "click": "Click {{bpm}}",
+   "tune": "Tuner",
+   "prev": "Previous",
+   "next": "Next",
+   "scroll": "Scroll",
+   "off": "off",
+   "up_next": "Up next",
+   "last": "Last song",
+   "open": "Stage",
+   "keys_html": "<kbd>←</kbd> <kbd>→</kbd> or <kbd>PageUp</kbd> <kbd>PageDown</kbd> (foot pedal) change song · <kbd>Space</kbd> scroll · <kbd>↑</kbd> <kbd>↓</kbd> speed · <kbd>M</kbd> click · <kbd>+</kbd> <kbd>−</kbd> size · <kbd>Esc</kbd> exit"
   }
  },
  "content": {}

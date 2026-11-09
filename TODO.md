@@ -164,7 +164,7 @@ Sizes: **S** ≈ an afternoon, **M** ≈ a few days, **L** ≈ a week or more.
 69. **Time-budget plans** (S). Choose 15 / 30 / 60 / 120 minutes and the server fills today's plan from
     review items, the next lesson and song sections.
 
-## F. Songs and the stage
+## F. Songs and the stage — ✅ done
 
 70. **Read song facts from Guitar Pro files** (M). Tuning, tempo, key and sections pulled from the file on
     import, to pre-fill the song's sections (see D55).
