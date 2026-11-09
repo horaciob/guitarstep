@@ -120,3 +120,24 @@ def test_loopback_with_nothing_coming_back(monkeypatch):
     r = tuner.calibrate(0, 2, loopback=True)
     assert not r["ok"] and r["code"] == "no_loop" and r["heard"] == 0 and r["peak_db"] < -100
     assert (config.CACHE_DIR / "cable-test.wav").exists()  # kept, to check what came back
+
+
+def test_metronome_plays_on_both_outputs(monkeypatch):
+    """A mono cable can go into either output (L or R): the click is on both."""
+    import types
+    import guitarr.audio_io as aio
+    got = {}
+
+    class Stream:
+        def __init__(self, channels, callback, **k):
+            got.update(channels=channels, cb=callback)
+            self.latency = 0.0
+
+    fake = types.SimpleNamespace(PortAudioError=Exception, OutputStream=Stream,
+                                 query_devices=lambda d, kind: dict(default_samplerate=48000, max_output_channels=2))
+    monkeypatch.setattr(aio, "_sd", lambda: fake)
+    src = types.SimpleNamespace(adc0=0.0)
+    aio.Metronome(0, src, [(0.001, True)])
+    out = np.zeros((512, got["channels"]), np.float32)
+    got["cb"](out, 512, types.SimpleNamespace(outputBufferDacTime=0.0, currentTime=0.0), None)
+    assert got["channels"] == 2 and np.abs(out[:, 0]).max() > 0.1 and np.array_equal(out[:, 0], out[:, 1])

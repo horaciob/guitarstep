@@ -157,9 +157,11 @@ class Metronome:
         sd = _sd()
         dev = parse_device(device)
         try:
-            sr = int(sd.query_devices(dev, "output")["default_samplerate"])
+            info = sd.query_devices(dev, "output")
+            sr = int(info["default_samplerate"])
         except (ValueError, sd.PortAudioError) as e:
             raise AudioError(f"Output device '{device}' not found.") from e
+        nch = max(1, min(2, int(info.get("max_output_channels", 1) or 1)))   # both outputs (L and R) get the click
         self.sr, self.src = sr, src
         self.clicks = clicks
         self.idx = 0
@@ -195,9 +197,11 @@ class Metronome:
             self.idx = mix(outdata, frames, lo, hi, self.clicks, self.idx, self.wave.__getitem__)
             if self.backing:
                 self.bidx = mix(outdata, frames, lo, hi, self.backing, self.bidx, self.sounds.get)
+            if nch > 1:
+                outdata[:, 1:] = outdata[:, :1]
 
         try:
-            self.stream = sd.OutputStream(device=dev, channels=1, samplerate=sr, blocksize=BLOCK,
+            self.stream = sd.OutputStream(device=dev, channels=nch, samplerate=sr, blocksize=BLOCK,
                                           dtype="float32", latency="low", callback=cb)
         except sd.PortAudioError as e:
             raise AudioError(f"Could not open the metronome output: {e}") from e
