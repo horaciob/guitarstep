@@ -490,7 +490,11 @@
    "testout_now_play": "Questions passed. Now play: {{title}} (90% to pass).",
    "testout_failed": "Not yet: you need {{need}}% on the questions. Doing the lesson is the faster way.",
    "tested_out_done": "lesson completed by testing out",
-   "tested_out": "✓ tested out"
+   "tested_out": "✓ tested out",
+   "t_tap_one": "{{count}} bar to tap at {{bpm}} BPM",
+   "t_tap_other": "{{count}} bars to tap at {{bpm}} BPM",
+   "t_rhythm_one": "{{count}} bar to play at {{bpm}} BPM",
+   "t_rhythm_other": "{{count}} bars to play at {{bpm}} BPM"
   },
   "chords": {
    "title": "Chords",
@@ -1465,7 +1469,30 @@
    "q_7": "dominant 7",
    "q_maj7": "major 7",
    "q_m7": "minor 7",
-   "q_m7b5": "half-diminished (m7♭5)"
+   "q_m7b5": "half-diminished (m7♭5)",
+   "figure_beats": "In 4/4, how many beats does a {{fig}} last?",
+   "figure_beats_dotted": "In 4/4, how many beats does a dotted {{fig}} last?",
+   "figure_fit": "How many {{small}} fit in one {{big}}?",
+   "figure_sum": "How many beats do these notes add up to?",
+   "rhythm_dictation": "Listen to the bar. Which one is it?",
+   "pattern": "{{p}}",
+   "beats_n_one": "{{n}} beat",
+   "beats_n_other": "{{n}} beats",
+   "fig_w": "whole note",
+   "fig_h": "half note",
+   "fig_q": "quarter note",
+   "fig_e": "eighth note",
+   "fig_s": "sixteenth note",
+   "figs_w": "whole notes",
+   "figs_h": "half notes",
+   "figs_q": "quarter notes",
+   "figs_e": "eighth notes",
+   "figs_s": "sixteenth notes",
+   "tap_prompt": "Read the bar and tap it in time",
+   "rhythm_play_one": "Play {{count}} bar on the open {{string}}th string (low E)",
+   "rhythm_play_other": "Play {{count}} bars on the open {{string}}th string (low E)",
+   "rhythm_bars_one": "{{count}} bar of rhythm",
+   "rhythm_bars_other": "{{count}} bars of rhythm"
   },
   "flow": {
    "label": "The steps of this lesson",
@@ -1570,7 +1597,16 @@
    "histo_label": "Timing histogram: {{within}}% of strums within 30 milliseconds",
    "axis": "Milliseconds early (−) or late (+). The middle bar is right on the beat.",
    "records": "Your steadiest:",
-   "record": "{{bpm}} BPM: spread {{std}} ms ({{within}}% on time)"
+   "record": "{{bpm}} BPM: spread {{std}} ms ({{within}}% on time)",
+   "notation_label": "One bar of rhythm in 4/4",
+   "choice_label": "Choice {{n}}: a bar of rhythm",
+   "choice_n": "choice {{n}}",
+   "bar_n": "Bar {{n}}",
+   "hear_bar": "Hear it",
+   "tap_start": "Start (Space)",
+   "tap_pad": "Tap here (or press Space)",
+   "tap_hint": "Four clicks to count you in at {{bpm}} BPM, then tap each note with the metronome.",
+   "tap_result": "{{acc}}% · average {{mean}} ms off · {{extra}} extra taps"
   },
   "ear": {
    "kind_chord_basic": "Major, minor or 7",

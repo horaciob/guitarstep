@@ -323,8 +323,287 @@
    ]
   },
   {
-   "id": "n4",
+   "id": "n16",
+   "title": "Reading rhythm",
+   "subtitle": "Note values, rests and the pulse, tapped and then played.",
    "number": 4,
+   "lessons": [
+    {
+     "id": "pulse",
+     "title": "The pulse",
+     "minutes": 10,
+     "theory": [
+      "The pulse is the steady beat you tap with your foot. BPM says how many beats fit in a minute: 60 BPM is one per second.",
+      "Most music counts in groups of four (4/4 time). The first beat of each group is the strongest, and the metronome marks it with a higher click."
+     ],
+     "tips": [
+      "Tap Space (or the pad) with each note. The first bar is only the count-in: listen before you play."
+     ],
+     "tutorials": [
+      "how to count beats in music",
+      "playing with a metronome guitar"
+     ],
+     "figures": [
+      {
+       "type": "rhythm",
+       "pattern": "q q q q",
+       "bpm": 70
+      }
+     ],
+     "captions": [
+      "Four quarter notes: one note on every beat."
+     ],
+     "exercises": [
+      {
+       "id": "pulse-tap",
+       "kind": "tap",
+       "title": "Tap the quarter notes",
+       "bpm": 70,
+       "patterns": [
+        "q q q q",
+        "q q q q",
+        "q q q q",
+        "q q q q"
+       ],
+       "count": 4,
+       "min": 70
+      }
+     ]
+    },
+    {
+     "id": "note-values",
+     "title": "What each note is worth",
+     "minutes": 10,
+     "theory": [
+      "Each note value says how long the note lasts. In 4/4 the quarter note is one beat, and the others are doubles and halves of it.",
+      "Whole note = 4 beats, half note = 2, quarter = 1, eighth = ½, sixteenth = ¼. Every value has a rest that lasts just as long."
+     ],
+     "tips": [
+      "In tab, these same values often show up as stems under the fret numbers. Look for them next time you open a song."
+     ],
+     "tutorials": [
+      "note values explained whole half quarter eighth"
+     ],
+     "figures": [
+      {
+       "type": "rhythm",
+       "pattern": "w",
+       "bpm": 70
+      },
+      {
+       "type": "rhythm",
+       "pattern": "h h",
+       "bpm": 70
+      },
+      {
+       "type": "rhythm",
+       "pattern": "q q q q",
+       "bpm": 70
+      },
+      {
+       "type": "rhythm",
+       "pattern": "e e e e e e e e",
+       "bpm": 70
+      }
+     ],
+     "captions": [
+      "A whole note: the whole bar.",
+      "Two half notes.",
+      "Four quarter notes.",
+      "Eight eighth notes: two per beat."
+     ],
+     "exercises": [
+      {
+       "id": "values-quiz",
+       "kind": "quiz",
+       "title": "How long does it last?",
+       "quiz": "figure_value",
+       "count": 6,
+       "min": 80
+      }
+     ]
+    },
+    {
+     "id": "long-notes",
+     "title": "Long notes",
+     "minutes": 10,
+     "theory": [
+      "With long notes you play once and keep counting while the note rings. The hard part is not rushing the next one."
+     ],
+     "tips": [],
+     "tutorials": [],
+     "figures": [
+      {
+       "type": "rhythm",
+       "pattern": "h h",
+       "bpm": 70
+      }
+     ],
+     "captions": [
+      "Two half notes: play on 1 and on 3."
+     ],
+     "exercises": [
+      {
+       "id": "long-tap",
+       "kind": "tap",
+       "title": "Tap halves and wholes",
+       "bpm": 70,
+       "patterns": [
+        "h h",
+        "q q h",
+        "h q q",
+        "w",
+        "q h q"
+       ],
+       "count": 5,
+       "min": 70
+      }
+     ]
+    },
+    {
+     "id": "eighths",
+     "title": "Eighth notes",
+     "minutes": 10,
+     "theory": [
+      "Eighth notes split each beat in two. Count \"one-and, two-and\": the note on the \"and\" falls right between two clicks."
+     ],
+     "tips": [
+      "A lot of rock rhythm guitar is steady eighths. Get them even and half the songs get easier."
+     ],
+     "tutorials": [],
+     "figures": [
+      {
+       "type": "rhythm",
+       "pattern": "e e e e q q",
+       "bpm": 70
+      }
+     ],
+     "captions": [
+      "Eighths on beats 1 and 2, quarters on 3 and 4."
+     ],
+     "exercises": [
+      {
+       "id": "eighths-tap",
+       "kind": "tap",
+       "title": "Tap the eighths",
+       "bpm": 70,
+       "patterns": [
+        "e e e e q q",
+        "q e e q e e",
+        "e e q e e q",
+        "q q e e e e",
+        "e e e e e e e e"
+       ],
+       "count": 5,
+       "min": 70
+      }
+     ]
+    },
+    {
+     "id": "rests",
+     "title": "Rests",
+     "minutes": 10,
+     "theory": [
+      "A rest is time you count in silence. On the guitar, muting the strings at the right moment matters as much as playing."
+     ],
+     "tips": [],
+     "tutorials": [],
+     "figures": [
+      {
+       "type": "rhythm",
+       "pattern": "q rq q rq",
+       "bpm": 70
+      }
+     ],
+     "captions": [
+      "Play, rest, play, rest."
+     ],
+     "exercises": [
+      {
+       "id": "rests-tap",
+       "kind": "tap",
+       "title": "Tap around the rests",
+       "bpm": 70,
+       "patterns": [
+        "q rq q rq",
+        "rq q rq q",
+        "q q rh",
+        "e e rq e e rq",
+        "rq e e q rq"
+       ],
+       "count": 5,
+       "min": 70
+      }
+     ]
+    },
+    {
+     "id": "mixing-rhythms",
+     "title": "Mixing it all",
+     "minutes": 10,
+     "theory": [
+      "Now at 80 BPM. Read the whole bar during the count-in, before you start."
+     ],
+     "tips": [],
+     "tutorials": [],
+     "figures": [],
+     "captions": [],
+     "exercises": [
+      {
+       "id": "mix-tap",
+       "kind": "tap",
+       "title": "Values and rests together",
+       "bpm": 80,
+       "patterns": [
+        "q e e h",
+        "e e rq q q",
+        "h e e q",
+        "q re e q rq",
+        "e e e e h",
+        "rq q e e q"
+       ],
+       "count": 6,
+       "min": 70
+      }
+     ]
+    },
+    {
+     "id": "rhythm-on-guitar",
+     "title": "Rhythm on the guitar",
+     "minutes": 10,
+     "theory": [
+      "Now swap the tap for the guitar: play the open low E string in the rhythm. guitarr hears every attack and its timing."
+     ],
+     "tips": [
+      "Mute the string on the rests: if it keeps ringing, the next attack is harder to hear.",
+      "If your notes always come out late, measure the latency once with guitarr calibrate."
+     ],
+     "tutorials": [],
+     "figures": [],
+     "captions": [],
+     "exercises": [
+      {
+       "id": "rhythm-guitar",
+       "kind": "rhythm",
+       "title": "Play the bars on the low E",
+       "bpm": 75,
+       "patterns": [
+        "q q q q",
+        "e e e e q q",
+        "q rq q rq",
+        "h e e q",
+        "e e rq e e rq"
+       ],
+       "count": 4,
+       "pitch": 40,
+       "min": 70
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "n4",
+   "number": 5,
    "title": "Color",
    "subtitle": "Sevenths, blues and power chords.",
    "lessons": [
@@ -400,7 +679,7 @@
   },
   {
    "id": "n5",
-   "number": 5,
+   "number": 6,
    "title": "Barre chords and melody",
    "subtitle": "F with a barre and your first scale.",
    "lessons": [
@@ -500,7 +779,7 @@
   },
   {
    "id": "n6",
-   "number": 6,
+   "number": 7,
    "title": "The blues",
    "subtitle": "Shuffle, thirds that follow the chords, bends with a target, phrases that answer, and a story in three choruses.",
    "lessons": [
@@ -910,7 +1189,7 @@
   },
   {
    "id": "n7",
-   "number": 7,
+   "number": 8,
    "title": "Songs",
    "subtitle": "Real songs: their chords, their form, the techniques they use, and the chart at your own pace.",
    "lessons": [
@@ -1121,7 +1400,7 @@
   },
   {
    "id": "n8",
-   "number": 8,
+   "number": 9,
    "title": "Reading the neck",
    "subtitle": "Half steps, intervals by ear and by fret, finding notes and thinking in degrees.",
    "lessons": [
@@ -1539,8 +1818,291 @@
    ]
   },
   {
+   "id": "n17",
+   "title": "Reading rhythm II",
+   "subtitle": "Sixteenths, dotted notes, triplets, syncopation and dictation.",
+   "number": 10,
+   "lessons": [
+    {
+     "id": "sixteenths",
+     "title": "Sixteenth notes",
+     "minutes": 12,
+     "theory": [
+      "A sixteenth note is a quarter of a beat: four of them fit in every click. It's written with two beams (or two flags). Count \"1 e and a\" quietly, without speeding up."
+     ],
+     "tips": [
+      "Pick down-up-down-up, one stroke per sixteenth. The hand keeps moving even when it doesn't play."
+     ],
+     "tutorials": [],
+     "figures": [
+      {
+       "type": "rhythm",
+       "pattern": "s s s s q q q",
+       "bpm": 60
+      },
+      {
+       "type": "rhythm",
+       "pattern": "e s s q e s s q",
+       "bpm": 60
+      }
+     ],
+     "captions": [
+      "One beat of sixteenths and three quarters.",
+      "An eighth and two sixteenths: the rock gallop."
+     ],
+     "exercises": [
+      {
+       "id": "sixteenths-tap",
+       "kind": "tap",
+       "title": "Tap the sixteenths",
+       "bpm": 60,
+       "patterns": [
+        "q s s s s q q",
+        "s s s s q q q",
+        "e s s q e s s q",
+        "s s e s s e q q",
+        "q q s s s s q"
+       ],
+       "count": 5,
+       "min": 70
+      }
+     ]
+    },
+    {
+     "id": "dotted-eighth",
+     "title": "The dotted eighth",
+     "minutes": 12,
+     "theory": [
+      "A dot next to a note adds half its value. A dotted eighth lasts ¾ of a beat, and it almost always comes with a sixteenth that completes the beat: the limping feel of many riffs."
+     ],
+     "tips": [
+      "Think in sixteenths: the dotted eighth lasts three of them, the sixteenth one. \"1 – – a 2 – – a\"."
+     ],
+     "tutorials": [],
+     "figures": [
+      {
+       "type": "rhythm",
+       "pattern": "e. s e. s q q",
+       "bpm": 60
+      }
+     ],
+     "captions": [
+      "Two dotted eighths with sixteenths, then two quarters."
+     ],
+     "exercises": [
+      {
+       "id": "dotted-tap",
+       "kind": "tap",
+       "title": "Tap the dotted eighths",
+       "bpm": 60,
+       "patterns": [
+        "e. s q e. s q",
+        "q e. s e. s q",
+        "e. s e. s q q",
+        "q q e. s e. s"
+       ],
+       "count": 4,
+       "min": 70
+      }
+     ]
+    },
+    {
+     "id": "triplets",
+     "title": "Triplets",
+     "minutes": 12,
+     "theory": [
+      "A triplet splits the beat in three equal parts instead of two or four. It's written with a 3 over the group. Count \"trip-o-let\" or \"1-2-3\" inside every click."
+     ],
+     "tips": [
+      "Lots of blues and 12/8 ballads live on triplets. The shuffle is a triplet with the middle note left out."
+     ],
+     "tutorials": [],
+     "figures": [
+      {
+       "type": "rhythm",
+       "pattern": "te te te q te te te q",
+       "bpm": 60
+      }
+     ],
+     "captions": [
+      "Eighth-note triplets alternating with quarters."
+     ],
+     "exercises": [
+      {
+       "id": "triplets-tap",
+       "kind": "tap",
+       "title": "Tap the triplets",
+       "bpm": 60,
+       "patterns": [
+        "te te te q te te te q",
+        "q q te te te q",
+        "te te te te te te q q",
+        "q te te te q q"
+       ],
+       "count": 4,
+       "min": 70
+      }
+     ]
+    },
+    {
+     "id": "syncopation",
+     "title": "Syncopation",
+     "minutes": 12,
+     "theory": [
+      "Syncopation is when a note starts on a weak spot (on the \"and\") and holds over the next strong beat. That's the push that makes funk and so much else move forward."
+     ],
+     "tips": [
+      "Tap your foot on every beat and play only where it's written. The foot doesn't follow the hand."
+     ],
+     "tutorials": [],
+     "figures": [
+      {
+       "type": "rhythm",
+       "pattern": "e q e q q",
+       "bpm": 66
+      },
+      {
+       "type": "rhythm",
+       "pattern": "q. e q q",
+       "bpm": 66
+      }
+     ],
+     "captions": [
+      "Eighth, a quarter on the off-beat, eighth: the attack lands on the \"and\" of 1.",
+      "Dotted quarter: the second attack lands on the \"and\" of 2."
+     ],
+     "exercises": [
+      {
+       "id": "sync-tap",
+       "kind": "tap",
+       "title": "Tap the syncopations",
+       "bpm": 66,
+       "patterns": [
+        "e q e q q",
+        "q e q e q",
+        "e q q q e",
+        "q. e q q",
+        "q. e q. e",
+        "e q e e q e"
+       ],
+       "count": 6,
+       "min": 70
+      }
+     ]
+    },
+    {
+     "id": "dictation-1",
+     "title": "Dictation I",
+     "minutes": 10,
+     "theory": [
+      "In a dictation it goes the other way: the app plays a bar and you choose the notation. It's what happens when you figure out a song by ear."
+     ],
+     "tips": [
+      "Listen once all the way through, then again paying attention to one beat at a time."
+     ],
+     "tutorials": [],
+     "figures": [],
+     "captions": [],
+     "exercises": [
+      {
+       "id": "dictation-16",
+       "kind": "quiz",
+       "title": "Which bar did you hear?",
+       "quiz": "rhythm_dictation",
+       "bpm": 70,
+       "count": 8,
+       "min": 75,
+       "patterns": [
+        "q s s s s q q",
+        "s s s s q q q",
+        "e s s q e s s q",
+        "s s e s s e q q",
+        "q q s s s s q",
+        "q q e e q",
+        "e e e e q q",
+        "h e e q"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "dictation-2",
+     "title": "Dictation II",
+     "minutes": 10,
+     "theory": [
+      "Now with the new values. A triplet sounds round, rolling; a dotted eighth sounds like it limps; a syncopation sounds early, ahead of the beat."
+     ],
+     "tips": [],
+     "tutorials": [],
+     "figures": [],
+     "captions": [],
+     "exercises": [
+      {
+       "id": "dictation-mix",
+       "kind": "quiz",
+       "title": "Dotted, triplet or syncopated?",
+       "quiz": "rhythm_dictation",
+       "bpm": 66,
+       "count": 10,
+       "min": 75,
+       "patterns": [
+        "e. s q e. s q",
+        "q e. s e. s q",
+        "e. s e. s q q",
+        "q q e. s e. s",
+        "te te te q te te te q",
+        "q q te te te q",
+        "te te te te te te q q",
+        "q te te te q q",
+        "e q e q q",
+        "q e q e q",
+        "e q q q e",
+        "q. e q q",
+        "q. e q. e",
+        "e q e e q e"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "rhythm-2-on-guitar",
+     "title": "Rhythm II on the guitar",
+     "minutes": 12,
+     "theory": [
+      "Close the level playing for real: the open low E string, the new rhythms, and the listener measuring every attack in milliseconds."
+     ],
+     "tips": [
+      "If your notes always come out early or late, run guitarr calibrate once."
+     ],
+     "tutorials": [],
+     "figures": [],
+     "captions": [],
+     "exercises": [
+      {
+       "id": "rhythm-2-guitar",
+       "kind": "rhythm",
+       "title": "Play the new rhythms on the low E",
+       "bpm": 60,
+       "patterns": [
+        "q s s s s q q",
+        "s s s s q q q",
+        "e. s q e. s q",
+        "q e. s e. s q",
+        "te te te q te te te q",
+        "e q e q q",
+        "q e q e q"
+       ],
+       "count": 4,
+       "pitch": 40,
+       "min": 70
+      }
+     ]
+    }
+   ]
+  },
+  {
    "id": "n9",
-   "number": 9,
+   "number": 11,
    "title": "Scales",
    "subtitle": "Build scales from their steps, spell them in every key, and play them across the neck.",
    "lessons": [
@@ -2059,7 +2621,7 @@
   },
   {
    "id": "n10",
-   "number": 10,
+   "number": 12,
    "title": "Scale colors",
    "subtitle": "Modes, symmetric scales, bebop and altered: the colors of rock and jazz.",
    "lessons": [
@@ -2374,7 +2936,7 @@
   },
   {
    "id": "n11",
-   "number": 11,
+   "number": 13,
    "title": "Building chords",
    "subtitle": "Triads, inversions, sus and sixth chords, the seventh family and extensions.",
    "lessons": [
@@ -2820,7 +3382,7 @@
   },
   {
    "id": "n12",
-   "number": 12,
+   "number": 14,
    "title": "Harmony",
    "subtitle": "The chords that live in a key, written as roman numerals, in major and minor.",
    "lessons": [
@@ -3009,7 +3571,7 @@
   },
   {
    "id": "n13",
-   "number": 13,
+   "number": 15,
    "title": "Voicings",
    "subtitle": "Shells, drop-2, drop-3, voice leading and guide tones: chords the way jazz guitarists play them.",
    "lessons": [
@@ -3348,7 +3910,7 @@
   },
   {
    "id": "n14",
-   "number": 14,
+   "number": 16,
    "title": "Jazz foundations",
    "subtitle": "ii–V–I in every key, minor ii–V–i, turnarounds, tritone subs, the jazz blues, song form and comping.",
    "lessons": [
@@ -3765,7 +4327,7 @@
   },
   {
    "id": "n15",
-   "number": 15,
+   "number": 17,
    "title": "Jazz language",
    "subtitle": "Swing, walking bass, arpeggios, approach notes, enclosures, eighth-note lines and etudes.",
    "lessons": [

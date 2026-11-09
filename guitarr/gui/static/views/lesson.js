@@ -6,9 +6,10 @@ import { runAnswers, say } from "../lib/answer.js";
 import { neck } from "../lib/fretboard.js";
 import { linkTerms, loadGlossary, metersHtml, openTerms, stepperHtml } from "../lib/flow.js";
 import { chipsHtml } from "../lib/chips.js";
+import { hearBar, rhythmSvg } from "../lib/notation.js";
 import { chartGuide, playChart } from "./charts.js";
 
-const ANSWER_KINDS = ["quiz", "pick"], DRAWN_KINDS = ["find_note", "play_interval", "tone_row", "echo"];
+const ANSWER_KINDS = ["quiz", "pick", "tap"], DRAWN_KINDS = ["find_note", "play_interval", "tone_row", "echo", "rhythm"];
 const hearable = ex => !ANSWER_KINDS.includes(ex.kind) && !DRAWN_KINDS.includes(ex.kind);
 const shapeChord = s => ({ id: s.name, frets: s.frets });
 
@@ -49,6 +50,8 @@ function exerciseTarget(ex) {
   if (ex.kind === "shape" || ex.kind === "voiced") return `${ex.shapes.map(s => s.name).join(" → ")} × ${ex.times ?? 2}`;
   if (ex.kind === "quiz") return t("lesson.t_quiz", { count: ex.count ?? 6 });
   if (ex.kind === "pick") return t("lesson.t_pick", { count: ex.count ?? 6 });
+  if (ex.kind === "tap") return t("lesson.t_tap", { count: ex.count ?? ex.patterns.length, bpm: ex.bpm ?? 70 });
+  if (ex.kind === "rhythm") return t("lesson.t_rhythm", { count: ex.count ?? 4, bpm: ex.bpm ?? 70 });
   if (DRAWN_KINDS.includes(ex.kind)) return t("lesson.t_drawn", { count: ex.count ?? 5 });
   return "";
 }
@@ -170,6 +173,11 @@ export async function mount(el, { segs, params = {} }) {
       $$(".pk", box).forEach(k => k.addEventListener("click", () => pluck(+k.dataset.p)));
     }
     else if (f.type === "fretboard") neck(box, { lo: f.lo, hi: f.hi, marks: f.marks, label: captions[+fig.dataset.fig] || "" });
+    else if (f.type === "rhythm") {                    // a bar of rhythm you can hear, each note lighting up in time
+      box.innerHTML = `<div class="rhythm-fig">${rhythmSvg(f.pattern, { label: captions[+fig.dataset.fig] || "" })}</div>
+        <button class="btn small" data-hear-rhythm>♪ ${esc(t("rhythm.hear_bar"))}</button>`;
+      $("[data-hear-rhythm]", box).onclick = () => hearBar($(".rhythm-fig", box), f.pattern, f.bpm || 70);
+    }
   });
   $$(".mini-chord[data-id]", el).forEach(m => bindChordSvg(m, chords.find(c => c.id === m.dataset.id)));
   $$("[data-strum]", el).forEach(b => b.onclick = () => strum(chords.find(c => c.id === b.dataset.strum)));
@@ -325,7 +333,7 @@ async function openFocus(el, segs, ls, ex, chordData, exTitle, start = false, mo
   } else if (ANSWER_KINDS.includes(ex.kind)) {
     body.innerHTML = `<div class="q-box"><p class="muted center">${esc(t(ex.kind === "pick" ? "lesson.answer_intro_pick" : "lesson.answer_intro_quiz", { count: ex.count ?? 6 }))}</p></div>`;
   } else if (DRAWN_KINDS.includes(ex.kind)) {
-    body.innerHTML = `<div class="f-now-box"></div><ol class="drawn-list"></ol>`;
+    body.innerHTML = `<div class="f-now-box"></div>${ex.kind === "rhythm" ? `<div class="rhythm-bars"></div>` : ""}<ol class="drawn-list"></ol>`;
     now = promptView($(".f-now-box", body), $(".drawn-list", body));
     views.push(now);
   } else {
@@ -572,6 +580,8 @@ async function run(el, segs, ls, ex, chordData, exTitle) {
     try { d = await api("/api/exercise/draw", { json: { lesson: ls.id, exercise: ex.id } }); }
     catch (e) { return toast(e.message); }
     now.setItems(d.items);
+    const barsBox = $(".rhythm-bars", dlg);
+    if (barsBox && d.bars) barsBox.innerHTML = d.bars.map((b, k) => rhythmSvg(b, { width: 360, timeSig: k === 0, label: t("rhythm.bar_n", { n: k + 1 }) })).join("");
     if (d.phrase) {                               // melodic echo: hear the phrase first, then play it back
       const goBtn = $("[data-f=go]", dlg), m = $(".ex-msg", dlg);
       goBtn.disabled = true;

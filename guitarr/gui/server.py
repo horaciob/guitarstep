@@ -373,7 +373,7 @@ def lesson_testout_finish(body: dict):
         fail(400, "quiz_expired", str(e))
     ok = quiz.testout_answered(r["lesson"], r["score"])
     award = dict(passed=ok, score=r["score"], need=r["need"], xp=0)
-    final = next((e["id"] for e in reversed(catalog.get_lesson(r["lesson"])["exercises"]) if e["kind"] not in ("quiz", "pick")), None)
+    final = next((e["id"] for e in reversed(catalog.get_lesson(r["lesson"])["exercises"]) if e["kind"] not in catalog.ANSWER_KINDS), None)
     if ok and final is None:
         award.update(progress.test_out(r["lesson"]))
     return dict(summary=dict(score=r["score"]), award=award, final=final if ok else None)
@@ -582,7 +582,7 @@ def api_course():
             for e in x["exercises"]:
                 key = f"{x['id']}/{e['id']}"
                 exs.append(dict(e, best=p["exercises"].get(key), passed=p["exercises"].get(key, -1) >= e.get("min", 80),
-                                how="answer" if e["kind"] in ("quiz", "pick") else "play", stage=catalog.exercise_stage(e),
+                                how="answer" if e["kind"] in catalog.ANSWER_KINDS else "play", stage=catalog.exercise_stage(e),
                                 fadeable=e["kind"] in catalog.FADEABLE, guidance=p["guidance"].get(key),
                                 can_vary=catalog.variation(e) is not None,
                                 varied=p["variations"].get(key, -1) >= e.get("min", 80), **_exercise_extras(e)))

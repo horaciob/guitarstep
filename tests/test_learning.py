@@ -42,7 +42,7 @@ def test_lessons_reference_existing_material():
         for c in ls.get("chords", []):
             assert catalog.get_chord(c), (ls["id"], c)
         for ex in ls["exercises"]:
-            if ex["kind"] in ("quiz", "pick"):                       # answered, not played: they must draw
+            if ex["kind"] in catalog.ANSWER_KINDS:                  # answered, not played: they must draw
                 from guitarr import quiz
                 d = quiz.draw(ls["id"], ex, ex.get("min", 80), seed=0)
                 assert d["items"] and 0 < ex.get("min", 80) <= 100

@@ -352,6 +352,7 @@ def exercise_steps(ex: dict) -> list[dict] | None:
 
 # kinds you play: scale/arpeggio/line runs and chord shapes are built by the theory engine
 RUN_KINDS = ("scale", "arpeggio", "line")
+ANSWER_KINDS = ("quiz", "pick", "tap")          # passed by answering (or tapping), not by the listener
 SHAPE_KINDS = ("shape", "voiced")
 
 
@@ -439,7 +440,7 @@ def _recap(lvl: dict) -> dict | None:
     picks = []
     for ls in src:
         exs = ls["exercises"]
-        ex = next((e for e in exs if e["kind"] in ("quiz", "pick")), None) or exs[-1]
+        ex = next((e for e in exs if e["kind"] in ANSWER_KINDS), None) or exs[-1]
         picks.append({**ex, "id": f"{ls['id']}--{ex['id']}", "from": f"{ls['id']}/{ex['id']}"})
     if len(picks) > RECAP_MAX:                       # spread the picks over the whole level
         step = len(picks) / RECAP_MAX
@@ -457,7 +458,7 @@ def exercise_stage(ex: dict) -> str:
     """Which step of the lesson an exercise belongs to (an explicit "stage" in course.json wins)."""
     if ex.get("stage") in STAGES:
         return ex["stage"]
-    if ex["kind"] in ("quiz", "pick"):
+    if ex["kind"] in ANSWER_KINDS:
         return "understand"
     if ex["kind"] == "chart":
         return "apply"
@@ -602,7 +603,7 @@ def exercise_setup(lid: str, eid: str, variant: bool = False):
     if kind in ("find_note", "play_interval", "tone_row"):
         from . import quiz
         return RefOptions(notes=quiz.drawn_notes(lid, ex)), "wait", 1.0, ex.get("min", 80)
-    if kind == "echo":                                  # pitches and rhythm: played on the metronome
+    if kind in ("echo", "rhythm"):                      # pitches and rhythm: played on the metronome
         from . import quiz
         return RefOptions(timed=quiz.drawn_timed(lid, ex), bpm=float(ex.get("bpm", 80))), "tempo", 1.0, ex.get("min", 75)
     raise CatalogError(f"Unknown exercise kind: {kind}")
@@ -656,7 +657,7 @@ def next_step(lid: str, eid: str, award: dict, prog: dict) -> dict:
     if not award.get("passed"):
         if score is None:
             return dict(code="not_heard")
-        if ex["kind"] in ("quiz", "pick"):
+        if ex["kind"] in ANSWER_KINDS:
             return dict(code="quiz_retry", params=dict(need=need))
         if score < 50:
             return dict(code="retry_slower" if ex["kind"] == "chart" else "retry_with_help")

@@ -2,7 +2,8 @@
 
 - quiz: multiple-choice questions (theory, reading tab, ear training). The server keeps the answers.
 - pick: select notes on the fretboard ("every G between frets 2 and 7"); checked by position or pitch class.
-- find_note / play_interval: targets you play, graded by the listener like any other exercise.
+- tap: read one bar of rhythm and tap it (Space or a click) over the count-in; graded in milliseconds.
+- find_note / play_interval / rhythm: targets you play, graded by the listener like any other exercise.
 
 Prompts and choices are {code, params} so the UI can show them in any language (`quiz.<code>`).
 A draw lives in memory until it is finished (or replaced by a newer draw of the same exercise).
@@ -13,6 +14,7 @@ import random
 import secrets
 import threading
 
+from . import rhythm as rh
 from . import theory as th
 
 _lock = threading.Lock()
@@ -317,7 +319,49 @@ def q_turnaround(rng, ex):
     return _q(L(f"turnaround_{which}", key=key), ch, ans)
 
 
-QUIZ = {f.__name__[2:]: f for f in [q_tritone_sub, q_shared_tones, q_ii_v_i, q_turnaround,q_interval_frets, q_interval_ear, q_enharmonic, q_half_step, q_tab_read, q_open_string,
+# ---------------------------------------------------------------- reading rhythm
+FIGURES = ["w", "h", "q", "e", "s"]
+DICTATION = ["q q q q", "h h", "e e e e q q", "q e e q e e", "q rq q rq", "h e e q", "e e rq e e rq", "q q h"]
+SUMS = ["q e e", "h q", "e e e e", "q. e", "h e e", "q q rq", "e e q q", "s s s s q", "h.", "q rq e e"]
+
+
+def _beats(x: float) -> dict:
+    whole, frac = int(x), round(x - int(x), 3)
+    return L("beats_n", n=f"{whole if whole else ''}{dict([(0.5, '½'), (0.25, '¼'), (0.75, '¾')]).get(frac, '')}" or "0",
+             count=x)
+
+
+def q_figure_value(rng, ex):
+    """How long a note lasts: beats of one figure, how many small ones fit in a big one, or a short sum."""
+    ask = rng.choice(ex.get("asks", ["beats", "fit", "sum"]))
+    if ask == "beats":
+        fig = rng.choice(FIGURES)
+        dotted = fig in "hq" and rng.random() < 0.3
+        val = rh.BEATS[fig] * (1.5 if dotted else 1)
+        pool = [4, 2, 1, 0.5, 0.25, 3, 1.5, 0.75]
+        ch, ans = _choices(rng, val, pool, label=_beats)
+        return _q(L("figure_beats_dotted" if dotted else "figure_beats", fig=fig), ch, ans,
+                  rhythm=dict(pattern=fig + ("." if dotted else "")))
+    if ask == "fit":
+        big, small = sorted(rng.sample(FIGURES, 2), key=lambda f: -rh.BEATS[f])
+        n = int(rh.BEATS[big] / rh.BEATS[small])
+        ch, ans = _choices(rng, n, [2, 3, 4, 8, 16, 6], label=lambda x: str(x))
+        return _q(L("figure_fit", big=big, small=small), ch, ans)
+    pat = rng.choice(SUMS)
+    ch, ans = _choices(rng, rh.total_beats(pat), [1, 1.5, 2, 2.5, 3, 4], label=_beats)
+    return _q(L("figure_sum"), ch, ans, rhythm=dict(pattern=pat))
+
+
+def q_rhythm_dictation(rng, ex):
+    """The app plays one bar; choose which of the written bars it was."""
+    pool = ex.get("patterns") or DICTATION
+    pat = rng.choice(pool)
+    opts = rh.lookalikes(rng, pat, pool, n=min(4, len(set(pool))))
+    ch = [dict(id=str(i), label=L("pattern", p=o), rhythm=dict(pattern=o)) for i, o in enumerate(opts)]
+    return _q(L("rhythm_dictation"), ch, str(opts.index(pat)), hear_rhythm=dict(pattern=pat, bpm=float(ex.get("bpm", 70))))
+
+
+QUIZ = {f.__name__[2:]: f for f in [q_figure_value, q_rhythm_dictation, q_tritone_sub, q_shared_tones, q_ii_v_i, q_turnaround,q_interval_frets, q_interval_ear, q_enharmonic, q_half_step, q_tab_read, q_open_string,
                                      q_scale_degree, q_relative_minor, q_hear_quality, q_mode_color, q_chord_tones,
                                      q_chord_formula, q_inversion, q_roman, q_pentatonic, q_symmetric, q_bebop, q_altered,
                                      q_guide_tones, q_drop, q_extension, q_voice_lead]}
@@ -366,6 +410,23 @@ def _check_pick(item: dict, answer) -> bool:
     if item["mode"] == "all":
         return sel == {tuple(x) for x in item["expected"]}
     return pcs == set(item["want"])                      # every chord tone at least once, nothing else
+
+
+# ---------------------------------------------------------------- tap a rhythm
+def tap_items(rng, ex) -> list[dict]:
+    """One bar per item, in order of the list and then at random, never the same bar twice in a row."""
+    pats, n = list(ex["patterns"]), int(ex.get("count", len(ex["patterns"])))
+    out, last = [], None
+    for i in range(n):
+        p = pats[i] if i < len(pats) else rng.choice([x for x in pats if x != last] or pats)
+        last = p
+        out.append(dict(type="tap", prompt=L("tap_prompt"), rhythm=dict(pattern=p, bpm=float(ex.get("bpm", 70)), beats=4)))
+    return out
+
+
+def _check_tap(item: dict, answer) -> dict:
+    r = rh.grade_taps(item["rhythm"]["pattern"], item["rhythm"]["bpm"], answer if isinstance(answer, list) else [])
+    return r
 
 
 # ---------------------------------------------------------------- melodic echo
@@ -421,6 +482,14 @@ def play_items(rng, ex) -> list[dict]:
                             reveal=L("found_at", string=s, fret=frets[0])))
     elif ex["kind"] == "echo":
         out.append(echo_phrase(rng, ex))
+    elif ex["kind"] == "rhythm":                          # read the bars, play them on one open string
+        pats, k = list(ex["patterns"]), int(ex.get("count", 4))
+        bars = (pats * (k // len(pats) + 1))[:k] if ex.get("in_order") else [rng.choice(pats) for _ in range(k)]
+        pitch, timed = int(ex.get("pitch", 40)), []
+        for i, p in enumerate(bars):
+            timed += rh.timed(p, pitch, start=4.0 * i)
+        out.append(dict(prompt=L("rhythm_play", count=len(bars), string=6), notes=[x["pitch"] for x in timed], timed=timed,
+                        bars=bars, reveal=L("rhythm_bars", count=len(bars))))
     elif ex["kind"] == "tone_row":
         lo, hi = ex.get("frets", [0, 12])
         row = list(range(12))
@@ -460,14 +529,18 @@ def draw(lid: str, ex: dict, need: float, seed: int | None = None) -> dict:
         items = [QUIZ[types[i % len(types)]](rng, ex) for i in range(n)]
     elif kind == "pick":
         items = [pick_item(rng, ex) for _ in range(n)]
+    elif kind == "tap":
+        items = tap_items(rng, ex)
     elif kind in PLAY_KINDS:
         items = play_items(rng, ex)
         timed = [n for it in items for n in it.get("timed", [])]
         with _lock:
             _latest[(lid, ex["id"])] = dict(notes=[p for it in items for p in it["notes"]], items=items, timed=timed)
         out = dict(kind=kind, items=[dict(prompt=it["prompt"], reveal=it["reveal"], notes=len(it["notes"])) for it in items])
-        if timed:                                         # the phrase the app plays for you to echo
+        if timed and kind == "echo":                      # the phrase the app plays for you to echo
             out.update(phrase=timed, bpm=float(ex.get("bpm", 80)))
+        if kind == "rhythm":                              # the bars to read while you play
+            out.update(bars=[b for it in items for b in it["bars"]], bpm=float(ex.get("bpm", 70)))
         return out
     else:
         raise QuizError(f"Exercise kind '{kind}' isn't drawn")
@@ -476,8 +549,15 @@ def draw(lid: str, ex: dict, need: float, seed: int | None = None) -> dict:
         if len(_draws) >= MAX_DRAWS:
             _draws.pop(next(iter(_draws)))
         _draws[token] = dict(lesson=lid, exercise=ex["id"], need=need, items=items, answers={})
-    public = [{k: v for k, v in it.items() if k not in ("answer", "expected", "want")} for it in items]
-    return dict(kind=kind, token=token, items=public)
+    return dict(kind=kind, token=token, items=[_public(it) for it in items])
+
+
+def _public(it: dict) -> dict:
+    """What the UI may see of a question: never the answer (a dictation doesn't say which choice it played)."""
+    out = {k: v for k, v in it.items() if k not in ("answer", "expected", "want")}
+    if "hear_rhythm" in out:
+        out["hear_rhythm"] = {**out["hear_rhythm"], "pattern": None, "onsets": rh.onsets(it["hear_rhythm"]["pattern"])}
+    return out
 
 
 def check(token: str, index: int, answer) -> dict:
@@ -489,6 +569,10 @@ def check(token: str, index: int, answer) -> dict:
         if not 0 <= index < len(d["items"]):
             raise QuizError("No such question")
         it = d["items"][index]
+        if it["type"] == "tap":                         # partial credit: the bar's accuracy
+            r = _check_tap(it, answer)
+            d["answers"].setdefault(index, r["accuracy"] / 100)
+            return dict(correct=r["accuracy"] >= rh.PASS_ITEM, **r)
         ok = _check_pick(it, answer) if it["type"] == "pick" else str(answer) == it["answer"]
         d["answers"].setdefault(index, ok)
         if it["type"] == "pick":
@@ -502,7 +586,7 @@ def finish(token: str) -> dict:
         d = _draws.pop(token, None)
     if d is None:
         raise QuizError("This quiz expired: start it again")
-    right = sum(1 for ok in d["answers"].values() if ok)
+    right = sum(float(ok) for ok in d["answers"].values())
     return dict(lesson=d["lesson"], exercise=d["exercise"], need=d["need"], score=round(100 * right / len(d["items"]), 1))
 
 
@@ -533,8 +617,8 @@ def testout_start(lid: str, lesson: dict, seed: int | None = None) -> dict:
     """A check to skip a lesson: two questions from each of its quizzes, then its last exercise to play at
     a higher bar. → {token, items, final, need, play_need}."""
     rng = random.Random(seed if seed is not None else secrets.randbits(32))
-    answer = [e for e in lesson["exercises"] if e["kind"] in ("quiz", "pick")]
-    played = [e for e in lesson["exercises"] if e["kind"] not in ("quiz", "pick")]
+    answer = [e for e in lesson["exercises"] if e["kind"] in ANSWER_KINDS]
+    played = [e for e in lesson["exercises"] if e["kind"] not in ANSWER_KINDS]
     items = []
     for e in answer:
         two = {**e, "count": 2}
@@ -546,7 +630,7 @@ def testout_start(lid: str, lesson: dict, seed: int | None = None) -> dict:
         token = secrets.token_urlsafe(12)
         with _lock:
             _draws[token] = dict(lesson=lid, exercise="__testout__", need=TESTOUT_NEED, items=items, answers={})
-        out.update(token=token, items=[{k: v for k, v in it.items() if k not in ("answer", "expected", "want")} for it in items])
+        out.update(token=token, items=[_public(it) for it in items])
     else:
         with _lock:
             _testout_ok[lid] = True                       # nothing to answer: only the playing part
@@ -557,6 +641,8 @@ def _quiz_items(rng, ex) -> list[dict]:
     n = int(ex.get("count", 6))
     if ex["kind"] == "pick":
         return [pick_item(rng, ex) for _ in range(n)]
+    if ex["kind"] == "tap":
+        return tap_items(rng, ex)[:n]
     types = ex["quiz"] if isinstance(ex["quiz"], list) else [ex["quiz"]]
     return [QUIZ[types[i % len(types)]](rng, ex) for i in range(n)]
 
@@ -573,7 +659,8 @@ def testout_ready(lid: str) -> bool:
         return _testout_ok.get(lid, False)
 
 
-PLAY_KINDS = ("find_note", "play_interval", "tone_row", "echo")
+PLAY_KINDS = ("find_note", "play_interval", "tone_row", "echo", "rhythm")
+ANSWER_KINDS = ("quiz", "pick", "tap")
 # the echo of the tools: A minor pentatonic around fret 5, at 80 BPM
 TOOLS_ECHO = dict(id="echo", kind="echo", key="A", scale="minor_pentatonic", frets=[5, 8], bpm=80, count=1)
 

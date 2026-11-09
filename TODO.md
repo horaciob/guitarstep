@@ -229,6 +229,32 @@ Sizes: **S** ≈ an afternoon, **M** ≈ a few days, **L** ≈ a week or more.
 96. **Inline row expansion** (M). Lists (songs, charts, lessons) open details in place instead of
     navigating away, keeping your scroll position.
 
+## I. Brought over from FretLab (our earlier app)
+
+Exercises and ideas that were already solved well in FretLab and missing here. Guitar only (FretLab's
+bass world and bass drills stay out). The text is ours, rewritten in English with a Spanish translation.
+
+97. **Reading rhythm** ✅. Note values, rests, eighths, sixteenths, dotted notes, triplets and syncopation on a
+    one-line staff; tap a bar (graded in ms per note), rhythm dictation, and the same bars played on the low E.
+98. **Reading standard notation** (M). Treble clef (guitar sounds an octave lower): name the note, find it on
+    the neck or play it, in 1st, 5th and 7th position.
+99. **CAGED** (M). The five shapes of one chord, connecting them, and the minor shapes.
+100. **Harmonic function by ear** (M). Tonic, subdominant and dominant; hear the degree after the tonic;
+     cadences by ear and by name; secondary dominants and borrowed chords.
+101. **Guitar technique** (M). Alternate picking, palm mute, economy picking and string skipping, legato, a
+     tuned bend, sweep arpeggios, barre shapes on E and A, tapping.
+102. **The neck, note by note** (S). Name the marked note, the 12th fret repeat, octaves as a shortcut.
+103. **Daily warm-up** (M). Spider, pentatonic boxes, three-notes-per-string major, arpeggios, octaves, CAGED,
+     legato and sweep, with a key and position that rotate daily and a BPM goal per drill that rises.
+     Random challenges on top.
+104. **Interval ear cycle** (M). Modules of two intervals, a four-beat loop (hear, pause, answer, check) that
+     keeps going after a mistake.
+105. **Weak spots by fact** (M). Review the exact note, interval or chord you missed, not the whole exercise.
+106. **A song's theory** (M). Key, the chords of the key it uses, the main progression and a bar-by-bar
+     reading of a Guitar Pro file.
+107. **One-channel-per-string MIDI** (S). Import tab exported as MIDI with one channel per string, keeping the
+     exact string and fret.
+
 ---
 
 ### Suggested order

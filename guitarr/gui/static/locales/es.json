@@ -490,7 +490,11 @@
    "testout_now_play": "Preguntas aprobadas. Ahora tocá: {{title}} (se aprueba con 90%).",
    "testout_failed": "Todavía no: necesitás {{need}}% en las preguntas. Hacer la lección es el camino más rápido.",
    "tested_out_done": "lección completada con la prueba",
-   "tested_out": "✓ salteada con la prueba"
+   "tested_out": "✓ salteada con la prueba",
+   "t_tap_one": "{{count}} compás para tocar a {{bpm}} BPM",
+   "t_tap_other": "{{count}} compases para tocar a {{bpm}} BPM",
+   "t_rhythm_one": "{{count}} compás para tocar a {{bpm}} BPM",
+   "t_rhythm_other": "{{count}} compases para tocar a {{bpm}} BPM"
   },
   "chords": {
    "title": "Acordes",
@@ -1465,7 +1469,30 @@
    "q_7": "dominante 7",
    "q_maj7": "mayor 7",
    "q_m7": "menor 7",
-   "q_m7b5": "semidisminuido (m7♭5)"
+   "q_m7b5": "semidisminuido (m7♭5)",
+   "figure_beats": "En 4/4, ¿cuántos tiempos dura una {{fig}}?",
+   "figure_beats_dotted": "En 4/4, ¿cuántos tiempos dura una {{fig}} con puntillo?",
+   "figure_fit": "¿Cuántas {{small}} entran en una {{big}}?",
+   "figure_sum": "¿Cuántos tiempos suman estas notas?",
+   "rhythm_dictation": "Escuchá el compás. ¿Cuál es?",
+   "pattern": "{{p}}",
+   "beats_n_one": "{{n}} tiempo",
+   "beats_n_other": "{{n}} tiempos",
+   "fig_w": "redonda",
+   "fig_h": "blanca",
+   "fig_q": "negra",
+   "fig_e": "corchea",
+   "fig_s": "semicorchea",
+   "figs_w": "redondas",
+   "figs_h": "blancas",
+   "figs_q": "negras",
+   "figs_e": "corcheas",
+   "figs_s": "semicorcheas",
+   "tap_prompt": "Leé el compás y tocalo a tiempo",
+   "rhythm_play_one": "Tocá {{count}} compás en la {{string}}ª cuerda al aire (Mi grave)",
+   "rhythm_play_other": "Tocá {{count}} compases en la {{string}}ª cuerda al aire (Mi grave)",
+   "rhythm_bars_one": "{{count}} compás de ritmo",
+   "rhythm_bars_other": "{{count}} compases de ritmo"
   },
   "flow": {
    "label": "Los pasos de esta lección",
@@ -1570,7 +1597,16 @@
    "histo_label": "Histograma de tiempo: {{within}}% de los rasguidos dentro de 30 milisegundos",
    "axis": "Milisegundos antes (−) o después (+). La barra del medio es justo en el tiempo.",
    "records": "Tus más parejos:",
-   "record": "{{bpm}} BPM: dispersión {{std}} ms ({{within}}% a tiempo)"
+   "record": "{{bpm}} BPM: dispersión {{std}} ms ({{within}}% a tiempo)",
+   "notation_label": "Un compás de ritmo en 4/4",
+   "choice_label": "Opción {{n}}: un compás de ritmo",
+   "choice_n": "la opción {{n}}",
+   "bar_n": "Compás {{n}}",
+   "hear_bar": "Escuchar",
+   "tap_start": "Empezar (Espacio)",
+   "tap_pad": "Tocá acá (o apretá Espacio)",
+   "tap_hint": "Cuatro clics de cuenta a {{bpm}} BPM, y después tocá cada nota con el metrónomo.",
+   "tap_result": "{{acc}}% · desvío promedio {{mean}} ms · {{extra}} toques de más"
   },
   "ear": {
    "kind_chord_basic": "Mayor, menor o 7",
@@ -1949,6 +1985,14 @@
    "n15": {
     "title": "El lenguaje del jazz",
     "subtitle": "Swing, walking bass, arpegios, notas de aproximación, enclosures, líneas de corcheas y estudios."
+   },
+   "n16": {
+    "title": "Leer ritmo",
+    "subtitle": "Figuras, silencios y el pulso, tocados con el dedo y después con la guitarra."
+   },
+   "n17": {
+    "title": "Leer ritmo II",
+    "subtitle": "Semicorcheas, puntillos, tresillos, síncopas y dictado."
    }
   },
   "lessons": {
@@ -3021,6 +3065,183 @@
      "serie dodecafónica explicada",
      "entrenamiento auditivo cromático guitarra"
     ]
+   },
+   "pulse": {
+    "title": "El pulso",
+    "theory": [
+     "El pulso es el golpe constante que marcás con el pie. Los BPM dicen cuántos golpes entran en un minuto: 60 BPM es uno por segundo.",
+     "Casi toda la música cuenta en grupos de cuatro (compás de 4/4). El primer tiempo de cada grupo es el más fuerte, y el metrónomo lo marca con un clic más agudo."
+    ],
+    "tips": [
+     "Tocá Espacio (o el pad) con cada nota. El primer compás es solo la cuenta: escuchá antes de tocar."
+    ],
+    "tutorials": [
+     "cómo contar tiempos en música",
+     "tocar con metrónomo guitarra"
+    ],
+    "captions": [
+     "Cuatro negras: una nota en cada tiempo."
+    ]
+   },
+   "note-values": {
+    "title": "Cuánto vale cada figura",
+    "theory": [
+     "Cada figura dice cuánto dura la nota. En 4/4 la negra vale un tiempo, y las demás son dobles y mitades de ella.",
+     "Redonda = 4 tiempos, blanca = 2, negra = 1, corchea = ½, semicorchea = ¼. Cada figura tiene un silencio que dura lo mismo."
+    ],
+    "tips": [
+     "En la tablatura, estas mismas figuras suelen aparecer como plicas debajo de los números. Buscalas la próxima vez que abras una canción."
+    ],
+    "tutorials": [
+     "figuras musicales redonda blanca negra corchea"
+    ],
+    "captions": [
+     "Una redonda: el compás entero.",
+     "Dos blancas.",
+     "Cuatro negras.",
+     "Ocho corcheas: dos por tiempo."
+    ]
+   },
+   "long-notes": {
+    "title": "Notas largas",
+    "theory": [
+     "Con las notas largas tocás una vez y seguís contando mientras suena. Lo difícil es no apurar la siguiente."
+    ],
+    "tips": [],
+    "tutorials": [],
+    "captions": [
+     "Dos blancas: tocá en el 1 y en el 3."
+    ]
+   },
+   "eighths": {
+    "title": "Corcheas",
+    "theory": [
+     "Las corcheas parten cada tiempo en dos. Contá \"uno-y, dos-y\": la nota del \"y\" cae justo entre dos clics."
+    ],
+    "tips": [
+     "Mucha guitarra rítmica de rock es corchea constante. Cuando te salen parejas, la mitad de las canciones se vuelven más fáciles."
+    ],
+    "tutorials": [],
+    "captions": [
+     "Corcheas en los tiempos 1 y 2, negras en el 3 y el 4."
+    ]
+   },
+   "rests": {
+    "title": "Silencios",
+    "theory": [
+     "Un silencio es tiempo que contás callado. En la guitarra, apagar las cuerdas en el momento justo importa tanto como tocar."
+    ],
+    "tips": [],
+    "tutorials": [],
+    "captions": [
+     "Toca, silencio, toca, silencio."
+    ]
+   },
+   "mixing-rhythms": {
+    "title": "Todo junto",
+    "theory": [
+     "Ahora a 80 BPM. Leé el compás entero durante la cuenta, antes de empezar."
+    ],
+    "tips": [],
+    "tutorials": [],
+    "captions": []
+   },
+   "rhythm-on-guitar": {
+    "title": "Ritmo en la guitarra",
+    "theory": [
+     "Ahora cambiá el toque por la guitarra: tocá la sexta cuerda al aire (Mi grave) en el ritmo. guitarr escucha cada ataque y su tiempo."
+    ],
+    "tips": [
+     "Apagá la cuerda en los silencios: si sigue sonando, el ataque siguiente se oye peor.",
+     "Si las notas te salen siempre tarde, medí la latencia una vez con guitarr calibrate."
+    ],
+    "tutorials": [],
+    "captions": []
+   },
+   "sixteenths": {
+    "title": "Semicorcheas",
+    "theory": [
+     "La semicorchea vale un cuarto de tiempo: entran cuatro en cada clic. Se escribe con dos barras (o dos banderitas). Contá \"1 e y a\" en voz baja, sin acelerar."
+    ],
+    "tips": [
+     "Púa alternada abajo-arriba-abajo-arriba, una por semicorchea. La mano sigue moviéndose aunque no toque."
+    ],
+    "tutorials": [],
+    "captions": [
+     "Un tiempo de semicorcheas y tres negras.",
+     "Corchea y dos semicorcheas: el galope del rock."
+    ]
+   },
+   "dotted-eighth": {
+    "title": "La corchea con puntillo",
+    "theory": [
+     "El puntillo al lado de una nota le suma la mitad de su valor. La corchea con puntillo dura ¾ de tiempo, y casi siempre viene con una semicorchea que completa el tiempo: el ritmo rengo de muchos riffs."
+    ],
+    "tips": [
+     "Pensá en semicorcheas: la del puntillo dura tres, la semicorchea una. \"1 – – a 2 – – a\"."
+    ],
+    "tutorials": [],
+    "captions": [
+     "Dos corcheas con puntillo con semicorchea y dos negras."
+    ]
+   },
+   "triplets": {
+    "title": "Tresillos",
+    "theory": [
+     "El tresillo parte el tiempo en tres partes iguales en vez de dos o cuatro. Se escribe con un 3 sobre el grupo. Contá \"tre-si-llo\" o \"1-2-3\" dentro de cada clic."
+    ],
+    "tips": [
+     "Mucho blues y muchas baladas en 12/8 viven de tresillos. El shuffle es un tresillo con la nota del medio callada."
+    ],
+    "tutorials": [],
+    "captions": [
+     "Tresillos de corchea alternando con negras."
+    ]
+   },
+   "syncopation": {
+    "title": "Síncopa",
+    "theory": [
+     "La síncopa es cuando una nota empieza en un tiempo débil (en el \"y\") y se sostiene por encima del tiempo fuerte siguiente. Es el empujón que hace avanzar al funk y a tanta otra música."
+    ],
+    "tips": [
+     "Marcá con el pie todos los tiempos y tocá solo donde está escrito. El pie no sigue a la mano."
+    ],
+    "tutorials": [],
+    "captions": [
+     "Corchea, negra en el contratiempo, corchea: el ataque cae en el \"y\" del 1.",
+     "Negra con puntillo: el segundo ataque cae en el \"y\" del 2."
+    ]
+   },
+   "dictation-1": {
+    "title": "Dictado I",
+    "theory": [
+     "En el dictado es al revés: la app toca un compás y vos elegís la escritura. Es lo que pasa cuando sacás una canción de oído."
+    ],
+    "tips": [
+     "Escuchá una vez entero, y después de nuevo prestando atención a un tiempo por vez."
+    ],
+    "tutorials": [],
+    "captions": []
+   },
+   "dictation-2": {
+    "title": "Dictado II",
+    "theory": [
+     "Ahora con las figuras nuevas. El tresillo suena redondo, rodando; el puntillo suena rengo; la síncopa suena adelantada, antes del tiempo."
+    ],
+    "tips": [],
+    "tutorials": [],
+    "captions": []
+   },
+   "rhythm-2-on-guitar": {
+    "title": "Ritmo II en la guitarra",
+    "theory": [
+     "Cerrá el nivel tocando de verdad: la sexta al aire, los ritmos nuevos, y el oyente midiendo cada ataque en milisegundos."
+    ],
+    "tips": [
+     "Si las notas te salen siempre adelantadas o atrasadas, corré guitarr calibrate una vez."
+    ],
+    "tutorials": [],
+    "captions": []
    }
   },
   "exercises": {
@@ -3228,7 +3449,21 @@
    "jazz-etudes/etude-blue-f": "“Fa azul” (Fa7 – Si♭7 – Fa7)",
    "tone-rows/row-low": "Una serie en los trastes graves",
    "tone-rows/row-mid": "Una serie alrededor del traste 5",
-   "interval-ear/ear-echo": "Repetí una frase corta"
+   "interval-ear/ear-echo": "Repetí una frase corta",
+   "pulse/pulse-tap": "Tocá las negras",
+   "note-values/values-quiz": "¿Cuánto dura?",
+   "long-notes/long-tap": "Tocá blancas y redondas",
+   "eighths/eighths-tap": "Tocá las corcheas",
+   "rests/rests-tap": "Tocá alrededor de los silencios",
+   "mixing-rhythms/mix-tap": "Figuras y silencios juntos",
+   "rhythm-on-guitar/rhythm-guitar": "Tocá los compases en el Mi grave",
+   "sixteenths/sixteenths-tap": "Tocá las semicorcheas",
+   "dotted-eighth/dotted-tap": "Tocá las corcheas con puntillo",
+   "triplets/triplets-tap": "Tocá los tresillos",
+   "syncopation/sync-tap": "Tocá las síncopas",
+   "dictation-1/dictation-16": "¿Qué compás escuchaste?",
+   "dictation-2/dictation-mix": "¿Puntillo, tresillo o síncopa?",
+   "rhythm-2-on-guitar/rhythm-2-guitar": "Tocá los ritmos nuevos en el Mi grave"
   },
   "charts": {
    "01-em-am": {

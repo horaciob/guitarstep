@@ -926,6 +926,34 @@ body.is-setup #main { margin: 0 auto; max-width: 760px; padding-top: 48px; }
 .gl .q-choice.wrong { border-color: var(--gl-err); box-shadow: inset 0 0 0 2px var(--gl-err); }
 .gl .q-choice.wrong::after { content: " ✕"; color: var(--gl-err); font-weight: 800; }
 .gl .q-choice:disabled { opacity: 1; cursor: default; }
+
+/* rhythm notation (lib/notation.js): one bar on a one-line staff */
+.gl .rhythm-svg { width: 100%; max-width: 640px; height: auto; color: var(--text); display: block; margin: 0 auto; }
+.gl .rhythm-svg .rs-line, .gl .rhythm-svg .rs-bar { stroke: currentColor; stroke-width: 1.5; stroke-opacity: .55; }
+.gl .rhythm-svg .rs-stem { stroke: currentColor; stroke-width: 2; }
+.gl .rhythm-svg .rs-head, .gl .rhythm-svg .rs-beam, .gl .rhythm-svg .rs-flag, .gl .rhythm-svg .rs-rest, .gl .rhythm-svg .rs-dot { fill: currentColor; }
+.gl .rhythm-svg .rs-hollow { fill: none; stroke: currentColor; stroke-width: 2.4; }
+.gl .rhythm-svg .rs-tuplet { fill: none; stroke: currentColor; stroke-width: 1.4; }
+.gl .rhythm-svg .rs-tnum, .gl .rhythm-svg .rs-count, .gl .rhythm-svg .rs-mark { fill: currentColor; font-size: 13px; text-anchor: middle; font-weight: 700; }
+.gl .rhythm-svg .rs-count { fill: var(--muted); font-weight: 600; }
+.gl .rhythm-svg .rs-ts { fill: currentColor; font-size: 24px; font-weight: 800; text-anchor: middle; }
+.gl .rhythm-svg .nt.on { color: var(--gl-accent); }
+.gl .rhythm-svg .nt.g-perfect, .gl .rhythm-svg .nt.g-good { color: var(--gl-ok); }
+.gl .rhythm-svg .nt.g-early, .gl .rhythm-svg .nt.g-late { color: var(--gl-warn); }
+.gl .rhythm-svg .nt.g-miss { color: var(--gl-err); }
+.gl .q-rhythm { width: 100%; }
+.gl .q-choice-rhythm { flex-direction: column; align-items: stretch; padding: 8px 10px; }
+.gl .q-choice-rhythm .rhythm-svg { max-width: 360px; }
+.gl .q-choice-rhythm kbd { align-self: flex-start; }
+.gl .rhythm-bars { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 6px 12px; width: 100%; }
+.gl .rhythm-fig { margin-bottom: 6px; }
+.gl .tap-pad { display: block; width: min(100%, 420px); margin: 10px auto 0; padding: 26px 12px; border-radius: var(--r-lg);
+  border: 2px dashed var(--border); background: var(--gl-panel-2); color: var(--text); font-size: 18px; font-weight: 700;
+  cursor: pointer; touch-action: manipulation; user-select: none; }
+.gl .tap-pad:disabled { opacity: .55; cursor: default; }
+.gl .tap-pad.hit { animation: tap-flash .18s ease-out; }
+@keyframes tap-flash { from { background: var(--gl-accent); color: var(--gl-accent-ink); } }
+@media (prefers-reduced-motion: reduce) { .gl .tap-pad.hit { animation: none; } }
 .gl .q-neck { width: 100%; }
 .gl .q-feedback { min-height: 24px; font-weight: 700; margin: 0; }
 .gl .q-feedback.ok { color: var(--gl-ok); } .gl .q-feedback.err { color: var(--gl-err); }
