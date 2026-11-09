@@ -949,7 +949,20 @@
     "jazz_box": "Jazz",
     "acoustic_stage": "Acústica en vivo",
     "twelve_shimmer": "12 cuerdas brillante",
-    "octave_bass": "Bajo de octava"
+    "octave_bass": "Bajo de octava",
+    "gilmour_lead": "Gilmour: lead con fuzz que vuela",
+    "gilmour_clean": "Gilmour: limpio con rotativo y eco",
+    "slash_lead": "Slash: lead que canta",
+    "srv_texas": "Stevie Ray Vaughan: blues de Texas",
+    "hendrix_vibe": "Hendrix: fuzz y vibe",
+    "hendrix_octave": "Hendrix: fuzz de octava",
+    "page_riff": "Jimmy Page: riffs en sala grande",
+    "clapton_woman": "Clapton: el \"woman tone\"",
+    "clapton_strat": "Clapton: single coil con medios",
+    "bb_king": "B.B. King: limpio y dulce",
+    "knopfler_clean": "Knopfler: limpio y comprimido",
+    "angus_crunch": "Angus Young: crunch crudo",
+    "santana_sustain": "Santana: sustain infinito"
    },
    "param": {
     "threshold": "Umbral",
@@ -1118,7 +1131,9 @@
    "recipe": "Tono",
    "recipe_none": "—",
    "recipe_load": "Cargar este tono",
-   "recipe_loaded": "Tono cargado: {{name}}"
+   "recipe_loaded": "Tono cargado: {{name}}",
+   "artists_title": "Sonidos de artistas",
+   "artists_hint": "El sonido más conocido de cada guitarrista, aproximado con equipos genéricos. El equipo te acerca; tus manos, tu ataque y tu vibrato hacen el resto."
   },
   "plan": {
    "title": "Plan de práctica",

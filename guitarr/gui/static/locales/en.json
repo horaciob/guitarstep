@@ -988,7 +988,20 @@
     "jazz_box": "Jazz box",
     "acoustic_stage": "Acoustic on stage",
     "twelve_shimmer": "12-string shimmer",
-    "octave_bass": "Octave bass"
+    "octave_bass": "Octave bass",
+    "gilmour_lead": "Gilmour: soaring fuzz lead",
+    "gilmour_clean": "Gilmour: clean with rotary and echo",
+    "slash_lead": "Slash: singing lead",
+    "srv_texas": "Stevie Ray Vaughan: Texas blues",
+    "hendrix_vibe": "Hendrix: fuzz and vibe",
+    "hendrix_octave": "Hendrix: octave fuzz",
+    "page_riff": "Jimmy Page: big-room riffs",
+    "clapton_woman": "Clapton: woman tone",
+    "clapton_strat": "Clapton: Strat with mid boost",
+    "bb_king": "B.B. King: sweet and clean",
+    "knopfler_clean": "Knopfler: clean and compressed",
+    "angus_crunch": "Angus Young: raw crunch",
+    "santana_sustain": "Santana: endless sustain"
    },
    "opt_vintage": "Vintage",
    "opt_octave": "Octave",
@@ -1118,7 +1131,9 @@
    "recipe": "Tone",
    "recipe_none": "—",
    "recipe_load": "Load this tone",
-   "recipe_loaded": "Tone loaded: {{name}}"
+   "recipe_loaded": "Tone loaded: {{name}}",
+   "artists_title": "Artist tones",
+   "artists_hint": "Each player's best-known sound, approximated with generic gear. The amp gets you close; your hands, your pick attack and your vibrato do the rest."
   },
   "plan": {
    "title": "Practice plan",

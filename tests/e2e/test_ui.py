@@ -943,3 +943,16 @@ def test_exercise_theory_and_the_optional_metal_course(app_page):
     go(app_page, "lesson/metal-chug")
     expect(app_page.locator(".lesson-head small")).to_contain_text("M1")
     expect(app_page.locator('.exercise[data-id="gallop"] [data-act=theory]')).to_be_visible()
+
+
+def test_rig_artist_tones(app_page):
+    onboarded(app_page)
+    go(app_page, "rig")
+    row = app_page.locator("#artistSounds .quick")
+    expect(row).to_have_count(13)
+    gilmour = app_page.locator('#artistSounds .quick[data-id="gilmour_lead"]')
+    expect(gilmour).to_contain_text("Gilmour")
+    gilmour.click()
+    expect(gilmour).to_contain_text("active")
+    expect(app_page.locator("#rigPreset")).to_have_value("factory:gilmour_lead")
+    expect(app_page.locator("#sec-pedals .pedal[data-uid]")).to_have_count(2)      # compressor + fuzz

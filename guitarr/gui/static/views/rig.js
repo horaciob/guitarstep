@@ -5,7 +5,7 @@ import { $, $$, api, esc, toast } from "../lib/ui.js";
 import { icon } from "../lib/icons.js";
 import { rig } from "../lib/rig/engine.js";
 import { AMP_KNOBS, AMPS, CABS, EFFECT_GROUPS, EFFECTS, GUITARS, MICS } from "../lib/rig/effects.js";
-import { FACTORY, factory, makeEffect } from "../lib/rig/presets.js";
+import { ARTISTS, FACTORY, factory, makeEffect } from "../lib/rig/presets.js";
 import { knob } from "../lib/rig/knob.js";
 import { RIFFS, VOICES } from "../lib/rig/synth.js";
 import { clipPlot, comparePlots, isDrive, stackCurve } from "../lib/rig/visuals.js";
@@ -88,6 +88,13 @@ function renderQuick() {
   const box = $("#rigQuick", root);
   if (!box) return;
   const cur = rig.preset && rig.preset.kind === "factory" ? rig.preset.id : "";
+  const card = id => {
+    const s = factory(id), n = [...s.pedals, ...s.post].filter(e => e.on).length;
+    return `<button class="quick${id === cur ? " on" : ""}" data-id="${id}" aria-pressed="${id === cur}">${ampThumb(s.amp.type)}
+        <b>${esc(t(`rig.preset.${id}`))}</b>
+        <small>${esc(t(`rig.amp_${s.amp.type}`))} · ${esc(t("rig.quick_fx", { count: n }))}</small>
+        ${id === cur ? `<span class="quick-on">✓ ${esc(t("rig.quick_active"))}</span>` : ""}</button>`;
+  };
   const mineId = rig.preset && rig.preset.kind === "user" ? rig.preset.id : "";
   const fxCount = s => [...(s.pedals || []), ...(s.post || [])].filter(e => e.on).length;
   box.innerHTML = `<h2 class="sub">${esc(t("rig.my_sounds"))}</h2>
@@ -102,13 +109,10 @@ function renderQuick() {
       }).join("")}
     </div>
     <h2 id="quickTitle" class="sub">${esc(t("rig.quick_title"))}</h2>
-    <div class="quick-row">${Object.keys(FACTORY).map(id => {
-      const s = factory(id), n = [...s.pedals, ...s.post].filter(e => e.on).length;
-      return `<button class="quick${id === cur ? " on" : ""}" data-id="${id}" aria-pressed="${id === cur}">${ampThumb(s.amp.type)}
-        <b>${esc(t(`rig.preset.${id}`))}</b>
-        <small>${esc(t(`rig.amp_${s.amp.type}`))} · ${esc(t("rig.quick_fx", { count: n }))}</small>
-        ${id === cur ? `<span class="quick-on">✓ ${esc(t("rig.quick_active"))}</span>` : ""}</button>`;
-    }).join("")}</div>`;
+    <div class="quick-row">${Object.keys(FACTORY).map(card).join("")}</div>
+    <h2 class="sub">${esc(t("rig.artists_title"))}</h2>
+    <p class="muted small artists-hint">${esc(t("rig.artists_hint"))}</p>
+    <div class="quick-row" id="artistSounds">${Object.keys(ARTISTS).map(card).join("")}</div>`;
   $$(".quick[data-id]", box).forEach(b => b.onclick = () => loadPreset(`factory:${b.dataset.id}`));
   $$(".quick[data-user]", box).forEach(b => b.onclick = () => loadPreset(`user:${b.dataset.user}`));
   $("#mySave", box).onclick = savePreset;
@@ -145,6 +149,7 @@ function renderBar() {
       <label class="sr-only" for="rigPreset">${esc(t("rig.preset_label"))}</label>
       <select id="rigPreset">
         <option value="" ${cur ? "" : "selected"}>${esc(presetName())}</option>
+        <optgroup label="${esc(t("rig.artists_title"))}">${Object.keys(ARTISTS).map(id => `<option value="factory:${id}" ${cur === "factory:" + id ? "selected" : ""}>${esc(t(`rig.preset.${id}`))}${cur === "factory:" + id && rig.preset.edited ? " *" : ""}</option>`).join("")}</optgroup>
         <optgroup label="${esc(t("rig.factory"))}">${Object.keys(FACTORY).map(id => `<option value="factory:${id}" ${cur === "factory:" + id ? "selected" : ""}>${esc(t(`rig.preset.${id}`))}${cur === "factory:" + id && rig.preset.edited ? " *" : ""}</option>`).join("")}</optgroup>
         ${user.length ? `<optgroup label="${esc(t("rig.mine"))}">${user.map(p => `<option value="user:${esc(p.id)}" ${cur === "user:" + p.id ? "selected" : ""}>${esc(p.name)}${cur === "user:" + p.id && rig.preset.edited ? " *" : ""}</option>`).join("")}</optgroup>` : ""}
       </select>
