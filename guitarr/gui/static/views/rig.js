@@ -5,7 +5,7 @@ import { $, $$, api, esc, toast } from "../lib/ui.js";
 import { icon } from "../lib/icons.js";
 import { rig } from "../lib/rig/engine.js";
 import { AMP_KNOBS, AMPS, CABS, EFFECT_GROUPS, EFFECTS, GUITARS, MICS } from "../lib/rig/effects.js";
-import { ARTISTS, FACTORY, factory, makeEffect } from "../lib/rig/presets.js";
+import { ARTIST_STYLE, ARTIST_STYLES, ARTISTS, FACTORY, factory, makeEffect } from "../lib/rig/presets.js";
 import { knob } from "../lib/rig/knob.js";
 import { RIFFS, VOICES } from "../lib/rig/synth.js";
 import { clipPlot, comparePlots, isDrive, stackCurve } from "../lib/rig/visuals.js";
@@ -84,6 +84,9 @@ function renderAll() {
 }
 
 // ------------------------------------------------------------------ quick sounds: the factory presets, one click each
+const STYLE_KEY = "guitarr.rig.artistStyle";
+let artistStyle = (() => { try { return localStorage.getItem(STYLE_KEY) || "all"; } catch { return "all"; } })();
+
 function renderQuick() {
   const box = $("#rigQuick", root);
   if (!box) return;
@@ -112,8 +115,15 @@ function renderQuick() {
     <div class="quick-row">${Object.keys(FACTORY).map(card).join("")}</div>
     <h2 class="sub">${esc(t("rig.artists_title"))}</h2>
     <p class="muted small artists-hint">${esc(t("rig.artists_hint"))}</p>
-    <div class="quick-row" id="artistSounds">${Object.keys(ARTISTS).map(card).join("")}</div>`;
+    <div class="seg mini artist-styles" role="group" aria-label="${esc(t("rig.artist_filter"))}">${["all", ...ARTIST_STYLES].map(st =>
+      `<button data-style="${st}" class="${st === artistStyle ? "active" : ""}" aria-pressed="${st === artistStyle}">${esc(t(`rig.artist_style.${st}`))}</button>`).join("")}</div>
+    <div class="quick-row" id="artistSounds">${Object.keys(ARTISTS).filter(id => artistStyle === "all" || ARTIST_STYLE[id] === artistStyle).map(card).join("")}</div>`;
   $$(".quick[data-id]", box).forEach(b => b.onclick = () => loadPreset(`factory:${b.dataset.id}`));
+  $$(".artist-styles button", box).forEach(b => b.onclick = () => {
+    artistStyle = b.dataset.style;
+    try { localStorage.setItem(STYLE_KEY, artistStyle); } catch { /* ok */ }
+    renderQuick();
+  });
   $$(".quick[data-user]", box).forEach(b => b.onclick = () => loadPreset(`user:${b.dataset.user}`));
   $("#mySave", box).onclick = savePreset;
 }

@@ -1246,3 +1246,5 @@ body.is-stage #main { max-width: none; padding: 12px 18px; }
 .gl .f-theory p { margin: 6px 0 0; line-height: 1.45; }
 .gl .optional-head { margin-top: 28px; }
 .gl .level.optional .lvl-num { font-size: 13px; }
+
+.gl .artist-styles { margin: 0 0 8px; flex-wrap: wrap; }

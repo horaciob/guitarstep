@@ -949,7 +949,11 @@ def test_rig_artist_tones(app_page):
     onboarded(app_page)
     go(app_page, "rig")
     row = app_page.locator("#artistSounds .quick")
-    expect(row).to_have_count(13)
+    expect(row).to_have_count(54)
+    app_page.locator('.artist-styles button[data-style="acoustic"]').click()     # filter by style
+    expect(row).to_have_count(5)
+    expect(app_page.locator('#artistSounds .quick[data-id="segovia_classical"]')).to_be_visible()
+    app_page.locator('.artist-styles button[data-style="all"]').click()
     gilmour = app_page.locator('#artistSounds .quick[data-id="gilmour_lead"]')
     expect(gilmour).to_contain_text("Gilmour")
     gilmour.click()
