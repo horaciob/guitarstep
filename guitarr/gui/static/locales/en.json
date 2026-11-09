@@ -1136,6 +1136,8 @@
    "stop": "Stop and save",
    "resume": "Resume",
    "start_timer": "Start the timer",
+   "timer_btn": "Time it",
+   "timer_hint": "A stopwatch: it adds this time to the category and makes no sound. Play along with a lesson, a chart or the metronome meanwhile.",
    "done": "Done",
    "hours": "Hours",
    "minutes": "Minutes",

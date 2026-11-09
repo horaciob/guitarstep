@@ -152,13 +152,16 @@ function catCard(c) {
   const state = mine ? (tm.running ? "running" : "paused") : "idle";
   const btn = (act, label, ico, dis = false) => `<button class="ib2" data-act="${act}" data-cat="${esc(c.id)}" ${dis ? "disabled" : ""} title="${esc(label)}" aria-label="${esc(label)}">${ico}</button>`;
   let controls;
+  // a stopwatch, not a player: worded so nobody waits for a sound
+  const timerBtn = (act, dis = false) => `<button class="btn small" data-act="${act}" data-cat="${esc(c.id)}" ${dis ? "disabled" : ""} title="${esc(t("plan.timer_hint"))}">⏱ ${esc(t(act === "start" ? "plan.timer_btn" : "plan.resume"))}</button>`;
   if (state === "running") controls = `<span class="clock mono" data-clock="${esc(c.id)}">${fmtClock(tm.elapsed + extra())}</span>${btn("pause", t("plan.pause"), "❚❚")}${btn("stop", t("plan.stop"), "■")}`;
-  else if (state === "paused") controls = `<span class="muted small">${esc(t("plan.paused"))}</span>${btn("resume", t("plan.resume"), "▶")}${btn("stop", t("plan.stop"), "■")}`;
-  else controls = btn("start", t("plan.start_timer"), "▶", !!other);
+  else if (state === "paused") controls = `<span class="muted small">${esc(t("plan.paused"))}</span>${timerBtn("resume")}${btn("stop", t("plan.stop"), "■")}`;
+  else controls = timerBtn("start", !!other);
   return `<div class="panel cat ${state}${met ? " met" : ""}">
     <div class="cat-main">
       <b>${esc(catName(c))}</b>
       <small class="muted">${esc(c.minutes ? t("plan.goal_day", { goal: fmtHM(c.minutes) }) : t("plan.no_goal"))} · ${c.auto ? `${icon("headphones", 12)} ${esc(t(c.id === "free" ? "plan.auto_free" : "plan.auto"))}` : esc(t("plan.manual"))}${state === "paused" ? " · " + esc(t("plan.paused")) : ""}</small>
+      ${state === "running" ? `<small class="muted">${esc(t("plan.timer_hint"))}</small>` : ""}
       <div class="pbar thin"><i data-bar="${esc(c.id)}" style="width:${goal ? Math.min(100, 100 * secs / goal) : 0}%"></i></div>
     </div>
     <div class="cat-side"><span class="cat-time"><b data-time="${esc(c.id)}">${fmtHM(Math.round(secs / 60))}</b>${c.minutes ? ` / ${fmtHM(c.minutes)}` : ""}</span>

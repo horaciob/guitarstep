@@ -1136,6 +1136,8 @@
    "stop": "Detener y guardar",
    "resume": "Reanudar",
    "start_timer": "Iniciar el cronómetro",
+   "timer_btn": "Cronometrar",
+   "timer_hint": "Es un cronómetro: suma este tiempo a la categoría y no hace ningún sonido. Mientras, tocá con una lección, una progresión o el metrónomo.",
    "done": "Cumplida",
    "hours": "Horas",
    "minutes": "Minutos",

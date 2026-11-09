@@ -58,8 +58,9 @@ def test_plan_validation_categories_and_timer(app_page):
     row.get_by_role("button", name="Yes").click()
     expect(app_page.locator(".cat-row", has_text="Scales")).to_have_count(0)
 
-    app_page.locator(".cat", has_text="Theory").get_by_role("button", name="Start the timer").click()
+    app_page.locator(".cat", has_text="Theory").get_by_role("button", name="Time it").click()
     expect(app_page.locator("#timerPill")).to_be_visible()
+    expect(app_page.locator(".cat", has_text="Theory")).to_contain_text("makes no sound")   # a stopwatch, not a player
     expect(app_page.locator("#timerPillName")).to_contain_text("Theory")
     app_page.locator("#timerPillPause").click()
     expect(app_page.locator("#timerPillName")).to_contain_text("paused")
