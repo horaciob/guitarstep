@@ -2105,7 +2105,7 @@
    "s2": "<b>Apagá el monitoreo directo</b> (el botón o perilla MONITOR / DIRECT) y sacate los auriculares: con el cable puesto, un lazo puede silbar fuerte.",
    "s3": "Bajá <b>al mínimo la ganancia de la entrada 2</b>, y el volumen de auriculares más o menos a la mitad.",
    "s4": "Enchufá el cable desde la <b>salida de auriculares</b> de la interfaz (o una salida de línea) a la <b>entrada 2</b>. Dejá la guitarra en la entrada 1, con su perilla de volumen abajo.",
-   "s5": "En <b>Entrada con el cable</b> elegí 2 y tocá <b>Medir con el cable</b>. Salen 13 clics y vuelven por el cable; no toques ni muevas nada unos 8 segundos.",
+   "s5": "En <b>Entrada con el cable</b> elegí 2 y tocá <b>Medir con el cable</b>. Salen 13 clics, cada uno con su tono (así se sabe que el que vuelve es el mismo que salió); no toques ni muevas nada unos 8 segundos.",
    "s6": "Cuando diga ✓, desenchufá el cable, volvé a prender el monitoreo si lo usás, y hacé <b>Tocando</b> con la guitarra: esa te dice tu propia costumbre.",
    "trouble_title": "Si no funciona",
    "t1": "<b>“Los clics no volvieron”</b>: el cable está en otra entrada que la elegida, el metrónomo suena por otro aparato (¿los parlantes?), el volumen de auriculares está en cero, o la ganancia está demasiado baja (subila de a poco).",

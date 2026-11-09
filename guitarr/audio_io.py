@@ -148,10 +148,12 @@ class Metronome:
     """Clicks scheduled in input time (aligned with the ADC clock).
 
     `clicks` is a list of (time, accent) that can keep growing while it plays
-    (for loops and speed changes)."""
+    (for loops and speed changes). `tones` ({key: Hz}) replaces the two clicks: then each click's
+    second field is a key of `tones`."""
 
     def __init__(self, device, src: MicSource, clicks: list[tuple[float, bool]], volume: float = 1.0,
-                 backing: list[tuple[float, str]] | None = None, backing_volume: float = 0.5):
+                 backing: list[tuple[float, str]] | None = None, backing_volume: float = 0.5,
+                 tones: dict | None = None):
         sd = _sd()
         dev = parse_device(device)
         try:
@@ -161,8 +163,8 @@ class Metronome:
         self.sr, self.src = sr, src
         self.clicks = clicks
         self.idx = 0
-        from .takeclick import click_waves
-        self.wave = click_waves(sr, volume)
+        from .takeclick import click_waves, tone_waves
+        self.wave = tone_waves(sr, tones, volume) if tones else click_waves(sr, volume)
         self.backing = backing if backing is not None else []
         self.bidx = 0
         self.sounds = BackingSounds(sr, backing_volume)

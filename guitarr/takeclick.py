@@ -29,6 +29,17 @@ def click_waves(sr: int, volume: float = 1.0) -> dict[bool, np.ndarray]:
             False: (0.4 * volume * env * np.sin(2 * np.pi * 1000 * tt)).astype(np.float32)}
 
 
+LOOP_TONES = (600.0, 900.0, 1350.0, 2025.0)   # Hz: the cable test cycles these, so each click can be recognized
+
+
+def tone_waves(sr: int, tones: dict, volume: float = 1.0) -> dict:
+    """A click per key, each at its own frequency ({key: Hz} -> {key: wave})."""
+    n = int(0.03 * sr)
+    env = np.exp(-np.arange(n) / (0.008 * sr))
+    tt = np.arange(n) / sr
+    return {k: (0.5 * volume * env * np.sin(2 * np.pi * f * tt)).astype(np.float32) for k, f in tones.items()}
+
+
 def save(take: Path, clicks: list[tuple[float, bool]], bpm: float | None, final_bpm: float | None = None) -> Path | None:
     if not clicks:
         return None

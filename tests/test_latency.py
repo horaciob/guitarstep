@@ -49,9 +49,10 @@ def test_a_beat_sized_correction_is_flagged():
     assert "too_large" in {w["code"] for w in latency.status("Volt 2", "Volt 2")["warnings"]}
 
 
-def _fakes(monkeypatch, delay, noise=0.0):
+def _fakes(monkeypatch, delay, noise=0.0, plain=False):
     """A fake interface whose input gets back the metronome's clicks `delay` s later (a cable), and nothing else."""
     sr = 48000
+    k = {}
 
     class Mic:
         def __init__(self, *a, **k):
@@ -64,17 +65,20 @@ def _fakes(monkeypatch, delay, noise=0.0):
             pass
 
     class Metro:
-        def __init__(self, dev, src, clicks, **k):
+        def __init__(self, dev, src, clicks, **kw):
             self.src, self.clicks = src, clicks
+            k.update(kw)
 
         def start(self):
             n = int((self.clicks[-1][0] + delay + 1.0) * sr)
             x = np.zeros(n, np.float32)
-            waves = takeclick.click_waves(sr, 0.3)
+            tones = None if plain else k.get("tones")
+            waves = takeclick.tone_waves(sr, tones, 0.3) if tones else takeclick.click_waves(sr, 0.3)
             rng = np.random.default_rng(1)
             for t, acc in self.clicks:
                 a = int((t + delay + rng.normal(0, noise)) * sr)
-                x[a:a + len(waves[acc])] += waves[acc]
+                w = waves[acc if tones else acc == 0]
+                x[a:a + len(w)] += w
             for i in range(0, n, 256):
                 self.src.q.put(x[i:i + 256])
 
@@ -97,6 +101,18 @@ def test_loopback_slightly_early_isnt_taken_for_the_previous_click(monkeypatch):
     _fakes(monkeypatch, -0.012)                            # the driver over-reports its latency by 12 ms
     r = tuner.calibrate(0, 2, loopback=True)
     assert r["ok"] and -25 <= r["latency_ms"] <= 0         # not ~490 (the click before, one beat at 120 BPM)
+
+
+def test_loopback_longer_than_a_beat_is_still_the_same_click(monkeypatch):
+    _fakes(monkeypatch, 0.6)                               # more than a beat at 120 BPM: tone tells which click it is
+    r = tuner.calibrate(0, 2, loopback=True)
+    assert r["ok"] and 590 <= r["latency_ms"] <= 615
+
+
+def test_loopback_ignores_sounds_that_arent_its_clicks(monkeypatch):
+    _fakes(monkeypatch, 0.02, plain=True)                  # something else comes back (the ordinary 1000/1600 Hz click)
+    r = tuner.calibrate(0, 2, loopback=True)
+    assert not r["ok"] and r["code"] == "no_loop"
 
 
 def test_loopback_with_nothing_coming_back(monkeypatch):

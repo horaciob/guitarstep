@@ -121,6 +121,18 @@ def run_tuner_cli(src) -> None:
 
 
 # ---------------------------------------------------------------- latency calibration
+def _tone_index(x: np.ndarray, sr: int, t: float, tones) -> int | None:
+    """Which of `tones` sounds just after `t` (s), or None if none of them is clearly there."""
+    a = max(0, int((t - 0.002) * sr))
+    seg = x[a:a + int(0.02 * sr)]
+    if len(seg) < 64:
+        return None
+    spec = np.abs(np.fft.rfft(seg * np.hanning(len(seg)), 8192))
+    f = float(np.argmax(spec)) * sr / 8192
+    i = int(np.argmin([abs(f / ft - 1) for ft in tones]))
+    return i if abs(f / tones[i] - 1) < 0.08 else None
+
+
 def calibrate(device, channel: int, output_device=None, bpm: float = 90, beats: int = 12,
               warmup: int = 4, on_progress=None, stop_event: threading.Event | None = None,
               loopback: bool = False) -> dict:
@@ -129,8 +141,10 @@ def calibrate(device, channel: int, output_device=None, bpm: float = 90, beats: 
     bias. The first `warmup` clicks are for catching the pulse.
 
     loopback=True: a cable takes the metronome output back into `channel`, and nobody plays, so the
-    offset is the system alone, and it's very regular. It can be slightly negative: the clicks are placed
-    using the latencies the driver reports, so what's left is the driver's error."""
+    offset is the system alone, and it's very regular. Each click has its own tone (cycling
+    takeclick.LOOP_TONES), and a returning click only counts if it has the tone of the one that left,
+    so it's never paired with its neighbour. It can be slightly negative: the clicks are placed using
+    the latencies the driver reports, so what's left is the driver's error."""
     from .audio_io import Metronome, MicSource
     from .dsp import Detector, Recorder
 
@@ -141,8 +155,10 @@ def calibrate(device, channel: int, output_device=None, bpm: float = 90, beats: 
         warmup, bpm = 1, max(bpm, 120)
     beat = 60 / bpm
     t_first = 1.0
-    clicks = [(t_first + i * beat, i % 4 == 0) for i in range(warmup + beats)]
-    metro = Metronome(output_device, src, clicks)
+    from .takeclick import LOOP_TONES
+    tones = dict(enumerate(LOOP_TONES)) if loopback else None
+    clicks = [(t_first + i * beat, i % len(LOOP_TONES) if loopback else i % 4 == 0) for i in range(warmup + beats)]
+    metro = Metronome(output_device, src, clicks, tones=tones)
     onsets: list[float] = []
     src.start()
     metro.start()
@@ -164,10 +180,13 @@ def calibrate(device, channel: int, output_device=None, bpm: float = 90, beats: 
         metro.stop()
         src.stop()
     offs = []
-    for ct, _ in clicks[warmup:]:
-        # under half a beat each way, so a click is never matched with its neighbour
-        lo, hi = (-0.1, 0.24) if loopback else (-0.15, 0.35)
-        near = [o - ct for o in onsets if lo <= o - ct <= hi]
+    if loopback:
+        tone_of = {o: _tone_index(rec.audio(), src.sr, o, LOOP_TONES) for o in onsets}
+    for ct, key in clicks[warmup:]:
+        if loopback:          # its own tone, so up to a second late (the same tone comes back every 4 beats)
+            near = [o - ct for o in onsets if -0.25 <= o - ct <= 1.0 and tone_of[o] == key]
+        else:
+            near = [o - ct for o in onsets if -0.15 <= o - ct <= 0.35]
         if near:
             offs.append(min(near, key=abs))
     if len(offs) < beats // 2:

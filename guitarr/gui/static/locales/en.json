@@ -2105,7 +2105,7 @@
    "s2": "Turn <b>direct monitoring off</b> (the MONITOR / DIRECT button or knob) and take your headphones off: with the cable in, a loop can whistle loudly.",
    "s3": "Turn the <b>gain of input 2 all the way down</b>, and the headphone volume to about half.",
    "s4": "Plug the cable from the interface's <b>headphone output</b> (or a line output) into <b>input 2</b>. Leave the guitar in input 1, with its volume knob down.",
-   "s5": "In <b>Input with the cable</b> choose 2 and press <b>Measure with the cable</b>. 13 clicks go out and come back; don't play or touch anything for about 8 seconds.",
+   "s5": "In <b>Input with the cable</b> choose 2 and press <b>Measure with the cable</b>. 13 clicks go out, each with its own tone (so the one coming back is known to be the one that left); don't play or touch anything for about 8 seconds.",
    "s6": "When it says ✓, unplug the cable, turn the monitoring back on if you use it, and do <b>Playing along</b> with the guitar: that one tells you your own habit.",
    "trouble_title": "If it doesn't work",
    "t1": "<b>“The clicks didn't come back”</b>: the cable is in another input than the one chosen, the metronome plays on another device (the speakers?), the headphone volume is at zero, or the gain is too low (raise it a little at a time).",
