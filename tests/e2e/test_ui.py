@@ -896,3 +896,19 @@ def test_cable_measurement_guide(app_page):
     expect(help_).to_contain_text("direct monitoring off")
     expect(help_.locator("#cableNow")).to_contain_text("plays on Laptop Speakers and you record from Interface X")
     expect(help_.locator(".cable-steps li")).to_have_count(6)
+
+
+def test_chart_guide_shows_the_chords_on_demand(app_page):
+    onboarded(app_page)
+    go(app_page, "lesson/three-four")
+    ex = app_page.locator('.exercise[data-id="waltz-chart"]')
+    btn = ex.locator(".g-shapes-btn")
+    expect(btn).to_have_text("🎸 See the chords")
+    expect(ex.locator(".g-shapes")).to_be_hidden()
+    btn.click()
+    expect(btn).to_have_attribute("aria-expanded", "true")
+    expect(ex.locator(".g-shapes .mini-chord b")).to_have_text(["Am", "Dm", "E7"])   # in order of appearance
+    expect(ex.locator(".g-shapes svg.chord-svg")).to_have_count(3)
+    expect(ex.locator(".bars-section")).to_have_count(0)        # a single section needs no label
+    app_page.reload()                                           # remembered
+    expect(app_page.locator('.exercise[data-id="waltz-chart"] .g-shapes .mini-chord')).to_have_count(3)

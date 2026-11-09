@@ -1,6 +1,6 @@
 // Chord charts: built-in exercises + your own. Play them with listening, view or edit them.
 import { t, tc } from "../lib/i18n.js";
-import { $, $$, api, audioCtx, click, esc, strum } from "../lib/ui.js";
+import { $, $$, api, audioCtx, chordSvg, click, esc, strum } from "../lib/ui.js";
 import { readinessRing } from "../lib/chips.js";
 
 export function strumHtml(pattern) {
@@ -15,10 +15,11 @@ export function strumHtml(pattern) {
 
 export function barsHtml(chart) {
   let html = "", row = [], cell = [], acc = 0;
+  const single = chart.bars.filter(b => b.section).length <= 1 && !chart.bars.slice(1).some(b => b.section);   // one section: no label
   const cellHtml = c => `<div class="bar-cell">${c.map(([i, x]) => `<span data-i="${i}">${esc(x)}</span>`).join("")}</div>`;
   const flushRow = () => { if (row.length) html += `<div class="bars">${row.map(cellHtml).join("")}</div>`; row = []; };
   for (const [i, b] of chart.bars.entries()) {
-    if (b.section) {
+    if (b.section && !single) {
       if (cell.length) { row.push(cell); cell = []; acc = 0; }
       flushRow();
       html += `<div class="bars-section">${esc(tc(`sections.${b.section}`, b.section))}</div>`;
@@ -40,16 +41,45 @@ const totalBeats = chart => chart.bars.reduce((s, b) => s + b.beats, 0);
 /** A play-along guide for a chart: the current and next chord, the strum pattern and the bars, with a
  * playhead on the beat. `setClock(fn)`: fn() returns beats since the chart started (negative during
  * the count-in) or null; `setClock(null)` stops it. */
+const SHAPES_KEY = "guitarr.guide.shapes";
+let chordDb = null;
+
+/** Diagrams of the chords a chart uses, in order of appearance (the dictionary's, with fingers;
+ * otherwise drawn from the chart's own frets). */
+async function chartShapesHtml(chart) {
+  if (!chordDb) chordDb = api("/api/chords").then(r => new Map(r.chords.map(c => [c.id, c]))).catch(() => new Map());
+  const db = await chordDb, seen = new Map();
+  for (const b of chart.bars) if (b.chord && !seen.has(b.chord) && (db.get(b.chord) || b.frets))
+    seen.set(b.chord, db.get(b.chord) || { id: b.chord, frets: b.frets });
+  return [...seen.values()].map(c => `<div class="mini-chord" data-chord="${esc(c.id)}"><b>${esc(c.id)}</b>${chordSvg(c, { size: 76, label: false })}</div>`).join("");
+}
+
 export function chartGuide(box, chart, { speed = 1, note = "" } = {}) {
   const bpb = chart.beats_per_bar, pat = chart.strum || "", total = totalBeats(chart), st = starts(chart);
   box.innerHTML = `
     ${note ? `<p class="small">${esc(note)}</p>` : ""}
     <div class="guide-now"><b class="g-chord">${esc(chart.bars[0]?.chord || "–")}</b>
-      <span><span class="g-next"></span><small class="g-pos muted"></small></span></div>
-    ${strumHtml(pat)}${barsHtml(chart)}
+      <span><span class="g-next"></span><small class="g-pos muted"></small></span>
+      ${strumHtml(pat)}
+      <button type="button" class="btn small g-shapes-btn" aria-expanded="false">${esc(t("lesson.show_shapes"))}</button>
+      <div class="g-shapes mini-chords" hidden></div></div>
+    ${barsHtml(chart)}
     <p class="muted small">${esc(t("lesson.guide_tempo", { bpm: Math.round(chart.bpm * speed), pct: Math.round(speed * 100) }))}${chart.swing ? ` ${esc(t("lesson.guide_swing"))}` : ""}${(chart.strum || "").includes("^") ? ` ${esc(t("lesson.guide_anticipation"))}` : ""}</p>`;
   const slots = $$(".strum span", box), cells = $$(".bar-cell span[data-i]", box);
   const chordEl = $(".g-chord", box), nextEl = $(".g-next", box), posEl = $(".g-pos", box);
+  const shapesEl = $(".g-shapes", box), shapesBtn = $(".g-shapes-btn", box);
+  const openShapes = async open => {
+    shapesEl.hidden = !open;
+    shapesBtn.setAttribute("aria-expanded", String(open));
+    shapesBtn.textContent = t(open ? "lesson.hide_shapes" : "lesson.show_shapes");
+    try { localStorage.setItem(SHAPES_KEY, open ? "1" : "0"); } catch {}
+    if (open && !shapesEl.innerHTML) {
+      shapesEl.innerHTML = await chartShapesHtml(chart);
+      shown = "";                                     // re-mark the current chord
+      show(clock ? clock() : null);
+    }
+  };
+  shapesBtn.onclick = () => openShapes(shapesEl.hidden);
   let clock = null, raf = 0, shown = "";
   const show = beat => {
     let i = -1, slot = -1, chord = chart.bars[0]?.chord || "–", next = "", pos = "";
@@ -72,9 +102,13 @@ export function chartGuide(box, chart, { speed = 1, note = "" } = {}) {
     posEl.textContent = pos;
     slots.forEach((s, k) => s.classList.toggle("on", k === slot));
     cells.forEach(c => c.classList.toggle("on", +c.dataset.i === i));
+    $$(".mini-chord", shapesEl).forEach(m => m.classList.toggle("on", i >= 0 && m.dataset.chord === chord));
   };
   const frame = () => { show(clock ? clock() : null); raf = clock ? requestAnimationFrame(frame) : 0; };
   show(null);
+  let remembered = false;
+  try { remembered = localStorage.getItem(SHAPES_KEY) === "1"; } catch {}
+  if (remembered) openShapes(true);
   return {
     setClock(fn) { clock = fn; cancelAnimationFrame(raf); frame(); },
   };

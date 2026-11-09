@@ -439,6 +439,8 @@
    "guide_last": "último acorde",
    "guide_pos": "compás {{bar}} de {{bars}} · tiempo {{beat}}",
    "guide_tempo": "♩ = {{bpm}} ({{pct}}% del tempo del cifrado). Un clic = un tiempo; ↓ y ↑ son rasgueos, · es silencio.",
+   "show_shapes": "🎸 Ver los acordes",
+   "hide_shapes": "Ocultar los acordes",
    "busy": "Ya estoy escuchando otro ejercicio",
    "wait_count_in": "Esperá la cuenta de entrada…",
    "play_when_ready": "Tocá cuando quieras.",

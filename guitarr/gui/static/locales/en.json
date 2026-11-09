@@ -439,6 +439,8 @@
    "guide_last": "last chord",
    "guide_pos": "bar {{bar}} of {{bars}} · beat {{beat}}",
    "guide_tempo": "♩ = {{bpm}} ({{pct}}% of the chart's tempo). One click = one beat; ↓ and ↑ are strums, · is a rest.",
+   "show_shapes": "🎸 See the chords",
+   "hide_shapes": "Hide the chords",
    "busy": "Already listening to another exercise",
    "wait_count_in": "Wait for the count-in…",
    "play_when_ready": "Play whenever you're ready.",
