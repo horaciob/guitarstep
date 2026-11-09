@@ -85,6 +85,7 @@ async function loadDemo() {
   try {
     const r = await api("/api/demo", { method: "POST" });
     App.chart = null;
+    laneHint();
     $("#pChartBanner").hidden = true;
     $("#pBackingWrap").hidden = true;
     $("#pSongField").hidden = false;
@@ -178,6 +179,7 @@ async function useChart(id) {
 }
 $("#pChartClear").addEventListener("click", () => {
   App.chart = null;
+  laneHint();
   $("#pChartBanner").hidden = true;
   $("#pBackingWrap").hidden = true;
   $("#pSongField").hidden = false;
@@ -234,6 +236,7 @@ async function loadPreview() {
     App.lane = groupEvents(pv.notes);
     App.k = App.kSmooth = 0;
     App.snap = null;
+    laneHint();
     $("#nowNote").firstChild.textContent = App.lane.length ? App.lane[0].label : "—";
     const name = App.chart ? $("#pChartTitle").textContent : pv.name;
     $("#nowWhere").textContent = [name + (pv.track ? " · " + pv.track : ""),
@@ -248,6 +251,7 @@ function setMode(m) {
   App.mode = m;
   $$("#pMode button").forEach(b => b.classList.toggle("active", b.dataset.mode === m));
   $("#tempoOpts").hidden = m !== "tempo";
+  laneHint();
 }
 $$("#pMode button").forEach(b => b.addEventListener("click", () => setMode(b.dataset.mode)));
 $("#pSpeed").addEventListener("input", () => ($("#pSpeedVal").textContent = $("#pSpeed").value + "%"));
@@ -396,6 +400,43 @@ function onReport(r) {
 
 // ------------------------------------------------------------------ tab drawing
 const cv = $("#tabCanvas");
+
+/** Charts: where each column sits in its bar, so "Em | Em" reads as two bars of 4 beats, not two loose chords.
+ *  → Map(event index → { bar, first (starts the bar), from (beat it starts on), n (beats it lasts), start (beats from
+ *  the start of the section) }), or null for songs. */
+function chartBeats(lane) {
+  const pv = App.preview;
+  if (!App.chart || !pv || !pv.downbeats || !pv.bpm || !lane) return null;
+  const db = pv.downbeats, beat = 60 / pv.bpm, out = new Map();
+  lane.forEach((e, j) => {
+    let b = 0;
+    while (b + 1 < db.length && db[b + 1] <= e.time + 0.02) b++;
+    const barEnd = db[b + 1] ?? e.time + (App.chart.beats_per_bar || 4) * beat;
+    const nxt = lane[j + 1] && lane[j + 1].time < barEnd - 0.02 ? lane[j + 1].time : barEnd;
+    out.set(e.i, { bar: pv.first_bar + b, first: Math.abs(e.time - db[b]) < 0.02, from: Math.round((e.time - db[b]) / beat),
+                   n: Math.max(1, Math.round((nxt - e.time) / beat)), start: Math.round((e.time - db[0]) / beat) });
+  });
+  return out;
+}
+
+/** The chart's strum pattern as arrows, one group per beat: "D.DU.UDU" → "↓ ↓↑ ·↑ ↓↑". */
+function strumArrows(pattern) {
+  const sym = c => c === "D" ? "↓" : c === "U" ? "↑" : c === "_" ? "–" : "·";
+  const slots = (pattern || "").replace(/[^DU._^]/g, "").replace(/\^/g, "");
+  const out = [];
+  for (let i = 0; i < slots.length; i += 2) out.push(sym(slots[i]) + (slots[i + 1] && slots[i + 1] !== "." ? sym(slots[i + 1]) : ""));
+  return out.join(" ");
+}
+
+/** Under the tab, for charts: what a column is and what each mode expects from you. */
+function laneHint() {
+  const el = $("#laneHint");
+  if (!el) return;
+  el.hidden = !App.chart;
+  if (!App.chart) return;
+  const n = App.chart.beats_per_bar || 4, strum = strumArrows(App.chart.strum) || Array(n).fill("↓").join(" ");
+  el.textContent = t(App.mode === "tempo" ? "practice.chart_hint_tempo" : "practice.chart_hint_wait", { n, strum });
+}
 function drawTab() {
   const lane = App.lane;
   const dpr = window.devicePixelRatio || 1;
@@ -426,7 +467,9 @@ function drawTab() {
     g.textAlign = "left";
     return;
   }
-  const spacing = Math.max(46, Math.min(80, W / 14));
+  const beats = chartBeats(lane);
+  const spacing = beats ? Math.max(72, Math.min(110, W / 9)) : Math.max(46, Math.min(80, W / 14));   // a bar needs room for its beats
+  const nowBeat = App.snap && App.snap.running && App.snap.mode === "tempo" && App.snap.pos != null ? Math.floor(App.snap.pos) : null;
   const cx = Math.min(W * 0.28, 260);
   g.fillStyle = alpha(css("--gl-accent"), "22");
   g.fillRect(cx - spacing / 2 + 4, top - 30, spacing - 8, (strings - 1) * gap + 52);
@@ -455,6 +498,25 @@ function drawTab() {
     g.font = "11px system-ui";
     g.fillStyle = e.current ? css("--text") : css("--muted");
     g.fillText(e.label.length > 9 ? e.label.slice(0, 8) + "…" : e.label, x, top + (strings - 1) * gap + 24);
+    const bi = beats && beats.get(e.i);
+    if (bi) {
+      if (bi.first) {                                          // bar line and bar number
+        const bx = x - spacing / 2;
+        g.strokeStyle = css("--muted"); g.lineWidth = 1.5;
+        g.beginPath(); g.moveTo(bx, top - 4); g.lineTo(bx, top + (strings - 1) * gap + 4); g.stroke();
+        g.strokeStyle = css("--gl-string"); g.lineWidth = 1;
+        g.font = "10px system-ui"; g.fillStyle = css("--muted"); g.textAlign = "left";
+        g.fillText(t("practice.bar_short", { n: bi.bar }), bx + 3, top - 32);
+        g.textAlign = "center";
+      }
+      const step = Math.min(12, (spacing - 8) / bi.n);         // the beats this chord lasts: 1 2 3 4
+      for (let k = 0; k < bi.n; k++) {
+        const on = nowBeat != null && nowBeat === bi.start + k;
+        g.font = on ? "800 12px system-ui" : "10px system-ui";
+        g.fillStyle = on ? css("--gl-accent") : css("--muted");
+        g.fillText(String(bi.from + k + 1), x - (bi.n - 1) * step / 2 + k * step, top + (strings - 1) * gap + 40);
+      }
+    }
     if (e.status !== "pending") {
       g.fillStyle = col;
       g.font = "700 13px system-ui";

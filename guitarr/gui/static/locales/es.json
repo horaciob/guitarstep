@@ -214,7 +214,10 @@
    "tab_label": "Tablatura",
    "string_fret": "cuerda {{s}} traste {{f}}",
    "tab_now": "Tablatura. Ahora: {{label}} ({{where}}), {{k}} de {{total}}",
-   "song_page": "Página del tema"
+   "song_page": "Página del tema",
+   "bar_short": "Comp. {{n}}",
+   "chart_hint_wait": "Cada columna es un compás de {{n}} tiempos (los números de abajo). Modo Espera: rasgueá cada acorde una vez y pasa al compás siguiente, así que no respeta los tiempos. Para tocar los {{n}} tiempos ({{strum}}), elegí Tempo.",
+   "chart_hint_tempo": "Cada columna es un compás de {{n}} tiempos (los números de abajo; el iluminado es el de ahora). Rasgueá {{strum}} con el clic. Se califica el primer rasguido de cada compás; los otros marcan el tiempo y no restan."
   },
   "report": {
    "title": "Resultado",

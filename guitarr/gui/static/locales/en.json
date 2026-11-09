@@ -214,7 +214,10 @@
    "tab_label": "Tablature",
    "string_fret": "string {{s}} fret {{f}}",
    "tab_now": "Tablature. Now: {{label}} ({{where}}), {{k}} of {{total}}",
-   "song_page": "Song page"
+   "song_page": "Song page",
+   "bar_short": "Bar {{n}}",
+   "chart_hint_wait": "Each column is one bar of {{n}} beats (the numbers under it). Wait mode: strum each chord once and it moves on to the next bar, so it doesn't keep the beats. To play the {{n}} beats ({{strum}}), choose Tempo.",
+   "chart_hint_tempo": "Each column is one bar of {{n}} beats (the numbers under it, the one lit is now). Strum {{strum}} with the click. The first strum of each bar is the one graded; the others keep time and don't count against you."
   },
   "report": {
    "title": "Result",

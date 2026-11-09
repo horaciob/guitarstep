@@ -803,3 +803,17 @@ def test_tab_order_follows_the_setting(app_page):
     assert lines[0].startswith("e|") and lines[-1].startswith("E|")
     assert "6:0" not in lines[0]
     assert lines[-1].startswith("E|-0")                        # the lick starts on the open 6th string, now at the bottom
+
+
+def test_chart_practice_shows_bars_and_what_each_mode_expects(app_page):
+    """A chart's columns are bars: the hint says how many beats, and what Wait and Tempo expect."""
+    onboarded(app_page)
+    go(app_page, "practice?chart=01-em-am")
+    hint = app_page.locator("#laneHint")
+    app_page.locator('#pMode button[data-mode="wait"]').click()
+    expect(hint).to_contain_text("one bar of 4 beats")
+    expect(hint).to_contain_text("choose Tempo")
+    app_page.locator('#pMode button[data-mode="tempo"]').click()
+    expect(hint).to_contain_text("↓ ↓ ↓ ↓")
+    app_page.locator("#pChartClear").click()
+    expect(hint).to_be_hidden()

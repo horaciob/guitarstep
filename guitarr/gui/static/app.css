@@ -1201,3 +1201,4 @@ body.is-stage #main { max-width: none; padding: 12px 18px; }
 .gl .th-bars { width: 100%; border-collapse: collapse; font-size: 14px; }
 .gl .th-bars th, .gl .th-bars td { text-align: left; padding: 4px 8px; border-bottom: 1px solid var(--border); }
 .gl .song-theory .table-wrap { overflow-x: auto; }
+.gl .lane-hint { margin: 4px 16px 12px; }
