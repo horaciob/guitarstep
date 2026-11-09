@@ -2047,6 +2047,12 @@
    "rest_note": "{{note}} ({{degree}} del acorde)",
    "no_chord": "sin un acorde claro",
    "caveat": "Leído de las notas de la pista: una estimación, no una certeza. En pasajes cortos se pueden confundir tonos relativos (Sol mayor y Mi menor comparten todas las notas)."
+  },
+  "take": {
+   "listen": "Escuchá lo que acabás de tocar:",
+   "with_click": "Con el metrónomo",
+   "bpm": "♩ = {{bpm}}",
+   "bpm_change": "♩ = {{from}} → {{to}}"
   }
  },
  "content": {

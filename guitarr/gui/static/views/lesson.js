@@ -6,6 +6,7 @@ import { runAnswers, say } from "../lib/answer.js";
 import { neck } from "../lib/fretboard.js";
 import { linkTerms, loadGlossary, metersHtml, openTerms, stepperHtml } from "../lib/flow.js";
 import { chipsHtml } from "../lib/chips.js";
+import { bindTakePlayers, takePlayer } from "../lib/take.js";
 import { hearBar, rhythmSvg } from "../lib/notation.js";
 import { staffSvg } from "../lib/staff.js";
 import { tabText } from "../lib/tab.js";
@@ -143,6 +144,7 @@ export async function mount(el, { segs, params = {} }) {
         <div class="f-result" hidden></div>
         <div class="ex-msg muted" aria-live="polite"></div>
         <p class="f-next" aria-live="polite"></p>
+        <div class="f-take"></div>
         <div class="row center"><button class="btn" data-f="hear"></button>
           <button class="btn" data-f="hint" hidden>💡 ${esc(t("flow.hint"))}</button>
           <button class="btn primary xl" data-f="go"></button>
@@ -347,6 +349,7 @@ async function openFocus(el, segs, ls, ex, chordData, exTitle, start = false, mo
   go.onclick = () => run(el, segs, ls, ex, chordData, exTitle);
   $("[data-f=hint]", dlg).hidden = true;
   $(".f-result", dlg).hidden = true;
+  $(".f-take", dlg).innerHTML = "";
   $(".f-next", dlg).innerHTML = "";
   setState(dlg, "ready");
   if (!dlg.open) dlg.showModal();
@@ -455,6 +458,11 @@ function showOutcome(el, segs, ls, ex, chordData, exTitle, rep) {
       + (a.guidance ? ` · ${t(`flow.guide_${a.guidance}`)}` : "")
     : score == null ? t("lesson.not_played") : t("lesson.failed", { score: Math.round(score), need: a.need });
   if (score != null) showResult($(".f-result", dlg), Math.round(score), !!a.passed, a.need ?? ex.min, a.xp);
+  const take = $(".f-take", dlg);
+  if (take) {
+    take.innerHTML = rep.take ? `<span class="muted small">${esc(t("take.listen"))}</span>${takePlayer(rep.take.split("/").pop(), rep.take_info)}` : "";
+    bindTakePlayers(take);
+  }
   if (a.passed && focus && (a.variant || a.tested_out)) {   // not the plain exercise: no "next", just refresh later
     focus.changed = true;
     return;
@@ -483,6 +491,7 @@ async function openTestOut(el, segs, ls, chordData, exTitle) {
   $("[data-f=next]", dlg).hidden = true;
   $("[data-f=hint]", dlg).hidden = true;
   $(".f-result", dlg).hidden = true;
+  $(".f-take", dlg).innerHTML = "";
   $(".f-hint", dlg).textContent = "";
   body.innerHTML = `<div class="q-box"><p class="muted center">${esc(t("lesson.testout_intro"))}</p></div>`;
   msg.className = "ex-msg muted";
@@ -539,6 +548,7 @@ async function runAnswer(el, segs, ls, ex, chordData, exTitle) {
   const dlg = $(".ex-focus", el), bar = $(".ex-progress i", dlg), msg = $(".ex-msg", dlg), btn = $("[data-f=go]", dlg);
   $("[data-f=next]", dlg).hidden = true;
   $(".f-result", dlg).hidden = true;
+  $(".f-take", dlg).innerHTML = "";
   bar.style.width = "0%";
   msg.className = "ex-msg muted";
   msg.textContent = "";
@@ -593,6 +603,7 @@ async function run(el, segs, ls, ex, chordData, exTitle) {
   const bar = $(".ex-progress i", dlg), msg = $(".ex-msg", dlg), btn = $("[data-f=go]", dlg), next = $("[data-f=next]", dlg);
   next.hidden = true;
   $(".f-result", dlg).hidden = true;
+  $(".f-take", dlg).innerHTML = "";
   $("[data-f=hear]", dlg).disabled = true;
   btn.textContent = t("lesson.stop");
   msg.className = "ex-msg muted";

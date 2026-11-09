@@ -203,8 +203,15 @@ app.mount("/static", StaticFiles(directory=STATIC), name="static")
 
 
 @app.get("/takes/{name}")
-def get_take(name: str):
-    return FileResponse(take_path(name), media_type="audio/wav")
+def get_take(name: str, click: bool = False):
+    """The take as recorded (clean guitar), or with click=1 the metronome you heard mixed in."""
+    from .. import takeclick
+    p = take_path(name)
+    if click:
+        data = takeclick.mixed_wav(p)
+        if data is not None:
+            return Response(data, media_type="audio/wav")
+    return FileResponse(p, media_type="audio/wav")
 
 
 # ---------------------------------------------------------------- learn: chords, charts, course, progress
@@ -1206,7 +1213,8 @@ def save_preset(body: dict):
 @app.get("/api/takes")
 def takes():
     config.TAKES_DIR.mkdir(parents=True, exist_ok=True)
-    return [dict(name=p.name, size=p.stat().st_size, mtime=p.stat().st_mtime)
+    from .. import takeclick
+    return [dict(name=p.name, size=p.stat().st_size, mtime=p.stat().st_mtime, **takeclick.info(p))
             for p in sorted(config.TAKES_DIR.glob("*.wav"), key=lambda p: -p.stat().st_mtime)]
 
 
@@ -1239,6 +1247,8 @@ def analyze(options: str = Form(...), take: UploadFile | None = File(None)):
         fail(400, "analysis", str(e))
     res["messages"] = [m.strip() for m in msgs if m.strip().startswith("⚠")]
     res["take_name"] = tpath.name
+    from .. import takeclick
+    res["take_info"] = takeclick.info(tpath)
     history.save(res, _section(body))
     res["award"] = dict(xp=progress.add_practice(res["summary"].get("score"), "take_analysis"))
     return res

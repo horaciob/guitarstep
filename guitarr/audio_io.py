@@ -161,11 +161,8 @@ class Metronome:
         self.sr, self.src = sr, src
         self.clicks = clicks
         self.idx = 0
-        n = int(0.03 * sr)
-        env = np.exp(-np.arange(n) / (0.006 * sr))
-        tt = np.arange(n) / sr
-        self.wave = {True: (0.6 * volume * env * np.sin(2 * np.pi * 1600 * tt)).astype(np.float32),
-                     False: (0.4 * volume * env * np.sin(2 * np.pi * 1000 * tt)).astype(np.float32)}
+        from .takeclick import click_waves
+        self.wave = click_waves(sr, volume)
         self.backing = backing if backing is not None else []
         self.bidx = 0
         self.sounds = BackingSounds(sr, backing_volume)

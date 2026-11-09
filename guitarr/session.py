@@ -14,7 +14,7 @@ from pathlib import Path
 
 import numpy as np
 
-from . import config
+from . import config, takeclick
 from .audio_io import FileSource, Metronome, MicSource
 from .core import Reference
 from .plan import active_seconds
@@ -186,6 +186,13 @@ class LiveSession:
         saved = None
         if not self.opts.simulate:
             saved = save_take(self.rec, self.opts.save_dir)
+        if saved and self.use_click:
+            # the clicks you heard, on the recording's clock (+ input latency: where your playing landed)
+            end = self.rec.n / self.sr
+            bpm = 60 / self.grid.beat_len(self.ref.notes[0].start)
+            takeclick.save(saved, [(t + lat, a) for t, a in list(f.clicks) if 0 <= t + lat < end],
+                           bpm=round(bpm * self.opts.speed, 1),
+                           final_bpm=round(bpm * getattr(f, "speed", self.opts.speed), 1))
         with self.lock:
             self.report = self.build_report(saved)
         return self.report
@@ -296,7 +303,8 @@ class LiveSession:
             reference=dict(name=self.ref.name, path=self.ref.path, track=self.ref.track),
             date=self.started.isoformat(timespec="seconds"), summary=summary, passes=list(f.passes),
             issues=issues, bars=[bars[b] for b in sorted(bars)],
-            take=str(saved) if saved else None, overflows=self.src.overflows,
+            take=str(saved) if saved else None, take_info=takeclick.info(saved) if saved else None,
+            overflows=self.src.overflows,
             simulated=bool(opts.simulate),
         )
 

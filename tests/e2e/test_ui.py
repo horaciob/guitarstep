@@ -817,3 +817,23 @@ def test_chart_practice_shows_bars_and_what_each_mode_expects(app_page):
     expect(hint).to_contain_text("↓ ↓ ↓ ↓")
     app_page.locator("#pChartClear").click()
     expect(hint).to_be_hidden()
+
+
+def test_listen_to_the_take_with_the_metronome(app_page):
+    onboarded(app_page)
+    _fake_listener(app_page, {"award": {"passed": False, "need": 80}, "summary": {"score": 60},
+                              "take": "/x/takes/take-1.wav", "take_info": {"click": True, "bpm": 59.5, "final_bpm": 59.5}})
+    app_page.route("**/takes/**", lambda r: r.fulfill(status=200, content_type="audio/wav", body=b""))
+    go(app_page, "lesson/major-scale?ex=g-position")
+    focus = app_page.locator("dialog.ex-focus")
+    expect(focus.locator("#fState")).to_have_text("ready")
+    app_page.keyboard.press(" ")
+    expect(focus.locator("#fState")).to_have_text("playing")
+    app_page.keyboard.press(" ")
+    player = focus.locator(".take-player")
+    expect(player).to_contain_text("With the metronome")
+    expect(player).to_contain_text("♩ = 59.5")
+    audio = player.locator("audio")
+    assert audio.get_attribute("src").endswith("take-1.wav?click=1")
+    player.locator("[data-take-click]").uncheck()
+    expect(audio).to_have_attribute("src", re.compile(r"take-1\.wav$"))

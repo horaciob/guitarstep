@@ -293,7 +293,7 @@ Everything lives in `~/.guitarr/` (override with the `GUITARR_HOME` environment 
 | `progress.json` | XP, days practiced, lessons, exercises, mastered chords, drill records, pinned tutorials, events |
 | `charts/` | Your chord charts (`.txt`) |
 | `songs/` | References uploaded from the web UI |
-| `takes/` | Recordings of your live sessions and uploaded takes |
+| `takes/` | Recordings of your live sessions and uploaded takes (clean guitar); with the metronome on, `take-….click.json` beside a take keeps the clicks and tempo, mixed in when you listen back |
 | `history/` | One JSON per session, per song |
 | `plan.json` | Practice plan: minutes per category, practiced time per day, the running timer |
 | `rig.json` | Tone rig: your current sound and your presets |

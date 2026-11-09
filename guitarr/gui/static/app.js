@@ -4,6 +4,7 @@
 import { issueText, msgIsError, msgText, t, tc } from "./lib/i18n.js";
 import { $, $$, api, esc, instrument, loadInstrument, noteName, NOTE_NAMES, progressChanged, stringRow, toast } from "./lib/ui.js";
 import { levelVerdict, meterHtml, openInput, setGate, setMeter } from "./lib/input.js";
+import { bindTakePlayers, takePlayer } from "./lib/take.js";
 
 // Reads a color token and normalizes it to #rrggbb (accepts hsl/rgb) so a hex alpha can be appended.
 const _cc = document.createElement("canvas").getContext("2d");
@@ -600,7 +601,7 @@ function renderReport(r) {
   if (r.take && r.kind === "live") {
     const name = r.take.split("/").pop();
     html += `<div class="callout" style="margin-top:14px"><span>${esc(t("report.take_saved"))}</span><button class="btn small" data-analyze="${esc(name)}">${esc(t("report.analyze_take"))}</button></div>
-      <audio controls src="/takes/${encodeURIComponent(name)}"></audio>`;
+      ${takePlayer(name, r.take_info)}`;
   }
   return html;
 }
@@ -610,6 +611,7 @@ function refOf(r) {
 }
 
 function bindReport(el, r) {
+  bindTakePlayers(el);
   const p = $("[data-practice]", el);
   if (p) p.onclick = () => {
     const [a, z] = p.dataset.practice.split("-");
@@ -698,8 +700,9 @@ function renderAnalysis(r) {
         <span><i style="background:var(--gl-info)"></i>${esc(t("analyze.legend_extra"))}</span>
       </div>
       <div class="rollwrap" id="rollWrap"><canvas id="rollCanvas"></canvas></div>
-      ${r.take_name ? `<audio controls src="/takes/${encodeURIComponent(r.take_name)}"></audio>` : ""}
+      ${r.take_name ? takePlayer(r.take_name, r.take_info) : ""}
     </div>`;
+  bindTakePlayers($("#aResult"));
   const rep = $("#aReport");
   rep.innerHTML = renderReport(r);
   bindReport(rep, r);

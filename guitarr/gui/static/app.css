@@ -1202,3 +1202,7 @@ body.is-stage #main { max-width: none; padding: 12px 18px; }
 .gl .th-bars th, .gl .th-bars td { text-align: left; padding: 4px 8px; border-bottom: 1px solid var(--border); }
 .gl .song-theory .table-wrap { overflow-x: auto; }
 .gl .lane-hint { margin: 4px 16px 12px; }
+.gl .take-player { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin-top: 10px; }
+.gl .take-player audio { flex: 1 1 260px; min-width: 0; max-width: 100%; }
+.gl .f-take:empty { display: none; }
+.gl .f-take { margin-top: 8px; }

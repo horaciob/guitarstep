@@ -2047,6 +2047,12 @@
    "rest_note": "{{note}} ({{degree}} of the chord)",
    "no_chord": "no clear chord",
    "caveat": "Read from the notes of the track: a guess, not a certainty. Short passages can mix up relative keys (G major and E minor share every note)."
+  },
+  "take": {
+   "listen": "Listen to what you just played:",
+   "with_click": "With the metronome",
+   "bpm": "♩ = {{bpm}}",
+   "bpm_change": "♩ = {{from}} → {{to}}"
   }
  },
  "content": {}
