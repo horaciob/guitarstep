@@ -1,10 +1,10 @@
-// Tools: metronome, rhythm test, strumming library, chord-change minute, ear training, random practice box,
+// Tools: metronome, daily warm-up, rhythm test, strumming library, chord-change minute, ear training, random practice box,
 // fretboard explorer and chord finder (the practice tools live in practice_tools.js).
 import { msgIsError, msgText, t, tc } from "../lib/i18n.js";
 import { $, $$, api, chordSvg, esc, instrument, NOTE_NAMES, strum, toast } from "../lib/ui.js";
 import { neck } from "../lib/fretboard.js";
 import { listen } from "../lib/listen.js";
-import { earTrainer, metronome, randomBox, rhythmTest, stopAll, strumLibrary } from "./practice_tools.js";
+import { earTrainer, metronome, randomBox, rhythmTest, stopAll, strumLibrary, warmup } from "./practice_tools.js";
 
 let drill = null, countdownTimer = null;
 
@@ -13,8 +13,8 @@ export async function mount(el, { params }) {
   el.innerHTML = `
     <div class="gl-head"><h1>${esc(t("tools.title"))}</h1></div>
     <div class="seg tabs" id="tabs">
-      ${["metronome", "rhythm", "strums", "drill", "ear", "random", "fretboard", "finder"].map(k =>
-        `<button data-tab="${k}">${esc(t(`tools.${k === "rhythm" ? "rhythm_tab" : k === "strums" ? "strums_tab" : k === "ear" ? "ear_tab" : k === "random" ? "random_tab" : k}`))}</button>`).join("")}
+      ${["metronome", "warmup", "rhythm", "strums", "drill", "ear", "random", "fretboard", "finder"].map(k =>
+        `<button data-tab="${k}">${esc(t(`tools.${k === "rhythm" ? "rhythm_tab" : k === "strums" ? "strums_tab" : k === "ear" ? "ear_tab" : k === "random" ? "random_tab" : k === "warmup" ? "warmup_tab" : k}`))}</button>`).join("")}
     </div>
     <div id="tool"></div>`;
   $$("#tabs button", el).forEach(b => {
@@ -26,6 +26,7 @@ export async function mount(el, { params }) {
   else if (tab === "fretboard") await fretboard(box);
   else if (tab === "finder") finder(box, params);
   else if (tab === "random") await randomBox(box);
+  else if (tab === "warmup") await warmup(box, params);
   else if (tab === "rhythm") await rhythmTest(box);
   else if (tab === "ear") await earTrainer(box, params);
   else if (tab === "strums") await strumLibrary(box);

@@ -1,10 +1,11 @@
-// Practice tools: metronome, random practice box, rhythm test, ear training and the strumming library.
+// Practice tools: metronome, daily warm-up, random practice box, rhythm test, ear training and the strumming library.
 // Grading and records are decided on the server; random picks for warm-ups are just suggestions.
 import { msgIsError, msgText, t, tc } from "../lib/i18n.js";
 import { $, $$, api, audioCtx, chordSvg, click, esc, pluck, strum, toast } from "../lib/ui.js";
 import { neck } from "../lib/fretboard.js";
 import { listen } from "../lib/listen.js";
 import { runAnswers, say } from "../lib/answer.js";
+import { tabText } from "../lib/tab.js";
 import { playChart, strumHtml } from "./charts.js";
 
 const running = new Set();      // things to stop when you leave the page: { stop() }
@@ -161,6 +162,84 @@ export async function randomBox(box) {
   };
   $("#roll", box).onclick = roll;
   draw();
+}
+
+// ------------------------------------------------------------------ daily warm-up
+// One short drill a day (key and position rotate). The listener grades it at your tempo; the server raises the
+// drill's goal by a few BPM after a clean take at the goal.
+const posLabel = l => t(`warmup.pos_${l.code}`, l.params);
+
+export async function warmup(box, params = {}) {
+  const q = new URLSearchParams();
+  for (const k of ["drill", "key", "position"]) if (params[k] != null && params[k] !== "") q.set(k, params[k]);
+  if (params.surprise) q.set("surprise", "1");
+  let w;
+  try { w = await api(`/api/warmup?${q}`); } catch (e) { box.innerHTML = `<p class="err">${esc(e.message)}</p>`; return; }
+  const isToday = w.drill === w.today.drill && w.key === w.today.key && w.position === w.today.position;
+  const keys = ["C", "G", "D", "A", "E", "B", "F#", "C#", "Ab", "Eb", "Bb", "F"];
+  box.innerHTML = `
+    <div class="panel warmup">
+      <div class="row wrap warmup-head">
+        <div><small class="muted">${esc(t(isToday ? "warmup.today" : "warmup.chosen"))}</small>
+          <h2>${esc(t(`warmup.${w.drill}`))}</h2>
+          <p class="muted small">${esc(t(`warmup.${w.drill}_focus`))}</p></div>
+        <div class="chips">${w.uses_key ? `<span class="chip">${esc(t("chips.key"))}: <b>${esc(w.key)}</b></span>` : ""}
+          <span class="chip">${esc(posLabel(w.label))}</span>
+          <span class="chip">${esc(t("warmup.goal"))}: <b>${w.goal} BPM</b></span></div>
+      </div>
+      <div class="warmup-controls">
+        <label class="field-inline">${esc(t("warmup.drill"))} <select id="wDrill">${w.drills.map(d =>
+          `<option value="${d.id}"${d.id === w.drill ? " selected" : ""}>${esc(t(`warmup.${d.id}`))} · ${d.goal} BPM</option>`).join("")}</select></label>
+        ${w.uses_key ? `<label class="field-inline">${esc(t("chips.key"))} <select id="wKey">${keys.map(k => `<option${k === w.key ? " selected" : ""}>${k}</option>`).join("")}</select></label>` : ""}
+        <label class="field-inline">${esc(t("warmup.position"))} <select id="wPos">${w.drills.find(d => d.id === w.drill).labels.map((l, i) =>
+          `<option value="${i}"${i === w.position ? " selected" : ""}>${esc(posLabel(l))}</option>`).join("")}</select></label>
+        <button class="btn" id="wSurprise">🎲 ${esc(t("warmup.surprise"))}</button>
+        ${isToday ? "" : `<button class="btn ghost" id="wToday">${esc(t("warmup.back_today"))}</button>`}
+      </div>
+      <p>${esc(t(`warmup.${w.drill}_why`))}</p>
+      <p class="muted">${esc(t(`warmup.${w.drill}_how`))}</p>
+      <pre class="tab" aria-label="${esc(t("lesson.tab_label"))}">${esc(tabText(w.steps))}</pre>
+      <div class="row center wrap">
+        <label class="field-inline">BPM <input type="number" id="wBpm" min="30" max="240" value="${w.goal}"></label>
+        <button class="btn" id="wHear">♪ ${esc(t("warmup.hear"))}</button>
+        <button class="btn primary" id="wGo">${esc(t("lesson.listen"))}</button>
+      </div>
+      <p class="muted small center">${esc(t("warmup.rule", { need: w.need, by: w.raise_by }))}</p>
+      <p class="ex-msg muted center" id="wMsg" aria-live="polite"></p>
+    </div>`;
+  const go = extra => { location.hash = `#/tools?${new URLSearchParams({ tab: "warmup", ...extra })}`; };
+  $("#wDrill", box).onchange = e => go({ drill: e.target.value, key: w.key, position: 0 });
+  if ($("#wKey", box)) $("#wKey", box).onchange = e => go({ drill: w.drill, key: e.target.value, position: w.position });
+  $("#wPos", box).onchange = e => go({ drill: w.drill, key: w.key, position: e.target.value });
+  $("#wSurprise", box).onclick = () => go({ surprise: Date.now() });
+  if ($("#wToday", box)) $("#wToday", box).onclick = () => go({});
+  $("#wHear", box).onclick = () => {
+    const spb = 60 / (+$("#wBpm", box).value || w.goal) / w.per_beat;
+    w.steps.forEach((st, i) => pluck(st.pitch, 0.1 + i * spb, 0.3));
+  };
+  let task = null;
+  $("#wGo", box).onclick = async () => {
+    if (task) { task.stop(); return; }
+    const msg = $("#wMsg", box), btn = $("#wGo", box), bpm = +$("#wBpm", box).value || w.goal;
+    btn.textContent = t("lesson.stop");
+    msg.className = "ex-msg muted center";
+    msg.textContent = t("lesson.wait_count_in");
+    task = listen({ warmup: { drill: w.drill, key: w.key, position: w.position, bpm }, click: true }, {
+      onState: s => { if (s.countdown) msg.textContent = t("lesson.count_in", { n: s.countdown }); },
+      onMessage: m => { msg.textContent = msgText(m); msg.className = "ex-msg " + (msgIsError(m) ? "err" : "ok") + " center"; },
+    });
+    running.add(task);
+    try {
+      const rep = await task.done;
+      const a = rep.award || {};
+      if (a.score == null) { msg.textContent = t("lesson.not_played"); return; }
+      msg.className = `ex-msg ${a.raised ? "ok" : "muted"} center`;
+      msg.textContent = t(a.raised ? "warmup.raised" : "warmup.kept", { score: Math.round(a.score), goal: a.goal, need: a.need })
+        + (a.xp ? ` · +${a.xp} XP` : "");
+      if (a.raised) $("#wBpm", box).value = a.goal;
+    } catch (e) { msg.className = "ex-msg err center"; msg.textContent = e.message; }
+    finally { running.delete(task); task = null; btn.textContent = t("lesson.listen"); }
+  };
 }
 
 // ------------------------------------------------------------------ rhythm test

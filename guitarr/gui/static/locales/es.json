@@ -109,7 +109,8 @@
    "lesson_tested_out": "Lección salteada con la prueba: {{title}}",
    "variation_passed": "En otra tonalidad: {{title}}",
    "rhythm": "Test de ritmo a {{bpm}} BPM: {{within}}% a tiempo",
-   "ear": "Oído ({{kind}}): {{score}}%"
+   "ear": "Oído ({{kind}}): {{score}}%",
+   "warmup": "Calentamiento: {{drill}} a {{bpm}} BPM, {{score}}%"
   },
   "errors": {
    "generic": "Algo salió mal",
@@ -635,7 +636,8 @@
    "over_chord": "Sobre un acorde",
    "over_none": "—",
    "over_legend": "Relleno = notas del acorde (1 3 5 7), contorno = las otras notas de la escala, nombradas como tensiones (9, 11, 13).",
-   "over_notes": "Notas del acorde: {{tones}} · tensiones: {{tensions}}"
+   "over_notes": "Notas del acorde: {{tones}} · tensiones: {{tensions}}",
+   "warmup_tab": "Calentamiento diario"
   },
   "camera": {
    "title": "Cámara",
@@ -1223,7 +1225,9 @@
    "step_queued": "Sección: {{section}} ({{name}})",
    "why_queued": "la agregaste vos",
    "unqueue": "Quitar de hoy",
-   "clear_queue": "Quitar las secciones que agregaste"
+   "clear_queue": "Quitar las secciones que agregaste",
+   "step_warmup": "Calentamiento diario: {{drill}} en {{key}}",
+   "why_warmup": "manos calientes, un tempo que sube"
   },
   "reminder": {
    "title": "Recordatorio diario",
@@ -1915,6 +1919,56 @@
   },
   "staff": {
    "label": "Notas en el pentagrama, clave de sol con un 8 chiquito (la guitarra suena una octava más grave)"
+  },
+  "warmup": {
+   "today": "El calentamiento de hoy",
+   "chosen": "Calentamiento elegido",
+   "goal": "Meta",
+   "drill": "Ejercicio",
+   "position": "Posición",
+   "surprise": "Sorprendeme",
+   "back_today": "Volver al de hoy",
+   "hear": "Escuchar a este tempo",
+   "rule": "Tocalo limpio ({{need}}% o más) al tempo de la meta o más rápido y la meta sube {{by}} BPM. Cada ejercicio guarda su propia meta.",
+   "raised": "{{score}}%: limpio. Próxima meta: {{goal}} BPM.",
+   "kept": "{{score}}%: la meta sigue en {{goal}} BPM (sube desde {{need}}%). Primero limpio, después rápido.",
+   "pos_frets": "Trastes {{lo}}–{{hi}}",
+   "pos_box": "Caja {{n}}",
+   "pos_degree": "Desde el grado {{n}}",
+   "pos_shape": "Forma de {{shape}}",
+   "pos_strings": "Cuerdas {{a}} y {{b}}",
+   "spider": "Araña cromática",
+   "spider_focus": "Independencia de los dedos y manos sincronizadas",
+   "spider_why": "El calentamiento clásico: un dedo por traste hace trabajar a los cuatro dedos por igual, y la púa alternada tiene que caer junto con la mano izquierda. Prepara la mano para tocar por posición, que es como funcionan las escalas y arpegios de los otros ejercicios.",
+   "spider_how": "Un dedo por traste (1-2-3-4) en cada cuerda, de la más grave a la más aguda y de vuelta por los mismos trastes. Púa alternada. Empezá 10–20 BPM por debajo de lo que podés: ninguna nota apagada.",
+   "pentatonic": "Pentatónica menor",
+   "pentatonic_focus": "La escala más usada del rock y el blues, en sus cinco cajas",
+   "pentatonic_why": "La pentatónica menor es el vocabulario básico de los solos. Estudiar una caja por día une todo el mástil: donde termina una caja empieza la siguiente, como en el CAGED. Decir los grados (1, ♭3, 4, 5, ♭7) mientras tocás fija la teoría en los dedos.",
+   "pentatonic_how": "Dos notas por cuerda, subiendo y bajando toda la caja. La mano quieta en la posición; las fundamentales son tus referencias.",
+   "major": "Escala mayor, tres notas por cuerda",
+   "major_focus": "La regla de toda la teoría, en siete posiciones",
+   "major_why": "La escala mayor es la regla de todo: grados, intervalos, acordes y armonía salen de ella. Tres notas por cuerda deja la digitación pareja, y cada posición empieza en un grado distinto, cubriendo el mástil.",
+   "major_how": "Tres notas en cada cuerda, subiendo y bajando. Usá 1-2-4 para tono + tono y 1-3-4 para semitono + tono; deslizá la mano sin cortar el pulso del metrónomo.",
+   "arpeggios": "Arpegios mayor y menor",
+   "arpeggios_focus": "Ver 1, 3 y 5 en las formas de E, A y D",
+   "arpeggios_why": "Un arpegio es el acorde nota por nota: lo que usás para solear sobre cada acorde. Subir el mayor y bajar el menor en la misma forma muestra que solo cambia la 3ª (3 → ♭3).",
+   "arpeggios_how": "Subí el arpegio mayor y bajá el menor, sin mover la mano. La fundamental y la 5ª quedan quietas; solo la 3ª baja medio tono.",
+   "octaves": "Octavas saltando una cuerda",
+   "octaves_focus": "La puntería de la mano de la púa y la forma de la octava",
+   "octaves_why": "La forma de octava es la manera más rápida de encontrar una nota en cualquier lado, y tocarla saltando una cuerda entrena la puntería de la púa y el apagado de la cuerda del medio.",
+   "octaves_how": "La nota grave, después su octava dos cuerdas arriba, subiendo traste por traste. Apagá la cuerda del medio con el dedo de la mano izquierda apoyado suave.",
+   "caged": "CAGED por el mástil",
+   "caged_focus": "Las cinco formas de acorde como arpegios",
+   "caged_why": "El CAGED une todo el mástil con cinco formas de acorde que encajan entre sí. Tocando las notas de cada forma como arpegio, empezás a ver el acorde (y la escala alrededor) en cualquier lugar, no solo en la cejilla que ya conocés.",
+   "caged_how": "Tocá las notas del acorde de la forma de la más grave a la más aguda y de vuelta. Después probá la forma siguiente, más arriba en el mástil.",
+   "legato": "Legato en la pentatónica",
+   "legato_focus": "Hammer-ons y pull-offs parejos y a tiempo",
+   "legato_why": "El legato hace que las frases fluyan como una voz y libera la mano de la púa. Hacerlo a tiempo, con las notas ligadas tan fuertes como las tocadas, es lo que lo hace sonar musical y no desprolijo.",
+   "legato_how": "Púa solo en la primera nota de cada cuerda: hammer a la segunda subiendo, pull-off bajando. Apagá las cuerdas que no tocás.",
+   "sweep": "Arpegios barridos",
+   "sweep_focus": "Un solo movimiento de púa por las cuerdas, cada nota sola",
+   "sweep_why": "El sweep toca un arpegio con un solo golpe que cruza las cuerdas. Lo difícil es la mano izquierda: cada nota tiene que sonar sola, no quedar sonando como un acorde.",
+   "sweep_how": "Golpes hacia abajo yendo a las cuerdas agudas, hacia arriba de vuelta. Levantá cada dedo apenas suena su nota. Empezá despacio, de a tres cuerdas si hace falta."
   }
  },
  "content": {

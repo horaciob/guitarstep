@@ -23,6 +23,7 @@ function stepTitle(s) {
     case "bars": return t("today.step_bars", { name: p.name, from: p.start, to: p.end });
     case "chart": return t("today.step_chart", { title: tc(`charts.${p.chart}.title`, p.title) });
     case "drill": return t("today.step_drill", { a: p.chords[0], b: p.chords[1] });
+    case "warmup": return t("today.step_warmup", { drill: t(`warmup.${p.drill}`), key: p.key });
     default: return t(`today.step_${s.kind}`);
   }
 }

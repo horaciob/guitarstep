@@ -1,7 +1,7 @@
 """Today's practice: a routine built from your own data, sized to your daily goal.
 
-Steps, in order: tune up, reviews that are due (spaced repetition), the next lesson, your
-weakest bars, a chord chart and a chord-change minute. Each step knows how to tell that you
+Steps, in order: tune up, the daily warm-up, reviews that are due (spaced repetition), the next
+lesson, your weakest bars, a chord chart and a chord-change minute. Each step knows how to tell that you
 did it today (from progress, history and the practice plan), except tuning, which you tick.
 Titles are built in the UI from `kind` + `params`, so they can be translated.
 """
@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from datetime import date, datetime
 
+from . import warmup
 from . import catalog, history, plan, progress
 
 TUNE_MIN = 2
@@ -16,6 +17,7 @@ REVIEW_MIN = 3
 BARS_MIN = 5
 CHART_MIN = 8
 DRILL_MIN = 2
+WARMUP_MIN = 3
 MAX_REVIEWS = 3
 
 
@@ -63,6 +65,9 @@ def build(today: date | None = None) -> dict:
                           category=category, params=params))
 
     add("tune", "tune", TUNE_MIN, "#/tuner", "tune" in checked, "technique")
+    w = warmup.today_plan(today)                          # the daily warm-up: one short drill, graded by the listener
+    add("warmup", "warmup", WARMUP_MIN, "#/tools?tab=warmup", any(v.get("day") == t for v in d.get("warmup", {}).values()),
+        "technique", drill=w["drill"], key=w["key"])
 
     # sections you pinned yourself: they stay on the plan until you clear them
     for q in d.get("queue", []):

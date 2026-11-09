@@ -29,6 +29,7 @@ EVENT_TEXT = {
     "rhythm": "Rhythm test at {bpm} BPM: {within}% on time",
     "ear": "Ear training ({kind}): {score:.0f}%",
     "variation_passed": "Variation passed: {lesson}/{exercise}",
+    "warmup": "Warm-up {drill} at {bpm} BPM: {score:.0f}%",
 }
 
 
@@ -43,6 +44,7 @@ def _empty() -> dict:
                 tested_out=[],    # lessons you skipped by passing their check
                 rhythm={},        # rhythm test → best (steadiest) result per tempo
                 ear={},           # ear trainer → best score per kind
+                warmup={},        # daily warm-up → {drill: {bpm (the goal), best, day}}
                 budget=None,      # minutes you chose for today's plan (15, 30, 60, 120)
                 queue=[])         # song or chart sections you pinned to today's plan
 
@@ -437,6 +439,18 @@ def on_session(ctx: dict | None, report: dict) -> dict:
                 if first:
                     _award(d, XP["chord"], "chord_mastered", chord=ctx["chord"], via="ear")
                     out.update(xp=XP["chord"], first=True)
+        elif kind == "warmup":
+            from . import warmup
+            drill, played = ctx["drill"], float(ctx["bpm"])
+            cur = warmup.goal(d["warmup"], drill)
+            new = warmup.next_goal(cur, played, score if s.get("judged") else None)
+            prev = d["warmup"].get(drill, {})
+            d["warmup"][drill] = dict(bpm=new, best=max(score or 0, prev.get("best") or 0), day=date.today().isoformat())
+            out.update(score=score, goal=new, raised=new > cur, need=warmup.PASS)
+            if score is not None and s.get("judged"):
+                xp = 5 if new > cur else 2
+                _award(d, xp, "warmup", drill=drill, bpm=round(played), score=score)
+                out["xp"] = xp
         elif kind == "drill":
             pair = "-".join(ctx["chords"])
             changes = max(0, s.get("first_try", 0) + s.get("fixed", 0) - 1)

@@ -122,6 +122,15 @@ def ref_options(body: dict) -> tuple[RefOptions, dict]:
             chart = dict(id="rhythm", title="rhythm", bpm=bpm, beats_per_bar=4, capo=0,
                          bars=[dict(chord=chord, beats=1, frets=frets) for _ in range(bars * 4)])
             return RefOptions(chart=chart), dict(type="rhythm", mode="tempo", bpm=bpm, bars=bars)
+        if body.get("warmup"):                        # a daily warm-up drill, played on the metronome
+            from .. import warmup
+            w = body["warmup"]
+            drill = w.get("drill")
+            if drill not in warmup.DRILLS:
+                fail(400, "bad_drill", "Unknown drill")
+            bpm = max(30.0, min(240.0, _float(w.get("bpm")) or warmup.goal(progress.get()["warmup"], drill)))
+            key, pos = w.get("key") or "A", int(w.get("position") or 0)
+            return RefOptions(timed=warmup.timed(drill, key, pos), bpm=bpm), dict(type="warmup", mode="tempo", drill=drill, bpm=bpm)
         if body.get("echo"):                          # the phrase drawn in the tools (melodic echo)
             from .. import quiz
             ex = quiz.TOOLS_ECHO
@@ -288,6 +297,30 @@ def _exercise_extras(e: dict) -> dict:
     if shapes is not None:
         out["shapes"] = shapes
     return out
+
+
+# ---------------------------------------------------------------- the daily warm-up
+@app.get("/api/warmup")
+def api_warmup(drill: str | None = None, key: str | None = None, position: int | None = None, surprise: bool = False):
+    """Today's drill (or the one asked for): its notes, its tempo goal and where it sits on the neck."""
+    from .. import theory as th
+    from .. import warmup
+
+    plan = warmup.surprise() if surprise else warmup.today_plan()
+    pick = dict(drill=drill or plan["drill"], key=key or plan["key"], position=plan["position"] if position is None else position)
+    if pick["drill"] not in warmup.DRILLS:
+        fail(400, "bad_drill", "Unknown drill")
+    try:
+        th.pc(pick["key"])
+    except th.TheoryError:
+        fail(400, "bad_key", "Unknown key")
+    saved = progress.get()["warmup"]
+    info = warmup.DRILLS[pick["drill"]]
+    return dict(today=warmup.today_plan(), **pick, steps=warmup.steps(**pick), goal=warmup.goal(saved, pick["drill"]),
+                per_beat=info["per_beat"], positions=info["positions"], uses_key=info["uses_key"],
+                label=warmup.position_label(pick["drill"], pick["position"]), raise_by=warmup.RAISE, need=warmup.PASS,
+                drills=[dict(id=k, goal=warmup.goal(saved, k), best=saved.get(k, {}).get("best"), positions=v["positions"],
+                             labels=[warmup.position_label(k, i) for i in range(v["positions"])]) for k, v in warmup.DRILLS.items()])
 
 
 # ---------------------------------------------------------------- drawn exercises and quizzes

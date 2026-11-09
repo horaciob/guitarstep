@@ -15,10 +15,11 @@ def kinds(r):
 
 def test_a_new_user_gets_a_full_routine():
     r = routine.build()
-    assert kinds(r) == ["tune", "lesson", "chart", "drill"]
-    lesson = r["steps"][1]
+    assert kinds(r) == ["tune", "warmup", "lesson", "chart", "drill"]
+    assert r["steps"][1]["route"] == "#/tools?tab=warmup" and r["steps"][1]["params"]["drill"]
+    lesson = r["steps"][2]
     assert lesson["params"]["lesson"] == "six-strings" or lesson["route"].startswith("#/lesson/")
-    assert r["steps"][2]["route"].startswith("#/practice?chart=")
+    assert r["steps"][3]["route"].startswith("#/practice?chart=")
     assert r["minutes"] == sum(s["minutes"] for s in r["steps"]) and r["done"] == 0
     assert r["goal"] == 30
 

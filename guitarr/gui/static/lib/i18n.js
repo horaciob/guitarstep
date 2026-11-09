@@ -144,6 +144,7 @@ export function eventText(e) {
     case "chord_mastered": return t(p.via === "camera" ? "event.chord_camera" : "event.chord_ear", { chord: p.chord });
     case "drill": return t("event.drill", { chords: String(p.chords).replace("-", " ↔ "), n: p.changes });
     case "take_analysis": return t("event.take_analysis", { score: Math.round(p.score) });
+    case "warmup": return t("event.warmup", { drill: t(`warmup.${p.drill}`), bpm: p.bpm, score: Math.round(p.score) });
     case "practice": return t("event.practice", { name: p.name || "", score: Math.round(p.score), ...raw });
     default: return e.code;
   }

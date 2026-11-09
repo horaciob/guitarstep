@@ -8,6 +8,7 @@ import { linkTerms, loadGlossary, metersHtml, openTerms, stepperHtml } from "../
 import { chipsHtml } from "../lib/chips.js";
 import { hearBar, rhythmSvg } from "../lib/notation.js";
 import { staffSvg } from "../lib/staff.js";
+import { tabText } from "../lib/tab.js";
 import { chartGuide, playChart } from "./charts.js";
 
 const ANSWER_KINDS = ["quiz", "pick", "tap"], DRAWN_KINDS = ["find_note", "play_interval", "tone_row", "echo", "rhythm", "read_play"];
@@ -17,23 +18,6 @@ const shapeChord = s => ({ id: s.name, frets: s.frets });
 let task = null, demo = null;
 let focus = null;   // the exercise open on its own full screen: { ex, views, changed }
 const guides = new Map();   // exercise id → { guide, chart } for chart exercises
-
-const STRINGS = ["e", "B", "G", "D", "A", "E"];   // tab lines, 1st string on top
-
-/** Tab for lick and bend steps: one column per note, with h p / \ b r ~ as in written tab. */
-function tabText(steps) {
-  const lines = STRINGS.map(s => `${s}|-`);
-  steps.forEach(st => {
-    const from = st.glide_from;
-    const cell = st.tech === "bend" ? `${st.fret}b${st.fret + st.pitch - from}`
-      : st.tech === "release" ? `r${st.fret}`
-      : st.tech === "hammer" ? `h${st.fret}` : st.tech === "pull" ? `p${st.fret}`
-      : st.tech === "slide" ? `${st.pitch > from ? "/" : "\\"}${st.fret}` : `${st.fret}`;
-    const txt = cell + (st.vibrato ? "~" : "");
-    lines.forEach((l, i) => { lines[i] += (i === st.string - 1 ? txt : "-".repeat(txt.length)) + "--"; });
-  });
-  return lines.map(l => l + "|").join("\n");
-}
 
 function exerciseTarget(ex) {
   if (ex.kind === "notes") return ex.notes.map(noteName).join(" ");

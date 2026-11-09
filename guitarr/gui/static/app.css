@@ -1173,3 +1173,10 @@ body.is-stage #main { max-width: none; padding: 12px 18px; }
   .gl .focus-foot .btn.xl { grid-column: 1 / -1; order: -1; }
   .gl .focus-foot .f-result svg { width: 96px; height: 96px; }
 }
+
+/* daily warm-up (Tools) */
+.gl .warmup-head { justify-content: space-between; align-items: flex-start; gap: 12px; }
+.gl .warmup-head h2 { margin: 2px 0; }
+.gl .warmup-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; margin: 12px 0; }
+.gl .warmup-controls label { display: inline-flex; align-items: center; gap: 8px; }
+.gl .warmup .tab { overflow-x: auto; }

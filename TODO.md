@@ -244,7 +244,7 @@ bass world and bass drills stay out). The text is ours, rewritten in English wit
 101. **Guitar technique** ✅. Alternate picking, palm mute, economy picking and string skipping, legato, a
      tuned bend, sweep arpeggios, barre shapes on E and A, tapping.
 102. **The neck, note by note** ✅. Name the marked note, the 12th fret repeat, octaves as a shortcut.
-103. **Daily warm-up** (M). Spider, pentatonic boxes, three-notes-per-string major, arpeggios, octaves, CAGED,
+103. **Daily warm-up** ✅. Spider, pentatonic boxes, three-notes-per-string major, arpeggios, octaves, CAGED,
      legato and sweep, with a key and position that rotate daily and a BPM goal per drill that rises.
      Random challenges on top.
 104. **Interval ear cycle** (M). Modules of two intervals, a four-beat loop (hear, pause, answer, check) that

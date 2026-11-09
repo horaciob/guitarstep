@@ -109,7 +109,8 @@
    "lesson_tested_out": "Lesson tested out: {{title}}",
    "variation_passed": "In another key: {{title}}",
    "rhythm": "Rhythm test at {{bpm}} BPM: {{within}}% on time",
-   "ear": "Ear training ({{kind}}): {{score}}%"
+   "ear": "Ear training ({{kind}}): {{score}}%",
+   "warmup": "Warm-up: {{drill}} at {{bpm}} BPM, {{score}}%"
   },
   "errors": {
    "generic": "Something went wrong",
@@ -635,7 +636,8 @@
    "over_chord": "Over a chord",
    "over_none": "—",
    "over_legend": "Filled = chord tones (1 3 5 7), outlined = the scale's other notes, named as tensions (9, 11, 13).",
-   "over_notes": "Chord tones: {{tones}} · tensions: {{tensions}}"
+   "over_notes": "Chord tones: {{tones}} · tensions: {{tensions}}",
+   "warmup_tab": "Daily warm-up"
   },
   "camera": {
    "title": "Camera",
@@ -1223,7 +1225,9 @@
    "step_queued": "Section: {{section}} ({{name}})",
    "why_queued": "you added it",
    "unqueue": "Remove from today",
-   "clear_queue": "Clear the sections you added"
+   "clear_queue": "Clear the sections you added",
+   "step_warmup": "Daily warm-up: {{drill}} in {{key}}",
+   "why_warmup": "warm hands, a rising tempo"
   },
   "reminder": {
    "title": "Daily reminder",
@@ -1915,6 +1919,56 @@
   },
   "staff": {
    "label": "Notes on the staff, treble clef with a small 8 (guitar sounds an octave lower)"
+  },
+  "warmup": {
+   "today": "Today's warm-up",
+   "chosen": "Warm-up of your choice",
+   "goal": "Goal",
+   "drill": "Drill",
+   "position": "Position",
+   "surprise": "Surprise me",
+   "back_today": "Back to today's",
+   "hear": "Hear it at this tempo",
+   "rule": "Play it clean ({{need}}% or more) at the goal tempo or faster and the goal goes up {{by}} BPM. Each drill keeps its own goal.",
+   "raised": "{{score}}%: clean. Next goal: {{goal}} BPM.",
+   "kept": "{{score}}%: the goal stays at {{goal}} BPM (it rises from {{need}}%). Clean before fast.",
+   "pos_frets": "Frets {{lo}}–{{hi}}",
+   "pos_box": "Box {{n}}",
+   "pos_degree": "From degree {{n}}",
+   "pos_shape": "{{shape}} shape",
+   "pos_strings": "Strings {{a}} and {{b}}",
+   "spider": "Chromatic spider",
+   "spider_focus": "Finger independence and hands in sync",
+   "spider_why": "The classic warm-up: one finger per fret makes all four fingers work evenly, and alternate picking has to land together with the fretting hand. It gets the hand ready to play by position, which is how the scales and arpeggios of the other drills work.",
+   "spider_how": "One finger per fret (1-2-3-4) on each string, from the lowest string to the highest and back down on the same frets. Alternate picking. Start 10–20 BPM under what you can do: no muffled notes.",
+   "pentatonic": "Minor pentatonic",
+   "pentatonic_focus": "The most used scale in rock and blues, in its five boxes",
+   "pentatonic_why": "The minor pentatonic is the basic vocabulary of solos. Studying one box a day links the whole neck: where one box ends the next begins, as in CAGED. Saying the degrees (1, ♭3, 4, 5, ♭7) as you play fixes the theory in your fingers.",
+   "pentatonic_how": "Two notes per string, up and down the whole box. Keep the hand still in the position; the roots are your landmarks.",
+   "major": "Major scale, three notes per string",
+   "major_focus": "The ruler of all theory, in seven positions",
+   "major_why": "The major scale is the ruler for everything: degrees, intervals, chords and harmony come out of it. Three notes per string keeps the fingering regular, and each position starts on a different degree, covering the neck.",
+   "major_how": "Three notes on each string, up and down. Use 1-2-4 for whole step + whole step and 1-3-4 for half step + whole step; slide the hand without breaking the metronome's pulse.",
+   "arpeggios": "Major and minor arpeggios",
+   "arpeggios_focus": "Seeing 1, 3 and 5 in the E, A and D shapes",
+   "arpeggios_why": "An arpeggio is the chord note by note: what you use to solo over each chord. Going up the major and down the minor in the same shape shows that only the 3rd changes (3 → ♭3).",
+   "arpeggios_how": "Up the major arpeggio, down the minor one, without moving the hand. Root and 5th stay put; only the 3rd drops a half step.",
+   "octaves": "Octaves, skipping a string",
+   "octaves_focus": "Picking-hand aim and the octave shape",
+   "octaves_why": "The octave shape is the fastest way to find a note anywhere, and playing it skipping a string trains the picking hand's aim and the muting of the string in between.",
+   "octaves_how": "Low note, then its octave two strings up, climbing fret by fret. Mute the middle string with the fretting finger lying lightly on it.",
+   "caged": "CAGED up the neck",
+   "caged_focus": "The five chord shapes as arpeggios",
+   "caged_why": "CAGED links the whole neck with five chord shapes that fit into each other. Playing each shape's notes as an arpeggio, you start seeing the chord (and the scale around it) anywhere, not only in the barre you already know.",
+   "caged_how": "Play the chord tones of the shape from the lowest to the highest and back. Then try the next shape up the neck.",
+   "legato": "Pentatonic legato",
+   "legato_focus": "Hammer-ons and pull-offs, even and in time",
+   "legato_why": "Legato makes phrases flow like a voice and frees the picking hand. Doing it in time, with the slurred notes as loud as the picked ones, is what makes it sound musical instead of sloppy.",
+   "legato_how": "Pick only the first note on each string: hammer up to the second, pull off coming down. Mute the strings you're not playing.",
+   "sweep": "Sweep arpeggios",
+   "sweep_focus": "One pick motion across the strings, every note on its own",
+   "sweep_why": "Sweeping plays an arpeggio with one stroke across the strings. The hard part is the fretting hand: each note has to sound alone, not ring into a chord.",
+   "sweep_how": "Down strokes going toward the high strings, up strokes coming back. Lift each finger right after its note. Start slow, three strings at a time if you need to."
   }
  },
  "content": {}
