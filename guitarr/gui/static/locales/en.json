@@ -2083,7 +2083,8 @@
    "warn_two_devices": "The metronome plays on {{output}} but you record from {{input}}: two clocks and more delay. If you can, choose your interface's headphone output for the metronome.",
    "warn_devices_changed": "The latency was measured with {{input}} ← {{output}}, not your current devices: measure again.",
    "warn_never_measured": "The latency was never measured: timing grades may be off by tens of milliseconds.",
-   "warn_negative": "A negative latency ({{ms}} ms) means you played ahead of the clicks while calibrating, so it hides your own habit. Measure with a cable, or calibrate again waiting for each click."
+   "warn_negative": "A negative latency ({{ms}} ms) means you played ahead of the clicks while calibrating, so it hides your own habit. Measure with a cable, or calibrate again waiting for each click.",
+   "warn_too_large": "A correction of {{ms}} ms is about a whole beat: the measurement matched the wrong click. Measure again (with a cable if you can)."
   },
   "timing_v": {
    "dir_early": "ahead of",

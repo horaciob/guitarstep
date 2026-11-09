@@ -44,6 +44,11 @@ def test_endpoint_reports_status():
     assert "negative" in {w["code"] for w in latency.status("Volt 2", "Volt 2")["warnings"]}
 
 
+def test_a_beat_sized_correction_is_flagged():
+    latency.record("loopback", 492.0, 1.3, "Volt 2", "Volt 2")
+    assert "too_large" in {w["code"] for w in latency.status("Volt 2", "Volt 2")["warnings"]}
+
+
 def _fakes(monkeypatch, delay, noise=0.0):
     """A fake interface whose input gets back the metronome's clicks `delay` s later (a cable), and nothing else."""
     sr = 48000
@@ -86,6 +91,12 @@ def test_loopback_calibration_finds_the_cable_delay(monkeypatch):
     r = tuner.calibrate(0, 2, loopback=True)
     assert r["ok"] and r["method"] == "loopback" and r["spread_ms"] < 2
     assert 15 <= r["latency_ms"] <= 35                     # 25 ms of cable delay plus the detector's own bias
+
+
+def test_loopback_slightly_early_isnt_taken_for_the_previous_click(monkeypatch):
+    _fakes(monkeypatch, -0.012)                            # the driver over-reports its latency by 12 ms
+    r = tuner.calibrate(0, 2, loopback=True)
+    assert r["ok"] and -25 <= r["latency_ms"] <= 0         # not ~490 (the click before, one beat at 120 BPM)
 
 
 def test_loopback_with_nothing_coming_back(monkeypatch):

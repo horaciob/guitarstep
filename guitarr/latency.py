@@ -69,6 +69,8 @@ def status(input_name: str | None, output_name: str | None) -> dict:
         warnings.append(dict(code="devices_changed", params=dict(input=lat.get("input"), output=lat.get("output"))))
     if not lat and not applied:
         warnings.append(dict(code="never_measured", params={}))
+    elif applied is not None and abs(applied) > 200:      # a whole beat off: it matched the wrong click
+        warnings.append(dict(code="too_large", params=dict(ms=applied)))
     elif applied is not None and applied < 0 and lat.get("method") != "loopback":
         warnings.append(dict(code="negative", params=dict(ms=applied)))
     return dict(applied_ms=applied, method=lat.get("method"), at=lat.get("at"), input=lat.get("input"),

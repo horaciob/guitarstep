@@ -2083,7 +2083,8 @@
    "warn_two_devices": "El metrónomo suena por {{output}} pero grabás desde {{input}}: dos relojes y más demora. Si podés, elegí la salida de auriculares de tu interfaz para el metrónomo.",
    "warn_devices_changed": "La latencia se midió con {{input}} ← {{output}}, no con tus aparatos actuales: volvé a medirla.",
    "warn_never_measured": "La latencia nunca se midió: la calificación del tiempo puede errar por decenas de milisegundos.",
-   "warn_negative": "Una latencia negativa ({{ms}} ms) quiere decir que al calibrar tocaste antes de los clics, y eso esconde tu propia costumbre. Medila con un cable, o calibrá de nuevo esperando cada clic."
+   "warn_negative": "Una latencia negativa ({{ms}} ms) quiere decir que al calibrar tocaste antes de los clics, y eso esconde tu propia costumbre. Medila con un cable, o calibrá de nuevo esperando cada clic.",
+   "warn_too_large": "Una corrección de {{ms}} ms es casi un tiempo entero: la medición tomó el clic equivocado. Volvé a medir (con cable si podés)."
   },
   "timing_v": {
    "dir_early": "antes",

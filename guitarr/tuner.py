@@ -129,7 +129,8 @@ def calibrate(device, channel: int, output_device=None, bpm: float = 90, beats: 
     bias. The first `warmup` clicks are for catching the pulse.
 
     loopback=True: a cable takes the metronome output back into `channel`, and nobody plays, so the
-    offset is the system alone (it can't be negative, and it's very regular)."""
+    offset is the system alone, and it's very regular. It can be slightly negative: the clicks are placed
+    using the latencies the driver reports, so what's left is the driver's error."""
     from .audio_io import Metronome, MicSource
     from .dsp import Detector, Recorder
 
@@ -164,7 +165,8 @@ def calibrate(device, channel: int, output_device=None, bpm: float = 90, beats: 
         src.stop()
     offs = []
     for ct, _ in clicks[warmup:]:
-        lo, hi = (-0.005, 0.5) if loopback else (-0.15, 0.35)
+        # under half a beat each way, so a click is never matched with its neighbour
+        lo, hi = (-0.1, 0.24) if loopback else (-0.15, 0.35)
         near = [o - ct for o in onsets if lo <= o - ct <= hi]
         if near:
             offs.append(min(near, key=abs))
