@@ -1318,8 +1318,6 @@ def live_start(body: dict):
         if S.tuner:
             S.tuner.stop()
         ropts, ctx = ref_options(body)
-        if not body.get("simulate"):
-            plan.pause_timer()          # the session counts its own time
         try:
             ref = load_reference(ropts, log=lambda m: None)
         except ReferenceError as e:
@@ -1351,6 +1349,8 @@ def live_start(body: dict):
             sess = LiveSession(ref, opts)
         except AudioError as e:
             fail(400, "audio", str(e))
+        if not body.get("simulate"):
+            plan.pause_timer()          # it started: the session counts its own time
         S.session, S.section, S.ctx, S.final = sess, _section(body), ctx, None
 
         def run():

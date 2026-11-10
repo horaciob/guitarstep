@@ -272,3 +272,16 @@ def test_changing_the_plan_mid_week_keeps_past_days_goals():
     plan.set_weekly_goal(7 * 20)
     if start < today:
         assert plan._read()["day_goals"][start.isoformat()] == 30
+
+
+def test_a_session_that_fails_to_start_leaves_the_timer_running():
+    from fastapi.testclient import TestClient
+
+    from guitarr.gui.server import app
+    c = TestClient(app)
+    assert c.post("/api/plan/timer", json=dict(action="start", category="theory")).json()["timer"]["running"]
+    from guitarr import config
+    config.SONGS_DIR.mkdir(parents=True, exist_ok=True)
+    (config.SONGS_DIR / "broken.mid").write_bytes(b"not a midi file")
+    assert c.post("/api/live/start", json=dict(song="broken.mid")).status_code == 400
+    assert c.get("/api/plan").json()["timer"]["running"]

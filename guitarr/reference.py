@@ -518,7 +518,10 @@ def load_reference(opts: RefOptions, log: Log = print) -> Reference:
         raise ReferenceError(f"File not found: {path}")
     ext = path.suffix.lower()
     if ext in MIDI_EXT:
-        ref = load_midi(path, opts.track, log)
+        try:
+            ref = load_midi(path, opts.track, log)
+        except (OSError, EOFError, ValueError, KeyError, IndexError) as e:   # not a MIDI file, or a broken one
+            raise ReferenceError(f"Could not read the MIDI file: {e}") from e
     elif ext in GP_EXT:
         ref = load_gp(path, opts.track, log)
     elif ext in TAB_EXT or ext in MUSICXML_EXT:
