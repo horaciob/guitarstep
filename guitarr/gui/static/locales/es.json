@@ -1290,7 +1290,8 @@
    "search_label": "Buscar sonidos",
    "search_placeholder": "Nombre, artista, banda o género (Pink Floyd, grunge, slide…)",
    "search_none": "Ningún sonido coincide con “{{q}}”.",
-   "search_count": "{{count}} sonidos"
+   "search_count": "{{count}} sonidos",
+   "search_close": "incluye nombres parecidos"
   },
   "plan": {
    "title": "Plan de práctica",

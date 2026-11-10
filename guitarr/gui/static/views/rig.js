@@ -103,15 +103,47 @@ function searchText(id, kind) {
   return fold(parts.join(" "));
 }
 
+/** Edit distance (with swapped letters as one edit), stopping early past `max`. */
+function editDistance(a, b, max) {
+  if (Math.abs(a.length - b.length) > max) return max + 1;
+  let prev2 = [], prev = Array.from({ length: b.length + 1 }, (_, j) => j);
+  for (let i = 1; i <= a.length; i++) {
+    const cur = [i];
+    let best = i;
+    for (let j = 1; j <= b.length; j++) {
+      cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+      if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) cur[j] = Math.min(cur[j], prev2[j - 2] + 1);
+      best = Math.min(best, cur[j]);
+    }
+    if (best > max) return max + 1;
+    prev2 = prev; prev = cur;
+  }
+  return prev[b.length];
+}
+
+/** A typo still finds it: "henrix" → Hendrix, "ricotta" → Ricota, "stever" → Stevie (short words must be exact). */
+function closeTo(word, text) {
+  if (word.length >= 4 && text.replace(/ /g, "").includes(word)) return true;     // "pinkfloyd", "acdc"
+  const max = word.length >= 5 ? 2 : word.length === 4 ? 1 : 0;
+  if (!max) return false;
+  return text.split(" ").some(tok => tok.length >= 3 && (editDistance(word, tok, max) <= max
+    || (tok.length > word.length && editDistance(word, tok.slice(0, word.length), max - 1 || 1) <= (max - 1 || 1))));
+}
+
 /** Shows the cards that match the search (and, with no search, the chosen artist style). */
 function applySearch() {
   const box = $("#rigQuick", root);
   if (!box) return;
   const words = fold(presetQuery).split(" ").filter(Boolean);
+  const cards = $$(".quick[data-q]", box);
+  // matched as typed first; only when that finds nothing, close spellings count too
+  const exact = q => words.every(w => q.includes(w));
+  const loose = words.length && !cards.some(c => exact(c.dataset.q));
+  const has = (q, w) => q.includes(w) || (loose && closeTo(w, q));
   let shown = 0;
-  $$(".quick[data-q]", box).forEach(c => {
+  cards.forEach(c => {
     const byStyle = words.length || !c.dataset.style || artistStyle === "all" || c.dataset.style === artistStyle;
-    const ok = byStyle && words.every(w => c.dataset.q.includes(w));
+    const ok = byStyle && words.every(w => has(c.dataset.q, w));
     c.hidden = !ok;
     if (ok) shown++;
   });
@@ -123,7 +155,7 @@ function applySearch() {
   const none = $("#searchNone", box), count = $("#searchCount", box);
   none.hidden = !words.length || shown > 0;
   none.textContent = t("rig.search_none", { q: presetQuery.trim() });
-  count.textContent = words.length ? t("rig.search_count", { count: shown }) : "";
+  count.textContent = words.length ? t("rig.search_count", { count: shown }) + (loose && shown ? ` · ${t("rig.search_close")}` : "") : "";
 }
 
 function renderQuick() {

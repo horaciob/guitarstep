@@ -1290,7 +1290,8 @@
    "search_label": "Search sounds",
    "search_placeholder": "Name, artist, band or genre (Pink Floyd, grunge, slide…)",
    "search_none": "No sound matches “{{q}}”.",
-   "search_count": "{{count}} sounds"
+   "search_count": "{{count}} sounds",
+   "search_close": "including close spellings"
   },
   "plan": {
    "title": "Practice plan",

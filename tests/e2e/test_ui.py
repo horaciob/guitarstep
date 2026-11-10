@@ -1008,6 +1008,13 @@ def test_rig_preset_search(app_page):
     expect(visible).to_have_count(1)
     search.fill("surf")                                         # factory sounds too
     expect(app_page.locator('.quick[data-id="surf"]')).to_be_visible()
+    search.fill("jimmy henrix")                                 # typos still find it
+    expect(app_page.locator('#artistSounds .quick[data-id="hendrix_vibe"]')).to_be_visible()
+    expect(app_page.locator("#searchCount")).to_contain_text("close spellings")
+    search.fill("redonditos de ricotta")
+    expect(visible).to_have_count(1)
+    search.fill("page")                                         # an exact match doesn't bring look-alikes
+    expect(app_page.locator("#searchCount")).not_to_contain_text("close spellings")
     search.fill("zzzz")
     expect(app_page.locator("#searchNone")).to_be_visible()
     search.fill("")
