@@ -678,12 +678,8 @@ def theory_notes(lessons: list[dict]) -> tuple[tuple[str, str], ...]:
 def theory_pool(notes: tuple[tuple[str, str], ...]) -> tuple[list[tuple[str, str, str]], list[str]]:
     """(exercise key, English theory, glossary term) for every 📖 note that names a glossary term in
     English and in Spanish (so the blank works in both), and the terms they use."""
-    import json
-    from pathlib import Path
-
-    root = Path(__file__).parent
-    terms = json.loads((root / "data/glossary.json").read_text(encoding="utf-8"))["terms"]
-    es = json.loads((root / "gui/static/locales/es.json").read_text(encoding="utf-8"))["content"]
+    from . import catalog
+    terms, es = catalog.glossary()["terms"], catalog.translated_content("es")
     es_terms, es_theory = es.get("glossary", {}), es.get("ex_theory", {})
     pats = {tid: (_forms_re(same_word(g["term"], g.get("aliases"))),
                   _forms_re(same_word(es_terms.get(tid, {}).get("term"), es_terms.get(tid, {}).get("aliases"))))
@@ -713,12 +709,11 @@ TERM_FAMILY = {
 def q_theory(rng, ex):
     """A sentence from a 📖 note of the level with one glossary term left blank: which word goes there?"""
     from . import catalog
-    pool, used = theory_pool(theory_notes([catalog.get_lesson(lid) for lid in ex.get("lessons") or ()]))
+    wanted = set(ex.get("lessons") or ())
+    pool, used = theory_pool(theory_notes([ls for ls in catalog.all_lessons() if ls["id"] in wanted]))
     if not pool:
         raise QuizError("No theory notes to ask about")
-    import json
-    from pathlib import Path
-    terms = json.loads((Path(__file__).parent / "data/glossary.json").read_text(encoding="utf-8"))["terms"]
+    terms = catalog.glossary()["terms"]
     key, en, tid = rng.choice(pool)
     in_sentence = {t for k, e, t in pool if k == key}               # a term already in the sentence can't be a wrong option
     fam = TERM_FAMILY.get(tid, tid)

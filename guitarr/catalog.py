@@ -47,6 +47,20 @@ class CatalogError(Exception):
     pass
 
 
+# ---------------------------------------------------------------- glossary
+@lru_cache(maxsize=None)
+def glossary() -> dict:
+    """{"terms": {id: {term, aliases, text}}}: the words the lessons link to (English; Spanish in es.json)."""
+    return json.loads((DATA_DIR / "glossary.json").read_text(encoding="utf-8"))
+
+
+@lru_cache(maxsize=None)
+def translated_content(lang: str) -> dict:
+    """The learning content of a locale file (its "content" part), for checks made on the server."""
+    path = Path(__file__).parent / "gui/static/locales" / f"{lang}.json"
+    return json.loads(path.read_text(encoding="utf-8")).get("content", {})
+
+
 # ---------------------------------------------------------------- chords
 @lru_cache(maxsize=None)
 def _chords_data() -> dict:

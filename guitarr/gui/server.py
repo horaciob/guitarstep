@@ -621,7 +621,7 @@ def stats():
 
 @app.get("/api/glossary")
 def glossary():
-    return json.loads((catalog.DATA_DIR / "glossary.json").read_text(encoding="utf-8"))
+    return catalog.glossary()
 
 
 # ---------------------------------------------------------------- theory (tools)
