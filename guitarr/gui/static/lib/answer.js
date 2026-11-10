@@ -1,6 +1,6 @@
 // Exercises you pass by answering: multiple-choice questions and picking notes on the fretboard.
 // The server draws the questions, keeps the answers and grades them; this module only shows them.
-import { t } from "./i18n.js";
+import { t, tc } from "./i18n.js";
 import { api, esc, pluck, stringRow } from "./ui.js";
 import { neck } from "./fretboard.js";
 import { hearBar, markHits, onsetsOf, playBar, rhythmSvg } from "./notation.js";
@@ -8,12 +8,31 @@ import { staffSvg } from "./staff.js";
 
 const PARAM = { scale: "scale", mode: "scale", iv: "iv", which: "voice", q: "q", fig: "fig", big: "fig", small: "figs" };
 
+/** The term and its aliases that are forms of it (as guitarr/quiz.py same_word). */
+function sameWord(term, aliases) {
+  if (!term) return [];
+  const stem = term.toLowerCase().slice(0, Math.max(3, term.length - 2));
+  return [term, ...(aliases || []).filter(a => a.toLowerCase().startsWith(stem))];
+}
+const escRe = s => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+/** A 📖 note in your language with the glossary term left blank. */
+function theoryCloze(p) {
+  const text = tc(`ex_theory.${p.key}`, p.en);
+  const forms = sameWord(tc(`glossary.${p.term}.term`, p.term_en), tc(`glossary.${p.term}.aliases`, p.aliases_en || []))
+    .sort((a, b) => b.length - a.length);
+  const re = new RegExp(`(^|[^\\p{L}])(${forms.map(escRe).join("|")})(?![\\p{L}])`, "giu");
+  return t("quiz.theory_cloze", { text: text.replace(re, (m, pre) => `${pre}＿＿＿`) });
+}
+
 /** Text for a prompt/choice label from the server: a plain string, or {code, params} → quiz.<code>. */
 export function say(label) {
   if (label == null) return "";
   if (typeof label !== "object") return String(label);
   const { code, params = {} } = label;
   if (code === "iv") return t(`quiz.iv_${params.name}`);
+  if (code === "theory_cloze") return theoryCloze(params);
+  if (code === "term") return tc(`glossary.${params.id}.term`, params.en);
   if (code === "quality") return t(`quiz.q_${params.q}`);
   if (code === "voice") return t(`quiz.voice_${params.which}`);
   if (code === "inv") return t(`quiz.inv_${params.k}`, { name: params.name });

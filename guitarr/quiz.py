@@ -12,8 +12,10 @@ A draw lives in memory until it is finished (or replaced by a newer draw of the 
 from __future__ import annotations
 
 import random
+import re
 import secrets
 import threading
+from functools import lru_cache
 
 from . import rhythm as rh
 from . import theory as th
@@ -651,7 +653,86 @@ def q_caged(rng, ex):
     return _q(L("caged_string", shape=shape), ch, ans)
 
 
-QUIZ = {f.__name__[2:]: f for f in [q_name_note, q_technique, q_key_signature, q_function, q_hear_degree, q_cadence, q_secondary, q_borrowed, q_progression, q_caged, q_read_note, q_staff_fact, q_figure_value, q_rhythm_dictation, q_tritone_sub, q_shared_tones, q_ii_v_i, q_turnaround,q_interval_frets, q_interval_ear, q_enharmonic, q_half_step, q_tab_read, q_open_string,
+# ---------------------------------------------------------------- what the theory notes said
+def same_word(term: str | None, aliases) -> list[str]:
+    """The term and the aliases that are forms of it (plurals: "interval", "intervals"), not synonyms
+    ("tension" for "extension"): a blank must ask for the word the sentence really uses."""
+    if not term:
+        return []
+    stem = term.lower()[:max(3, len(term) - 2)]
+    return [term] + [a for a in aliases or [] if a.lower().startswith(stem)]
+
+
+def _forms_re(forms) -> re.Pattern | None:
+    forms = sorted({f for f in forms if f}, key=len, reverse=True)
+    return re.compile(r"(?<![\w])(" + "|".join(re.escape(f) for f in forms) + r")(?![\w])", re.I) if forms else None
+
+
+def theory_notes(lessons: list[dict]) -> tuple[tuple[str, str], ...]:
+    """(exercise key, English 📖 note) of every exercise in these lessons."""
+    return tuple((ex.get("from") or f"{ls['id']}/{ex['id']}", ex["theory"])
+                 for ls in lessons for ex in ls["exercises"] if ex.get("theory") and ex.get("quiz") != "theory")
+
+
+@lru_cache(maxsize=64)
+def theory_pool(notes: tuple[tuple[str, str], ...]) -> tuple[list[tuple[str, str, str]], list[str]]:
+    """(exercise key, English theory, glossary term) for every 📖 note that names a glossary term in
+    English and in Spanish (so the blank works in both), and the terms they use."""
+    import json
+    from pathlib import Path
+
+    root = Path(__file__).parent
+    terms = json.loads((root / "data/glossary.json").read_text(encoding="utf-8"))["terms"]
+    es = json.loads((root / "gui/static/locales/es.json").read_text(encoding="utf-8"))["content"]
+    es_terms, es_theory = es.get("glossary", {}), es.get("ex_theory", {})
+    pats = {tid: (_forms_re(same_word(g["term"], g.get("aliases"))),
+                  _forms_re(same_word(es_terms.get(tid, {}).get("term"), es_terms.get(tid, {}).get("aliases"))))
+            for tid, g in terms.items()}
+    pool = []
+    for key, en in notes:
+        sp = es_theory.get(key, "")
+        if not sp:
+            continue
+        found = [tid for tid, (pe, ps) in pats.items() if pe and ps and pe.search(en) and ps.search(sp)]
+        pool += [(key, en, tid) for tid in found]
+    return pool, sorted({tid for _, _, tid in pool})
+
+
+# terms that could fill the same blank ("every minor scale" / "every minor pentatonic"): a wrong option
+# always comes from another family, so exactly one choice fits
+TERM_FAMILY = {
+    **dict.fromkeys(["half_step", "whole_step", "interval", "octave", "tritone", "enharmonic"], "distance"),
+    **dict.fromkeys(["scale", "major_scale", "pentatonic", "mode", "relative_minor", "diatonic"], "scale"),
+    **dict.fromkeys(["triad", "seventh_chord", "slash_chord", "inversion", "voicing", "drop2", "shell", "extension"], "chord"),
+    **dict.fromkeys(["root", "degree", "chord_tone", "guide_tones", "dominant"], "role"),
+    **dict.fromkeys(["ii_v_i", "turnaround", "roman_numeral"], "progression"),
+    **dict.fromkeys(["approach_note", "enclosure", "voice_leading"], "line"),
+}
+
+
+def q_theory(rng, ex):
+    """A sentence from a 📖 note of the level with one glossary term left blank: which word goes there?"""
+    from . import catalog
+    pool, used = theory_pool(theory_notes([catalog.get_lesson(lid) for lid in ex.get("lessons") or ()]))
+    if not pool:
+        raise QuizError("No theory notes to ask about")
+    import json
+    from pathlib import Path
+    terms = json.loads((Path(__file__).parent / "data/glossary.json").read_text(encoding="utf-8"))["terms"]
+    key, en, tid = rng.choice(pool)
+    in_sentence = {t for k, e, t in pool if k == key}               # a term already in the sentence can't be a wrong option
+    fam = TERM_FAMILY.get(tid, tid)
+    fits = lambda t: t not in in_sentence and TERM_FAMILY.get(t, t) != fam
+    others = [t for t in used if fits(t)]
+    if len(others) < 3:
+        others += [t for t in terms if fits(t) and t not in others]
+    label = lambda x: L("term", id=x, en=terms[x]["term"])
+    ch, ans = _choices(rng, tid, [tid] + others, label=label)
+    g = terms[tid]
+    return _q(L("theory_cloze", key=key, en=en, term=tid, term_en=g["term"], aliases_en=same_word(g["term"], g.get("aliases"))[1:]), ch, ans)
+
+
+QUIZ = {f.__name__[2:]: f for f in [q_theory, q_name_note, q_technique, q_key_signature, q_function, q_hear_degree, q_cadence, q_secondary, q_borrowed, q_progression, q_caged, q_read_note, q_staff_fact, q_figure_value, q_rhythm_dictation, q_tritone_sub, q_shared_tones, q_ii_v_i, q_turnaround,q_interval_frets, q_interval_ear, q_enharmonic, q_half_step, q_tab_read, q_open_string,
                                      q_scale_degree, q_relative_minor, q_hear_quality, q_mode_color, q_chord_tones,
                                      q_chord_formula, q_inversion, q_roman, q_pentatonic, q_symmetric, q_bebop, q_altered,
                                      q_guide_tones, q_drop, q_extension, q_voice_lead]}

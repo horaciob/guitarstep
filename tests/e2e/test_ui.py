@@ -1104,3 +1104,16 @@ def test_lesson_suggests_a_rig_sound(app_page):
     expect(tone).to_contain_text("in use")
     cur = app_page.evaluate("async () => { const { rig } = await import('/static/lib/rig/engine.js'); return [rig.preset.id, rig.running]; }")
     assert cur == ["modern_metal", False]
+
+
+@pytest.mark.parametrize("lang,ask,blank", [("en", "Which word is missing?", "＿＿＿"), ("es", "¿Qué palabra falta?", "＿＿＿")])
+def test_recap_asks_what_the_theory_notes_said(app_page, lang, ask, blank):
+    onboarded(app_page)
+    app_page.evaluate(f"localStorage.setItem('guitarr.lang', '{lang}')")
+    go(app_page, "lesson/recap-n6?ex=theory-check")
+    focus = app_page.locator("dialog.ex-focus")
+    focus.locator("[data-f=go]").click()
+    prompt = focus.locator(".q-prompt")
+    expect(prompt).to_contain_text(ask)
+    expect(prompt).to_contain_text(blank)
+    expect(focus.locator(".quiz button.choice, .quiz [data-choice], .quiz .q-choices button")).to_have_count(4)

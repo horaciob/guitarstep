@@ -74,13 +74,14 @@ def test_spanish_translations_cover_all_content():
     written = [ls for ls in catalog.all_lessons() if not ls.get("recap")]  # level recaps are generated (UI strings)
     assert set(es["chords"]) == {c["id"] for c in catalog.chords()}
     assert set(es["lessons"]) == {ls["id"] for ls in written}
-    assert set(es["exercises"]) == {f"{ls['id']}/{e['id']}" for ls in written for e in ls["exercises"]}
+    generated = {"recap/theory-check"}                  # the recaps' "what the 📖 notes said"
+    assert set(es["exercises"]) == {f"{ls['id']}/{e['id']}" for ls in written for e in ls["exercises"]} | generated
     assert set(es["charts"]) == {c["id"] for c in catalog.charts()}
     glossary = json.loads((Path(catalog.__file__).parent / "data/glossary.json").read_text())["terms"]
     assert set(es["glossary"]) == set(glossary)
     # every exercise has a short theory note, in English and in Spanish (a voice can read it later)
     assert all(e.get("theory") for ls in written for e in ls["exercises"])
-    assert set(es["ex_theory"]) == {f"{ls['id']}/{e['id']}" for ls in written for e in ls["exercises"]}
+    assert set(es["ex_theory"]) == {f"{ls['id']}/{e['id']}" for ls in written for e in ls["exercises"]} | generated
     assert set(es["levels"]) == {lv["id"] for lv in catalog.all_levels()}
     for ls in written:                                  # the lesson's theory has the same number of points in both
         assert len(es["lessons"][ls["id"]]["theory"]) == len(ls.get("theory", [])), ls["id"]

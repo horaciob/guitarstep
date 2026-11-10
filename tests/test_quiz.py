@@ -7,7 +7,10 @@ from guitarr import theory as th
 @pytest.mark.parametrize("kind", sorted(quiz.QUIZ))
 def test_every_quiz_type_has_one_right_answer_among_its_choices(kind):
     for seed in range(25):
-        d = quiz.draw("l", dict(id="q", kind="quiz", quiz=kind, count=1), 80, seed=seed)
+        ex = dict(id="q", kind="quiz", quiz=kind, count=1)
+        if kind == "theory":                              # asks about the notes of some lessons
+            ex["lessons"] = ["blues-shuffle", "blues-thirds", "blues-bends", "blues-answers", "blues-turnaround"]
+        d = quiz.draw("l", ex, 80, seed=seed)
         item = d["items"][0]
         assert "answer" not in item                       # the answer stays on the server
         ids = [c["id"] for c in item["choices"]]
@@ -130,3 +133,27 @@ def test_tone_rows_use_all_twelve_notes():
     ex = dict(id="r", kind="tone_row", frets=[0, 5], count=12)
     quiz.draw("l", ex, 75, seed=7)
     assert sorted(p % 12 for p in quiz.drawn_notes("l", ex)) == list(range(12))
+
+
+def test_theory_questions_blank_a_glossary_word_of_a_real_note():
+    import json
+    from pathlib import Path
+
+    recaps = [ls for ls in catalog.all_lessons() if ls.get("recap")]
+    checks = [e for ls in recaps for e in ls["exercises"] if e["id"] == "theory-check"]
+    assert len(checks) >= 10                               # most levels review their notes
+    es = json.loads((Path(catalog.__file__).parent / "gui/static/locales/es.json").read_text())["content"]
+    notes = {f"{ls['id']}/{e['id']}": e["theory"] for ls in catalog.all_lessons() if not ls.get("recap") for e in ls["exercises"]}
+    for ex in checks:
+        for seed in range(10):
+            q = quiz.q_theory(__import__("random").Random(seed), ex)
+            p = q["prompt"]["params"]
+            assert notes[p["key"]] == p["en"] and p["key"] in es["ex_theory"]
+            assert p["key"].split("/")[0] in ex["lessons"]        # from this level
+            forms = [p["term_en"], *p["aliases_en"]]
+            assert any(f.lower() in p["en"].lower() for f in forms)
+            # the right word is one of the four, and no other option also fits the sentence
+            assert len(q["choices"]) == 4 and q["choices"][int(q["answer"])]["label"]["params"]["id"] == p["term"]
+            fams = [quiz.TERM_FAMILY.get(c["label"]["params"]["id"], c["label"]["params"]["id"]) for c in q["choices"]]
+            assert fams.count(quiz.TERM_FAMILY.get(p["term"], p["term"])) == 1
+    assert quiz.same_word("extension", ["extensions", "tension"]) == ["extension", "extensions"]

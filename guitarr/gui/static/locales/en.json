@@ -1957,7 +1957,8 @@
    "tech_tremolo_wrist": "A tiny, loose wrist motion with alternate picking",
    "tech_tremolo_arm": "Big strokes from the arm",
    "tech_tremolo_fingers": "Plucking with the fingers",
-   "tech_tremolo_legato": "Hammer-ons and pull-offs"
+   "tech_tremolo_legato": "Hammer-ons and pull-offs",
+   "theory_cloze": "Which word is missing? “{{text}}”"
   },
   "flow": {
    "label": "The steps of this lesson",

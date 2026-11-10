@@ -491,6 +491,7 @@ def course() -> dict:
 
 RECAP_MIN_LESSONS = 3
 RECAP_MAX = 8
+RECAP_MIN_THEORY = 6      # sentences with a glossary term in a level's notes, to ask about them
 
 
 def _recap(lvl: dict) -> dict | None:
@@ -504,9 +505,18 @@ def _recap(lvl: dict) -> dict | None:
         exs = ls["exercises"]
         ex = next((e for e in exs if e["kind"] in ANSWER_KINDS), None) or exs[-1]
         picks.append({**ex, "id": f"{ls['id']}--{ex['id']}", "from": f"{ls['id']}/{ex['id']}"})
-    if len(picks) > RECAP_MAX:                       # spread the picks over the whole level
-        step = len(picks) / RECAP_MAX
-        picks = [picks[int(i * step)] for i in range(RECAP_MAX)]
+    from . import quiz
+    src_ids = [ls["id"] for ls in src]
+    theory = len(quiz.theory_pool(quiz.theory_notes(src))[0]) >= RECAP_MIN_THEORY
+    room = RECAP_MAX - theory
+    if len(picks) > room:                            # spread the picks over the whole level
+        step = len(picks) / room
+        picks = [picks[int(i * step)] for i in range(room)]
+    if theory:                                       # and what the 📖 notes of the level said
+        picks.append(dict(id="theory-check", from_="recap/theory-check", kind="quiz", quiz="theory", count=5, min=80,
+                          lessons=src_ids, title="What the 📖 notes said",
+                          theory="Each question is a sentence from this level's 📖 notes with one word left out. If you hesitate, open the exercise it comes from and read it again."))
+        picks[-1]["from"] = picks[-1].pop("from_")
     return dict(id=f"recap-{lvl['id']}", title=f"Level {lvl.get('badge') or lvl['number']} recap", minutes=5 + 3 * len(picks), recap=True,
                 theory=[], tips=[], tutorials=[], exercises=picks)
 

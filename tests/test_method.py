@@ -72,6 +72,9 @@ def test_level_recaps_are_generated_from_the_level():
     assert recaps and all(2 <= len(ls["exercises"]) <= catalog.RECAP_MAX for ls in recaps)
     r = next(ls for ls in recaps if ls["id"] == "recap-n8")
     for e in r["exercises"]:
+        if e["id"] == "theory-check":                # asks about the level's 📖 notes (tests/test_quiz.py)
+            assert e["lessons"] and e["quiz"] == "theory"
+            continue
         src = catalog.get_exercise(*e["from"].split("/"))
         assert {k: v for k, v in e.items() if k not in ("id", "from")} == {k: v for k, v in src.items() if k != "id"}
     assert catalog.get_exercise("recap-n8", r["exercises"][0]["id"])

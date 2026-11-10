@@ -67,7 +67,7 @@ def test_config_api():
 
 def test_rig_api():
     c = client()
-    assert c.get("/api/rig").json() == dict(current=None, presets=[])
+    assert c.get("/api/rig").json() == dict(current=None, presets=[], favorites=[])
     tone = dict(amp=dict(type="crunch", on=True, params=dict(gain=6)), pedals=[], post=[])
     assert c.put("/api/rig/current", json=dict(rig=tone)).status_code == 200
     assert c.get("/api/rig").json()["current"] == tone
