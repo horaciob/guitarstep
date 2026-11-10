@@ -1104,7 +1104,9 @@
     "range": "Rango",
     "direction": "Dirección",
     "freq": "Frec.",
-    "speed": "Velocidad"
+    "speed": "Velocidad",
+    "sync": "Sincronía",
+    "bpm": "Tempo"
    },
    "opt_vintage": "Vintage",
    "opt_octave": "Octava",
@@ -1204,7 +1206,7 @@
    "how_ring_mod": "Un modulador de anillo multiplica tu señal por una onda senoidal. En vez de tus notas escuchás su suma y su diferencia con esa frecuencia: metálico y desafinado a propósito.",
    "how_octaver": "Un octavador sigue la nota que tocás y le suma una nota sintetizada una o dos octavas abajo.",
    "how_pitch": "Un cambiador de afinación lee la señal en porciones cortas y las reproduce más rápido o más lento, así todo se corre un intervalo fijo.",
-   "how_delay": "Un delay vuelve a reproducir tu señal más tarde; la realimentación manda el eco de vuelta para tener más repeticiones. Los modos analog y tape oscurecen cada repetición, como las máquinas viejas.",
+   "how_delay": "Un delay repite tu señal un rato después; la repetición devuelve el eco para que se repita más veces. Los modos analógico y de cinta oscurecen cada repetición, como las máquinas viejas. Con la sincronía en una figura, el eco sigue el tempo en vez de la perilla de tiempo: apretá Tap al ritmo de la canción, o mové la perilla de tempo.",
    "how_reverb": "Una reverb suma las miles de reflexiones de una sala, un salón, una placa o un resorte. El decay es cuánto duran.",
    "how_capture": "Un ampli capturado es una curva de saturación y un ecualizador ajustados a partir de dos grabaciones: tu guitarra directa y lo mismo pasando por el ampli. Es una aproximación, no el circuito real.",
    "opt_up": "arriba",
@@ -1302,7 +1304,21 @@
    "fav_add": "Agregar a favoritos",
    "fav_remove": "Sacar de favoritos",
    "fav_add_named": "Agregar {{name}} a favoritos",
-   "fav_remove_named": "Sacar {{name}} de favoritos"
+   "fav_remove_named": "Sacar {{name}} de favoritos",
+   "opt_free": "ms",
+   "opt_q": "♩",
+   "opt_e_dot": "♪.",
+   "opt_e": "♪",
+   "opt_t": "♪³",
+   "tap": "Tap",
+   "tap_hint": "Tocá al ritmo de la canción (3 o 4 veces) para poner el eco en su tempo",
+   "opt_long": {
+    "free": "Libre: la perilla de tiempo, en ms",
+    "q": "Una negra al tempo",
+    "e_dot": "Una corchea con puntillo al tempo",
+    "e": "Una corchea al tempo",
+    "t": "Un tresillo de corchea al tempo"
+   }
   },
   "plan": {
    "title": "Plan de práctica",

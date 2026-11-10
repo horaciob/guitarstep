@@ -369,7 +369,7 @@ export const ARTISTS = {
     mic: { type: "dynamic", position: 0.3, distance: 0.25, room: 0.2 }, post: [fx("delay", { time: 320, feedback: 1.5, mix: 1.5, mode: "analog" }), fx("reverb", { type: "plate", mix: 1.5 })] }),
   the_edge: () => ({ level: -6, guitar: { type: "single_coil", pickup: 0.7 }, pedals: [fx("compressor", { sustain: 4 })],
     amp: amp("chime", { gain: 4.5, treble: 6.5 }), cab: { type: "c2x12_open", on: true },
-    mic: { type: "dynamic", position: 0.3, distance: 0.25, room: 0.15 }, post: [fx("delay", { time: 375, feedback: 4, mix: 4, mode: "digital" }), fx("reverb", { type: "hall", decay: 2.5, mix: 2.5 })] }),
+    mic: { type: "dynamic", position: 0.3, distance: 0.25, room: 0.15 }, post: [fx("delay", { time: 375, feedback: 4, mix: 4, mode: "digital", sync: "e_dot", bpm: 120 }), fx("reverb", { type: "hall", decay: 2.5, mix: 2.5 })] }),
   pappo_blues: () => ({ level: -6, guitar: { type: "humbucker", pickup: 0.8 }, pedals: [],
     amp: amp("crunch", { gain: 7.5, mid: 6.5, treble: 6, master: 8 }), cab: { type: "c4x12_closed", on: true },
     mic: { type: "dynamic", position: 0.3, distance: 0.25, room: 0.2 }, post: [fx("reverb", { type: "room", decay: 1, mix: 1.5 })] }),

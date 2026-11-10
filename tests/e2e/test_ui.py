@@ -1075,3 +1075,21 @@ def test_lesson_warns_when_latency_was_never_measured(app_page):
     lat = app_page.locator("dialog.ex-focus #fLat")
     expect(lat).to_contain_text("never measured")
     expect(lat.locator("a[href='#/settings']")).to_be_visible()
+
+
+def test_rig_delay_follows_the_tempo(app_page):
+    onboarded(app_page)
+    go(app_page, "rig")
+    ms = app_page.evaluate("""async () => { const { delayMs } = await import('/static/lib/rig/effects.js');
+        return [delayMs({ time: 300 }), delayMs({ sync: 'e_dot', bpm: 120 }), delayMs({ sync: 'q', bpm: 90 }), delayMs({ sync: 'e', bpm: 100 })]; }""")
+    assert [round(x) for x in ms] == [300, 375, 667, 300]
+    app_page.locator('#artistSounds .quick[data-id="the_edge"]').click()      # power stays off: no sound
+    delay = app_page.locator(".pedal.stomp", has=app_page.locator(".stomp-plate", has_text="Delay"))
+    expect(delay.locator('.seg button[data-o="e_dot"]')).to_have_class(re.compile("active"))
+    tap = delay.locator(".tap-tempo")
+    for _ in range(4):
+        tap.click()
+        app_page.wait_for_timeout(400)                                       # ≈ 150 bpm
+    bpm = app_page.evaluate("""async () => { const { rig } = await import('/static/lib/rig/engine.js');
+        return [...rig.state.pedals, ...rig.state.post].find(e => e.type === 'delay').params.bpm; }""")
+    assert 120 <= bpm <= 170

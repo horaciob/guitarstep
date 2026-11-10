@@ -13,6 +13,13 @@ function disposer(...sources) {
   return () => sources.forEach(s => { try { s.stop(); } catch { /* not started */ } try { s.disconnect(); } catch { /* gone */ } });
 }
 
+/** The delay time in ms: the time knob, or a note value at the tempo (a dotted eighth at 120 bpm = 375 ms). */
+export const SYNC_BEATS = { q: 1, e_dot: 0.75, e: 0.5, t: 1 / 3 };
+export function delayMs({ time = 380, sync = "free", bpm = 120 }) {
+  const beats = SYNC_BEATS[sync];
+  return beats ? Math.min(2000, (60000 / Math.max(40, bpm)) * beats) : time;
+}
+
 // bands of the captured-amp EQ (the server fits one gain per band)
 const CAPTURE_BANDS = [80, 160, 320, 640, 1250, 2500, 5000, 8000];
 
@@ -302,7 +309,9 @@ export const EFFECTS = {
   // ---------------------------------------------------------------- time
   delay: {
     group: "time", color: "#2f80ed",
-    params: [knob("time", 40, 1500, 380, "ms", 5), ten("feedback", 4), ten("mix", 3.5), choice("mode", ["digital", "analog", "tape"])],
+    // sync: "free" uses the time knob; otherwise the echo follows the tempo (q = a quarter note, e_dot = a dotted eighth…)
+    params: [knob("time", 40, 1500, 380, "ms", 5), ten("feedback", 4), ten("mix", 3.5), choice("mode", ["digital", "analog", "tape"]),
+      choice("sync", ["free", "q", "e_dot", "e", "t"]), knob("bpm", 40, 240, 120, "bpm", 1)],
     build(ctx, p) {
       const dw = dryWet(ctx, 0.35), d = ctx.createDelay(2), fb = gainNode(ctx), color = biquad(ctx, "lowpass", 18000, 0.5), hp = biquad(ctx, "highpass", 80);
       const osc = lfo(ctx, 0.6), wob = gainNode(ctx, 0), sat = shaper(ctx, "soft", 1.2);
@@ -310,8 +319,12 @@ export const EFFECTS = {
       dw.wetIn.connect(d);
       series(d, color, hp, sat, fb, d);
       sat.connect(dw.wetOut);
+      const now = { time: p.time ?? 380, sync: p.sync || "free", bpm: p.bpm || 120 };
       const set = (k, v) => {
-        if (k === "time") ramp(ctx, d.delayTime, v / 1000, 0.08);
+        if (k === "time" || k === "sync" || k === "bpm") {
+          now[k] = v;
+          ramp(ctx, d.delayTime, delayMs(now) / 1000, 0.08);
+        }
         if (k === "feedback") fb.gain.value = lerp(0, 0.92, v / 10);
         if (k === "mix") dw.setMix(v / 10);
         if (k === "mode") {

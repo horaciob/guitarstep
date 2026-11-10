@@ -913,7 +913,9 @@
     "range": "Range",
     "direction": "Direction",
     "freq": "Freq",
-    "speed": "Speed"
+    "speed": "Speed",
+    "sync": "Sync",
+    "bpm": "Tempo"
    },
    "amp_on": "Amp on",
    "amp_knob_gain": "Gain",
@@ -1204,7 +1206,7 @@
    "how_ring_mod": "A ring modulator multiplies your signal by a sine wave. Instead of your notes you hear their sum and difference with that frequency: metallic and out of key on purpose.",
    "how_octaver": "An octaver tracks the pitch you play and adds a synthesized note one or two octaves below.",
    "how_pitch": "A pitch shifter reads the signal in short slices and replays them faster or slower, so everything moves by a fixed interval.",
-   "how_delay": "A delay plays your signal back later; feedback sends the echo back in for more repeats. Analog and tape modes darken each repeat, like the old machines.",
+   "how_delay": "A delay plays your signal back later; feedback sends the echo back in for more repeats. Analog and tape modes darken each repeat, like the old machines. With Sync on a note value, the echo follows the tempo instead of the time knob: tap Tap along with the song, or set the tempo knob.",
    "how_reverb": "A reverb adds the thousands of reflections of a room, hall, plate or spring. Decay is how long they last.",
    "how_capture": "A captured amp is a drive curve and an EQ fitted from two recordings: your guitar straight in and the same playing through the amp. It's an approximation, not the real circuit.",
    "opt_up": "up",
@@ -1302,7 +1304,21 @@
    "fav_add": "Add to favorites",
    "fav_remove": "Remove from favorites",
    "fav_add_named": "Add {{name}} to favorites",
-   "fav_remove_named": "Remove {{name}} from favorites"
+   "fav_remove_named": "Remove {{name}} from favorites",
+   "opt_free": "ms",
+   "opt_q": "♩",
+   "opt_e_dot": "♪.",
+   "opt_e": "♪",
+   "opt_t": "♪³",
+   "tap": "Tap",
+   "tap_hint": "Tap along with the song (3 or 4 taps) to set the echo to its tempo",
+   "opt_long": {
+    "free": "Free: the time knob, in ms",
+    "q": "A quarter note at the tempo",
+    "e_dot": "A dotted eighth at the tempo",
+    "e": "An eighth note at the tempo",
+    "t": "An eighth-note triplet at the tempo"
+   }
   },
   "plan": {
    "title": "Practice plan",

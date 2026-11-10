@@ -21,6 +21,7 @@ const fmt = (unit, v) => {
   if (unit === "st") return `${v > 0 ? "+" : ""}${Math.round(v)} st`;
   if (unit === "¢") return `${v > 0 ? "+" : ""}${Math.round(v)}¢`;
   if (unit === "s") return `${(+v).toFixed(1)} s`;
+  if (unit === "bpm") return `♩ ${Math.round(v)}`;
   return (+v).toFixed(1);
 };
 const paramLabel = id => /^[bc]\d+$/.test(id) ? (+id.slice(1) >= 1000 ? `${+id.slice(1) / 1000}k` : id.slice(1)) : t(`rig.param.${id}`);
@@ -561,12 +562,14 @@ function pedal(e, where) {
       seg.className = "seg mini";
       seg.setAttribute("role", "group");
       seg.setAttribute("aria-label", paramLabel(p.id));
-      seg.innerHTML = p.options.map(o => `<button data-o="${esc(o)}" class="${e.params[p.id] === o ? "active" : ""}">${esc(t(`rig.opt_${o}`))}</button>`).join("");
+      const long = o => t(`rig.opt_long.${o}`, { defaultValue: "" });      // short labels (♩ ♪.) say their full name
+      seg.innerHTML = p.options.map(o => `<button data-o="${esc(o)}" class="${e.params[p.id] === o ? "active" : ""}"${long(o) ? ` title="${esc(long(o))}" aria-label="${esc(long(o))}"` : ""}>${esc(t(`rig.opt_${o}`))}</button>`).join("");
       $$("button", seg).forEach(b => b.onclick = () => {
         rig.setEffectParam(e.uid, p.id, b.dataset.o);
         $$("button", seg).forEach(x => x.classList.toggle("active", x === b));
       });
       choices.append(seg);
+      if (p.id === "sync") choices.append(tapButton(e));
     } else {
       const k = knob({ label: paramLabel(p.id), min: p.min, max: p.max, step: p.step, value: e.params[p.id], def: p.def, size: 46, skin: "pedal",
         format: v => fmt(p.unit, v), onInput: v => rig.setEffectParam(e.uid, p.id, v) });
@@ -595,6 +598,32 @@ function pedal(e, where) {
   $$(".knob", el).forEach(k => k.addEventListener("pointerdown", () => { el.draggable = false; }));
   el.addEventListener("pointerup", () => { el.draggable = true; });
   return el;
+}
+
+/** Tap tempo for a synced delay: the average of your last taps sets its bpm (and switches sync on). */
+function tapButton(e) {
+  const b = document.createElement("button");
+  b.className = "btn small tap-tempo";
+  b.type = "button";
+  b.textContent = t("rig.tap");
+  b.title = t("rig.tap_hint");
+  let taps = [];
+  b.onclick = () => {
+    const now = performance.now();
+    taps = taps.filter(x => now - x < 2500).concat(now);
+    if (taps.length < 2) return;
+    const gaps = taps.slice(1).map((x, i) => x - taps[i]);
+    const bpm = Math.max(40, Math.min(240, Math.round(60000 / (gaps.reduce((a, c) => a + c) / gaps.length))));
+    rig.setEffectParam(e.uid, "bpm", bpm);
+    const k = knobsByTarget.get(`${e.uid}:bpm`);
+    if (k && k.setValue) k.setValue(bpm);
+    if (e.params.sync === "free") {                        // tapping means you want it in time
+      rig.setEffectParam(e.uid, "sync", "e_dot");
+      const seg = b.previousElementSibling;
+      if (seg) $$("button", seg).forEach(x => x.classList.toggle("active", x.dataset.o === "e_dot"));
+    }
+  };
+  return b;
 }
 
 function openCatalog(where) {

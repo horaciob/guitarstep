@@ -1260,3 +1260,4 @@ body.is-stage #main { max-width: none; padding: 12px 18px; }
 .gl .quick-fav { position: absolute; top: 6px; right: 6px; width: 26px; height: 26px; padding: 0; border-radius: 50%; border: 1px solid transparent; background: transparent; color: var(--muted); font-size: 16px; line-height: 1; cursor: pointer; }
 .gl .quick-fav:hover, .gl .quick-fav:focus-visible { border-color: var(--border); color: var(--text); }
 .gl .quick-fav.on { color: var(--gl-warn, #e0a400); }
+.gl .pedal .tap-tempo { margin-top: 4px; background: rgba(0, 0, 0, .28); color: var(--ink, #fff); border: 1px solid currentColor; font-weight: 700; }
