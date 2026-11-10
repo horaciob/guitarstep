@@ -189,7 +189,7 @@ class Rig extends EventTarget {
   /** With your real guitar in, time with signal counts as free play (pauses over 8 s don't). */
   startFreePlay() {
     clearInterval(this._freeT);
-    this._freeAcc = 0; this._lastSignal = 0;
+    this._freeAcc = 0; this._lastSignal = 0; this._freeSince = Date.now();
     this._freeT = setInterval(() => {
       if (!this.running || this.source.kind !== "input") return;
       const now = performance.now();
@@ -200,10 +200,11 @@ class Rig extends EventTarget {
   }
   flushFreePlay() {
     const seconds = Math.round(this._freeAcc || 0);
-    this._freeAcc = 0;
+    const window_s = Math.max(seconds, (Date.now() - (this._freeSince || Date.now())) / 1000);   // the server leaves out time a lesson was listening
+    this._freeAcc = 0; this._freeSince = Date.now();
     if (seconds < 1) return;
     fetch("/api/plan/free", { method: "POST", keepalive: true, headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ seconds }) })
+      body: JSON.stringify({ seconds, window_s }) })
       .then(() => window.dispatchEvent(new CustomEvent("guitarr:plan-refresh"))).catch(() => {});
   }
 

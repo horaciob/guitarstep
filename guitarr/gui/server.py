@@ -12,6 +12,7 @@ import asyncio
 import json
 import shutil
 import threading
+import time
 import webbrowser
 from pathlib import Path
 
@@ -102,6 +103,13 @@ class State:
         self.probe = None            # signal check: live input
         self.signal: dict = {}       # signal check: results and clips per step
         self.calib: dict = dict(running=False)
+        self.listened: list[list] = []   # recent [start, end or None] of listening sessions (wall clock)
+
+    def listening_overlap(self, start: float, end: float) -> float:
+        """Seconds of [start, end] during which a listening session was running."""
+        import time
+        now = time.time()
+        return sum(max(0.0, min(end, e if e is not None else now) - max(start, s)) for s, e in self.listened)
 
 
 S = State()
@@ -951,9 +959,19 @@ def api_plan_remove(cid: str):
 
 @app.post("/api/plan/free")
 def api_plan_free(body: dict):
-    if S.session and S.session.running:          # the listening session already counts this time
+    """The rig sends the seconds with signal over its last `window_s` seconds. A listening session
+    counts its own time, so the share of the window it was running is left out."""
+    try:
+        secs, window = _float(body.get("seconds")), _float(body.get("window_s"))
+    except (TypeError, ValueError):
+        fail(400, "bad_seconds", "Seconds must be a number")
+    if secs is not None and window and window > 0:
+        now = time.time()
+        busy = min(1.0, S.listening_overlap(now - window, now) / window)
+        secs = round(secs * (1 - busy), 1)
+    elif S.session and S.session.running:
         return dict(counted=0.0)
-    return dict(counted=_plan(plan.record_free_play, body.get("seconds")))
+    return dict(counted=_plan(plan.record_free_play, secs if secs is not None else body.get("seconds")))
 
 
 @app.post("/api/plan/timer")
@@ -1370,6 +1388,8 @@ def live_start(body: dict):
         if not body.get("simulate"):
             plan.pause_timer()          # it started: the session counts its own time
         S.session, S.section, S.ctx, S.final = sess, _section(body), ctx, None
+        span = [time.time(), None]
+        S.listened = [x for x in S.listened if x[1] is None or x[1] > span[0] - 600] + [span]
 
         def run():
             try:
@@ -1384,6 +1404,8 @@ def live_start(body: dict):
                 S.final = rep
             except Exception as e:  # kept in sess.error for the UI
                 sess.error = sess.error or str(e)
+            finally:
+                span[1] = time.time()
 
         S.thread = threading.Thread(target=run, daemon=True)
         S.thread.start()

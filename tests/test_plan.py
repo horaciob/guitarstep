@@ -285,3 +285,23 @@ def test_a_session_that_fails_to_start_leaves_the_timer_running():
     (config.SONGS_DIR / "broken.mid").write_bytes(b"not a midi file")
     assert c.post("/api/live/start", json=dict(song="broken.mid")).status_code == 400
     assert c.get("/api/plan").json()["timer"]["running"]
+
+
+def test_free_play_leaves_out_time_a_session_was_listening():
+    import time
+
+    from fastapi.testclient import TestClient
+
+    from guitarr.gui.server import S, app
+    c = TestClient(app)
+    now = time.time()
+    S.listened = [[now - 20, now - 10]]            # a lesson listened for 10 of the last 30 s
+    try:
+        assert c.post("/api/plan/free", json=dict(seconds=30, window_s=30)).json()["counted"] == 20
+        S.listened = [[now - 5, None]]             # one is listening right now
+        assert c.post("/api/plan/free", json=dict(seconds=10, window_s=10)).json()["counted"] == 5
+        S.listened = []
+        assert c.post("/api/plan/free", json=dict(seconds=12)).json()["counted"] == 12
+        assert c.post("/api/plan/free", json=dict(seconds="lots", window_s=3)).json()["detail"]["code"] == "bad_seconds"
+    finally:
+        S.listened = []
