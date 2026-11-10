@@ -10,6 +10,7 @@ import { bindTakePlayers, takePlayer, timingVerdictHtml } from "../lib/take.js";
 import { hearBar, rhythmSvg } from "../lib/notation.js";
 import { staffSvg } from "../lib/staff.js";
 import { tabText } from "../lib/tab.js";
+import { readable, speakButton, stopSpeaking, toggleSpeak } from "../lib/speak.js";
 import { chartGuide, playChart } from "./charts.js";
 
 const ANSWER_KINDS = ["quiz", "pick", "tap"], DRAWN_KINDS = ["find_note", "play_interval", "tone_row", "echo", "rhythm", "read_play"];
@@ -100,10 +101,10 @@ export async function mount(el, { segs, params = {} }) {
     </div>
     <div class="lesson-layout">
       <div class="stack">
-        <div class="panel"><h2>${esc(t("lesson.idea"))}</h2><ul class="theory">${theory.map(x => `<li>${linkTerms(x, terms, used)}</li>`).join("")}</ul>
+        <div class="panel"><div class="ex-panel-head"><h2>${esc(t("lesson.idea"))}</h2>${speakButton('data-speak-idea')}</div><ul class="theory" id="ideaText">${theory.map(x => `<li>${linkTerms(x, terms, used)}</li>`).join("")}</ul>
           ${(ls.figures || []).map((f, i) => `<figure class="lesson-figure" data-fig="${i}"><div class="fig-box"></div>
             ${captions[i] ? `<figcaption class="muted small">${esc(captions[i])}</figcaption>` : ""}</figure>`).join("")}
-          ${tips.length ? `<h3>${esc(t("lesson.tips"))}</h3><ul class="theory">${tips.map(x => `<li>${linkTerms(x, terms, used)}</li>`).join("")}</ul>` : ""}</div>
+          ${tips.length ? `<h3>${esc(t("lesson.tips"))}</h3><ul class="theory" id="tipsText">${tips.map(x => `<li>${linkTerms(x, terms, used)}</li>`).join("")}</ul>` : ""}</div>
         <div class="panel"><div class="ex-panel-head"><h2>${esc(t("lesson.exercises"))}</h2>
             <button class="btn primary" id="exContinue">▶ ${esc(upNext ? t("lesson.continue_with", { title: exTitle(upNext) }) : t("lesson.practice_again"))}</button></div>
           <p class="muted small">${t("lesson.exercises_hint_html")}</p>
@@ -114,7 +115,7 @@ export async function mount(el, { segs, params = {} }) {
                 ${exTheory(ex) ? `<button class="btn small ex-theory-btn" data-act="theory" aria-expanded="false" title="${esc(t("lesson.theory_btn"))}" aria-label="${esc(t("lesson.theory_btn"))}">📖</button>` : ""}
                 ${hearable(ex) ? `<button class="btn small" data-act="hear" title="${esc(t(ex.kind === "chart" ? "lesson.demo_hint" : "lesson.hear_hint"))}" aria-label="${esc(t(ex.kind === "chart" ? "lesson.demo_hint" : "lesson.hear_hint"))}">♪</button>` : ""}
                 <button class="btn small primary" data-act="go">${esc(t(ex.how === "answer" ? "lesson.start_answer" : "lesson.listen"))}</button></div>
-              ${exTheory(ex) ? `<p class="ex-theory" hidden><b>${esc(t("lesson.theory_short"))}:</b> ${linkTerms(exTheory(ex), terms, used)}</p>` : ""}
+              ${exTheory(ex) ? `<p class="ex-theory" hidden>${speakButton()}<b>${esc(t("lesson.theory_short"))}:</b> <span class="ex-theory-text">${linkTerms(exTheory(ex), terms, used)}</span></p>` : ""}
               <div class="ex-chips"><span class="how-chip">${esc(t(`flow.${ex.stage}`))}</span>
                 ${ex.how === "answer" ? `<span class="how-chip">${esc(t("lesson.how_answer"))}</span>` : ""}
                 ${ex.fadeable ? [0, 1, 2].map(g => `<span class="how-chip${ex.guidance != null && ex.guidance >= g ? " ok" : ""}">${ex.guidance != null && ex.guidance >= g ? "✓ " : ""}${esc(t(`flow.guide_${g}`))}</span>`).join("") : ""}
@@ -143,7 +144,7 @@ export async function mount(el, { segs, params = {} }) {
       <div class="focus-top"><button class="btn small" data-f="back">← ${esc(t("lesson.focus_back"))}</button>
         <small class="muted">${esc(lt("title", ls.title))}</small></div>
       <div class="focus-head"><span class="f-state" id="fState" aria-live="polite"></span><h1 id="fTitle"></h1><p class="muted" id="fTarget"></p>
-        <details class="f-theory" id="fTheory" hidden><summary>📖 ${esc(t("lesson.theory_short"))}</summary><p></p></details>
+        <details class="f-theory" id="fTheory" hidden><summary>📖 ${esc(t("lesson.theory_short"))}</summary><p>${speakButton()}<span></span></p></details>
         <div class="seg mini f-guide" id="fGuide" role="group" aria-label="${esc(t("flow.guide_label"))}" hidden></div></div>
       <div class="focus-body"></div>
       <div class="focus-foot">
@@ -195,6 +196,8 @@ export async function mount(el, { segs, params = {} }) {
     const loop = $(`.exercise[data-id="${CSS.escape(ex.id)}"] [data-act=loop]`, el);
     if (loop) loop.href = `#/practice?chart=${encodeURIComponent(ex.chart)}&from=1&to=${bars}`;
   }));
+  const idea = $("[data-speak-idea]", el);
+  if (idea) idea.onclick = () => toggleSpeak(idea, [readable($("#ideaText", el)), $("#tipsText", el) ? `${t("lesson.tips")}. ${readable($("#tipsText", el))}` : ""].join(" "));
   $$(".exercise", el).forEach(box => {
     const ex = ls.exercises.find(e => e.id === box.dataset.id);
     const hear = $("[data-act=hear]", box), thBtn = $("[data-act=theory]", box);
@@ -202,7 +205,10 @@ export async function mount(el, { segs, params = {} }) {
       const p = $(".ex-theory", box), open = p.hidden;
       p.hidden = !open;
       thBtn.setAttribute("aria-expanded", String(open));
+      if (!open) stopSpeaking();
     };
+    const say_ = $(".ex-theory [data-speak]", box);
+    if (say_) say_.onclick = () => toggleSpeak(say_, readable($(".ex-theory-text", box)));
     if (hear) hear.onclick = () => ex.kind === "chart" ? toggleDemo(ex, hear, [guides.get(ex.id).guide]) : preview(ex, chordData);
     $("[data-act=go]", box).onclick = () => openFocus(el, segs, ls, ex, chordData, exTitle, true);
     const vary = $("[data-act=vary]", box);
@@ -314,7 +320,9 @@ async function openFocus(el, segs, ls, ex, chordData, exTitle, start = false, mo
   $("#fTitle", dlg).textContent = (mode.testout ? `${t("lesson.testout_title")} · ` : "") + exTitle(ex) + suffix;
   const fth = $("#fTheory", dlg), thText = !mode.testout && ex.theory ? tc(`ex_theory.${ex.from || `${ls.id}/${ex.id}`}`, ex.theory) : "";
   fth.hidden = !thText;
-  $("p", fth).textContent = thText;
+  $("p span", fth).textContent = thText;
+  const sayF = $("[data-speak]", fth);
+  if (sayF) { stopSpeaking(); sayF.onclick = () => toggleSpeak(sayF, thText); }
   const need = mode.testout ? Math.max(ex.min, 90) : ex.min;
   $("#fTarget", dlg).textContent = `${exerciseTarget(view)} · ${t("lesson.pass_with", { min: need })}`
     + (!mode.variant && ex.best != null ? ` · ${t("lesson.your_best", { best: Math.round(ex.best) })}` : "");
@@ -374,6 +382,7 @@ async function openFocus(el, segs, ls, ex, chordData, exTitle, start = false, mo
 }
 
 function closeFocus(el, segs) {
+  stopSpeaking();
   if (task) task.stop();
   stopDemo();
   if (!focus) return;
@@ -647,6 +656,7 @@ async function run(el, segs, ls, ex, chordData, exTitle) {
   setState(dlg, "preparing");
   $(".f-next", dlg).innerHTML = "";
   let playing = false;
+  stopSpeaking();                  // the microphone shouldn't hear the voice
   task = listen({ exercise: { lesson: ls.id, exercise: ex.id, guidance: focus.guidance, variant: focus.variant, testout: focus.testout }, click: true }, {
     onState: s => {
       if (!playing) { playing = true; setState(dlg, "playing"); }
@@ -695,6 +705,7 @@ function showResult(box, score, passed, need, xp) {
 }
 
 export function unmount() {
+  stopSpeaking();
   if (task) { task.stop(); task = null; }
   stopDemo();
   focus = null;

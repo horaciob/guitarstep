@@ -2381,6 +2381,10 @@
    "d_cable": "cable",
    "d_guitar": "guitar (volume down)",
    "d_monitor_off": "direct monitoring: OFF"
+  },
+  "speak": {
+   "read": "Read aloud",
+   "stop": "Stop reading"
   }
  },
  "content": {}

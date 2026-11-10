@@ -1251,3 +1251,6 @@ body.is-stage #main { max-width: none; padding: 12px 18px; }
 .gl .rig-search { display: flex; align-items: center; gap: 10px; margin: 4px 0 10px; }
 .gl .rig-search input { flex: 1; max-width: 520px; padding: 9px 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--gl-panel); color: var(--text); font: inherit; }
 .gl .quick[hidden], .gl .quick-group[hidden] { display: none; }
+.gl .speak-btn { padding: 2px 8px; min-width: 0; line-height: 1.2; }
+.gl .ex-theory .speak-btn, .gl .f-theory .speak-btn { float: right; margin: -2px 0 4px 8px; }
+.gl .speak-btn[aria-pressed="true"] { outline: 2px solid var(--gl-info); }

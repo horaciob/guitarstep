@@ -946,7 +946,20 @@ def test_chart_guide_shows_the_chords_on_demand(app_page):
     expect(app_page.locator('.exercise[data-id="waltz-chart"] .g-shapes .mini-chord')).to_have_count(3)
 
 
+FAKE_VOICE = """
+window.__spoken = [];
+class FakeUtterance { constructor(text) { this.text = text; } }
+window.SpeechSynthesisUtterance = FakeUtterance;
+Object.defineProperty(window, "speechSynthesis", { value: {
+  speaking: false, getVoices: () => [{ lang: "en-US", name: "fake" }],
+  speak(u) { window.__spoken.push({ text: u.text, lang: u.lang }); },
+  cancel() {},
+} });
+"""
+
+
 def test_exercise_theory_and_the_optional_metal_course(app_page):
+    app_page.add_init_script(FAKE_VOICE)                        # never a real voice through the speakers
     onboarded(app_page)
     go(app_page, "lesson/three-four")
     ex = app_page.locator('.exercise[data-id="waltz-chart"]')
@@ -956,6 +969,13 @@ def test_exercise_theory_and_the_optional_metal_course(app_page):
     expect(th).to_be_visible()
     expect(th).to_contain_text("three beats")
     expect(ex.locator("[data-act=theory]")).to_have_attribute("aria-expanded", "true")
+    say = th.locator("[data-speak]")                            # 🔊 reads it aloud (a silent fake voice here)
+    say.click()
+    expect(say).to_have_attribute("aria-pressed", "true")
+    spoken = app_page.evaluate("window.__spoken")
+    assert "three beats" in spoken[-1]["text"] and "🔊" not in spoken[-1]["text"]
+    say.click()                                                 # again: stops
+    expect(say).to_have_attribute("aria-pressed", "false")
     go(app_page, "course")
     expect(app_page.get_by_role("heading", name="Optional courses")).to_be_visible()
     metal = app_page.locator("section.level.optional")
