@@ -104,3 +104,18 @@ def test_rig_impulse_responses():
     assert c.post("/api/rig/irs", files=dict(file=("long.wav", long.getvalue()))).json()["detail"]["code"] == "ir_too_long"
     assert c.delete("/api/rig/irs/My cab 4x12.wav").status_code == 200
     assert c.get("/api/rig/irs").json() == []
+
+
+def test_requests_from_other_sites_are_refused():
+    c = client()
+    # another website open in the browser can't change anything or open a socket
+    r = c.put("/api/plan/goal", json=dict(weekly_minutes=300), headers={"Origin": "https://evil.example"})
+    assert r.status_code == 403 and r.json()["detail"]["code"] == "forbidden_origin"
+    assert c.post("/api/backup", files={"file": ("b.zip", b"x")}, headers={"Origin": "null"}).status_code == 403
+    # DNS rebinding: a page on evil.example that resolves to 127.0.0.1
+    assert c.get("/api/progress", headers={"Host": "evil.example:8765"}).status_code == 403
+    # our own page, and tools without a browser, still work
+    assert c.get("/api/progress", headers={"Origin": "https://evil.example"}).status_code == 200
+    own = {"Host": "127.0.0.1:8765", "Origin": "http://127.0.0.1:8765"}
+    assert c.put("/api/plan/goal", json=dict(weekly_minutes=300), headers=own).status_code == 200
+    assert c.put("/api/plan/goal", json=dict(weekly_minutes=300)).status_code == 200

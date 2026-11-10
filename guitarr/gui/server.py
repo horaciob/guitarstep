@@ -31,6 +31,56 @@ def fail(status: int, code: str, message: str):
     raise HTTPException(status, detail=dict(code=code, message=message))
 
 
+# The server only answers its own page. Any website open in the browser can send requests to
+# 127.0.0.1, so a request from another origin (or, on loopback, for another host name: DNS
+# rebinding) is refused before it can restore a backup, start the microphone or change settings.
+LOOPBACK_HOSTS = {"127.0.0.1", "localhost", "::1", "testserver"}
+ALLOWED_HOSTS: set[str] | None = set(LOOPBACK_HOSTS)      # None: any host name (bound to the network)
+SAFE_METHODS = {"GET", "HEAD", "OPTIONS"}
+
+
+def _host_name(host: str) -> str:
+    host = host.strip().lower()
+    if host.startswith("["):                               # [::1]:8765
+        return host[1:host.find("]")] if "]" in host else host
+    return host.rsplit(":", 1)[0] if host.count(":") == 1 else host
+
+
+def request_allowed(scope: dict) -> bool:
+    headers = {k.decode("latin-1").lower(): v.decode("latin-1") for k, v in scope.get("headers") or []}
+    host = headers.get("host", "")
+    if ALLOWED_HOSTS is not None and _host_name(host) not in ALLOWED_HOSTS:
+        return False
+    origin = headers.get("origin")
+    if origin is None:                                     # not a browser page (curl, the CLI, tests)
+        return True
+    unsafe = scope["type"] == "websocket" or scope.get("method", "GET") not in SAFE_METHODS
+    if not unsafe:
+        return True
+    from urllib.parse import urlsplit
+    return origin != "null" and urlsplit(origin).netloc.lower() == host.lower()
+
+
+class SameOriginOnly:
+    def __init__(self, app_):
+        self.app = app_
+
+    async def __call__(self, scope, receive, send):
+        if scope["type"] in ("http", "websocket") and not request_allowed(scope):
+            if scope["type"] == "websocket":
+                await send({"type": "websocket.close", "code": 1008})
+                return
+            body = json.dumps(dict(detail=dict(code="forbidden_origin", message="Requests from other sites are not allowed"))).encode()
+            await send({"type": "http.response.start", "status": 403,
+                        "headers": [(b"content-type", b"application/json"), (b"content-length", str(len(body)).encode())]})
+            await send({"type": "http.response.body", "body": body})
+            return
+        await self.app(scope, receive, send)
+
+
+app.add_middleware(SameOriginOnly)
+
+
 @app.middleware("http")
 async def revalidate_static(request, call_next):
     """Make the browser revalidate JS/CSS (via ETag) so it never runs stale versions."""
@@ -1602,6 +1652,11 @@ def api_history_song(sid: str):
 def serve(host: str = "127.0.0.1", port: int = 8765, open_browser: bool = True) -> None:
     import uvicorn
 
+    global ALLOWED_HOSTS
+    if host in ("0.0.0.0", "::", ""):          # on the network (Docker, a phone): any host name, same origin only
+        ALLOWED_HOSTS = None
+    else:
+        ALLOWED_HOSTS = LOOPBACK_HOSTS | {_host_name(host)}
     url = f"http://{host}:{port}/"
     print(f"guitarr {__version__} — open {url}  (Ctrl+C to quit)")
     if open_browser:

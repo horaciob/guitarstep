@@ -135,7 +135,8 @@
    "bad_tuning": "Afinación desconocida.",
    "no_probe": "El chequeo de señal no está escuchando: recargá la página.",
    "too_short": "Todavía no hay suficiente audio: probá de nuevo.",
-   "no_clip": "Todavía no hay nada grabado en ese paso."
+   "no_clip": "Todavía no hay nada grabado en ese paso.",
+   "forbidden_origin": "No se aceptan pedidos desde otros sitios"
   },
   "practice": {
    "title": "🎧 Practicar con escucha",

@@ -135,7 +135,8 @@
    "bad_tuning": "Unknown tuning.",
    "no_probe": "The signal check isn't listening: reload the page.",
    "too_short": "Not enough audio yet: try again.",
-   "no_clip": "Nothing recorded for that step yet."
+   "no_clip": "Nothing recorded for that step yet.",
+   "forbidden_origin": "Requests from other sites are not allowed"
   },
   "practice": {
    "title": "🎧 Practice with listening",
