@@ -148,6 +148,28 @@ def test_backup_download_and_restore(app_page, tmp_path):
     expect(app_page.locator("#bkStatus")).to_contain_text("Restored")
 
 
+def test_old_takes_can_be_deleted(app_page):
+    import os
+    import time
+
+    from guitarr import config
+    config.TAKES_DIR.mkdir(parents=True, exist_ok=True)
+    for name, days in (("old.wav", 60), ("new.wav", 1)):
+        p = config.TAKES_DIR / name
+        p.write_bytes(b"x" * 2_000_000)
+        t = time.time() - days * 86400
+        os.utime(p, (t, t))
+    onboarded(app_page)
+    go(app_page, "settings")
+    expect(app_page.locator("#tkUsage")).to_contain_text("2 takes · 4.0 MB")
+    app_page.locator("#tkDel").click()                       # older than a month: asks first
+    expect(app_page.locator("#tkConfirm")).to_contain_text("Delete 1 take (2.0 MB)?")
+    app_page.locator("#tkYes").click()
+    expect(app_page.locator("#tkStatus")).to_contain_text("Deleted 1 take")
+    expect(app_page.locator("#tkUsage")).to_contain_text("1 take · 2.0 MB")
+    assert not (config.TAKES_DIR / "old.wav").exists() and (config.TAKES_DIR / "new.wav").exists()
+
+
 def test_rig_impulse_response_is_kept_on_the_server(app_page, tmp_path):
     import numpy as np
     import soundfile as sf

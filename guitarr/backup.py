@@ -58,6 +58,9 @@ def create(takes: bool = False) -> bytes:
     return buf.getvalue()
 
 
+KEEP_SAFETY = 3
+
+
 def filename() -> str:
     return f"guitarr-backup-{datetime.now():%Y-%m-%d}.zip"
 
@@ -106,4 +109,6 @@ def _safety_copy() -> Path | None:
     folder.mkdir(parents=True, exist_ok=True)
     path = folder / f"before-restore-{datetime.now():%Y-%m-%d-%H%M%S}.zip"
     path.write_bytes(create(takes=True))
+    for old in sorted(folder.glob("before-restore-*.zip"))[:-KEEP_SAFETY]:   # they hold every take: keep the last few
+        old.unlink(missing_ok=True)
     return path

@@ -22,6 +22,9 @@ export function takePlayer(name, info) {
 export function bindTakePlayers(root) {
   root.querySelectorAll(".take-player").forEach(box => {
     const cb = box.querySelector("[data-take-click]"), audio = box.querySelector("audio");
+    if (audio) audio.addEventListener("error", () => {               // deleted from Settings → Your data
+      box.innerHTML = `<span class="muted small">${esc(t("take.gone"))}</span>`;
+    }, { once: true });
     if (!cb || !audio) return;
     cb.addEventListener("change", () => {
       try { localStorage.setItem(KEY, cb.checked ? "1" : "0"); } catch { /* private window */ }

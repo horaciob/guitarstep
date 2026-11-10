@@ -144,7 +144,8 @@
    "no_preset": "That sound no longer exists",
    "bad_audio": "Both files must be audio recordings (WAV, FLAC or OGG)",
    "capture_too_short": "Record at least half a second of playing",
-   "capture_silent": "One of the recordings is silent"
+   "capture_silent": "One of the recordings is silent",
+   "bad_days": "Choose how old the takes to delete are"
   },
   "practice": {
    "title": "🎧 Practice with listening",
@@ -1381,7 +1382,21 @@
    "yes": "Restore",
    "no": "Cancel",
    "restoring": "Restoring…",
-   "restored": "Restored {{n}} files. Reloading…"
+   "restored": "Restored {{n}} files. Reloading…",
+   "takes_title": "Recorded takes",
+   "takes_usage_one": "{{count}} take · {{mb}} MB",
+   "takes_usage_other": "{{count}} takes · {{mb}} MB",
+   "takes_older": "Delete takes older than",
+   "age_7": "a week",
+   "age_30": "a month",
+   "age_90": "three months",
+   "age_0": "any age (all of them)",
+   "takes_delete": "Delete…",
+   "takes_none_older": "No takes are that old.",
+   "takes_q_one": "Delete {{count}} take ({{mb}} MB)? Your scores and history stay.",
+   "takes_q_other": "Delete {{count}} takes ({{mb}} MB)? Your scores and history stay.",
+   "takes_deleted_one": "Deleted {{count}} take: {{mb}} MB free.",
+   "takes_deleted_other": "Deleted {{count}} takes: {{mb}} MB free."
   },
   "today": {
    "title": "Today's practice",
@@ -2294,7 +2309,8 @@
    "listen": "Listen to what you just played:",
    "with_click": "With the metronome",
    "bpm": "♩ = {{bpm}}",
-   "bpm_change": "♩ = {{from}} → {{to}}"
+   "bpm_change": "♩ = {{from}} → {{to}}",
+   "gone": "This take was deleted."
   },
   "meter": {
    "zone_ok": "−30 to −10 dB: stay here",

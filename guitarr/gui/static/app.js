@@ -944,6 +944,7 @@ async function loadSources() {
 
 async function loadSettings() {
   loadReminder();
+  loadTakesUsage();
   loadInstrumentPanel();
   loadSources();
   loadLatency();
@@ -1130,6 +1131,35 @@ $("#bkFile").addEventListener("change", e => {
       setTimeout(() => location.reload(), 1200);
     } catch (err) { $("#bkStatus").textContent = err.message; $("#bkStatus").className = "small err"; }
     done();
+  };
+});
+
+// ------------------------------------------------------------------ your data: recorded takes
+const mb = bytes => (bytes / 1e6).toFixed(bytes < 1e7 ? 1 : 0);
+let takesRoom = null;
+async function loadTakesUsage() {
+  try { takesRoom = await api("/api/takes/usage"); } catch { return; }
+  $("#tkUsage").textContent = t("data.takes_usage", { count: takesRoom.count, mb: mb(takesRoom.bytes) });
+  $("#tkDel").disabled = !takesRoom.count;
+}
+$("#tkDays").addEventListener("change", () => { $("#tkConfirm").hidden = true; });
+$("#tkDel").addEventListener("click", () => {
+  const days = $("#tkDays").value, o = takesRoom && takesRoom.older[days];
+  const box = $("#tkConfirm");
+  box.hidden = false;
+  if (!o || !o.count) { box.innerHTML = `<span class="small muted">${esc(t("data.takes_none_older"))}</span>`; return; }
+  box.innerHTML = `<span class="small">${esc(t("data.takes_q", { count: o.count, mb: mb(o.bytes) }))}</span>
+    <button class="btn small danger" id="tkYes">${esc(t("data.yes"))}</button><button class="btn small" id="tkNo">${esc(t("data.no"))}</button>`;
+  $("#tkNo").onclick = () => { box.hidden = true; };
+  $("#tkYes").onclick = async () => {
+    box.hidden = true;
+    try {
+      const r = await api("/api/takes/cleanup", { json: { days: +days } });
+      $("#tkStatus").textContent = t("data.takes_deleted", { count: r.deleted, mb: mb(r.freed) });
+      $("#tkStatus").className = "small ok";
+      loadTakes();
+    } catch (err) { $("#tkStatus").textContent = err.message; $("#tkStatus").className = "small err"; }
+    loadTakesUsage();
   };
 });
 

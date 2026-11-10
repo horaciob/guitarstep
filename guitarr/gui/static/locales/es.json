@@ -144,7 +144,8 @@
    "no_preset": "Ese sonido ya no existe",
    "bad_audio": "Los dos archivos tienen que ser grabaciones de audio (WAV, FLAC u OGG)",
    "capture_too_short": "Grabá al menos medio segundo tocando",
-   "capture_silent": "Una de las grabaciones está en silencio"
+   "capture_silent": "Una de las grabaciones está en silencio",
+   "bad_days": "Elegí de qué antigüedad son las tomas a borrar"
   },
   "practice": {
    "title": "🎧 Practicar con escucha",
@@ -1381,7 +1382,21 @@
    "yes": "Restaurar",
    "no": "Cancelar",
    "restoring": "Restaurando…",
-   "restored": "Se restauraron {{n}} archivos. Recargando…"
+   "restored": "Se restauraron {{n}} archivos. Recargando…",
+   "takes_title": "Tomas grabadas",
+   "takes_usage_one": "{{count}} toma · {{mb}} MB",
+   "takes_usage_other": "{{count}} tomas · {{mb}} MB",
+   "takes_older": "Borrar las tomas de hace más de",
+   "age_7": "una semana",
+   "age_30": "un mes",
+   "age_90": "tres meses",
+   "age_0": "cualquier fecha (todas)",
+   "takes_delete": "Borrar…",
+   "takes_none_older": "No hay tomas tan viejas.",
+   "takes_q_one": "¿Borrar {{count}} toma ({{mb}} MB)? Tus puntajes y el historial quedan.",
+   "takes_q_other": "¿Borrar {{count}} tomas ({{mb}} MB)? Tus puntajes y el historial quedan.",
+   "takes_deleted_one": "Se borró {{count}} toma: {{mb}} MB libres.",
+   "takes_deleted_other": "Se borraron {{count}} tomas: {{mb}} MB libres."
   },
   "today": {
    "title": "Práctica de hoy",
@@ -2294,7 +2309,8 @@
    "listen": "Escuchá lo que acabás de tocar:",
    "with_click": "Con el metrónomo",
    "bpm": "♩ = {{bpm}}",
-   "bpm_change": "♩ = {{from}} → {{to}}"
+   "bpm_change": "♩ = {{from}} → {{to}}",
+   "gone": "Esta toma se borró."
   },
   "meter": {
    "zone_ok": "−30 a −10 dB: mantenete acá",

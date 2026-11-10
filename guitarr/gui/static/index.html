@@ -323,6 +323,20 @@
         </div>
         <div id="bkConfirm" class="confirm-inline" hidden></div>
         <p class="small" id="bkStatus" aria-live="polite"></p>
+        <h3 class="sub" data-i18n="data.takes_title">Recorded takes</h3>
+        <p class="small" id="tkUsage"></p>
+        <div class="row left wrap">
+          <label for="tkDays" data-i18n="data.takes_older">Delete takes older than</label>
+          <select id="tkDays">
+            <option value="7" data-i18n="data.age_7">a week</option>
+            <option value="30" selected data-i18n="data.age_30">a month</option>
+            <option value="90" data-i18n="data.age_90">three months</option>
+            <option value="0" data-i18n="data.age_0">all of them</option>
+          </select>
+          <button class="btn small" id="tkDel" data-i18n="data.takes_delete">Delete…</button>
+        </div>
+        <div id="tkConfirm" class="confirm-inline" hidden></div>
+        <p class="small" id="tkStatus" aria-live="polite"></p>
       </div>
     </div>
   </div>

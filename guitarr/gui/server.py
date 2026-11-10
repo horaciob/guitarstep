@@ -1271,6 +1271,24 @@ def takes():
             for p in sorted(config.TAKES_DIR.glob("*.wav"), key=lambda p: -p.stat().st_mtime)]
 
 
+@app.get("/api/takes/usage")
+def takes_usage():
+    from .. import takes as takes_
+    return takes_.usage()
+
+
+@app.post("/api/takes/cleanup")
+def takes_cleanup(body: dict):
+    from .. import takes as takes_
+    with S.lock:
+        if S.session and S.session.running:
+            fail(409, "busy", "Stop practicing first")
+        try:
+            return takes_.cleanup(body.get("days"))
+        except ValueError:
+            fail(400, "bad_days", "Choose how old the takes to delete are")
+
+
 def _store_take(file: UploadFile) -> str:
     name = _safe_name(file.filename)
     config.TAKES_DIR.mkdir(parents=True, exist_ok=True)
