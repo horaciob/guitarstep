@@ -11,7 +11,9 @@
 """
 from __future__ import annotations
 
+import json
 import os
+import threading
 import tomllib
 from pathlib import Path
 
@@ -21,6 +23,22 @@ CACHE_DIR = HOME / "cache"
 SONGS_DIR = HOME / "songs"
 TAKES_DIR = HOME / "takes"
 HISTORY_DIR = HOME / "history"
+
+def write_text_atomic(path: Path, text: str) -> None:
+    """Writes the whole file or nothing: a temp file beside it (one per writer), then a rename."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_name(f".{path.name}.{os.getpid()}.{threading.get_ident()}.tmp")
+    try:
+        tmp.write_text(text, encoding="utf-8")
+        tmp.replace(path)
+    finally:
+        tmp.unlink(missing_ok=True)
+
+
+def write_json(path: Path, data) -> None:
+    """Saves data as readable JSON, atomically (see write_text_atomic)."""
+    write_text_atomic(path, json.dumps(data, ensure_ascii=False, indent=1))
+
 
 INSTRUMENT_DEFAULTS = dict(tuning="standard", left_handed=False, tab_low_on_top=True)   # tab: 6th string on the top line
 AUDIO_KEYS = ("device", "channel", "output_device", "samplerate", "latency_ms", "gate_db", "sensitivity", "hum_hz")
@@ -65,9 +83,7 @@ def save(data: dict) -> None:
         lines += _table("reminder", data["reminder"])
     for song, opts in sorted(data.get("songs", {}).items()):
         lines += _table(f"songs.{_val(song)}", opts)
-    tmp = CONFIG_PATH.with_suffix(".tmp")
-    tmp.write_text("\n".join(lines), encoding="utf-8")
-    tmp.replace(CONFIG_PATH)
+    write_text_atomic(CONFIG_PATH, "\n".join(lines))
 
 
 def update_audio(**kw) -> dict:

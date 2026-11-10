@@ -27,7 +27,7 @@ def save(result: dict, section: dict | None = None) -> Path:
         data["section"] = section
     stamp = datetime.now().strftime("%Y%m%d-%H%M%S-%f")
     path = folder / f"{stamp}-{data.get('kind', 'live')}.json"
-    path.write_text(json.dumps(data, ensure_ascii=False, indent=1))
+    config.write_json(path, data)
     return path
 
 

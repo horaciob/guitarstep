@@ -7,7 +7,6 @@ always uses the clean input.
 from __future__ import annotations
 
 import json
-import os
 import re
 import threading
 import uuid
@@ -48,10 +47,7 @@ def _read() -> dict:
 
 
 def _write(d: dict) -> None:
-    config.HOME.mkdir(parents=True, exist_ok=True)
-    tmp = path().with_suffix(f".{os.getpid()}.{threading.get_ident()}.tmp")
-    tmp.write_text(json.dumps(d, ensure_ascii=False, indent=1), encoding="utf-8")
-    tmp.replace(path())
+    config.write_json(path(), d)
 
 
 def _check_rig(rig) -> dict:

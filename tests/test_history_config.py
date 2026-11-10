@@ -28,3 +28,22 @@ def test_history_and_problem_bars():
     assert [r["bar"] for r in pb] == [2, 3]
     cmd = history.suggest_command("riff", sess)
     assert "--start-bar 2 --end-bar 3" in cmd and "--trainer" in cmd
+
+
+def test_json_is_written_whole_or_not_at_all(tmp_path, monkeypatch):
+    from pathlib import Path
+
+    from guitarr import config
+    p = tmp_path / "sub" / "data.json"
+    config.write_json(p, {"a": "ñ"})
+    assert p.read_text(encoding="utf-8") == '{\n "a": "ñ"\n}'
+
+    def boom(self, target):
+        raise OSError("disk full")
+    monkeypatch.setattr(Path, "replace", boom)
+    try:
+        config.write_json(p, {"a": "new"})
+    except OSError:
+        pass
+    assert p.read_text(encoding="utf-8") == '{\n "a": "ñ"\n}'          # the old file is intact
+    assert sorted(x.name for x in p.parent.iterdir()) == ["data.json"]   # and no temp file is left

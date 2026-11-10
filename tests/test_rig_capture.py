@@ -65,7 +65,7 @@ def test_rig_saves_from_many_threads_lose_nothing():
         list(pool.map(work, range(40)))
     names = {p["name"] for p in rig.get()["presets"]}
     assert names == {f"Sound {i}" for i in range(40)}
-    assert not list(rig.path().parent.glob("rig*.tmp"))
+    assert not list(rig.path().parent.glob("*.tmp")) and not list(rig.path().parent.glob(".*.tmp"))
 
 
 def test_favorite_sounds_are_kept():

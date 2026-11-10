@@ -269,8 +269,7 @@ def save_chart(text: str, cid: str | None = None) -> dict:
     builtin = (DATA_DIR / "charts" / f"{cid}.txt").exists()
     if builtin:
         cid = f"{cid}-mine"
-    user_dir().mkdir(parents=True, exist_ok=True)
-    (user_dir() / f"{cid}.txt").write_text(text.strip() + "\n", encoding="utf-8")
+    config.write_text_atomic(user_dir() / f"{cid}.txt", text.strip() + "\n")
     return dict(id=cid, title=c["title"])
 
 
