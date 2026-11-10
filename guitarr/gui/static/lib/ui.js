@@ -3,6 +3,8 @@ import { errorText, t } from "./i18n.js";
 
 export const $ = (s, el = document) => el.querySelector(s);
 export const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+/** A string as a literal inside a RegExp. */
+export const escRe = s => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 export const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 export const NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 export const OPEN = [40, 45, 50, 55, 59, 64];            // 6th … 1st

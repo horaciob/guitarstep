@@ -1,7 +1,7 @@
 // Exercises you pass by answering: multiple-choice questions and picking notes on the fretboard.
 // The server draws the questions, keeps the answers and grades them; this module only shows them.
 import { t, tc } from "./i18n.js";
-import { api, esc, pluck, stringRow } from "./ui.js";
+import { api, esc, escRe, pluck, stringRow } from "./ui.js";
 import { neck } from "./fretboard.js";
 import { hearBar, markHits, onsetsOf, playBar, rhythmSvg } from "./notation.js";
 import { staffSvg } from "./staff.js";
@@ -14,7 +14,6 @@ function sameWord(term, aliases) {
   const stem = term.toLowerCase().slice(0, Math.max(3, term.length - 2));
   return [term, ...(aliases || []).filter(a => a.toLowerCase().startsWith(stem))];
 }
-const escRe = s => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 /** A 📖 note in your language with the glossary term left blank. */
 function theoryCloze(p) {

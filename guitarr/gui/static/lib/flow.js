@@ -1,7 +1,7 @@
 // The teaching method in the lesson view: the five steps, understanding vs playing, and the glossary.
 // Everything shown here is computed on the server (see _lesson_flow in gui/server.py); this only draws it.
 import { lang, t, tc } from "./i18n.js";
-import { api, esc } from "./ui.js";
+import { api, esc, escRe } from "./ui.js";
 
 /** discover → understand → guided → independent → apply, each with a number and a word (and ✓ when done). */
 export function stepperHtml(flow) {
@@ -34,7 +34,6 @@ export async function loadGlossary() {
   return out;
 }
 
-const escRe = s => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 /** HTML for a text with the first mention of each glossary term turned into a button (once per `used` set). */
 export function linkTerms(text, terms, used) {
