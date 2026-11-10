@@ -483,6 +483,9 @@ def course() -> dict:
         recap = _recap(lvl)
         if recap:
             lvl["lessons"].append(recap)
+        for ls in lvl["lessons"]:            # a suggested rig sound: the lesson's own, else its level's
+            if lvl.get("tone"):
+                ls.setdefault("tone", lvl["tone"])
     return data
 
 

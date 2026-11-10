@@ -90,3 +90,16 @@ def test_spanish_texts_follow_the_course():
             assert f"{ls['id']}/{ex['id']}" in ES["exercises"], f"{ls['id']}/{ex['id']}"
     assert {c["id"] for c in catalog.chords()} <= set(ES["chords"])
     assert {g["id"] for g in catalog.chord_groups()} <= set(ES["groups"])
+
+
+def test_every_lesson_suggests_a_sound_that_exists():
+    import re
+    from pathlib import Path
+
+    js = (Path(catalog.__file__).parent / "gui/static/lib/rig/presets.js").read_text()
+    ids = set()
+    for name in ("FACTORY", "ARTISTS"):
+        i = js.index(f"export const {name} = {{")
+        ids |= set(re.findall(r"^  (\w+): \(\) =>", js[i:js.index("\n};", i)], re.M))
+    for ls in catalog.all_lessons():
+        assert ls.get("tone") in ids, (ls["id"], ls.get("tone"))

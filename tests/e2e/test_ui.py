@@ -1093,3 +1093,14 @@ def test_rig_delay_follows_the_tempo(app_page):
     bpm = app_page.evaluate("""async () => { const { rig } = await import('/static/lib/rig/engine.js');
         return [...rig.state.pedals, ...rig.state.post].find(e => e.type === 'delay').params.bpm; }""")
     assert 120 <= bpm <= 170
+
+
+def test_lesson_suggests_a_rig_sound(app_page):
+    onboarded(app_page)
+    go(app_page, "lesson/metal-chug")
+    tone = app_page.locator("#lessonTone")
+    expect(tone).to_contain_text("Modern metal")
+    tone.locator("#toneLoad").click()                         # loads it; the rig stays off (no sound)
+    expect(tone).to_contain_text("in use")
+    cur = app_page.evaluate("async () => { const { rig } = await import('/static/lib/rig/engine.js'); return [rig.preset.id, rig.running]; }")
+    assert cur == ["modern_metal", False]

@@ -521,7 +521,13 @@
    "lat_loopback": "medida con cable",
    "lat_play": "medida tocando",
    "lat_manual": "puesta a mano",
-   "lat_fix": "Medila en Ajustes"
+   "lat_fix": "Medila en Ajustes",
+   "tone": "Sonido sugerido: {{name}}",
+   "tone_load": "Cargarlo",
+   "tone_using": "en uso",
+   "tone_rig": "Abrir el rig",
+   "tone_loaded_on": "{{name}} está sonando",
+   "tone_loaded_off": "{{name}} quedó cargado: prendé el rig para escucharlo"
   },
   "chords": {
    "title": "Acordes",

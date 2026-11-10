@@ -4,6 +4,7 @@
    "id": "n1",
    "number": 1,
    "title": "First sounds",
+   "tone": "clean_sparkle",
    "subtitle": "Open strings, your first chord and your first change.",
    "lessons": [
     {
@@ -240,6 +241,7 @@
    "id": "n2",
    "number": 2,
    "title": "Open chords",
+   "tone": "clean_sparkle",
    "subtitle": "The chords behind thousands of songs, and the color chords one finger away from them.",
    "lessons": [
     {
@@ -395,6 +397,7 @@
    "id": "n3",
    "number": 3,
    "title": "Rhythm",
+   "tone": "clean_sparkle",
    "subtitle": "Strumming, time signatures and the right hand.",
    "lessons": [
     {
@@ -457,6 +460,7 @@
    "id": "n16",
    "number": 4,
    "title": "Reading rhythm",
+   "tone": "clean_sparkle",
    "subtitle": "Note values, rests and the pulse, tapped and then played.",
    "lessons": [
     {
@@ -750,6 +754,7 @@
    "id": "n4",
    "number": 5,
    "title": "Color",
+   "tone": "blues_crunch",
    "subtitle": "Blues, seventh chords and power chords.",
    "lessons": [
     {
@@ -843,6 +848,7 @@
     {
      "id": "power-chords",
      "title": "Power chords",
+     "tone": "classic_rock",
      "minutes": 15,
      "theory": [
       "A power chord is root plus fifth: neither major nor minor, which is why it sounds great with distortion.",
@@ -881,6 +887,7 @@
    "id": "n5",
    "number": 6,
    "title": "Barre chords and melody",
+   "tone": "clean_sparkle",
    "subtitle": "F with a barre, moving shapes, barre sevenths and your first scale.",
    "lessons": [
     {
@@ -1022,6 +1029,7 @@
     {
      "id": "pentatonic",
      "title": "A minor pentatonic",
+     "tone": "blues_crunch",
      "minutes": 20,
      "theory": [
       "The pentatonic scale has 5 notes: most rock and blues solos are improvised with it.",
@@ -1082,6 +1090,7 @@
    "id": "n21",
    "number": 7,
    "title": "Guitar technique",
+   "tone": "classic_rock",
    "subtitle": "Alternate and economy picking, palm mute, legato, bends and vibrato.",
    "lessons": [
     {
@@ -1333,6 +1342,7 @@
     {
      "id": "fingerstyle",
      "title": "Fingerstyle: p, i, m, a",
+     "tone": "acoustic_stage",
      "minutes": 10,
      "theory": [
       "In fingerstyle the picking-hand fingers have names from Spanish: p (pulgar, thumb), i (índice), m (medio), a (anular). The thumb plays the bass strings (6, 5, 4); i, m and a usually take strings 3, 2 and 1.",
@@ -1373,6 +1383,7 @@
     {
      "id": "legato",
      "title": "Legato",
+     "tone": "smooth_lead",
      "minutes": 12,
      "theory": [
       "Legato means playing several notes with a single pick stroke and doing the rest with the fretting hand: hammer-on (h) to go up, pull-off (p) to come down. The sound flows, like a voice singing.",
@@ -1420,6 +1431,7 @@
     {
      "id": "finger-workouts",
      "title": "Finger workouts",
+     "tone": "clean_sparkle",
      "minutes": 12,
      "theory": [
       "Finger exercises train what songs take for granted: each finger landing on its fret, on time, with the others relaxed.",
@@ -1529,6 +1541,7 @@
    "id": "n23",
    "number": 8,
    "title": "Fingerpicking and arpeggios",
+   "tone": "acoustic_stage",
    "subtitle": "Picking patterns, alternating bass, melody over a bass line, and arpeggios of every chord type across the neck.",
    "lessons": [
     {
@@ -1852,6 +1865,7 @@
    "id": "n6",
    "number": 9,
    "title": "The blues",
+   "tone": "blues_crunch",
    "subtitle": "Shuffle, thirds that follow the chords, bends with a target, phrases that answer, and a story in three choruses.",
    "lessons": [
     {
@@ -2130,6 +2144,7 @@
     {
      "id": "blues-minor",
      "title": "Slow minor blues: long notes",
+     "tone": "bb_king",
      "minutes": 15,
      "theory": [
       "In a minor blues the minor third (C in A minor) is home: it doesn't need to resolve to the major third.",
@@ -2407,11 +2422,13 @@
    "id": "n7",
    "number": 10,
    "title": "Songs",
+   "tone": "smooth_lead",
    "subtitle": "Real songs: their chords, their form, the techniques they use, and the chart at your own pace.",
    "lessons": [
     {
      "id": "november-rain",
      "title": "November Rain (Guns N' Roses)",
+     "tone": "slash_lead",
      "minutes": 20,
      "theory": [
       "The record is tuned a half step down and sounds in B major. In standard tuning you play the same shapes in C: F, Dm, C and G.",
@@ -2514,6 +2531,7 @@
     {
      "id": "comfortably-numb",
      "title": "Comfortably Numb (Pink Floyd)",
+     "tone": "gilmour_lead",
      "minutes": 20,
      "theory": [
       "Standard tuning. The verse is in B minor: Bm → A → G → Em, and back to Bm.",
@@ -2633,6 +2651,7 @@
    "id": "n8",
    "number": 11,
    "title": "Reading the neck",
+   "tone": "clean_sparkle",
    "subtitle": "Half steps, intervals by ear and by fret, finding notes and thinking in degrees.",
    "lessons": [
     {
@@ -3252,6 +3271,7 @@
    "id": "n17",
    "number": 12,
    "title": "Reading rhythm II",
+   "tone": "clean_sparkle",
    "subtitle": "Sixteenths, dotted notes, triplets, syncopation and dictation.",
    "lessons": [
     {
@@ -3549,6 +3569,7 @@
    "id": "n18",
    "number": 13,
    "title": "Reading notation",
+   "tone": "clean_sparkle",
    "subtitle": "From tab to the staff: the treble clef, position by position.",
    "lessons": [
     {
@@ -3959,6 +3980,7 @@
    "id": "n9",
    "number": 14,
    "title": "Scales",
+   "tone": "clean_sparkle",
    "subtitle": "Build scales from their steps, spell them in every key, and play them across the neck.",
    "lessons": [
     {
@@ -4553,6 +4575,7 @@
    "id": "n10",
    "number": 15,
    "title": "Scale colors",
+   "tone": "smooth_lead",
    "subtitle": "Modes, symmetric scales, bebop and altered: the colors of rock and jazz.",
    "lessons": [
     {
@@ -4884,6 +4907,7 @@
    "id": "n11",
    "number": 16,
    "title": "Building chords",
+   "tone": "clean_sparkle",
    "subtitle": "Triads, inversions, sus and sixth chords, the seventh family and extensions.",
    "lessons": [
     {
@@ -5349,6 +5373,7 @@
    "id": "n22",
    "number": 17,
    "title": "Advanced technique",
+   "tone": "smooth_lead",
    "subtitle": "Sweeping triads and tapping, once you know the shapes they come from.",
    "lessons": [
     {
@@ -5445,6 +5470,7 @@
    "id": "n19",
    "number": 18,
    "title": "CAGED",
+   "tone": "clean_sparkle",
    "subtitle": "Five chord shapes that fit together and cover the whole neck.",
    "lessons": [
     {
@@ -5789,6 +5815,7 @@
    "id": "n12",
    "number": 19,
    "title": "Harmony",
+   "tone": "clean_sparkle",
    "subtitle": "The chords that live in a key, written as roman numerals, in major and minor.",
    "lessons": [
     {
@@ -5986,6 +6013,7 @@
    "id": "n20",
    "number": 20,
    "title": "Harmonic function",
+   "tone": "clean_sparkle",
    "subtitle": "What each chord does, by name and by ear: cadences, secondary dominants, borrowed chords.",
    "lessons": [
     {
@@ -6264,6 +6292,7 @@
    "id": "n13",
    "number": 21,
    "title": "Voicings",
+   "tone": "jazz_box",
    "subtitle": "Shells, drop-2, drop-3, voice leading and guide tones: chords the way jazz guitarists play them.",
    "lessons": [
     {
@@ -6621,6 +6650,7 @@
    "id": "n14",
    "number": 22,
    "title": "Jazz foundations",
+   "tone": "jazz_box",
    "subtitle": "ii–V–I in every key, minor ii–V–i, turnarounds, tritone subs, the jazz blues, song form and comping.",
    "lessons": [
     {
@@ -7064,6 +7094,7 @@
    "id": "n15",
    "number": 23,
    "title": "Jazz language",
+   "tone": "jazz_box",
    "subtitle": "Swing, walking bass, arpeggios, approach notes, enclosures, eighth-note lines and etudes.",
    "lessons": [
     {
@@ -7596,6 +7627,7 @@
    "badge": "M1",
    "number": 24,
    "title": "Metal rhythm",
+   "tone": "modern_metal",
    "subtitle": "The chug, the gallop, pedal-point riffs and the dark intervals of heavy metal.",
    "lessons": [
     {
@@ -7917,6 +7949,7 @@
    "badge": "M2",
    "number": 25,
    "title": "Metal lead",
+   "tone": "modern_metal",
    "subtitle": "The scales of metal, sequences, tremolo picking, screaming bends and harmonics.",
    "lessons": [
     {
@@ -8138,6 +8171,7 @@
    "badge": "M3",
    "number": 26,
    "title": "Metal speed and harmony",
+   "tone": "modern_metal",
    "subtitle": "Pedal-point licks, twin-guitar harmonies, diminished arpeggios and a full piece.",
    "lessons": [
     {

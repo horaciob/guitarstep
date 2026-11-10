@@ -521,7 +521,13 @@
    "lat_loopback": "measured with a cable",
    "lat_play": "measured by playing",
    "lat_manual": "set by hand",
-   "lat_fix": "Measure it in Settings"
+   "lat_fix": "Measure it in Settings",
+   "tone": "Suggested sound: {{name}}",
+   "tone_load": "Load it",
+   "tone_using": "in use",
+   "tone_rig": "Open the rig",
+   "tone_loaded_on": "{{name}} is on",
+   "tone_loaded_off": "{{name}} is loaded: turn the rig on to hear it"
   },
   "chords": {
    "title": "Chords",
