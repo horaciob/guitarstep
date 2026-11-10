@@ -145,7 +145,8 @@
    "bad_audio": "Los dos archivos tienen que ser grabaciones de audio (WAV, FLAC u OGG)",
    "capture_too_short": "Grabá al menos medio segundo tocando",
    "capture_silent": "Una de las grabaciones está en silencio",
-   "bad_days": "Elegí de qué antigüedad son las tomas a borrar"
+   "bad_days": "Elegí de qué antigüedad son las tomas a borrar",
+   "bad_favorites": "Los favoritos tienen que ser una lista de sonidos"
   },
   "practice": {
    "title": "🎧 Practicar con escucha",
@@ -1291,7 +1292,12 @@
    "search_placeholder": "Nombre, artista, banda o género (Pink Floyd, grunge, slide…)",
    "search_none": "Ningún sonido coincide con “{{q}}”.",
    "search_count": "{{count}} sonidos",
-   "search_close": "incluye nombres parecidos"
+   "search_close": "incluye nombres parecidos",
+   "favorites": "Favoritos",
+   "fav_add": "Agregar a favoritos",
+   "fav_remove": "Sacar de favoritos",
+   "fav_add_named": "Agregar {{name}} a favoritos",
+   "fav_remove_named": "Sacar {{name}} de favoritos"
   },
   "plan": {
    "title": "Plan de práctica",

@@ -147,7 +147,7 @@ function applySearch() {
     c.hidden = !ok;
     if (ok) shown++;
   });
-  $$(".quick-group", box).forEach(g => { g.hidden = !!words.length && !$$(".quick[data-q]:not([hidden])", g).length; });
+  $$(".quick-group", box).forEach(g => { g.hidden = !!words.length && (g.id === "favGroup" || !$$(".quick[data-q]:not([hidden])", g).length); });
   const add = $("#mySave", box);
   if (add) add.hidden = !!words.length;
   const styles = $(".artist-styles", box);
@@ -172,16 +172,22 @@ function renderQuick() {
   }
   const box = $("#quickBody", outer);
   const cur = rig.preset && rig.preset.kind === "factory" ? rig.preset.id : "";
-  const card = id => {
-    const s = factory(id), n = [...s.pedals, ...s.post].filter(e => e.on).length;
-    return `<button class="quick${id === cur ? " on" : ""}" data-id="${id}" data-q="${esc(searchText(id))}"${ARTIST_STYLE[id] ? ` data-style="${ARTIST_STYLE[id]}"` : ""} aria-pressed="${id === cur}">${ampThumb(s.amp.type)}
-        <b>${esc(t(`rig.preset.${id}`))}</b>
+  const favs = rig.favorites || [];
+  // inFavs: the copy in the favorites row (not searched or counted: the card also sits in its own row)
+  const card = (id, inFavs = false) => {
+    const s = factory(id), n = [...s.pedals, ...s.post].filter(e => e.on).length, fav = favs.includes(id), name = t(`rig.preset.${id}`);
+    return `<div class="quick-wrap"><button class="quick${id === cur ? " on" : ""}" data-id="${id}"${inFavs ? "" : ` data-q="${esc(searchText(id))}"`}${ARTIST_STYLE[id] && !inFavs ? ` data-style="${ARTIST_STYLE[id]}"` : ""} aria-pressed="${id === cur}">${ampThumb(s.amp.type)}
+        <b>${esc(name)}</b>
         <small>${esc(t(`rig.amp_${s.amp.type}`))} · ${esc(t("rig.quick_fx", { count: n }))}</small>
-        ${id === cur ? `<span class="quick-on">✓ ${esc(t("rig.quick_active"))}</span>` : ""}</button>`;
+        ${id === cur ? `<span class="quick-on">✓ ${esc(t("rig.quick_active"))}</span>` : ""}</button>
+      <button class="quick-fav${fav ? " on" : ""}" data-fav="${id}" aria-pressed="${fav}" title="${esc(t(fav ? "rig.fav_remove" : "rig.fav_add"))}" aria-label="${esc(t(fav ? "rig.fav_remove_named" : "rig.fav_add_named", { name }))}">${fav ? "★" : "☆"}</button></div>`;
   };
+  const favIds = favs.filter(id => factory(id));
   const mineId = rig.preset && rig.preset.kind === "user" ? rig.preset.id : "";
   const fxCount = s => [...(s.pedals || []), ...(s.post || [])].filter(e => e.on).length;
-  box.innerHTML = `<div class="quick-group"><h2 class="sub">${esc(t("rig.my_sounds"))}</h2>
+  box.innerHTML = `${favIds.length ? `<div class="quick-group" id="favGroup"><h2 class="sub">★ ${esc(t("rig.favorites"))}</h2>
+    <div class="quick-row" id="favSounds">${favIds.map(id => card(id, true)).join("")}</div></div>` : ""}
+    <div class="quick-group"><h2 class="sub">${esc(t("rig.my_sounds"))}</h2>
     <div class="quick-row" id="mySounds">
       <button class="quick quick-add" id="mySave">${icon("plus", 22)}<b>${esc(t("rig.save_current"))}</b><small>${esc(t("rig.save_current_hint"))}</small></button>
       ${(rig.userPresets || []).map(p => {
@@ -193,13 +199,21 @@ function renderQuick() {
       }).join("")}
     </div></div>
     <div class="quick-group"><h2 id="quickTitle" class="sub">${esc(t("rig.quick_title"))}</h2>
-    <div class="quick-row">${Object.keys(FACTORY).map(card).join("")}</div></div>
+    <div class="quick-row">${Object.keys(FACTORY).map(id => card(id)).join("")}</div></div>
     <div class="quick-group"><h2 class="sub">${esc(t("rig.artists_title"))}</h2>
     <p class="muted small artists-hint">${esc(t("rig.artists_hint"))}</p>
     <div class="seg mini artist-styles" role="group" aria-label="${esc(t("rig.artist_filter"))}">${["all", ...ARTIST_STYLES].map(st =>
       `<button data-style="${st}" class="${st === artistStyle ? "active" : ""}" aria-pressed="${st === artistStyle}">${esc(t(`rig.artist_style.${st}`))}</button>`).join("")}</div>
-    <div class="quick-row" id="artistSounds">${Object.keys(ARTISTS).map(card).join("")}</div></div>`;
+    <div class="quick-row" id="artistSounds">${Object.keys(ARTISTS).map(id => card(id)).join("")}</div></div>`;
   $$(".quick[data-id]", box).forEach(b => b.onclick = () => loadPreset(`factory:${b.dataset.id}`));
+  $$(".quick-fav", box).forEach(b => b.onclick = async () => {
+    const id = b.dataset.fav, inFavs = !!b.closest("#favSounds");
+    try { await rig.toggleFavorite(id); } catch (e) { toast(e.message); }
+    renderQuick();
+    const all = $$(`.quick-fav[data-fav="${id}"]`, root);      // keep the keyboard where it was
+    const again = all.find(x => !!x.closest("#favSounds") === inFavs) || all[all.length - 1];
+    if (again) again.focus();
+  });
   $$(".artist-styles button", box).forEach(b => b.onclick = () => {
     artistStyle = b.dataset.style;
     try { localStorage.setItem(STYLE_KEY, artistStyle); } catch { /* ok */ }
@@ -219,7 +233,7 @@ function presetName() {
 }
 
 // Re-render the bar only when what it shows changes (re-rendering would cut a knob drag short).
-const barKey = () => JSON.stringify([rig.running, rig.preset && [rig.preset.kind, rig.preset.id, rig.preset.name], (rig.userPresets || []).map(p => [p.id, p.name])]);
+const barKey = () => JSON.stringify([rig.running, rig.preset && [rig.preset.kind, rig.preset.id, rig.preset.name], (rig.userPresets || []).map(p => [p.id, p.name]), rig.favorites || []]);
 function updateBar() {
   const bar = $("#rigBar", root);
   if (!bar) return;
@@ -235,14 +249,19 @@ function renderBar() {
   const on = rig.running;
   const user = rig.userPresets || [];
   const cur = rig.preset ? `${rig.preset.kind}:${rig.preset.id}` : "";
+  // a sound shows once: under favorites if starred, else under its style
+  const favList = (rig.favorites || []).filter(id => factory(id));
+  const opt = id => `<option value="factory:${id}" ${cur === "factory:" + id ? "selected" : ""}>${esc(t(`rig.preset.${id}`))}${cur === "factory:" + id && rig.preset.edited ? " *" : ""}</option>`;
+  const notFav = id => !favList.includes(id);
   bar.innerHTML = `
     <button class="power${on ? " on" : ""}" id="rigPower" aria-pressed="${on}"><span class="led"></span>${esc(t(on ? "rig.on" : "rig.off"))}</button>
     <div class="rig-preset">
       <label class="sr-only" for="rigPreset">${esc(t("rig.preset_label"))}</label>
       <select id="rigPreset">
         <option value="" ${cur ? "" : "selected"}>${esc(presetName())}</option>
-        <optgroup label="${esc(t("rig.artists_title"))}">${Object.keys(ARTISTS).map(id => `<option value="factory:${id}" ${cur === "factory:" + id ? "selected" : ""}>${esc(t(`rig.preset.${id}`))}${cur === "factory:" + id && rig.preset.edited ? " *" : ""}</option>`).join("")}</optgroup>
-        <optgroup label="${esc(t("rig.factory"))}">${Object.keys(FACTORY).map(id => `<option value="factory:${id}" ${cur === "factory:" + id ? "selected" : ""}>${esc(t(`rig.preset.${id}`))}${cur === "factory:" + id && rig.preset.edited ? " *" : ""}</option>`).join("")}</optgroup>
+        ${favList.length ? `<optgroup label="★ ${esc(t("rig.favorites"))}">${favList.map(opt).join("")}</optgroup>` : ""}
+        ${ARTIST_STYLES.map(st => `<optgroup label="${esc(t("rig.artists_title"))} · ${esc(t(`rig.artist_style.${st}`))}">${Object.keys(ARTISTS).filter(id => ARTIST_STYLE[id] === st && notFav(id)).map(opt).join("")}</optgroup>`).join("")}
+        <optgroup label="${esc(t("rig.factory"))}">${Object.keys(FACTORY).filter(notFav).map(opt).join("")}</optgroup>
         ${user.length ? `<optgroup label="${esc(t("rig.mine"))}">${user.map(p => `<option value="user:${esc(p.id)}" ${cur === "user:" + p.id ? "selected" : ""}>${esc(p.name)}${cur === "user:" + p.id && rig.preset.edited ? " *" : ""}</option>`).join("")}</optgroup>` : ""}
       </select>
       <button class="btn small" id="rigSave">💾 ${esc(t("rig.save"))}</button>

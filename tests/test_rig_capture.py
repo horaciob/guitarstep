@@ -66,3 +66,17 @@ def test_rig_saves_from_many_threads_lose_nothing():
     names = {p["name"] for p in rig.get()["presets"]}
     assert names == {f"Sound {i}" for i in range(40)}
     assert not list(rig.path().parent.glob("rig*.tmp"))
+
+
+def test_favorite_sounds_are_kept():
+    from fastapi.testclient import TestClient
+
+    from guitarr import rig
+    from guitarr.gui.server import app
+    c = TestClient(app)
+    assert c.get("/api/rig").json()["favorites"] == []
+    r = c.put("/api/rig/favorites", json=dict(favorites=["angus_crunch", "surf", "surf"]))
+    assert r.json()["favorites"] == ["angus_crunch", "surf"]
+    assert rig.get()["favorites"] == ["angus_crunch", "surf"]
+    assert c.put("/api/rig/favorites", json=dict(favorites="surf")).json()["detail"]["code"] == "bad_favorites"
+    assert c.put("/api/rig/favorites", json=dict(favorites=["../x"])).json()["detail"]["code"] == "bad_favorites"

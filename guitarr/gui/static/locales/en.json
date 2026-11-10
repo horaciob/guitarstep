@@ -145,7 +145,8 @@
    "bad_audio": "Both files must be audio recordings (WAV, FLAC or OGG)",
    "capture_too_short": "Record at least half a second of playing",
    "capture_silent": "One of the recordings is silent",
-   "bad_days": "Choose how old the takes to delete are"
+   "bad_days": "Choose how old the takes to delete are",
+   "bad_favorites": "Favorites must be a list of sound ids"
   },
   "practice": {
    "title": "🎧 Practice with listening",
@@ -1291,7 +1292,12 @@
    "search_placeholder": "Name, artist, band or genre (Pink Floyd, grunge, slide…)",
    "search_none": "No sound matches “{{q}}”.",
    "search_count": "{{count}} sounds",
-   "search_close": "including close spellings"
+   "search_close": "including close spellings",
+   "favorites": "Favorites",
+   "fav_add": "Add to favorites",
+   "fav_remove": "Remove from favorites",
+   "fav_add_named": "Add {{name}} to favorites",
+   "fav_remove_named": "Remove {{name}} from favorites"
   },
   "plan": {
    "title": "Practice plan",

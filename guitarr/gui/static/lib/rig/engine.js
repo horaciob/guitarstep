@@ -33,6 +33,7 @@ class Rig extends EventTarget {
     try {
       const d = await api("/api/rig");
       this.userPresets = d.presets;
+      this.favorites = d.favorites || [];
       if (d.current) {
         this.state = normalize(d.current.rig || d.current);
         if (d.current.source) Object.assign(this.source, d.current.source);
@@ -40,6 +41,14 @@ class Rig extends EventTarget {
       }
     } catch { this.userPresets = []; }
     this.emit();
+  }
+  /** Stars or unstars a built-in sound; kept on the server with your presets. */
+  async toggleFavorite(id) {
+    const before = this.favorites || [];
+    this.favorites = before.includes(id) ? before.filter(x => x !== id) : [...before, id];
+    this.emit();
+    try { this.favorites = (await api("/api/rig/favorites", { method: "PUT", json: { favorites: this.favorites } })).favorites; }
+    catch (e) { this.favorites = before; this.emit(); throw e; }
   }
   save() {
     clearTimeout(this._saveT);

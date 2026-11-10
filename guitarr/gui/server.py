@@ -1003,6 +1003,11 @@ def api_rig_preset_save(body: dict):
     return _rig(rig.save_preset, body.get("name"), body.get("rig"))
 
 
+@app.put("/api/rig/favorites")
+def api_rig_favorites(body: dict):
+    return dict(favorites=_rig(rig.set_favorites, body.get("favorites")))
+
+
 @app.get("/api/rig/irs")
 def api_rig_irs():
     return rig.list_irs()

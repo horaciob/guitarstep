@@ -39,6 +39,8 @@ def _read() -> dict:
     if not isinstance(d, dict):
         d = {}
     d.setdefault("current", None)
+    if not isinstance(d.get("favorites"), list):
+        d["favorites"] = []
     if not isinstance(d.get("presets"), list):
         d["presets"] = []
     d["presets"] = [p for p in d["presets"] if isinstance(p, dict) and isinstance(p.get("name"), str) and p.get("id")]
@@ -151,6 +153,26 @@ def save_ir(name: str, data: bytes) -> dict:
 
 def delete_ir(name: str) -> None:
     ir_path(name).unlink()
+
+
+MAX_FAVORITES = 200
+
+
+def set_favorites(ids) -> list[str]:
+    """The built-in sounds you starred (their ids), in the order you starred them."""
+    if not isinstance(ids, list) or len(ids) > MAX_FAVORITES:
+        raise RigError("bad_favorites", "Favorites must be a list of sound ids")
+    clean = []
+    for x in ids:
+        if not isinstance(x, str) or not re.fullmatch(r"[a-z0-9_]{1,60}", x):
+            raise RigError("bad_favorites", "Favorites must be a list of sound ids")
+        if x not in clean:
+            clean.append(x)
+    with _lock:
+        d = _read()
+        d["favorites"] = clean
+        _write(d)
+    return clean
 
 
 def delete_preset(pid: str) -> bool:

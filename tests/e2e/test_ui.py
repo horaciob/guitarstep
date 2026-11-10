@@ -1040,3 +1040,25 @@ def test_rig_preset_search(app_page):
     search.fill("")
     expect(app_page.locator("#searchNone")).to_be_hidden()
     expect(app_page.locator("#mySave")).to_be_visible()
+
+
+def test_rig_favorite_sounds(app_page):
+    onboarded(app_page)
+    go(app_page, "rig")
+    star = app_page.locator('#artistSounds .quick-fav[data-fav="gilmour_lead"]')
+    expect(star).to_have_attribute("aria-pressed", "false")
+    star.click()
+    fav = app_page.locator("#favSounds .quick[data-id]")
+    expect(fav).to_have_count(1)
+    expect(fav.first).to_contain_text("Gilmour")
+    expect(app_page.locator('#artistSounds .quick-fav[data-fav="gilmour_lead"]')).to_have_attribute("aria-pressed", "true")
+    opts = app_page.locator("#rigPreset optgroup").first          # first in the sound menu too
+    expect(opts).to_have_attribute("label", re.compile("Favorites"))
+    app_page.reload()                                             # kept on the server
+    expect(app_page.locator("#favSounds .quick[data-id]")).to_have_count(1)
+    app_page.locator("#presetSearch").fill("gilmour")              # a search shows each sound once
+    expect(app_page.locator("#favGroup")).to_be_hidden()
+    expect(app_page.locator("#searchCount")).to_contain_text("2")
+    app_page.locator("#presetSearch").fill("")
+    app_page.locator('#favSounds .quick-fav[data-fav="gilmour_lead"]').click()
+    expect(app_page.locator("#favGroup")).to_have_count(0)
