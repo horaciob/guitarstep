@@ -1081,7 +1081,14 @@
     "kirk_fletcher": "Kirk Fletcher: soulful edge-of-breakup",
     "king_solomon_hicks": "King Solomon Hicks: jazzy blues",
     "eric_gales": "Eric Gales: hard-hitting blues-rock",
-    "joanne_shaw_taylor": "Joanne Shaw Taylor: soulful blues-rock"
+    "joanne_shaw_taylor": "Joanne Shaw Taylor: soulful blues-rock",
+    "joe_perry": "Joe Perry: swaggering hard rock",
+    "the_edge": "The Edge: dotted-eighth echoes",
+    "pappo_blues": "Pappo: heavy, raw blues-rock",
+    "skay_redondos": "Skay Beilinson: psychedelic Redondos",
+    "cerati_soda": "Cerati: Soda Stereo chorus",
+    "cerati_animal": "Cerati: raw fuzz of the 90s",
+    "charly_acoustic": "Charly García: acoustic songwriter"
    },
    "opt_vintage": "Vintage",
    "opt_octave": "Octave",
@@ -1219,6 +1226,7 @@
     "blues": "Blues",
     "rock": "Rock",
     "alt": "Alternative and 90s",
+    "argentina": "Argentine rock",
     "metal": "Metal",
     "shred": "Virtuosos",
     "jazz": "Jazz, fusion and country",
@@ -1264,7 +1272,10 @@
     "acoustic": "acoustic",
     "folk": "folk",
     "classical": "classical",
-    "flamenco": "flamenco"
+    "flamenco": "flamenco",
+    "rock_argentino": "Argentine rock",
+    "post_punk": "post-punk",
+    "new_wave": "new wave"
    },
    "search_label": "Search sounds",
    "search_placeholder": "Name, artist, band or genre (Pink Floyd, grunge, slide…)",

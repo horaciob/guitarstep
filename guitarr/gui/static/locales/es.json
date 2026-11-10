@@ -1042,7 +1042,14 @@
     "kirk_fletcher": "Kirk Fletcher: soul al borde de saturar",
     "king_solomon_hicks": "King Solomon Hicks: blues con aire de jazz",
     "eric_gales": "Eric Gales: blues-rock contundente",
-    "joanne_shaw_taylor": "Joanne Shaw Taylor: blues-rock con alma"
+    "joanne_shaw_taylor": "Joanne Shaw Taylor: blues-rock con alma",
+    "joe_perry": "Joe Perry: hard rock canchero",
+    "the_edge": "The Edge: ecos en corchea con puntillo",
+    "pappo_blues": "Pappo: blues pesado y crudo",
+    "skay_redondos": "Skay Beilinson: los Redondos psicodélicos",
+    "cerati_soda": "Cerati: el chorus de Soda Stereo",
+    "cerati_animal": "Cerati: el fuzz crudo de los 90",
+    "charly_acoustic": "Charly García: la acústica de las canciones"
    },
    "param": {
     "threshold": "Umbral",
@@ -1219,6 +1226,7 @@
     "blues": "Blues",
     "rock": "Rock",
     "alt": "Alternativo y 90s",
+    "argentina": "Rock nacional",
     "metal": "Metal",
     "shred": "Virtuosos",
     "jazz": "Jazz, fusión y country",
@@ -1264,7 +1272,10 @@
     "acoustic": "acústico",
     "folk": "folk",
     "classical": "clásica",
-    "flamenco": "flamenco"
+    "flamenco": "flamenco",
+    "rock_argentino": "rock nacional",
+    "post_punk": "post-punk",
+    "new_wave": "new wave"
    },
    "search_label": "Buscar sonidos",
    "search_placeholder": "Nombre, artista, banda o género (Pink Floyd, grunge, slide…)",
