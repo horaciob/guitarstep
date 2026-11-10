@@ -754,6 +754,9 @@ function renderRecorder(sec) {
 const takeName = () => `rig-${new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-")}.wav`;
 
 // ------------------------------------------------------------------ looper
+const AUTO_KEY = "guitarr.rig.loopAuto";
+let loopAuto = (() => { try { return localStorage.getItem(AUTO_KEY) === "1"; } catch { return false; } })();
+
 function renderLooper() {
   const sec = $("#sec-looper", root);
   if (!sec) return;
@@ -761,20 +764,27 @@ function renderLooper() {
   const pct = L.len ? (L.pos / L.len) * 100 : st === "recording" ? (L.pos / L.max) * 100 : 0;
   if (!sec.firstChild) {
     sec.innerHTML = `<div class="sec-head"><h2>${icon("history")} ${esc(t("rig.sec_looper"))}</h2><p class="muted small">${esc(t("rig.looper_hint"))}</p></div>
-      <div class="panel looper"><div class="row left" id="lpBtns"></div><div class="lp-bar"><i id="lpPos"></i></div><b id="lpState"></b>
+      <div class="panel looper"><div class="row left wrap" id="lpBtns"></div>
+        <label class="check small"><input type="checkbox" id="lpAuto" ${loopAuto ? "checked" : ""}> ${esc(t("rig.lp_auto"))}</label>
+        <div class="lp-bar"><i id="lpPos"></i></div><b id="lpState"></b>
         <div class="rec-row"><h3>${esc(t("rig.rec_title"))}</h3><div class="row left wrap" id="recBtns"></div><p class="muted small">${esc(t("rig.rec_hint"))}</p></div></div>`;
+    $("#lpAuto", sec).onchange = e => {
+      loopAuto = e.target.checked;
+      try { localStorage.setItem(AUTO_KEY, loopAuto ? "1" : "0"); } catch { /* ok */ }
+    };
   }
   const btns = $("#lpBtns", sec);
   const want = `${st}|${running}`;
   if (btns.dataset.k !== want) {
     btns.dataset.k = want;
-    const recLabel = st === "empty" ? "rig.lp_rec" : st === "recording" ? "rig.lp_close" : st === "overdubbing" ? "rig.lp_stop_dub" : "rig.lp_dub";
+    const recLabel = st === "empty" ? "rig.lp_rec" : st === "armed" ? "rig.lp_cancel" : st === "recording" ? "rig.lp_close" : st === "overdubbing" ? "rig.lp_stop_dub" : "rig.lp_dub";
     btns.innerHTML = `
-      <button class="btn lp-rec${st === "recording" || st === "overdubbing" ? " live" : ""}" data-c="rec" ${running ? "" : "disabled"}>● ${esc(t(recLabel))}</button>
+      <button class="btn lp-rec${st === "recording" || st === "overdubbing" || st === "armed" ? " live" : ""}" data-c="rec" ${running ? "" : "disabled"}>● ${esc(t(recLabel))}</button>
       <button class="btn" data-c="play" ${running && (st === "stopped" || st === "recording" || st === "overdubbing") ? "" : "disabled"}>▶ ${esc(t("rig.lp_play"))}</button>
-      <button class="btn" data-c="stop" ${running && st !== "empty" && st !== "stopped" ? "" : "disabled"}>■ ${esc(t("rig.lp_stop"))}</button>
-      <button class="btn ghost" data-c="clear" ${st !== "empty" ? "" : "disabled"}>${esc(t("rig.lp_clear"))}</button>`;
-    $$("button", btns).forEach(b => b.onclick = () => rig.loop(b.dataset.c));
+      <button class="btn" data-c="stop" ${running && st !== "empty" && st !== "stopped" && st !== "armed" ? "" : "disabled"}>■ ${esc(t("rig.lp_stop"))}</button>
+      <button class="btn ghost" data-c="clear" ${st !== "empty" && st !== "armed" ? "" : "disabled"}>${esc(t("rig.lp_clear"))}</button>`;
+    $$("button", btns).forEach(b => b.onclick = () =>
+      rig.loop(b.dataset.c === "rec" && rig.looperState.state === "empty" && loopAuto ? "arm" : b.dataset.c));
   }
   renderRecorder(sec);
   $("#lpPos", sec).style.width = pct.toFixed(1) + "%";

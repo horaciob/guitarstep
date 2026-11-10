@@ -1119,3 +1119,33 @@ def test_recap_asks_what_the_theory_notes_said(app_page, lang, ask, blank):
     expect(prompt).to_contain_text(ask)
     expect(prompt).to_contain_text(blank)
     expect(focus.locator(".quiz button.choice, .quiz [data-choice], .quiz .q-choices button")).to_have_count(4)
+
+
+def test_looper_can_wait_for_the_first_note(app_page):
+    onboarded(app_page)
+    go(app_page, "rig")
+    auto = app_page.locator("#lpAuto")
+    expect(auto).not_to_be_checked()
+    auto.check()
+    app_page.reload()
+    expect(app_page.locator("#lpAuto")).to_be_checked()
+    # The looper itself, rendered offline (no sound): 0.5 s of quiet hiss, then a note from 0.5 s on.
+    r = app_page.evaluate("""async () => {
+        const sr = 48000, c = new OfflineAudioContext(2, sr * 1.5, sr);
+        await c.audioWorklet.addModule('/static/lib/rig/worklets.js');
+        const buf = c.createBuffer(1, sr * 1.5, sr), x = buf.getChannelData(0);
+        for (let i = 0; i < x.length; i++) x[i] = i < sr / 2 ? 0.004 * Math.sin(i) : 0.3 * Math.sin(2 * Math.PI * 220 * i / sr);
+        const src = c.createBufferSource(); src.buffer = buf;
+        const lp = new AudioWorkletNode(c, 'rig-looper', { outputChannelCount: [2], processorOptions: { seconds: 5 } });
+        const seen = []; let len = 0;
+        lp.port.onmessage = e => { seen.push(e.data.state); len = e.data.len; };
+        src.connect(lp).connect(c.destination); src.start();
+        c.suspend(0.01).then(() => { lp.port.postMessage('arm'); c.resume(); });
+        c.suspend(1.4).then(() => { lp.port.postMessage('rec'); c.resume(); });   // close the loop
+        await c.startRendering();
+        await new Promise(r => setTimeout(r, 50));
+        const last = seen.length ? seen[seen.length - 1] : null;
+        return { armed: seen.includes('armed'), recorded: seen.includes('recording'), last, len };
+    }""")
+    assert r["armed"] and r["recorded"] and r["last"] == "playing"
+    assert 0.85 < r["len"] < 1.0          # from the note (0.5 s, plus 50 ms kept before it) to 1.4 s, not the hiss

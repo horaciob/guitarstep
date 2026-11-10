@@ -147,13 +147,20 @@ class LooperProcessor extends AudioWorkletProcessor {
     this.max = Math.floor(secs * sampleRate);
     this.L = new Float32Array(this.max); this.R = new Float32Array(this.max);
     this.state = "empty"; this.pos = 0; this.len = 0; this.tick = 0;
+    // "armed": waits for you to play. A short ring buffer keeps the attack that crossed the threshold.
+    this.pre = Math.floor(0.05 * sampleRate);
+    this.preL = new Float32Array(this.pre); this.preR = new Float32Array(this.pre); this.preAt = 0;
     this.port.onmessage = e => this.command(e.data);
   }
   command(cmd) {
     const s = this.state;
     if (cmd === "clear") { this.L.fill(0); this.R.fill(0); this.state = "empty"; this.pos = this.len = 0; }
-    else if (cmd === "rec") {
+    else if (cmd === "arm") {
+      if (s === "empty") this.arm();
+      else if (s === "armed") this.state = "empty";
+    } else if (cmd === "rec") {
       if (s === "empty") { this.state = "recording"; this.pos = 0; }
+      else if (s === "armed") this.state = "empty";
       else if (s === "recording") this.finish();
       else if (s === "playing") this.state = "overdubbing";
       else if (s === "overdubbing") this.state = "playing";
@@ -163,10 +170,37 @@ class LooperProcessor extends AudioWorkletProcessor {
       else if (s === "stopped") { this.state = "playing"; this.pos = 0; }
       else if (s === "overdubbing") this.state = "playing";
     } else if (cmd === "stop") {
+      if (s === "armed") this.state = "empty";
       if (s === "recording") this.finish();
       if (this.len) { this.state = "stopped"; this.pos = 0; }
     }
     this.report();
+  }
+  arm() {
+    this.state = "armed"; this.pos = 0; this.preAt = 0; this.preL.fill(0); this.preR.fill(0);
+    this.floor = 0; this.armedFor = 0;
+  }
+  /** Starts the take at the first sound clearly above the hiss the rig makes on its own (measured in the first 0.2 s). */
+  listen(xl, xr) {
+    let peak = 0;
+    for (let i = 0; i < xl.length; i++) peak = Math.max(peak, Math.abs(xl[i]));
+    const quiet = this.armedFor < 0.2 * sampleRate;
+    this.armedFor += xl.length;
+    if (quiet) this.floor = Math.max(this.floor, peak);
+    if (!quiet && peak > Math.max(0.02, this.floor * 3)) {
+      for (let k = 0; k < this.pre; k++) {                 // the last 50 ms, oldest first, then this block
+        const j = (this.preAt + k) % this.pre;
+        this.L[k] = this.preL[j]; this.R[k] = this.preR[j];
+      }
+      this.L.set(xl, this.pre); this.R.set(xr, this.pre);
+      this.pos = this.pre + xl.length; this.state = "recording"; this.report();
+      return true;
+    }
+    for (let i = 0; i < xl.length; i++) {
+      this.preL[this.preAt] = xl[i]; this.preR[this.preAt] = xr[i];
+      this.preAt = (this.preAt + 1) % this.pre;
+    }
+    return false;
   }
   finish() { this.len = Math.max(1, this.pos); this.pos = 0; this.state = "playing"; }
   report() { this.port.postMessage({ state: this.state, pos: this.pos / sampleRate, len: this.len / sampleRate, max: this.max / sampleRate }); }
@@ -174,10 +208,13 @@ class LooperProcessor extends AudioWorkletProcessor {
     const inp = inputs[0], out = outputs[0];
     const xl = inp[0], xr = inp[1] || inp[0];
     const lv = p.level[0];
+    let started = false;                                   // this block already went into the take
+    if (this.state === "armed" && xl) started = this.listen(xl, xr);
+    else if (this.state === "armed") this.armedFor += out[0].length;
     for (let i = 0; i < out[0].length; i++) {
       let yl = 0, yr = 0;
       const st = this.state;
-      if (st === "recording") {
+      if (st === "recording" && !started) {
         if (xl) { this.L[this.pos] = xl[i]; this.R[this.pos] = xr[i]; }
         if (++this.pos >= this.max) { this.finish(); this.report(); }
       } else if (st === "playing" || st === "overdubbing") {

@@ -958,6 +958,9 @@
    "lp_playing": "Reproduciendo · {{len}} s",
    "lp_overdubbing": "Sobregrabando… {{pos}} / {{len}} s",
    "lp_stopped": "Parado · {{len}} s",
+   "lp_auto": "Empezar a grabar cuando toco",
+   "lp_cancel": "Cancelar",
+   "lp_armed": "Esperando que toques… arranca con la primera nota",
    "preset": {
     "clean_sparkle": "Limpio brillante",
     "blues_crunch": "Crunch de blues",

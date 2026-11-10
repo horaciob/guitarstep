@@ -999,6 +999,9 @@
    "lp_playing": "Playing loop · {{len}} s",
    "lp_overdubbing": "Overdubbing… {{pos}} / {{len}} s",
    "lp_stopped": "Stopped · {{len}} s",
+   "lp_auto": "Start recording when I play",
+   "lp_cancel": "Cancel",
+   "lp_armed": "Waiting for you to play… it starts with the first note",
    "preset": {
     "clean_sparkle": "Clean sparkle",
     "blues_crunch": "Blues crunch",
