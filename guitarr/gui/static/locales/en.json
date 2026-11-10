@@ -516,7 +516,12 @@
    "t_tap_other": "{{count}} bars to tap at {{bpm}} BPM",
    "t_rhythm_one": "{{count}} bar to play at {{bpm}} BPM",
    "t_rhythm_other": "{{count}} bars to play at {{bpm}} BPM",
-   "t_caged": "{{chord}}: {{shapes}}"
+   "t_caged": "{{chord}}: {{shapes}}",
+   "lat_applied": "Timing corrected by {{ms}} ms of latency ({{how}})",
+   "lat_loopback": "measured with a cable",
+   "lat_play": "measured by playing",
+   "lat_manual": "set by hand",
+   "lat_fix": "Measure it in Settings"
   },
   "chords": {
    "title": "Chords",

@@ -158,6 +158,7 @@ export async function mount(el, { segs, params = {} }) {
           <button class="btn" data-f="hint" hidden>💡 ${esc(t("flow.hint"))}</button>
           <button class="btn primary xl" data-f="go"></button>
           <button class="btn" data-f="next" hidden>${esc(t("lesson.focus_next"))} →</button></div>
+        <p class="small muted center f-latency" id="fLat"></p>
         <p class="muted small center kbd-hint">${t("lesson.focus_keys_html")}</p>
       </div>
     </div></dialog>
@@ -318,6 +319,7 @@ async function openFocus(el, segs, ls, ex, chordData, exTitle, start = false, mo
   const guidance = mode.testout ? 0 : focus?.ex === ex && focus.guidance != null ? focus.guidance
     : ex.fadeable && ex.passed ? Math.min(2, (ex.guidance ?? 0) + 1) : 0;
   $("#fTitle", dlg).textContent = (mode.testout ? `${t("lesson.testout_title")} · ` : "") + exTitle(ex) + suffix;
+  showLatency($("#fLat", dlg), ex.how !== "answer");
   const fth = $("#fTheory", dlg), thText = !mode.testout && ex.theory ? tc(`ex_theory.${ex.from || `${ls.id}/${ex.id}`}`, ex.theory) : "";
   fth.hidden = !thText;
   $("p span", fth).textContent = thText;
@@ -379,6 +381,19 @@ async function openFocus(el, segs, ls, ex, chordData, exTitle, start = false, mo
   if (!dlg.open) dlg.showModal();
   $(".focus-inner", dlg).focus();   // so Space and Enter reach the shortcuts, not the Back button
   if (start) run(el, segs, ls, ex, chordData, exTitle);
+}
+
+/** The latency correction applied to your timing, so a "late" verdict can be trusted (or fixed). */
+let latencyInfo = null;
+async function showLatency(box, listening) {
+  if (!box) return;
+  box.innerHTML = "";
+  if (!listening) return;
+  try { latencyInfo = latencyInfo || await api("/api/latency"); } catch { return; }
+  const st = latencyInfo, warn = (st.warnings || []).find(w => ["never_measured", "too_large", "devices_changed"].includes(w.code));
+  const fix = `<a href="#/settings">${esc(t("lesson.lat_fix"))}</a>`;
+  if (warn) box.innerHTML = `⚠ ${esc(t(`latency.warn_${warn.code}`, warn.params))} ${fix}`;
+  else if (st.applied_ms != null) box.innerHTML = `⏱ ${esc(t("lesson.lat_applied", { ms: Math.round(st.applied_ms), how: t(`lesson.lat_${st.method || "manual"}`) }))}`;
 }
 
 function closeFocus(el, segs) {
@@ -706,6 +721,7 @@ function showResult(box, score, passed, need, xp) {
 
 export function unmount() {
   stopSpeaking();
+  latencyInfo = null;                                       // measured again on the next visit
   if (task) { task.stop(); task = null; }
   stopDemo();
   focus = null;

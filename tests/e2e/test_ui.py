@@ -907,6 +907,7 @@ def test_latency_status_and_take_timing_verdict(app_page):
     go(app_page, "lesson/major-scale?ex=g-position")
     focus = app_page.locator("dialog.ex-focus")
     expect(focus.locator("#fState")).to_have_text("ready")
+    expect(focus.locator("#fLat")).to_contain_text("corrected by -13 ms of latency (measured by playing)")
     app_page.keyboard.press(" ")
     expect(focus.locator("#fState")).to_have_text("playing")
     app_page.keyboard.press(" ")
@@ -1062,3 +1063,15 @@ def test_rig_favorite_sounds(app_page):
     app_page.locator("#presetSearch").fill("")
     app_page.locator('#favSounds .quick-fav[data-fav="gilmour_lead"]').click()
     expect(app_page.locator("#favGroup")).to_have_count(0)
+
+
+def test_lesson_warns_when_latency_was_never_measured(app_page):
+    import json
+    onboarded(app_page)
+    app_page.route("**/api/latency", lambda r: r.fulfill(status=200, content_type="application/json", body=json.dumps({
+        "applied_ms": None, "method": None, "warnings": [{"code": "never_measured", "params": {}}]})))
+    _fake_listener(app_page)
+    go(app_page, "lesson/major-scale?ex=g-position")
+    lat = app_page.locator("dialog.ex-focus #fLat")
+    expect(lat).to_contain_text("never measured")
+    expect(lat.locator("a[href='#/settings']")).to_be_visible()

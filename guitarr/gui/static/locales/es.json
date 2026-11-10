@@ -516,7 +516,12 @@
    "t_tap_other": "{{count}} compases para tocar a {{bpm}} BPM",
    "t_rhythm_one": "{{count}} compás para tocar a {{bpm}} BPM",
    "t_rhythm_other": "{{count}} compases para tocar a {{bpm}} BPM",
-   "t_caged": "{{chord}}: {{shapes}}"
+   "t_caged": "{{chord}}: {{shapes}}",
+   "lat_applied": "Tiempo corregido por {{ms}} ms de latencia ({{how}})",
+   "lat_loopback": "medida con cable",
+   "lat_play": "medida tocando",
+   "lat_manual": "puesta a mano",
+   "lat_fix": "Medila en Ajustes"
   },
   "chords": {
    "title": "Acordes",
