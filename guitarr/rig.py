@@ -7,7 +7,9 @@ always uses the clean input.
 from __future__ import annotations
 
 import json
+import os
 import re
+import threading
 import uuid
 from pathlib import Path
 
@@ -16,6 +18,7 @@ from . import config
 MAX_BYTES = 64_000       # one rig as JSON
 MAX_PRESETS = 200
 MAX_NAME = 60
+_lock = threading.Lock()     # requests run in threads: one read-modify-write of rig.json at a time
 
 
 class RigError(ValueError):
@@ -38,12 +41,13 @@ def _read() -> dict:
     d.setdefault("current", None)
     if not isinstance(d.get("presets"), list):
         d["presets"] = []
+    d["presets"] = [p for p in d["presets"] if isinstance(p, dict) and isinstance(p.get("name"), str) and p.get("id")]
     return d
 
 
 def _write(d: dict) -> None:
     config.HOME.mkdir(parents=True, exist_ok=True)
-    tmp = path().with_suffix(".tmp")
+    tmp = path().with_suffix(f".{os.getpid()}.{threading.get_ident()}.tmp")
     tmp.write_text(json.dumps(d, ensure_ascii=False, indent=1), encoding="utf-8")
     tmp.replace(path())
 
@@ -61,9 +65,11 @@ def get() -> dict:
 
 
 def save_current(rig: dict) -> dict:
-    d = _read()
-    d["current"] = _check_rig(rig)
-    _write(d)
+    _check_rig(rig)
+    with _lock:
+        d = _read()
+        d["current"] = rig
+        _write(d)
     return d
 
 
@@ -72,6 +78,11 @@ def save_preset(name: str, rig: dict) -> dict:
     if not name:
         raise RigError("bad_name", "The preset needs a name")
     _check_rig(rig)
+    with _lock:
+        return _save_preset(name, rig)
+
+
+def _save_preset(name: str, rig: dict) -> dict:
     d = _read()
     same = next((p for p in d["presets"] if p["name"].lower() == name.lower()), None)
     if same:                         # saving with an existing name overwrites it
@@ -143,10 +154,11 @@ def delete_ir(name: str) -> None:
 
 
 def delete_preset(pid: str) -> bool:
-    d = _read()
-    before = len(d["presets"])
-    d["presets"] = [p for p in d["presets"] if p.get("id") != pid]
-    if len(d["presets"]) == before:
-        return False
-    _write(d)
+    with _lock:
+        d = _read()
+        before = len(d["presets"])
+        d["presets"] = [p for p in d["presets"] if p.get("id") != pid]
+        if len(d["presets"]) == before:
+            return False
+        _write(d)
     return True

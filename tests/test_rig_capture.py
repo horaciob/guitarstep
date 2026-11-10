@@ -49,3 +49,20 @@ def test_capture_endpoint_and_errors():
     assert r.json()["detail"]["code"] == "capture_silent"
     r = c.post("/api/rig/capture", files=dict(di=("di.wav", b"nope"), amp=("amp.wav", wav(x))))
     assert r.json()["detail"]["code"] == "bad_audio"
+
+
+def test_rig_saves_from_many_threads_lose_nothing():
+    """The autosave of the current sound and saving presets run in parallel requests."""
+    from concurrent.futures import ThreadPoolExecutor
+
+    from guitarr import rig
+
+    def work(i):
+        rig.save_current({"n": i})
+        rig.save_preset(f"Sound {i}", {"n": i})
+
+    with ThreadPoolExecutor(8) as pool:
+        list(pool.map(work, range(40)))
+    names = {p["name"] for p in rig.get()["presets"]}
+    assert names == {f"Sound {i}" for i in range(40)}
+    assert not list(rig.path().parent.glob("rig*.tmp"))
