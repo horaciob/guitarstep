@@ -9,7 +9,7 @@ import { chipsHtml } from "../lib/chips.js";
 import { bindTakePlayers, takePlayer, timingVerdictHtml } from "../lib/take.js";
 import { hearBar, rhythmSvg } from "../lib/notation.js";
 import { staffSvg } from "../lib/staff.js";
-import { tabText } from "../lib/tab.js";
+import { stepGroups, tabText } from "../lib/tab.js";
 import { readable, speakButton, stopSpeaking, toggleSpeak } from "../lib/speak.js";
 import { chartGuide, playChart } from "./charts.js";
 
@@ -23,7 +23,7 @@ const guides = new Map();   // exercise id → { guide, chart } for chart exerci
 
 function exerciseTarget(ex) {
   if (ex.kind === "notes") return ex.notes.map(noteName).join(" ");
-  if (ex.kind === "lick") return ex.steps.map(s => noteName(s.pitch)).join(" ");
+  if (ex.kind === "lick") return stepGroups(ex.steps).map(g => g.map(s => noteName(s.pitch)).join("+")).join(" ");
   if (ex.kind === "bend") {
     const s = ex.steps[0];
     return t("lesson.bend_target", { string: s.string, fret: s.fret, note: noteName(s.pitch), tries: ex.steps.length, hold: (ex.hold ?? 1).toLocaleString(lang()) });
@@ -400,11 +400,11 @@ function stopDemo() {
 function preview(ex, chordData) {
   const ch = id => chordData.chords.find(c => c.id === id);
   if (ex.kind === "notes") ex.notes.forEach((p, k) => pluck(p, k * 0.45));
-  else if (ex.kind === "lick") ex.steps.forEach((s, k) => pluck(s.pitch, k * 0.3));
+  else if (ex.kind === "lick") stepGroups(ex.steps).forEach((g, k) => g.forEach(s => pluck(s.pitch, k * 0.3)));
   else if (ex.kind === "bend") { pluck(ex.steps[0].glide_from, 0); pluck(ex.steps[0].pitch, 0.6); }
   else if (ex.kind === "chord") strum(ch(ex.chord));
   else if (ex.kind === "change") ex.chords.forEach((c, k) => setTimeout(() => strum(ch(c)), k * 900));
-  else if (ex.steps) ex.steps.forEach((s, k) => pluck(s.pitch, k * 0.3));
+  else if (ex.steps) stepGroups(ex.steps).forEach((g, k) => g.forEach(s => pluck(s.pitch, k * 0.3)));
   else if (ex.shapes) ex.shapes.forEach((s, k) => setTimeout(() => strum(shapeChord(s)), k * 900));
   else toast(t("lesson.open_chart"));
 }

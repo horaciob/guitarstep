@@ -320,13 +320,35 @@ def _shift_token(string: int, frets: list[int], shift: int) -> list[int]:
     return out
 
 
+_PART = re.compile(r"^([1-6]):(\d+)(~?)$")
+
+
+def _together(tok: str, shift: int) -> list[dict]:
+    """'6:3+1:3': notes picked at the same time (a pinch, a double stop). The first one is the
+    step; the others carry together=True. Plain notes only (a ~ is fine)."""
+    parts = [_PART.match(x) for x in tok.split("+")]
+    if not all(parts):
+        raise CatalogError(f"Lick: can't read '{tok}' (notes together are plain, e.g. 6:3+1:3 or 3:7+2:8~)")
+    strings = [int(m.group(1)) for m in parts]
+    if len(set(strings)) != len(strings):
+        raise CatalogError(f"Lick: '{tok}' plays one string twice")
+    frets = _shift_token(0, [int(m.group(2)) for m in parts], shift)
+    return [dict(string=st, fret=f, pitch=_pitch(st, f), tech="pick", glide_from=None, vibrato=bool(m.group(3)),
+                 **(dict(together=True) if k else {}))
+            for k, (st, f, m) in enumerate(zip(strings, frets, parts))]
+
+
 def parse_lick(tab: str, shift: int = 0) -> list[dict]:
-    """Lick tab → steps (string, fret, pitch, tech, glide_from, vibrato). Errors name the token."""
+    """Lick tab → steps (string, fret, pitch, tech, glide_from, vibrato). Errors name the token.
+    Notes joined with + sound together: the extra ones carry together=True."""
     steps: list[dict] = []
     for tok in tab.split():
+        if "+" in tok:
+            steps += _together(tok, shift)
+            continue
         m = _TOKEN.match(tok)
         if not m:
-            raise CatalogError(f"Lick: can't read '{tok}' (e.g. 3:5, 3:5h7, 3:7b9r7, 2:5~)")
+            raise CatalogError(f"Lick: can't read '{tok}' (e.g. 3:5, 3:5h7, 3:7b9r7, 2:5~, 6:3+1:3)")
         string = int(m.group(1))
         ops = [(o.group(1), int(o.group(2))) if o.group(1) else ("~", None) for o in _OP.finditer(m.group(3))]
         frets = _shift_token(string, [int(m.group(2))] + [f for op, f in ops if f is not None], shift)

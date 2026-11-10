@@ -1624,6 +1624,14 @@
        "tab": "5:0 2:1 4:2 3:2 5:0 2:1 4:2 3:2 4:0 2:3 3:2 1:2 4:0 2:3 3:2 1:2",
        "min": 75,
        "theory": "Over Am the thumb alternates A and E; over D it plays D on the 4th string. Changing chords without stopping the thumb is the real exercise."
+      },
+      {
+       "id": "pinch-c",
+       "kind": "lick",
+       "title": "Travis with a pinch",
+       "tab": "5:3+1:0 2:1 4:2 3:0 6:3+1:0 2:1 4:2 3:0",
+       "min": 75,
+       "theory": "A pinch is the thumb and a finger picking at the same moment: here the bass C or G with the high E on top. The listener hears both notes, so let the two ring together instead of rolling them."
       }
      ]
     },
@@ -2324,6 +2332,14 @@
        "tab": "6:0 6:3 5:0 5:1 5:2 4:2 5:2 6:3",
        "min": 75,
        "theory": "E, G, A, B♭, B, then the E an octave up and back down. B♭ is the ♭5 of E: in the low register it growls."
+      },
+      {
+       "id": "double-stops-a",
+       "kind": "lick",
+       "title": "Double stops in A",
+       "tab": "3:7+2:8 3:7+2:8 3:5+2:5 4:7 3:5+2:5 4:5 4:7",
+       "min": 75,
+       "theory": "Two strings picked together: D and G lean on the IV sound, then C and E (the minor 3rd and the 5th of A) pull back home. Mute the strings around them with the fretting hand so only the pair sounds."
       }
      ]
     },

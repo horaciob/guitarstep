@@ -470,11 +470,15 @@ def load_tab_sequence(steps: list[dict], bpm: float = 60) -> Reference:
     """Tab steps, one per beat (wait or bend mode). A bend or slide keeps the fret you pick
     and expects the pitch you arrive at."""
     beat = 60 / bpm
-    notes = [Note(k * beat, (k + 0.9) * beat, int(st["pitch"]), 0.8, st["string"], st["fret"],
-                  glide_from=st.get("glide_from")) for k, st in enumerate(steps)]
+    notes, k = [], -1
+    for st in steps:
+        if not st.get("together") or k < 0:      # notes "together" share the previous step's beat
+            k += 1
+        notes.append(Note(k * beat, (k + 0.9) * beat, int(st["pitch"]), 0.8, st["string"], st["fret"],
+                          glide_from=st.get("glide_from")))
     if not notes:
         raise ReferenceError("The exercise has no notes.")
-    return Reference(notes, Grid.from_bpm(bpm, 0.0, 4, len(notes) * beat + 10), name="exercise", path="exercise")
+    return Reference(notes, Grid.from_bpm(bpm, 0.0, 4, (k + 1) * beat + 10), name="exercise", path="exercise")
 
 
 def list_tracks(path: Path) -> list[dict]:

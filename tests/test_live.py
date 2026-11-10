@@ -203,3 +203,43 @@ def test_lick_bend_and_slide_dont_count_the_notes_on_the_way(tmp_path):
     ], gap=0.15)
     r = run_wav(tmp_path, y, ref, mode="wait")
     assert r["summary"]["first_try"] == 4 and r["issues"] == []
+
+
+def synth_together(groups, dur=0.7, gap=0.25, lead=0.3):
+    """Picked moments, each a list of midi notes sounding at once (a pinch or a double stop)."""
+    out = [np.zeros(int(SR * lead))]
+    n = int(SR * dur)
+    tt = np.arange(n) / SR
+    env = np.minimum(1, tt / 0.003) * np.exp(-tt / 1.5) * np.minimum(1, (n - np.arange(n)) / (0.03 * SR))
+    for g in groups:
+        y = sum(np.sin(2 * np.pi * h * 440 * 2 ** ((m - 69) / 12) * tt) / h for m in g for h in range(1, 6))
+        out += [0.25 * y * env / len(g), np.zeros(int(SR * gap))]
+    return np.concatenate(out).astype(np.float32)
+
+
+def test_notes_played_together_are_heard_together(tmp_path):
+    from guitarr import catalog
+
+    steps = catalog.parse_lick("6:3 5:3+1:0 4:2 3:7+2:8~")
+    assert [s.get("together", False) for s in steps] == [False, False, True, False, False, True]
+    ref = load_reference(RefOptions(tab=steps), log=lambda m: None)
+    assert [n.start for n in ref.notes] == [0, 1, 1, 2, 3, 3]          # together: the same beat
+    assert len(group_events(ref.notes)) == 4
+    # G2 · pinch C3+E4 (bass and melody) · E3 · double stop D4+G4
+    good = synth_together([[43], [48, 64], [52], [62, 67]])
+    r = run_wav(tmp_path, good, ref, mode="wait")
+    assert r["summary"]["first_try"] == 4 and r["issues"] == []
+    # the thumb plays its bass but the finger doesn't pinch the melody: not passed on the first try
+    bad = synth_together([[43], [48], [52], [62, 67]])
+    r = run_wav(tmp_path, bad, ref, mode="wait")
+    assert r["summary"]["first_try"] < 4
+
+
+def test_notes_together_must_be_plain_and_on_different_strings():
+    from guitarr import catalog
+
+    for tab in ("3:5h7+2:5", "3:5+3:7", "3:5+"):
+        with pytest.raises(catalog.CatalogError):
+            catalog.parse_lick(tab)
+    shifted = catalog.parse_lick("6:3+1:3", shift=-5)                    # falls off the neck: an octave up
+    assert [s["fret"] for s in shifted] == [10, 10]

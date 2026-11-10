@@ -5139,7 +5139,9 @@
    "seventh-arpeggios/arp-g7": "G7, dos octavas, subiendo y bajando",
    "seventh-arpeggios/arp-am7": "Am7, dos octavas",
    "seventh-arpeggios/arp-bm7b5": "Bm7♭5, dos octavas",
-   "seventh-arpeggios/sevenths-arp-quiz": "¿Qué notas forman el acorde de séptima?"
+   "seventh-arpeggios/sevenths-arp-quiz": "¿Qué notas forman el acorde de séptima?",
+   "travis-picking/pinch-c": "Travis con pinza",
+   "blues-licks-chords/double-stops-a": "Dobles cuerdas en La"
   },
   "charts": {
    "01-em-am": {
@@ -5960,7 +5962,9 @@
    "seventh-arpeggios/arp-g7": "G B D F: B y F forman un tritono, la tensión que quiere resolver a C. Escuchala dentro del arpegio.",
    "seventh-arpeggios/arp-am7": "A C E G: una tríada menor más la ♭7. Am7 tiene adentro una tríada de Do mayor (C E G): los acordes relativos comparten notas.",
    "seventh-arpeggios/arp-bm7b5": "B D F A: el acorde vii de Do mayor. Su ♭5 (F) lo vuelve inestable; sobre un G7 suena como un G9 sin fundamental.",
-   "seventh-arpeggios/sevenths-arp-quiz": "Deletreá desde la fundamental con la fórmula y después tocá las notas en orden: eso es el arpegio."
+   "seventh-arpeggios/sevenths-arp-quiz": "Deletreá desde la fundamental con la fórmula y después tocá las notas en orden: eso es el arpegio.",
+   "travis-picking/pinch-c": "Una pinza es el pulgar y un dedo pulsando en el mismo instante: acá el bajo C o G con el Mi agudo arriba. La app escucha las dos notas, así que dejalas sonar juntas en vez de arpegiarlas.",
+   "blues-licks-chords/double-stops-a": "Dos cuerdas pulsadas juntas: D y G se apoyan en el sonido del IV, y después C y E (la 3.ª menor y la 5.ª de La) vuelven a casa. Apagá las cuerdas de alrededor con la mano que pisa para que suene solo el par."
   }
  }
 }
