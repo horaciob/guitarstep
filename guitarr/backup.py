@@ -16,6 +16,7 @@ from datetime import datetime
 from pathlib import Path, PurePosixPath
 
 from . import __version__, config
+from .errors import CodedError
 
 FILES = ("config.toml", "progress.json", "plan.json", "rig.json")
 DIRS = ("history", "songs", "charts", "irs")
@@ -25,10 +26,8 @@ MAX_BYTES = 2 * 1024 ** 3          # unpacked size limit on restore
 MAX_ENTRIES = 20_000
 
 
-class BackupError(ValueError):
-    def __init__(self, code: str, message: str):
-        super().__init__(message)
-        self.code = code
+class BackupError(CodedError):
+    pass
 
 
 def _members(takes: bool):

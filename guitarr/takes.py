@@ -8,6 +8,7 @@ from __future__ import annotations
 import time
 
 from . import config, takeclick
+from .errors import CodedError
 
 DAY = 86400
 AGES = (7, 30, 90, 0)          # days; 0 means every take
@@ -31,9 +32,9 @@ def cleanup(days, now: float | None = None) -> dict:
     try:
         days = int(days)
     except (TypeError, ValueError):
-        raise ValueError("bad_days") from None
+        days = None
     if days not in AGES:
-        raise ValueError("bad_days")
+        raise CodedError("bad_days", "Choose how old the takes to delete are")
     now = time.time() if now is None else now
     deleted = freed = 0
     for p in _files():

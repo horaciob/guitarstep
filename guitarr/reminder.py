@@ -16,16 +16,15 @@ import threading
 from datetime import date, datetime
 
 from . import config, plan
+from .errors import CodedError
 
 DEFAULTS = dict(enabled=False, time="19:00", title="guitarr", body="{left} left today to meet your goal",
                 last_sent="")
 _lock = threading.Lock()
 
 
-class ReminderError(ValueError):
-    def __init__(self, code: str, message: str):
-        super().__init__(message)
-        self.code = code
+class ReminderError(CodedError):
+    pass
 
 
 def get() -> dict:

@@ -26,6 +26,7 @@ import uuid
 from datetime import date, datetime, timedelta
 
 from . import config
+from .errors import CodedError
 
 _lock = threading.Lock()
 
@@ -41,10 +42,8 @@ HEARTBEAT_S = 60.0       # a running timer nobody has seen for this long is paus
 MAX_NAME = 40
 
 
-class PlanError(ValueError):
-    def __init__(self, code: str, message: str):
-        super().__init__(message)
-        self.code = code
+class PlanError(CodedError):
+    pass
 
 
 # ---------------------------------------------------------------- storage

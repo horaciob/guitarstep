@@ -13,6 +13,7 @@ import uuid
 from pathlib import Path
 
 from . import config
+from .errors import CodedError
 
 MAX_BYTES = 64_000       # one rig as JSON
 MAX_PRESETS = 200
@@ -20,10 +21,8 @@ MAX_NAME = 60
 _lock = threading.Lock()     # requests run in threads: one read-modify-write of rig.json at a time
 
 
-class RigError(ValueError):
-    def __init__(self, code: str, message: str):
-        super().__init__(message)
-        self.code = code
+class RigError(CodedError):
+    pass
 
 
 def path():

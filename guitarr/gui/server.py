@@ -20,6 +20,7 @@ from fastapi import FastAPI, File, Form, HTTPException, UploadFile, WebSocket, W
 from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 
+from ..errors import CodedError
 from .. import __version__, backup, catalog, config, history, latency, plan, progress, reminder, rig, routine, signalcheck
 from ..audio_io import AudioError, FileSource, MicSource, devices
 from ..reference import REFERENCE_EXT, RefOptions, ReferenceError, list_tracks, load_reference
@@ -30,6 +31,13 @@ app = FastAPI(title="guitarr", docs_url=None, redoc_url=None)
 
 def fail(status: int, code: str, message: str):
     raise HTTPException(status, detail=dict(code=code, message=message))
+
+
+@app.exception_handler(CodedError)
+async def coded_error(request, e: CodedError):
+    """Errors the user can fix (a bad name, too many presets…): 400 with their code."""
+    from fastapi.responses import JSONResponse
+    return JSONResponse(status_code=400, content=dict(detail=dict(code=e.code, message=str(e))))
 
 
 # The server only answers its own page. Any website open in the browser can send requests to
@@ -880,10 +888,7 @@ def api_reminder():
 
 @app.put("/api/reminder")
 def api_reminder_set(body: dict):
-    try:
-        return reminder.update(body.get("enabled"), body.get("time"), body.get("title"), body.get("body"))
-    except reminder.ReminderError as e:
-        fail(400, e.code, str(e))
+    return reminder.update(body.get("enabled"), body.get("time"), body.get("title"), body.get("body"))
 
 
 @app.post("/api/reminder/shown")
@@ -918,20 +923,10 @@ async def api_restore(file: UploadFile = File(...)):
     with S.lock:
         if S.session and S.session.running:
             fail(409, "busy", "Stop practicing first")
-        try:
-            return backup.restore(data)
-        except backup.BackupError as e:
-            fail(400, e.code, str(e))
+        return backup.restore(data)
 
 
 # ---------------------------------------------------------------- practice plan
-def _plan(fn, *a):
-    try:
-        return fn(*a)
-    except plan.PlanError as e:
-        fail(400, e.code, str(e))
-
-
 @app.get("/api/plan")
 def api_plan():
     return plan.get()
@@ -939,22 +934,22 @@ def api_plan():
 
 @app.put("/api/plan/goal")
 def api_plan_goal(body: dict):
-    return _plan(plan.set_weekly_goal, body.get("weekly_minutes"))
+    return plan.set_weekly_goal(body.get("weekly_minutes"))
 
 
 @app.put("/api/plan/categories/{cid}")
 def api_plan_minutes(cid: str, body: dict):
-    return _plan(plan.set_minutes, cid, body.get("minutes"))
+    return plan.set_minutes(cid, body.get("minutes"))
 
 
 @app.post("/api/plan/categories")
 def api_plan_add(body: dict):
-    return _plan(plan.add_category, body.get("name"), body.get("minutes"))
+    return plan.add_category(body.get("name"), body.get("minutes"))
 
 
 @app.delete("/api/plan/categories/{cid}")
 def api_plan_remove(cid: str):
-    return _plan(plan.remove_category, cid)
+    return plan.remove_category(cid)
 
 
 @app.post("/api/plan/free")
@@ -971,22 +966,15 @@ def api_plan_free(body: dict):
         secs = round(secs * (1 - busy), 1)
     elif S.session and S.session.running:
         return dict(counted=0.0)
-    return dict(counted=_plan(plan.record_free_play, secs if secs is not None else body.get("seconds")))
+    return dict(counted=plan.record_free_play(secs if secs is not None else body.get("seconds")))
 
 
 @app.post("/api/plan/timer")
 def api_plan_timer(body: dict):
-    return _plan(plan.timer, str(body.get("action") or ""), body.get("category"))
+    return plan.timer(str(body.get("action") or ""), body.get("category"))
 
 
 # ---------------------------------------------------------------- tone rig (amp, pedals…)
-def _rig(fn, *a):
-    try:
-        return fn(*a)
-    except rig.RigError as e:
-        fail(400, e.code, str(e))
-
-
 @app.get("/api/rig")
 def api_rig():
     return rig.get()
@@ -994,18 +982,18 @@ def api_rig():
 
 @app.put("/api/rig/current")
 def api_rig_current(body: dict):
-    _rig(rig.save_current, body.get("rig"))
+    rig.save_current(body.get("rig"))
     return dict(ok=True)
 
 
 @app.post("/api/rig/presets")
 def api_rig_preset_save(body: dict):
-    return _rig(rig.save_preset, body.get("name"), body.get("rig"))
+    return rig.save_preset(body.get("name"), body.get("rig"))
 
 
 @app.put("/api/rig/favorites")
 def api_rig_favorites(body: dict):
-    return dict(favorites=_rig(rig.set_favorites, body.get("favorites")))
+    return dict(favorites=rig.set_favorites(body.get("favorites")))
 
 
 @app.get("/api/rig/irs")
@@ -1016,17 +1004,17 @@ def api_rig_irs():
 @app.post("/api/rig/irs")
 async def api_rig_ir_upload(file: UploadFile = File(...)):
     data = await file.read(rig.IR_MAX_BYTES + 1)
-    return _rig(rig.save_ir, file.filename, data)
+    return rig.save_ir(file.filename, data)
 
 
 @app.get("/api/rig/irs/{name}")
 def api_rig_ir(name: str):
-    return FileResponse(_rig(rig.ir_path, name))
+    return FileResponse(rig.ir_path(name))
 
 
 @app.delete("/api/rig/irs/{name}")
 def api_rig_ir_delete(name: str):
-    _rig(rig.delete_ir, name)
+    rig.delete_ir(name)
     return dict(ok=True)
 
 
@@ -1306,10 +1294,7 @@ def takes_cleanup(body: dict):
     with S.lock:
         if S.session and S.session.running:
             fail(409, "busy", "Stop practicing first")
-        try:
-            return takes_.cleanup(body.get("days"))
-        except ValueError:
-            fail(400, "bad_days", "Choose how old the takes to delete are")
+        return takes_.cleanup(body.get("days"))
 
 
 def _store_take(file: UploadFile) -> str:
