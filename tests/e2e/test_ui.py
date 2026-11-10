@@ -992,7 +992,7 @@ def test_rig_artist_tones(app_page):
     onboarded(app_page)
     go(app_page, "rig")
     row = app_page.locator("#artistSounds .quick:not([hidden])")
-    expect(row).to_have_count(100)
+    expect(row).to_have_count(101)
     app_page.locator('.artist-styles button[data-style="acoustic"]').click()     # filter by style
     expect(row).to_have_count(6)
     expect(app_page.locator('#artistSounds .quick[data-id="segovia_classical"]')).to_be_visible()
@@ -1029,6 +1029,8 @@ def test_rig_preset_search(app_page):
     expect(visible).to_have_count(1)
     search.fill("surf")                                         # factory sounds too
     expect(app_page.locator('.quick[data-id="surf"]')).to_be_visible()
+    search.fill("acdc")                                         # AC/DC: Angus and Malcolm
+    expect(visible).to_have_count(2)
     search.fill("jimmy henrix")                                 # typos still find it
     expect(app_page.locator('#artistSounds .quick[data-id="hendrix_vibe"]')).to_be_visible()
     expect(app_page.locator("#searchCount")).to_contain_text("close spellings")
