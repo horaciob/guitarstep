@@ -260,7 +260,7 @@ def index():
 app.mount("/static", StaticFiles(directory=STATIC), name="static")
 
 
-@app.get("/takes/{name}")
+@app.api_route("/takes/{name}", methods=["GET", "HEAD"])
 def get_take(name: str, click: bool = False):
     """The take as recorded (clean guitar), or with click=1 the metronome you heard mixed in."""
     from .. import takeclick

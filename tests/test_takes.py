@@ -49,3 +49,10 @@ def test_restore_keeps_only_the_last_safety_copies():
     backup.restore(backup.create())
     kept = sorted(p.name for p in folder.glob("before-restore-*.zip"))
     assert len(kept) == backup.KEEP_SAFETY and not kept[0].startswith("before-restore-2020-01-01")
+
+
+def test_a_deleted_take_answers_404_to_head():
+    c = TestClient(app)
+    make("here.wav", 1)
+    assert c.head("/takes/here.wav").status_code == 200
+    assert c.head("/takes/gone.wav").status_code == 404

@@ -22,8 +22,11 @@ export function takePlayer(name, info) {
 export function bindTakePlayers(root) {
   root.querySelectorAll(".take-player").forEach(box => {
     const cb = box.querySelector("[data-take-click]"), audio = box.querySelector("audio");
-    if (audio) audio.addEventListener("error", () => {               // deleted from Settings → Your data
-      box.innerHTML = `<span class="muted small">${esc(t("take.gone"))}</span>`;
+    if (audio) audio.addEventListener("error", async () => {         // deleted from Settings → Your data?
+      try {
+        const r = await fetch(`/takes/${encodeURIComponent(box.dataset.take)}`, { method: "HEAD" });
+        if (r.status === 404) box.innerHTML = `<span class="muted small">${esc(t("take.gone"))}</span>`;
+      } catch { /* offline: leave the player */ }
     }, { once: true });
     if (!cb || !audio) return;
     cb.addEventListener("change", () => {
