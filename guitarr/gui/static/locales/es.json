@@ -136,7 +136,15 @@
    "no_probe": "El chequeo de señal no está escuchando: recargá la página.",
    "too_short": "Todavía no hay suficiente audio: probá de nuevo.",
    "no_clip": "Todavía no hay nada grabado en ese paso.",
-   "forbidden_origin": "No se aceptan pedidos desde otros sitios"
+   "forbidden_origin": "No se aceptan pedidos desde otros sitios",
+   "bad_name": "El sonido necesita un nombre",
+   "too_many_presets": "Tenés demasiados sonidos guardados: borrá alguno primero",
+   "rig_too_big": "Ese sonido es demasiado grande para guardarlo",
+   "bad_rig": "No se pudo leer ese sonido",
+   "no_preset": "Ese sonido ya no existe",
+   "bad_audio": "Los dos archivos tienen que ser grabaciones de audio (WAV, FLAC u OGG)",
+   "capture_too_short": "Grabá al menos medio segundo tocando",
+   "capture_silent": "Una de las grabaciones está en silencio"
   },
   "practice": {
    "title": "🎧 Practicar con escucha",

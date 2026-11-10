@@ -136,7 +136,15 @@
    "no_probe": "The signal check isn't listening: reload the page.",
    "too_short": "Not enough audio yet: try again.",
    "no_clip": "Nothing recorded for that step yet.",
-   "forbidden_origin": "Requests from other sites are not allowed"
+   "forbidden_origin": "Requests from other sites are not allowed",
+   "bad_name": "The sound needs a name",
+   "too_many_presets": "Too many saved sounds: delete some first",
+   "rig_too_big": "That sound is too big to save",
+   "bad_rig": "That sound could not be read",
+   "no_preset": "That sound no longer exists",
+   "bad_audio": "Both files must be audio recordings (WAV, FLAC or OGG)",
+   "capture_too_short": "Record at least half a second of playing",
+   "capture_silent": "One of the recordings is silent"
   },
   "practice": {
    "title": "🎧 Practice with listening",

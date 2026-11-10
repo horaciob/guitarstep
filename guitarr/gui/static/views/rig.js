@@ -279,7 +279,8 @@ function savePreset() {
   const suggested = rig.preset && rig.preset.kind === "user" ? rig.preset.name : "";
   dlg.innerHTML = `<form method="dialog" class="dlg-head"><h2>${esc(t("rig.save_title"))}</h2>
       <button class="btn small ghost" value="close" aria-label="${esc(t("rig.close"))}">✕</button></form>
-    <form id="saveForm"><label class="field"><span>${esc(t("rig.preset_name"))}</span><input type="text" id="presetName" maxlength="60" required value="${esc(suggested)}"></label>
+    <form id="saveForm"><label class="field"><span>${esc(t("rig.preset_name"))}</span><input type="text" id="presetName" maxlength="60" required value="${esc(suggested)}" aria-describedby="presetErr"></label>
+      <p class="field-err" id="presetErr" role="alert"></p>
       <p class="muted small">${esc(t("rig.save_hint"))}</p>
       <div class="setup-actions"><button class="btn primary" type="submit">${esc(t("rig.save"))}</button></div></form>`;
   $("#saveForm", dlg).onsubmit = async ev => {
@@ -293,7 +294,7 @@ function savePreset() {
       dlg.close();
       await rig.refreshPresets();
       toast(t("rig.saved", { name: p.name }), true);
-    } catch (e) { toast(e.message); }
+    } catch (e) { $("#presetErr", dlg).textContent = e.message; $("#presetName", dlg).focus(); }   // what you typed stays
   };
   dlg.showModal();
   $("#presetName", dlg).select();

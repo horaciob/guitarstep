@@ -69,3 +69,17 @@ def test_tab_order_setting():
     assert r["tab_low_on_top"] is False and r["tuning"] == "standard" and r["left_handed"] is False
     assert c.get("/api/settings/sources").json()["tab_low_on_top"]["source"] == "saved"
     assert c.put("/api/instrument", json=dict(left_handed=True)).json()["tab_low_on_top"] is False   # kept
+
+
+def test_rig_errors_are_translated():
+    """The rig shows server errors as they come (errors.<code>), so every code needs both languages."""
+    import json
+    import re
+    from pathlib import Path
+
+    root = Path(__file__).parent.parent / "guitarr"
+    codes = set(re.findall(r'RigError\("([a-z_]+)"', (root / "rig.py").read_text()))
+    codes |= {"bad_audio", "capture_too_short", "capture_silent"}
+    for lang in ("en", "es"):
+        errors = json.loads((root / "gui/static/locales" / f"{lang}.json").read_text())["ui"]["errors"]
+        assert codes <= set(errors), (lang, sorted(codes - set(errors)))
