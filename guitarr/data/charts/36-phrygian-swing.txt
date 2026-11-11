@@ -1,0 +1,9 @@
+title: E and F: the Phrygian swing
+bpm: 90
+time: 4/4
+strum: D.DUD.DU
+note: F is a half step above E: the flamenco sigh. Rasgueo the E, let the F ring.
+
+[Compás]
+E | F | E | E
+E | F | G F | E

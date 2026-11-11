@@ -1,0 +1,12 @@
+title: Endings: chan-chan
+bpm: 66
+time: 4/4
+strum: D.D.D.D.
+note: Each line ends on E7 → Am. Stop the last chord dead.
+
+[A]
+Am | Dm | E7 | Am
+Dm | Am | E7 | Am
+
+[Ending]
+Dm | E7 | E7 | Am

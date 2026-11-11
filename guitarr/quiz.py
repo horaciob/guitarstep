@@ -599,6 +599,24 @@ TECHNIQUE = {
               ("tritone", ["f6", "f5", "f7", "f4"], "f6"),
               ("pinch", ["thumb", "bend", "tap", "slide"], "thumb"),
               ("tremolo", ["wrist", "arm", "fingers", "legato"], "wrist")],
+    "flamenco": [
+              ("rasgueo", ["fan", "pick", "thumb_only", "palm"], "fan"),
+              ("andalusian", ["am_g_f_e", "am_dm_e", "c_g_am_f", "e_a_b"], "am_g_f_e"),
+              ("picado", ["i_m", "thumb", "pima", "pick"], "i_m"),
+              ("phrygian_dom", ["gsharp", "fsharp", "dsharp", "bflat"], "gsharp"),
+              ("compas12", ["accents", "even", "waltz", "fours"], "accents")],
+    "rock": [
+              ("boogie", ["fifth_sixth", "octave", "third", "seventh"], "fifth_sixth"),
+              ("power_chord", ["root_fifth", "root_third", "triad", "seventh"], "root_fifth"),
+              ("blue_note", ["b5", "b3", "b7", "b2"], "b5"),
+              ("stop", ["both_hands", "let_ring", "louder", "slower"], "both_hands"),
+              ("call_response", ["question", "faster", "same", "random"], "question")],
+    "tango": [
+              ("marcato", ["four", "two", "three", "off"], "four"),
+              ("sincopa", ["anticipate", "delay", "triplet", "silence"], "anticipate"),
+              ("milonga", ["332", "44", "2222", "333"], "332"),
+              ("dominant", ["e7", "g", "dm", "f"], "e7"),
+              ("arrastre", ["drag", "staccato", "bend", "harmonic"], "drag")],
 }
 
 

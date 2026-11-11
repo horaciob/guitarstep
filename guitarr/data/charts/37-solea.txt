@@ -1,0 +1,15 @@
+title: A soleá cycle
+bpm: 90
+time: 3/4
+strum: D.D.DU
+note: Four bars of three are the 12 beats of soleá. Change chords on the accents.
+
+[Compás]
+E | E | F | E
+E | E | F | E
+
+[Falseta]
+Am | G | F | E
+
+[Ending]
+F | F | E | E

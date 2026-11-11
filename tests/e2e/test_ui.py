@@ -980,12 +980,16 @@ def test_exercise_theory_and_the_optional_metal_course(app_page):
     go(app_page, "course")
     expect(app_page.get_by_role("heading", name="Optional courses")).to_be_visible()
     metal = app_page.locator("section.level.optional")
-    expect(metal).to_have_count(3)
+    expect(metal).to_have_count(12)                              # metal, flamenco, rock and tango: 3 levels each
     expect(metal.first.locator(".lvl-num")).to_have_text("M1")
     expect(metal.first).to_contain_text("Metal rhythm")
     go(app_page, "lesson/metal-chug")
     expect(app_page.locator(".lesson-head small")).to_contain_text("M1")
     expect(app_page.locator('.exercise[data-id="gallop"] [data-act=theory]')).to_be_visible()
+    go(app_page, "course")
+    expect(metal.nth(3).locator(".lvl-num")).to_have_text("F1")
+    go(app_page, "lesson/andalusian-cadence")
+    expect(app_page.locator(".lesson-head small")).to_contain_text("F1")
 
 
 def test_rig_artist_tones(app_page):

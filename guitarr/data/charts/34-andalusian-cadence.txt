@@ -1,0 +1,13 @@
+title: The Andalusian cadence
+bpm: 80
+time: 4/4
+strum: D.D.DUDU
+note: Let the bass walk down A, G, F, E. Pause on the E: it's home, not a question.
+
+[Cadence]
+Am | G | F | E
+Am | G | F | E
+
+[Ending]
+Am | G | F | E
+E | - | E | -

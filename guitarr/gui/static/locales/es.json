@@ -1673,6 +1673,7 @@
    "scale_melodic_minor": "menor melódica",
    "scale_dorian": "dórica",
    "scale_phrygian": "frigia",
+   "scale_phrygian_dominant": "frigia dominante",
    "scale_lydian": "lidia",
    "scale_mixolydian": "mixolidia",
    "scale_locrian": "locria",
@@ -1962,6 +1963,81 @@
    "tech_tremolo_arm": "Golpes grandes desde el brazo",
    "tech_tremolo_fingers": "Pulsar con los dedos",
    "tech_tremolo_legato": "Ligados",
+   "tech_rasgueo": "El rasgueo flamenco se toca…",
+   "tech_rasgueo_fan": "Abriendo los dedos uno después del otro, como un abanico",
+   "tech_rasgueo_pick": "Rasgueando con púa",
+   "tech_rasgueo_thumb_only": "Solo con el pulgar, abajo y arriba",
+   "tech_rasgueo_palm": "Golpeando las cuerdas con la palma",
+   "tech_andalusian": "¿Cuál es la cadencia andaluza en La menor?",
+   "tech_andalusian_am_g_f_e": "Am – G – F – E",
+   "tech_andalusian_am_dm_e": "Am – Dm – E",
+   "tech_andalusian_c_g_am_f": "C – G – Am – F",
+   "tech_andalusian_e_a_b": "E – A – B",
+   "tech_picado": "El picado (escalas rápidas del flamenco) alterna…",
+   "tech_picado_i_m": "Índice y medio, cada uno apoyado en la cuerda siguiente",
+   "tech_picado_thumb": "Solo el pulgar",
+   "tech_picado_pima": "Pulgar, índice, medio y anular en arpegio",
+   "tech_picado_pick": "Púa hacia abajo",
+   "tech_phrygian_dom": "Mi frigio dominante se diferencia de Mi frigio en una nota. ¿Cuál?",
+   "tech_phrygian_dom_gsharp": "G♯ en lugar de G (una tercera mayor)",
+   "tech_phrygian_dom_fsharp": "F♯ en lugar de F (una segunda mayor)",
+   "tech_phrygian_dom_dsharp": "D♯ en lugar de D (una séptima mayor)",
+   "tech_phrygian_dom_bflat": "B♭ en lugar de B (una quinta disminuida)",
+   "tech_compas12": "El compás de 12 tiempos de la soleá se siente por…",
+   "tech_compas12_accents": "Los acentos en el 3, 6, 8, 10 y 12",
+   "tech_compas12_even": "Doce tiempos igual de fuertes",
+   "tech_compas12_waltz": "Acentos en el 1, 4, 7 y 10",
+   "tech_compas12_fours": "Tres grupos de cuatro, con acento en cada 1",
+   "tech_boogie": "En el riff de boogie en A, la nota de arriba se mueve entre…",
+   "tech_boogie_fifth_sixth": "La quinta (E) y la sexta (F♯)",
+   "tech_boogie_octave": "La fundamental y la octava",
+   "tech_boogie_third": "La tercera y la cuarta",
+   "tech_boogie_seventh": "La fundamental y la séptima mayor",
+   "tech_power_chord": "Un power chord se forma con…",
+   "tech_power_chord_root_fifth": "La fundamental y la quinta (muchas veces también la octava)",
+   "tech_power_chord_root_third": "La fundamental y la tercera",
+   "tech_power_chord_triad": "Una tríada mayor completa",
+   "tech_power_chord_seventh": "La fundamental y la séptima",
+   "tech_blue_note": "La blue note que la escala de blues le agrega a la pentatónica menor es…",
+   "tech_blue_note_b5": "La quinta disminuida",
+   "tech_blue_note_b3": "La tercera menor",
+   "tech_blue_note_b7": "La séptima menor",
+   "tech_blue_note_b2": "La segunda menor",
+   "tech_stop": "Un corte (la banda se calla de golpe) se toca…",
+   "tech_stop_both_hands": "Apagando con las dos manos en el mismo instante",
+   "tech_stop_let_ring": "Dejando sonar el último acorde",
+   "tech_stop_louder": "Pegándole más fuerte al último acorde",
+   "tech_stop_slower": "Frenando antes",
+   "tech_call_response": "En un solo de pregunta y respuesta, la primera frase…",
+   "tech_call_response_question": "Hace una pregunta (termina sin resolver) que la siguiente contesta",
+   "tech_call_response_faster": "Siempre es más rápida que la segunda",
+   "tech_call_response_same": "Se repite nota por nota",
+   "tech_call_response_random": "No tiene relación con la segunda",
+   "tech_marcato": "El marcato en cuatro, en el tango, es…",
+   "tech_marcato_four": "Cuatro acordes cortos y firmes por compás",
+   "tech_marcato_two": "Solo los tiempos 2 y 4",
+   "tech_marcato_three": "Tres tiempos por compás, como un vals",
+   "tech_marcato_off": "Solo los contratiempos",
+   "tech_sincopa": "En la síncopa del tango, el segundo acento…",
+   "tech_sincopa_anticipate": "Llega antes, en el \"y\" del 2, y el tiempo 3 queda en silencio",
+   "tech_sincopa_delay": "Llega tarde, después del tiempo 3",
+   "tech_sincopa_triplet": "Es un tresillo",
+   "tech_sincopa_silence": "Es un compás entero de silencio",
+   "tech_milonga": "La milonga agrupa las corcheas del compás en…",
+   "tech_milonga_332": "3 + 3 + 2",
+   "tech_milonga_44": "4 + 4",
+   "tech_milonga_2222": "2 + 2 + 2 + 2",
+   "tech_milonga_333": "3 + 3 + 3",
+   "tech_dominant": "En La menor, ¿qué acorde tira más fuerte de vuelta a Am?",
+   "tech_dominant_e7": "E7",
+   "tech_dominant_g": "G",
+   "tech_dominant_dm": "Dm",
+   "tech_dominant_f": "F",
+   "tech_arrastre": "El arrastre del tango es…",
+   "tech_arrastre_drag": "Un arrastre que empieza justo antes del tiempo y cae sobre él",
+   "tech_arrastre_staccato": "Una nota muy corta",
+   "tech_arrastre_bend": "Un bend",
+   "tech_arrastre_harmonic": "Un armónico artificial",
    "theory_cloze": "¿Qué palabra falta? «{{text}}»"
   },
   "flow": {
@@ -2712,6 +2788,42 @@
    "n23": {
     "title": "Fingerpicking y arpegios",
     "subtitle": "Patrones de dedos, bajo alternado, melodía sobre un bajo y arpegios de todos los tipos de acorde por el mástil."
+   },
+   "f1": {
+    "title": "Ritmo flamenco",
+    "subtitle": "La cadencia andaluza, el rasgueo y la rumba."
+   },
+   "f2": {
+    "title": "El sonido frigio y la falseta",
+    "subtitle": "El modo de Mi, las escalas en picado, el pulgar y tus primeras falsetas."
+   },
+   "f3": {
+    "title": "Compás y una pieza completa",
+    "subtitle": "El compás de 12 tiempos, una soleá y una pieza flamenca entera."
+   },
+   "r1": {
+    "title": "Ritmo de rock",
+    "subtitle": "El riff de boogie, riffs con power chords, acentos y cortes."
+   },
+   "r2": {
+    "title": "Lead de rock",
+    "subtitle": "Cajas pentatónicas, la blue note, licks clásicos y bends."
+   },
+   "r3": {
+    "title": "Solos y temas de rock",
+    "subtitle": "Frasear un solo, dobles cuerdas y un tema de rock completo."
+   },
+   "t1": {
+    "title": "Ritmo de tango",
+    "subtitle": "El marcato, la síncopa y la armonía en menor del tango."
+   },
+   "t2": {
+    "title": "Milonga y bordoneo",
+    "subtitle": "El ritmo de milonga, las líneas de bajo y el bordoneo."
+   },
+   "t3": {
+    "title": "Melodía de tango y un tango completo",
+    "subtitle": "Melodías en menor armónica, la dominante y un tango entero."
    }
   },
   "lessons": {
@@ -4807,6 +4919,330 @@
     "tutorials": [
      "arpegios acordes de séptima guitarra maj7 m7 dominante"
     ]
+   },
+   "andalusian-cadence": {
+    "title": "La cadencia andaluza",
+    "theory": [
+     "La cadencia andaluza son cuatro acordes que bajan: Am – G – F – E. Es el corazón armónico del flamenco y de mucha música española.",
+     "El último acorde, Mi mayor, no es una pregunta sino la casa: el flamenco escucha E como la tónica del modo de Mi (frigio), y el F de arriba como su vecino más oscuro.",
+     "Dejá que el bajo también baje: A, G, F, E. Cuando el bajo se mueve por grado conjunto, los cuatro acordes suenan como una sola línea."
+    ],
+    "tips": [],
+    "tutorials": [
+     "cadencia andaluza guitarra flamenca clase"
+    ]
+   },
+   "rasgueo": {
+    "title": "Rasgueo: los dedos se abren como un abanico",
+    "theory": [
+     "El rasgueo es un rasgueado hecho con los dedos que se abren uno después del otro (meñique, anular, medio, índice), cada uno golpeando las cuerdas hacia abajo.",
+     "El rasgueo de cuatro llena un tiempo con cuatro semicorcheas; el de tres hace un tresillo. Cada dedo tiene que sonar solo, no como un borrón.",
+     "La fuerza sale de soltar el dedo, no del brazo: cerrá los dedos contra la palma y dejá que salten. El pulgar se apoya en la 6ª cuerda como ancla."
+    ],
+    "tips": [],
+    "tutorials": [
+     "rasgueado flamenco cuatro dedos técnica"
+    ]
+   },
+   "rumba": {
+    "title": "Rumba flamenca",
+    "theory": [
+     "La rumba es la puerta más abierta al flamenco: va en cuatro, como el pop, y adora la cadencia andaluza.",
+     "Su pulso agrupa las corcheas del compás 3 + 3 + 2: fuerte, fuerte, fuerte y corto. Sumá un golpe apagado en los tiempos 2 y 4 y aparece el groove.",
+     "Apagá con la palma de la mano que rasguea justo después del golpe: el acorde corto y seco es la mitad del sonido de la rumba."
+    ],
+    "tips": [],
+    "tutorials": [
+     "rumba flamenca rasgueo ritmo"
+    ]
+   },
+   "mode-of-e": {
+    "title": "El modo de Mi: frigio y frigio dominante",
+    "theory": [
+     "Mi frigio tiene las notas de Do mayor centradas en E: E F G A B C D. El F, medio tono arriba de la fundamental, es el color flamenco.",
+     "El flamenco suele subir la 3ª, de G a G♯: es la escala frigia dominante (E F G♯ A B C D). Encaja con el acorde de Mi mayor que cierra la cadencia.",
+     "Muchas falsetas mezclan las dos: G♯ cuando suena el acorde de E, G cuando la melodía cae hacia F y E."
+    ],
+    "tips": [],
+    "tutorials": [
+     "escala frigia dominante flamenco guitarra"
+    ]
+   },
+   "picado": {
+    "title": "Picado: escalas rápidas con i y m",
+    "theory": [
+     "El picado es la técnica de escalas del flamenco: el índice (i) y el medio (m) se alternan, y cada uno queda apoyado en la cuerda siguiente después de pulsar.",
+     "Alterná siempre, incluso cuando cambiás de cuerda: i-m-i-m. Un dedo repetido rompe la velocidad y la parejura.",
+     "Empezá lento y fuerte: el picado es un sonido firme y claro, no un susurro. La velocidad sale de relajarse, no de apurarse."
+    ],
+    "tips": [],
+    "tutorials": [
+     "picado flamenco técnica ejercicio"
+    ]
+   },
+   "falseta": {
+    "title": "Tu primera falseta",
+    "theory": [
+     "La falseta es un pasaje melódico corto entre las partes cantadas o entre rasgueos: una pequeña composición que siempre termina en la casa de la cadencia, E.",
+     "Las falsetas mezclan picado, ligados (hammer-ons y pull-offs) y cuerdas al aire que suenan debajo de la melodía.",
+     "Tocala a compás: una falseta empieza y termina en el mismo lugar del ritmo, y el acorde que viene después cae a tiempo."
+    ],
+    "tips": [],
+    "tutorials": [
+     "falseta flamenca fácil clase"
+    ]
+   },
+   "compas-12": {
+    "title": "El compás de 12 tiempos",
+    "theory": [
+     "La soleá, las alegrías y las bulerías no cuentan de a cuatro: su compás es un ciclo de 12 tiempos con acentos en el 3, 6, 8, 10 y 12.",
+     "Contá en voz alta y palmeá solo los acentos: 1 2 (3) 4 5 (6) 7 (8) 9 (10) 11 (12). Con el tiempo el ciclo se siente como una frase, no como una suma.",
+     "Doce tiempos son tres grupos de cuatro en la pantalla, pero en el cuerpo son dos grupos de tres y tres de dos: 3 + 3 + 2 + 2 + 2."
+    ],
+    "tips": [],
+    "tutorials": [
+     "compás de 12 tiempos soleá explicado"
+    ]
+   },
+   "flamenco-ear": {
+    "title": "Escuchar los intervalos del flamenco",
+    "theory": [
+     "El semitono (E–F) es el suspiro del flamenco; la segunda aumentada (F–G♯), tres trastes, su sabor morisco.",
+     "La tercera mayor (E–G♯) dentro del acorde de E es lo que hace brillar el último acorde de la cadencia contra una escala oscura.",
+     "Cantá lo que tocás: la guitarra flamenca creció al lado de la voz, y el cante usa estos mismos pasos chicos."
+    ],
+    "tips": [],
+    "tutorials": [
+     "intervalos flamenco oído cante"
+    ]
+   },
+   "flamenco-piece": {
+    "title": "Una pieza flamenca completa",
+    "theory": [
+     "Una pieza flamenca alterna secciones de rasgueo con falsetas y siempre vuelve a la cadencia.",
+     "El arte está en el contraste: rasgueos fuertes, después una falseta suave y después un remate que cae justo en el ciclo.",
+     "Aprendé dónde termina cada sección antes de tocarla rápido: en el flamenco, caer en el lugar justo importa más que las notas del camino."
+    ],
+    "tips": [],
+    "tutorials": [
+     "estructura tema rumba flamenca guitarra"
+    ]
+   },
+   "rock-boogie": {
+    "title": "El boogie del rock and roll",
+    "theory": [
+     "El riff de boogie es donde nació la guitarra de rock: fundamental y quinta en las cuerdas graves, con la nota de arriba que sube a la sexta y vuelve.",
+     "En A: la cuerda A al aire con el traste 2 de la cuerda D (E, la quinta), después el traste 4 (F♯, la sexta). Pasalo a D y E en las cuerdas siguientes y tenés un blues de 12 compases en clave de rock.",
+     "Tocalo con púa hacia abajo y un palm mute suave: tiene que hacer chug, no sonar abierto."
+    ],
+    "tips": [],
+    "tutorials": [
+     "riff boogie rock and roll guitarra clase"
+    ]
+   },
+   "rock-riffs": {
+    "title": "Riffs con power chords",
+    "theory": [
+     "La mayoría de los riffs clásicos de rock son power chords que se mueven en las cuerdas graves: fundamental y quinta, sin tercera, así que funcionan con cualquier cantidad de distorsión.",
+     "Los movimientos de siempre salen de la pentatónica menor: en A, las fundamentales A, C, D, E y G. A5–G5–D5 y E5–G5–A5 son rock en tres acordes.",
+     "Dejá espacio: un riff está hecho tanto de silencios como de acordes."
+    ],
+    "tips": [],
+    "tutorials": [
+     "riffs rock clásico power chords clase"
+    ]
+   },
+   "rock-accents": {
+    "title": "Acentos y cortes",
+    "theory": [
+     "El ritmo del rock respira con acentos (algunos golpes más fuertes que el resto) y cortes (toda la banda se calla a la vez).",
+     "Un corte necesita las dos manos: levantá los dedos que pisan y tocá las cuerdas con la mano que rasguea, en el mismo instante.",
+     "Los acentos sincopados, en el \"y\" de un tiempo, empujan el tema hacia adelante: son el gancho de muchos riffs famosos."
+    ],
+    "tips": [],
+    "tutorials": [
+     "guitarra rítmica rock acentos cortes"
+    ]
+   },
+   "rock-boxes": {
+    "title": "Las cajas pentatónicas 1 y 2",
+    "theory": [
+     "El solo de rock vive en la pentatónica menor. La caja 1 en A está en el traste 5; la caja 2 se une justo arriba, del traste 7 al 10.",
+     "Unir las cajas deja que un solo suba por el mástil en lugar de quedarse en un lugar. Las notas son las mismas cinco: A C D E G.",
+     "Sabé dónde están las fundamentales en cada caja: las frases suenan terminadas cuando caen en A."
+    ],
+    "tips": [],
+    "tutorials": [
+     "caja pentatónica 1 y 2 solo rock"
+    ]
+   },
+   "rock-blue-note": {
+    "title": "La blue note",
+    "theory": [
+     "Agregá la quinta disminuida (E♭ en A) a la pentatónica menor y tenés la escala de blues: A C D E♭ E G.",
+     "La blue note es una nota de paso: pasá por ella entre D y E, no te quedes ahí.",
+     "Está en un sinfín de riffs y solos de rock: los semitonos D–E♭–E le dan aspereza a una línea."
+    ],
+    "tips": [],
+    "tutorials": [
+     "escala de blues blue note rock guitarra"
+    ]
+   },
+   "rock-licks": {
+    "title": "Licks clásicos de rock",
+    "theory": [
+     "Un lick es una frase corta que podés reutilizar: muchos solos de rock son unos pocos licks tocados con convicción, repetidos y variados.",
+     "El bend de la 4ª a la 5ª (D a E en la cuerda G, traste 7) es el movimiento más usado del lead de rock.",
+     "Los licks repetidos en tresillos arman tensión; un bend largo con vibrato la suelta."
+    ],
+    "tips": [],
+    "tutorials": [
+     "licks rock clásico pentatónica clase"
+    ]
+   },
+   "rock-phrasing": {
+    "title": "Frasear un solo: pregunta y respuesta",
+    "theory": [
+     "Un buen solo habla: una frase corta hace una pregunta y la siguiente la contesta. Dejá una respiración entre las dos.",
+     "La pregunta suele terminar en una nota inestable (el bend a la 5ª); la respuesta vuelve a la fundamental.",
+     "Menos notas, más intención: un bend bien puesto con vibrato dice más que una escala rápida."
+    ],
+    "tips": [],
+    "tutorials": [
+     "frasear solo rock pregunta respuesta"
+    ]
+   },
+   "rock-double-stops": {
+    "title": "Dobles cuerdas",
+    "theory": [
+     "Una doble cuerda son dos notas tocadas juntas, casi siempre en cuerdas vecinas. En las dos primeras cuerdas en el mismo traste forman una cuarta: el sonido del lead de rock and roll.",
+     "Hacé una mini cejilla con un dedo sobre las dos cuerdas y tocá ambas a la vez; entrá deslizando desde un traste abajo para darle más actitud.",
+     "Las dobles cuerdas quedan entre el riff y el solo: perfectas para rellenos entre frases cantadas."
+    ],
+    "tips": [],
+    "tutorials": [
+     "dobles cuerdas rock and roll guitarra"
+    ]
+   },
+   "rock-song": {
+    "title": "Un tema de rock completo",
+    "theory": [
+     "Un tema de rock se arma con pocas partes: riff de intro, estrofa, estribillo, una sección de solo y un final. El riff suele volver entre ellas.",
+     "El estribillo suele abrirse: acordes que suenan abiertos después de estrofas con palm mute, así el tema crece sin tocar más rápido.",
+     "Aprendé la forma primero: cuántas veces se repite cada parte y qué viene después. Después ensamblá con la batería (o el metrónomo)."
+    ],
+    "tips": [],
+    "tutorials": [
+     "estructura tema de rock guitarra clase"
+    ]
+   },
+   "tango-marcato": {
+    "title": "Marcato en cuatro",
+    "theory": [
+     "El marcato es el acompañamiento básico del tango: cuatro acordes firmes y cortos por compás, con un poco más de peso en los tiempos 1 y 3.",
+     "Corto quiere decir apagado: aflojá la presión de la mano izquierda justo después de cada golpe para que el acorde se corte. Ese sonido seco es la fila de bandoneones en una guitarra.",
+     "El arrastre es un arrastre hacia el tiempo: un deslizamiento o rasgueo rápido que empieza justo antes del tiempo y cae sobre él, como el rugido del bandoneón."
+    ],
+    "tips": [],
+    "tutorials": [
+     "guitarra tango marcato acompañamiento clase"
+    ]
+   },
+   "tango-sincopa": {
+    "title": "La síncopa",
+    "theory": [
+     "La síncopa es el acento característico del tango: el tiempo 1 y después un acento en el \"y\" del 2 que anticipa el 3, que queda en silencio.",
+     "Se siente como un tropiezo a propósito: la música se inclina hacia adelante y después respira.",
+     "Alterná compases de marcato y de síncopa y tenés el latido de una orquesta típica."
+    ],
+    "tips": [],
+    "tutorials": [
+     "síncopa tango ritmo guitarra"
+    ]
+   },
+   "tango-minor": {
+    "title": "Armonía en menor: i – iv – V7",
+    "theory": [
+     "La mayoría de los tangos están en tonalidad menor. En La menor los tres acordes que hacen el trabajo son Am (i), Dm (iv) y E7 (V7).",
+     "E7 tiene G♯, medio tono debajo de A: por eso tira tan fuerte de vuelta a Am. Al tango le encanta estirar esa tensión antes de resolver.",
+     "A7 aparece muchas veces antes de Dm: una dominante secundaria que lleva al acorde iv."
+    ],
+    "tips": [],
+    "tutorials": [
+     "armonía tango tonalidad menor acordes guitarra"
+    ]
+   },
+   "milonga-rhythm": {
+    "title": "La milonga: 3 + 3 + 2",
+    "theory": [
+     "La milonga es la prima más rápida y alegre del tango. Su ritmo agrupa las corcheas del compás 3 + 3 + 2.",
+     "Tocada lenta y con el pulgar en los bordones se vuelve milonga campera, la música de guitarra del campo.",
+     "Sentí el último grupo como un resorte: dos corcheas cortas que te tiran al compás siguiente."
+    ],
+    "tips": [],
+    "tutorials": [
+     "ritmo de milonga guitarra clase"
+    ]
+   },
+   "tango-bass": {
+    "title": "Líneas de bajo",
+    "theory": [
+     "Los bajos del tango caminan: unen los acordes con pasos y notas cromáticas en lugar de saltar de fundamental en fundamental.",
+     "En La menor, el bajo que baja A – G – F – E es la misma línea que la cadencia andaluza: el tango y el flamenco la comparten.",
+     "Tocá el bajo con el pulgar, corto y firme, como si fuera el contrabajo de la orquesta."
+    ],
+    "tips": [],
+    "tutorials": [
+     "líneas de bajo tango guitarra"
+    ]
+   },
+   "bordoneo": {
+    "title": "Bordoneo: melodía en el bajo y arpegio",
+    "theory": [
+     "El bordoneo es el acompañamiento de tango y milonga propio de la guitarra: el pulgar toca una melodía en las cuerdas graves (los bordones) mientras los dedos contestan con el acorde.",
+     "Mantené el 3 + 3 + 2 en el pulgar; los dedos llenan los huecos.",
+     "Dejá que los bajos se mezclen solo cuando pertenecen al mismo acorde."
+    ],
+    "tips": [],
+    "tutorials": [
+     "bordoneo milonga guitarra clase"
+    ]
+   },
+   "tango-melody": {
+    "title": "Menor armónica: la melodía del tango",
+    "theory": [
+     "Las melodías de tango aman la menor armónica: la 7ª elevada (G♯ en La menor) le da a la línea su drama y su tirón hacia la fundamental.",
+     "Tocá las melodías ligadas y expresivas, como lo haría un violín o un cantor: entrá deslizando a las notas importantes y sostenelas.",
+     "El paso F–G♯, de tres trastes, es el sonido del lamento del tango viejo."
+    ],
+    "tips": [],
+    "tutorials": [
+     "melodía tango menor armónica guitarra"
+    ]
+   },
+   "tango-dominant": {
+    "title": "La dominante: tensión y resolución",
+    "theory": [
+     "E7 en La menor contiene la respiración de la música: G♯ quiere subir a A y D quiere bajar a C.",
+     "El tango muchas veces se detiene en la dominante, un calderón lleno de drama, antes del último acorde: el famoso final \"chan-chan\" es V7 y después i, corto y seco.",
+     "Escuchá la diferencia entre una séptima de dominante y un acorde menor: el tritono dentro de E7 (G♯–D) es lo que crea la tensión."
+    ],
+    "tips": [],
+    "tutorials": [
+     "final chan chan tango dominante"
+    ]
+   },
+   "tango-piece": {
+    "title": "Un tango completo",
+    "theory": [
+     "Un tango tiene dos o tres partes: una parte A rítmica en menor, una parte B más lírica (muchas veces en el relativo mayor) y la vuelta a la A.",
+     "Cambiá el acompañamiento con la parte: marcato y síncopa en la A, un arpegio más suave en la B.",
+     "En el tango la dinámica es todo: silencios repentinos, un crescendo hacia la dominante y el chan-chan para terminar."
+    ],
+    "tips": [],
+    "tutorials": [
+     "forma del tango arreglo guitarra"
+    ]
    }
   },
   "exercises": {
@@ -5174,7 +5610,61 @@
    "seventh-arpeggios/sevenths-arp-quiz": "¿Qué notas forman el acorde de séptima?",
    "travis-picking/pinch-c": "Travis con pinza",
    "blues-licks-chords/double-stops-a": "Dobles cuerdas en La",
-   "recap/theory-check": "Lo que decían las notas 📖"
+   "recap/theory-check": "Lo que decían las notas 📖",
+   "andalusian-cadence/cadence-change": "Am → G → F → E",
+   "andalusian-cadence/cadence-chart": "La cadencia a tiempo",
+   "rasgueo/rasgueo-play": "Rasgueos sobre un acorde de E",
+   "rasgueo/flamenco-tech-quiz": "Técnica flamenca",
+   "rumba/rumba-tap": "Marcá el 3 + 3 + 2",
+   "rumba/rumba-chart": "Rumba sobre la cadencia",
+   "mode-of-e/e-phrygian-open": "Mi frigio en posición abierta",
+   "mode-of-e/e-phrygian-dominant": "Mi frigio dominante",
+   "picado/picado-down": "Escala frigia dominante bajando",
+   "picado/picado-bass": "La escala en los bordones, ida y vuelta",
+   "falseta/falseta-one": "Una falseta en las primeras cuerdas",
+   "falseta/phrygian-chart": "E y F: el vaivén frigio",
+   "compas-12/compas-tap": "Marcá solo los acentos",
+   "compas-12/solea-chart": "Un ciclo de soleá",
+   "flamenco-ear/flamenco-ear-quiz": "¿Semitono, tres trastes o tercera mayor?",
+   "flamenco-ear/flamenco-play-interval": "Tocá un semitono, tres trastes o una tercera mayor",
+   "flamenco-piece/flamenco-song-slow": "La pieza entera al 70%",
+   "flamenco-piece/flamenco-song-full": "A velocidad completa",
+   "rock-boogie/boogie-a": "El boogie en A",
+   "rock-boogie/boogie-chart": "Rock de doce compases en A",
+   "rock-riffs/rock-power-change": "A5 → G5 → D5",
+   "rock-riffs/rock-riff-chart": "Un riff de rock clásico",
+   "rock-riffs/rock-play-interval": "Tocá una cuarta, una quinta o una octava",
+   "rock-accents/rock-stops": "Cortes y síncopas en la A grave",
+   "rock-accents/rock-tech-quiz": "Técnica de rock",
+   "rock-boxes/rock-box1": "Pentatónica menor de A, caja 1",
+   "rock-boxes/rock-box2": "Pentatónica menor de A, caja 2",
+   "rock-blue-note/rock-blues-scale": "Escala de blues de A",
+   "rock-blue-note/blue-note-lick": "Un lick que pasa por la blue note",
+   "rock-licks/rock-bend-lick": "Bend y bajada",
+   "rock-licks/rock-repeat-lick": "Un lick repetido en tresillos",
+   "rock-licks/rock-bend-g7": "Bend de un tono: cuerda G, traste 7 → E",
+   "rock-phrasing/rock-call": "La pregunta",
+   "rock-phrasing/rock-answer": "La respuesta",
+   "rock-double-stops/double-stop-lick": "Dobles cuerdas en A",
+   "rock-song/rock-song-slow": "El tema entero al 70%",
+   "rock-song/rock-song-full": "A velocidad completa",
+   "tango-marcato/marcato-play": "Marcato en la A grave",
+   "tango-marcato/tango-tech-quiz": "Técnica de tango",
+   "tango-sincopa/sincopa-tap": "Marcá la síncopa",
+   "tango-minor/tango-change": "Am → Dm → E7 → Am",
+   "tango-minor/tango-chart": "Un tango en La menor",
+   "milonga-rhythm/milonga-tap": "Marcá la milonga",
+   "milonga-rhythm/milonga-chart": "Una milonga",
+   "tango-bass/tango-bass-down": "El bajo que baja y vuelve",
+   "tango-bass/tango-chromatic-bass": "Un acercamiento cromático a Dm",
+   "bordoneo/bordoneo-am": "Bordoneo en Am",
+   "bordoneo/bordoneo-e7": "Bordoneo en E7 y vuelta a Am",
+   "tango-melody/tango-harmonic-scale": "La menor armónica en el traste 5",
+   "tango-melody/tango-melody-lick": "Una melodía de tango bajando",
+   "tango-dominant/tango-ear-quiz": "¿Séptima de dominante o menor?",
+   "tango-dominant/chan-chan-chart": "Finales: chan-chan",
+   "tango-piece/tango-song-slow": "El tango entero al 70%",
+   "tango-piece/tango-song-full": "A velocidad completa"
   },
   "charts": {
    "01-em-am": {
@@ -5308,6 +5798,54 @@
    "33-metal-piece": {
     "title": "Un tema de metal completo",
     "note": "Intro y estrofa con púa abajo y palm mute; el estribillo deja sonar los acordes; el breakdown va a mitad de tiempo."
+   },
+   "34-andalusian-cadence": {
+    "title": "La cadencia andaluza",
+    "note": "Dejá que el bajo baje A, G, F, E. Hacé una pausa en el E: es la casa, no una pregunta."
+   },
+   "35-rumba": {
+    "title": "Rumba sobre la cadencia",
+    "note": "3 + 3 + 2: abajo en el 1, abajo en el \"y\" del 2, abajo-arriba en el 4. Apagá cada acorde corto."
+   },
+   "36-phrygian-swing": {
+    "title": "E y F: el vaivén frigio",
+    "note": "F está medio tono arriba de E: el suspiro flamenco. Rasgueá el E y dejá sonar el F."
+   },
+   "37-solea": {
+    "title": "Un ciclo de soleá",
+    "note": "Cuatro compases de tres son los 12 tiempos de la soleá. Cambiá de acorde en los acentos."
+   },
+   "38-flamenco-piece": {
+    "title": "Una pieza flamenca completa",
+    "note": "Las secciones de rasgueo suenan fuerte; la falseta va suave. Cada sección termina en E."
+   },
+   "39-rock-boogie": {
+    "title": "Rock de doce compases en A",
+    "note": "Todo con púa abajo y un palm mute suave. D5 en el compás 5, E5 en el 9."
+   },
+   "40-rock-riff": {
+    "title": "Un riff de rock clásico",
+    "note": "Power chords de la pentatónica menor de A. Cambiá en el tiempo 3 donde un compás tiene dos acordes."
+   },
+   "41-rock-song": {
+    "title": "Un tema de rock completo",
+    "note": "Estrofa con palm mute, estribillo abierto, sección de solo sobre el riff. Todo en A."
+   },
+   "42-tango-am": {
+    "title": "Un tango en La menor",
+    "note": "Marcato: cuatro acordes cortos por compás. A7 lleva a Dm; E7 estira la tensión."
+   },
+   "43-milonga": {
+    "title": "Una milonga",
+    "note": "3 + 3 + 2 en el rasgueo. Corto y con rebote."
+   },
+   "44-chan-chan": {
+    "title": "Finales: chan-chan",
+    "note": "Cada línea termina en E7 → Am. Cortá el último acorde en seco."
+   },
+   "45-tango-piece": {
+    "title": "Un tango completo",
+    "note": "La parte A en La menor con marcato, la B en Do mayor más ligada y después otra vez la A y el chan-chan."
    }
   },
   "sections": {
@@ -5343,7 +5881,13 @@
    "Riff": "Riff",
    "Intro": "Intro",
    "Breakdown": "Breakdown",
-   "Ending": "Final"
+   "Ending": "Final",
+   "Cadence": "Cadencia",
+   "Rumba": "Rumba",
+   "Compás": "Compás",
+   "Falseta": "Falseta",
+   "Rasgueo": "Rasgueo",
+   "Solo": "Solo"
   },
   "glossary": {
    "half_step": {
@@ -5998,7 +6542,61 @@
    "seventh-arpeggios/sevenths-arp-quiz": "Deletreá desde la fundamental con la fórmula y después tocá las notas en orden: eso es el arpegio.",
    "travis-picking/pinch-c": "Una pinza es el pulgar y un dedo pulsando en el mismo instante: acá el bajo C o G con el Mi agudo arriba. La app escucha las dos notas, así que dejalas sonar juntas en vez de arpegiarlas.",
    "blues-licks-chords/double-stops-a": "Dos cuerdas pulsadas juntas: D y G se apoyan en el sonido del IV, y después C y E (la 3.ª menor y la 5.ª de La) vuelven a casa. Apagá las cuerdas de alrededor con la mano que pisa para que suene solo el par.",
-   "recap/theory-check": "Cada pregunta es una frase de las notas 📖 de este nivel con una palabra tapada. Si dudás, abrí el ejercicio de donde sale y volvé a leerlo."
+   "recap/theory-check": "Cada pregunta es una frase de las notas 📖 de este nivel con una palabra tapada. Si dudás, abrí el ejercicio de donde sale y volvé a leerlo.",
+   "andalusian-cadence/cadence-change": "Cuatro cambios, una dirección: hacia abajo. F es una cejilla; hacela liviana y bajá toda la mano un traste hasta la forma de E.",
+   "andalusian-cadence/cadence-chart": "Un compás por acorde y después E durante dos: esa pausa en E es donde respira el flamenco.",
+   "rasgueo/rasgueo-play": "Pisá el acorde de E y tocá cada compás: una negra es un dedo, cuatro semicorcheas son el rasgueo de cuatro y un tresillo el de tres.",
+   "rasgueo/flamenco-tech-quiz": "Rasgueo, picado, el compás y el sonido frigio: las palabras que un guitarrista flamenco usa todos los días.",
+   "rumba/rumba-tap": "Tres grupos en un compás: una negra con puntillo, otra y una negra. Contá las corcheas \"1 2 3, 1 2 3, 1 2\" mientras marcás.",
+   "rumba/rumba-chart": "El rasgueo sigue el 3 + 3 + 2: abajo en el 1, abajo en el \"y\" del 2 y después abajo-arriba para cerrar el compás.",
+   "mode-of-e/e-phrygian-open": "Cuerdas al aire y los primeros tres trastes: el F de la E grave (traste 1) es la nota donde apoyarse.",
+   "mode-of-e/e-phrygian-dominant": "Las mismas notas con G♯ (traste 1 en la cuerda G, traste 4 en la E grave): entre F y G♯ hay un salto de tres trastes, el paso con sabor árabe del flamenco.",
+   "picado/picado-down": "E D C B A G♯ F E: de la E aguda a la E de la cuerda D. Alterná i y m en cada nota y caé en la última con peso.",
+   "picado/picado-bass": "En las cuerdas graves: E F G♯ A B C D E y de vuelta. En el flamenco esta escala grave muchas veces se toca solo con el pulgar, pero empezá con picado.",
+   "falseta/falseta-one": "C-D-C con un hammer y un pull, después baja por B y A hasta G♯, da una vuelta subiendo a C y baja otra vez por G♯ y F hasta E: la cadencia cantada por una sola voz.",
+   "falseta/phrygian-chart": "E – F – E es el movimiento más típico del flamenco. Rasgueá el E, dejá sonar el F y volvé a casa.",
+   "compas-12/compas-tap": "Cada compás son cuatro tiempos del ciclo: 1–4 tiene el acento en el 3; 5–8 en el 6 y el 8; 9–12 en el 10 y el 12. Los silencios son tiempos que contás pero no marcás.",
+   "compas-12/solea-chart": "Cuatro compases de tres: doce tiempos. Los cambios de acorde caen en los acentos; sentí que el ciclo termina en el último E.",
+   "flamenco-ear/flamenco-ear-quiz": "El semitono roza, la tercera menor (tres trastes) suena amplia y exótica en esta escala y la tercera mayor brillante y estable.",
+   "flamenco-ear/flamenco-play-interval": "En una cuerda: un traste, tres trastes, cuatro trastes. Después buscalos entre dos cuerdas.",
+   "flamenco-piece/flamenco-song-slow": "Intro, rasgueo, falseta, rasgueo y remate. Los acordes se repiten; lo que cambia es qué tan fuerte y qué tan seguido golpeás.",
+   "flamenco-piece/flamenco-song-full": "A tempo manda la mano derecha: mantené los rasgueos sueltos y hacé que el último E de cada sección caiga con el golpe.",
+   "rock-boogie/boogie-a": "A con E, A con E, A con F♯, A con F♯: dos de cada uno, y vuelta. Las dos cuerdas se tocan juntas.",
+   "rock-boogie/boogie-chart": "A5, D5 y E5 en doce compases, todo con púa abajo. Contá los compases: el cambio a D5 llega en el 5 y E5 en el 9.",
+   "rock-riffs/rock-power-change": "Mantené la misma forma y movela: un dedo ancla la fundamental y los otros dos la quinta y la octava.",
+   "rock-riffs/rock-riff-chart": "En algunos compases hay dos acordes: cambiá en el tiempo 3 sin apurarte. El último compás de cada línea es la vuelta.",
+   "rock-riffs/rock-play-interval": "Los intervalos dentro de un power chord: la quinta en la cuerda siguiente dos trastes arriba, la octava dos cuerdas arriba y la cuarta en el mismo traste de la cuerda siguiente.",
+   "rock-accents/rock-stops": "Cada silencio es un corte: apagá la cuerda a tiempo. Las notas sincopadas empiezan en un \"y\" y duran hasta el tiempo siguiente.",
+   "rock-accents/rock-tech-quiz": "Boogie, power chords, bends al unísono, la blue note y los cortes: la caja de herramientas de la guitarra de rock.",
+   "rock-boxes/rock-box1": "Dos notas por cuerda, trastes 5 a 8. Las fundamentales (A) están en el traste 5 de la 6ª y la 1ª cuerda y en el traste 7 de la 4ª.",
+   "rock-boxes/rock-box2": "Trastes 7 a 10: las mismas notas, una forma más arriba. Las fundamentales están en el traste 7 de la 4ª cuerda y en el 10 de la 2ª.",
+   "rock-blue-note/rock-blues-scale": "La caja 1 con una nota más: el traste 6 en la cuerda A y el traste 8 en la cuerda G.",
+   "rock-blue-note/blue-note-lick": "G A G, después E E♭ D bajando hasta C y A: la blue note entre E y D hace que la bajada suene a blues.",
+   "rock-licks/rock-bend-lick": "D estirado hasta E, después E, G y A arriba y bajada hasta la fundamental en la cuerda D.",
+   "rock-licks/rock-repeat-lick": "C A G tres veces en las dos primeras cuerdas y después baja a D. Mantené parejo el grupo de tres notas y dejalo rodar.",
+   "rock-licks/rock-bend-g7": "Controlá primero el objetivo: el traste 9 en la misma cuerda. Estirá con tres dedos y la muñeca, no con un dedo solo.",
+   "rock-phrasing/rock-call": "A, G, E y después el bend a E en la cuerda G: la frase queda en el aire.",
+   "rock-phrasing/rock-answer": "D, C, A, G y vuelta a A con vibrato: la pregunta resuelta.",
+   "rock-double-stops/double-stop-lick": "E con A en el traste 5, G con C en el traste 8 y vuelta, y después D con G y C con E en las cuerdas G y B: dos cuerdas juntas en cada nota.",
+   "rock-song/rock-song-slow": "Cinco secciones en A. Mirá los nombres de las secciones: la estrofa va apagada, el estribillo suena abierto y la sección de solo repite el riff para improvisar encima.",
+   "rock-song/rock-song-full": "A tempo, primero el groove: corcheas firmes en la mano derecha y que los acentos salgan del riff.",
+   "tango-marcato/marcato-play": "Cuatro notas cortas por compás. Los silencios de algunos compases son donde cortás la cuerda; el último compás es el marcato con el 1 sostenido.",
+   "tango-marcato/tango-tech-quiz": "Marcato, síncopa, milonga, arrastre y la dominante: el vocabulario de la guitarra de tango.",
+   "tango-sincopa/sincopa-tap": "Una negra con puntillo, una corchea, un silencio y una negra: 1, el \"y\" del 2, silencio en el 3 y después el 4.",
+   "tango-minor/tango-change": "Mantené los dedos cerca de las cuerdas: Am y E7 comparten la forma, apenas una cuerda corrida.",
+   "tango-minor/tango-chart": "Marcato en todos los compases. A7 lleva a Dm; E7 espera dos compases antes de volver a Am.",
+   "milonga-rhythm/milonga-tap": "El 3 + 3 + 2 en compases enteros y en mitades: negra con puntillo, negra con puntillo, negra; o corcheas con puntillo cuando va al doble.",
+   "milonga-rhythm/milonga-chart": "El rasgueo es el 3 + 3 + 2: abajo en el 1, en el \"y\" del 2 y en el 4. Esta vez en mayor: las milongas suelen ser más luminosas.",
+   "tango-bass/tango-bass-down": "A, G, F, E y vuelta subiendo por F y G hasta A, y después B: una línea, no cuatro fundamentales.",
+   "tango-bass/tango-chromatic-bass": "A, B, C, C♯ y D: el paso cromático C♯–D lleva al acorde iv como lo haría un bandoneón.",
+   "bordoneo/bordoneo-am": "Bajo A y después las notas del acorde E, A, C; bajo E y otra vez el acorde. El pulgar manda, los dedos contestan.",
+   "bordoneo/bordoneo-e7": "E7 deletreado desde el bajo: E, B, D, G♯, B, y después La menor: la dominante resolviendo en una sola línea.",
+   "tango-melody/tango-harmonic-scale": "G♯ está en el traste 6 de la cuerda D y en el 4 de la E aguda: justo debajo de cada A.",
+   "tango-melody/tango-melody-lick": "A G♯ F E D C B A, después G♯ y a casa: toda la menor armónica en un suspiro.",
+   "tango-dominant/tango-ear-quiz": "La séptima de dominante suena como una pregunta que necesita respuesta; la tríada menor suena triste pero quieta.",
+   "tango-dominant/chan-chan-chart": "Frases de cuatro compases, cada una terminando en E7 → Am. Cortá el último Am en seco: ese es el chan-chan.",
+   "tango-piece/tango-song-slow": "A en La menor, B en Do mayor, otra vez A y el final. Mirá los nombres de las secciones y cambiá la sensación con ellas.",
+   "tango-piece/tango-song-full": "A tempo, mantené el marcato corto y la síncopa filosa: el tango se baila, y los que bailan necesitan un pulso claro."
   }
  }
 }

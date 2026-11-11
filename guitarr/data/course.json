@@ -8301,6 +8301,1095 @@
      ]
     }
    ]
+  },
+  {
+   "id": "f1",
+   "track": "flamenco",
+   "badge": "F1",
+   "number": 27,
+   "title": "Flamenco rhythm",
+   "tone": "paco_flamenco",
+   "subtitle": "The Andalusian cadence, the rasgueo and the rumba.",
+   "lessons": [
+    {
+     "id": "andalusian-cadence",
+     "title": "The Andalusian cadence",
+     "minutes": 10,
+     "theory": [
+      "The Andalusian cadence is four chords walking down: Am – G – F – E. It's the harmonic heart of flamenco and of much Spanish music.",
+      "The last chord, E major, is not the end of a question but the home: flamenco hears E as the tonic of the mode of E (Phrygian), and the F above it as its darkest neighbour.",
+      "Let the bass walk down too: A, G, F, E. When the bass moves by step, the four chords sound like one line."
+     ],
+     "tutorials": [
+      "andalusian cadence flamenco guitar lesson"
+     ],
+     "exercises": [
+      {
+       "id": "cadence-change",
+       "kind": "change",
+       "title": "Am → G → F → E",
+       "chords": [
+        "Am",
+        "G",
+        "F",
+        "E"
+       ],
+       "times": 4,
+       "min": 75,
+       "theory": "Four changes, one direction: down. F is a barre chord; keep it light and move your whole hand down one fret to the E shape."
+      },
+      {
+       "id": "cadence-chart",
+       "kind": "chart",
+       "title": "The cadence in time",
+       "chart": "34-andalusian-cadence",
+       "speed": 0.8,
+       "min": 80,
+       "theory": "One bar per chord, then the E for two bars: that pause on E is where flamenco breathes."
+      }
+     ]
+    },
+    {
+     "id": "rasgueo",
+     "title": "Rasgueo: the fingers open like a fan",
+     "minutes": 10,
+     "theory": [
+      "A rasgueo is a strum made with the fingers flicking out one after another (little, ring, middle, index), each one striking the strings downwards.",
+      "The four-stroke rasgueo fills one beat with four sixteenths; the three-stroke one makes a triplet. Each finger must sound on its own, not as a blur.",
+      "The power comes from the release, not from the arm: close the fingers into the palm and let them spring out. The thumb rests on the 6th string as an anchor."
+     ],
+     "tutorials": [
+      "flamenco rasgueado four finger technique"
+     ],
+     "exercises": [
+      {
+       "id": "rasgueo-play",
+       "kind": "rhythm",
+       "title": "Rasgueos on an E chord",
+       "bpm": 60,
+       "count": 4,
+       "pitch": 40,
+       "min": 70,
+       "patterns": [
+        "s s s s q q q",
+        "q s s s s q q",
+        "te te te q te te te q",
+        "s s s s q s s s s q"
+       ],
+       "theory": "Hold the E chord and play each bar: a quarter is one finger, four sixteenths are the four-finger rasgueo, a triplet is the three-finger one."
+      },
+      {
+       "id": "flamenco-tech-quiz",
+       "kind": "quiz",
+       "title": "Flamenco technique",
+       "quiz": "technique",
+       "topics": [
+        "flamenco"
+       ],
+       "count": 6,
+       "min": 80,
+       "theory": "Rasgueo, picado, the compás and the Phrygian sound: the words a flamenco guitarist uses every day."
+      }
+     ]
+    },
+    {
+     "id": "rumba",
+     "title": "Rumba flamenca",
+     "minutes": 10,
+     "theory": [
+      "Rumba is the most open door into flamenco: it's in four, like pop, and it loves the Andalusian cadence.",
+      "Its pulse groups the eighths of a bar 3 + 3 + 2: strong, strong, strong-and-short. Add a muted slap (golpe) on beats 2 and 4 and you have the groove.",
+      "Mute with the palm of the strumming hand right after the stroke: the short, dry chord is half of the rumba sound."
+     ],
+     "tutorials": [
+      "rumba flamenca strumming pattern"
+     ],
+     "exercises": [
+      {
+       "id": "rumba-tap",
+       "kind": "tap",
+       "title": "Tap the 3 + 3 + 2",
+       "bpm": 80,
+       "count": 4,
+       "min": 70,
+       "patterns": [
+        "q. q. q",
+        "e e e e e e e e",
+        "q. e e e e e",
+        "q. q. e e"
+       ],
+       "theory": "Three groups in a bar: a dotted quarter, another one and a quarter. Count the eighths \"1 2 3, 1 2 3, 1 2\" while you tap."
+      },
+      {
+       "id": "rumba-chart",
+       "kind": "chart",
+       "title": "Rumba on the cadence",
+       "chart": "35-rumba",
+       "speed": 0.8,
+       "min": 80,
+       "theory": "The strum follows the 3 + 3 + 2: down on 1, down on the \"and\" of 2, then down-up to close the bar."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "f2",
+   "track": "flamenco",
+   "badge": "F2",
+   "number": 28,
+   "title": "The Phrygian sound and the falseta",
+   "tone": "paco_flamenco",
+   "subtitle": "The mode of E, picado scale runs, the thumb and your first falsetas.",
+   "lessons": [
+    {
+     "id": "mode-of-e",
+     "title": "The mode of E: Phrygian and Phrygian dominant",
+     "minutes": 12,
+     "theory": [
+      "E Phrygian has the notes of C major centred on E: E F G A B C D. The F, a half step above the root, is the flamenco colour.",
+      "Flamenco usually raises the 3rd, G to G♯: that's the Phrygian dominant scale (E F G♯ A B C D). It matches the E major chord that closes the cadence.",
+      "Many falsetas mix both: G♯ when the E chord sounds, G when the melody falls towards F and E."
+     ],
+     "tutorials": [
+      "phrygian dominant flamenco scale guitar"
+     ],
+     "exercises": [
+      {
+       "id": "e-phrygian-open",
+       "kind": "scale",
+       "title": "E Phrygian in open position",
+       "key": "E",
+       "scale": "phrygian",
+       "frets": [
+        0,
+        3
+       ],
+       "min": 80,
+       "theory": "Open strings and the first three frets: the F on the low E string (fret 1) is the note to lean on."
+      },
+      {
+       "id": "e-phrygian-dominant",
+       "kind": "scale",
+       "title": "E Phrygian dominant",
+       "key": "E",
+       "scale": "phrygian_dominant",
+       "frets": [
+        0,
+        4
+       ],
+       "min": 80,
+       "theory": "The same notes with G♯ (fret 1 on the G string, fret 4 on the low E): between F and G♯ there's a gap of three frets, the Arabic-sounding step of flamenco."
+      }
+     ]
+    },
+    {
+     "id": "picado",
+     "title": "Picado: fast runs with i and m",
+     "minutes": 10,
+     "theory": [
+      "Picado is flamenco's scale technique: the index (i) and middle (m) fingers alternate, each one resting on the next string after it plucks (apoyando).",
+      "Alternate strictly, even when you change strings: i-m-i-m. A repeated finger breaks the speed and the evenness.",
+      "Start slow and loud: picado is a strong, clear sound, not a whisper. Speed comes from relaxing, not from pushing."
+     ],
+     "tutorials": [
+      "flamenco picado technique exercise"
+     ],
+     "exercises": [
+      {
+       "id": "picado-down",
+       "kind": "lick",
+       "title": "Phrygian dominant run, descending",
+       "tab": "1:0 2:3 2:1 2:0 3:2 3:1 4:3 4:2",
+       "min": 75,
+       "theory": "E D C B A G♯ F E: from the high E down to the E on the D string. Alternate i and m on every note and land on the last one with weight."
+      },
+      {
+       "id": "picado-bass",
+       "kind": "lick",
+       "title": "The bass run up and back",
+       "tab": "6:0 6:1 6:4 5:0 5:2 5:3 4:0 4:2 4:0 5:3 5:2 5:0 6:4 6:1 6:0",
+       "min": 75,
+       "theory": "On the low strings: E F G♯ A B C D E and back. In flamenco this low run is often played with the thumb alone, but start with picado."
+      }
+     ]
+    },
+    {
+     "id": "falseta",
+     "title": "Your first falseta",
+     "minutes": 12,
+     "theory": [
+      "A falseta is a short melodic passage between the sung parts or between rasgueos: a little composition that always ends on the cadence home, E.",
+      "Falsetas mix picado, ligados (hammer-ons and pull-offs) and open strings ringing under the melody.",
+      "Play it in the compás: a falseta starts and ends in the same place of the rhythm, and the chord after it lands on time."
+     ],
+     "tutorials": [
+      "easy flamenco falseta lesson"
+     ],
+     "exercises": [
+      {
+       "id": "falseta-one",
+       "kind": "lick",
+       "title": "A falseta on the top strings",
+       "tab": "2:1h3p1 2:0 3:2 3:1 3:2 2:0 2:1 2:0 3:2 3:1 4:3 4:2",
+       "min": 75,
+       "theory": "C-D-C with a hammer and a pull, then down through B and A to G♯, a turn back up to C, and down again through G♯ and F to E: the cadence sung by one voice."
+      },
+      {
+       "id": "phrygian-chart",
+       "kind": "chart",
+       "title": "E and F: the Phrygian swing",
+       "chart": "36-phrygian-swing",
+       "speed": 0.8,
+       "min": 80,
+       "theory": "E – F – E is flamenco's most typical move. Rasgueo the E, let the F ring, and come home."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "f3",
+   "track": "flamenco",
+   "badge": "F3",
+   "number": 29,
+   "title": "Compás and a full piece",
+   "tone": "paco_flamenco",
+   "subtitle": "The 12-beat compás, a soleá and a whole flamenco piece.",
+   "lessons": [
+    {
+     "id": "compas-12",
+     "title": "The 12-beat compás",
+     "minutes": 10,
+     "theory": [
+      "Soleá, alegrías and bulerías don't count in fours: their compás is a cycle of 12 beats with accents on 3, 6, 8, 10 and 12.",
+      "Count out loud and clap only the accents: 1 2 (3) 4 5 (6) 7 (8) 9 (10) 11 (12). After a while the cycle feels like a sentence, not a sum.",
+      "Twelve beats are three groups of four on the screen here, but in your body they're two groups of three and three of two: 3 + 3 + 2 + 2 + 2."
+     ],
+     "tutorials": [
+      "flamenco 12 beat compas soleá explained"
+     ],
+     "exercises": [
+      {
+       "id": "compas-tap",
+       "kind": "tap",
+       "title": "Tap only the accents",
+       "bpm": 80,
+       "count": 3,
+       "min": 70,
+       "patterns": [
+        "rh q rq",
+        "rq q rq q",
+        "rq q rq q"
+       ],
+       "theory": "Each bar is four beats of the cycle: 1–4 has the accent on 3; 5–8 on 6 and 8; 9–12 on 10 and 12. The rests are beats you count but don't tap."
+      },
+      {
+       "id": "solea-chart",
+       "kind": "chart",
+       "title": "A soleá cycle",
+       "chart": "37-solea",
+       "speed": 0.75,
+       "min": 80,
+       "theory": "Four bars of three: twelve beats. The chord changes fall on the accents; feel the cycle end on the last E."
+      }
+     ]
+    },
+    {
+     "id": "flamenco-ear",
+     "title": "Hearing the flamenco intervals",
+     "minutes": 8,
+     "theory": [
+      "The half step (E–F) is the sigh of flamenco; the augmented second (F–G♯), three frets, is its Moorish flavour.",
+      "The major third (E–G♯) inside the E chord is what makes the cadence's last chord bright against a dark scale.",
+      "Sing what you play: flamenco guitar grew next to the voice, and the cante uses these same small steps."
+     ],
+     "tutorials": [
+      "flamenco intervals ear training cante"
+     ],
+     "exercises": [
+      {
+       "id": "flamenco-ear-quiz",
+       "kind": "quiz",
+       "title": "Half step, three frets or a major third?",
+       "quiz": "interval_ear",
+       "intervals": [
+        "m2",
+        "m3",
+        "M3",
+        "P5"
+       ],
+       "count": 8,
+       "min": 80,
+       "theory": "The half step grinds, the minor third (three frets) sounds wide and exotic in this scale, the major third bright and stable."
+      },
+      {
+       "id": "flamenco-play-interval",
+       "kind": "play_interval",
+       "title": "Play a half step, three frets or a major third",
+       "intervals": [
+        "m2",
+        "m3",
+        "M3"
+       ],
+       "count": 4,
+       "min": 80,
+       "theory": "On one string: one fret, three frets, four frets. Then find them across two strings."
+      }
+     ]
+    },
+    {
+     "id": "flamenco-piece",
+     "title": "A full flamenco piece",
+     "minutes": 15,
+     "theory": [
+      "A flamenco piece alternates rasgueo sections with falsetas and always returns to the cadence.",
+      "Contrast is the art: loud rasgueos, then a quiet falseta, then a remate (a closing flourish) that lands exactly on the cycle.",
+      "Learn where each section ends before playing it fast: in flamenco, landing in the right place matters more than the notes on the way."
+     ],
+     "tutorials": [
+      "flamenco rumba song structure guitar"
+     ],
+     "exercises": [
+      {
+       "id": "flamenco-song-slow",
+       "kind": "chart",
+       "title": "The whole piece at 70%",
+       "chart": "38-flamenco-piece",
+       "speed": 0.7,
+       "min": 80,
+       "theory": "Intro, rasgueo, falseta, rasgueo and remate. The chords repeat; what changes is how hard and how often you strike."
+      },
+      {
+       "id": "flamenco-song-full",
+       "kind": "chart",
+       "title": "At full speed",
+       "chart": "38-flamenco-piece",
+       "speed": 1.0,
+       "min": 80,
+       "theory": "At tempo the right hand leads: keep the rasgueos loose and make the last E of each section land with the golpe."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "r1",
+   "track": "rock",
+   "badge": "R1",
+   "number": 30,
+   "title": "Rock rhythm",
+   "tone": "classic_rock",
+   "subtitle": "The boogie riff, power-chord riffs, accents and stops.",
+   "lessons": [
+    {
+     "id": "rock-boogie",
+     "title": "The rock'n'roll boogie",
+     "minutes": 10,
+     "theory": [
+      "The boogie riff is where rock guitar began: a root-and-fifth on the low strings, with the top note moving to the sixth and back.",
+      "On A: the open A string with fret 2 of the D string (E, the fifth), then fret 4 (F♯, the sixth). Move it to D and E on the next strings and you have a 12-bar blues in rock.",
+      "Play it with downstrokes and a light palm mute: it should chug, not ring."
+     ],
+     "tutorials": [
+      "rock and roll boogie riff guitar lesson"
+     ],
+     "exercises": [
+      {
+       "id": "boogie-a",
+       "kind": "lick",
+       "title": "The boogie on A",
+       "tab": "5:0+4:2 5:0+4:2 5:0+4:4 5:0+4:4 5:0+4:2 5:0+4:2 5:0+4:4 5:0+4:4",
+       "min": 75,
+       "theory": "A with E, A with E, A with F♯, A with F♯: two of each, and back. Both strings are picked together."
+      },
+      {
+       "id": "boogie-chart",
+       "kind": "chart",
+       "title": "Twelve-bar rock in A",
+       "chart": "39-rock-boogie",
+       "speed": 0.8,
+       "min": 80,
+       "theory": "A5, D5 and E5 over twelve bars, all down-picked. Count the bars: the change to D5 comes in bar 5, E5 in bar 9."
+      }
+     ]
+    },
+    {
+     "id": "rock-riffs",
+     "title": "Power-chord riffs",
+     "minutes": 10,
+     "theory": [
+      "Most classic rock riffs are power chords moving on the low strings: root and fifth, no third, so they work with any amount of distortion.",
+      "The usual moves come from the minor pentatonic: in A, the roots A, C, D, E and G. A5–G5–D5 and E5–G5–A5 are rock in three chords.",
+      "Leave space: a riff is as much about the rests as about the chords."
+     ],
+     "tutorials": [
+      "classic rock power chord riffs lesson"
+     ],
+     "exercises": [
+      {
+       "id": "rock-power-change",
+       "kind": "change",
+       "title": "A5 → G5 → D5",
+       "chords": [
+        "A5",
+        "G5",
+        "D5"
+       ],
+       "times": 4,
+       "min": 75,
+       "theory": "Keep the same shape and move it: one finger anchors the root, the other two the fifth and the octave."
+      },
+      {
+       "id": "rock-riff-chart",
+       "kind": "chart",
+       "title": "A classic rock riff",
+       "chart": "40-rock-riff",
+       "speed": 0.8,
+       "min": 80,
+       "theory": "Two chords per bar in places: change on beat 3 without rushing. The last bar of each line is the turnaround."
+      },
+      {
+       "id": "rock-play-interval",
+       "kind": "play_interval",
+       "title": "Play a fourth, a fifth or an octave",
+       "intervals": [
+        "P4",
+        "P5",
+        "P8"
+       ],
+       "count": 4,
+       "min": 80,
+       "theory": "The intervals inside a power chord: the fifth on the next string two frets up, the octave two strings up, the fourth on the same fret of the next string."
+      }
+     ]
+    },
+    {
+     "id": "rock-accents",
+     "title": "Accents and stops",
+     "minutes": 8,
+     "theory": [
+      "Rock rhythm breathes through accents (a few strokes louder than the rest) and stops (the whole band goes silent at once).",
+      "A stop needs both hands: lift the fretting fingers off the strings and touch them with the strumming hand, at the same instant.",
+      "Syncopated accents, on the \"and\" of a beat, push the song forward: they are the hooks of many famous riffs."
+     ],
+     "tutorials": [
+      "rock rhythm guitar accents stops"
+     ],
+     "exercises": [
+      {
+       "id": "rock-stops",
+       "kind": "rhythm",
+       "title": "Stops and syncopations on the low A",
+       "bpm": 80,
+       "count": 4,
+       "pitch": 45,
+       "min": 70,
+       "patterns": [
+        "e e e e q rq",
+        "q rq e e q",
+        "e q e q q",
+        "q. e rq q",
+        "e e rq e e rq"
+       ],
+       "theory": "Each rest is a stop: silence the string on time. The syncopated notes start on an \"and\" and last through the next beat."
+      },
+      {
+       "id": "rock-tech-quiz",
+       "kind": "quiz",
+       "title": "Rock technique",
+       "quiz": "technique",
+       "topics": [
+        "rock"
+       ],
+       "count": 6,
+       "min": 80,
+       "theory": "Boogie, power chords, unison bends, the blue note and stops: the toolbox of rock guitar."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "r2",
+   "track": "rock",
+   "badge": "R2",
+   "number": 31,
+   "title": "Rock lead",
+   "tone": "classic_rock",
+   "subtitle": "Pentatonic boxes, the blue note, classic licks and bends.",
+   "lessons": [
+    {
+     "id": "rock-boxes",
+     "title": "Pentatonic boxes 1 and 2",
+     "minutes": 12,
+     "theory": [
+      "Rock soloing lives in the minor pentatonic. Box 1 in A sits at fret 5; box 2 joins it right above, from fret 7 to 10.",
+      "Linking boxes lets a solo climb the neck instead of staying in one place. The notes are the same five: A C D E G.",
+      "Know where the roots are in each box: phrases sound finished when they land on A."
+     ],
+     "tutorials": [
+      "pentatonic box 1 box 2 rock solo"
+     ],
+     "exercises": [
+      {
+       "id": "rock-box1",
+       "kind": "scale",
+       "title": "A minor pentatonic, box 1",
+       "key": "A",
+       "scale": "minor_pentatonic",
+       "frets": [
+        5,
+        8
+       ],
+       "min": 80,
+       "theory": "Two notes per string, frets 5 to 8. The roots (A) are at fret 5 on the 6th and 1st strings and at fret 7 on the 4th."
+      },
+      {
+       "id": "rock-box2",
+       "kind": "scale",
+       "title": "A minor pentatonic, box 2",
+       "key": "A",
+       "scale": "minor_pentatonic",
+       "frets": [
+        7,
+        10
+       ],
+       "min": 80,
+       "theory": "Frets 7 to 10: the same notes, one shape higher. The roots are at fret 7 on the 4th string and fret 10 on the 2nd."
+      }
+     ]
+    },
+    {
+     "id": "rock-blue-note",
+     "title": "The blue note",
+     "minutes": 10,
+     "theory": [
+      "Add the flat fifth (E♭ in A) to the minor pentatonic and you get the blues scale: A C D E♭ E G.",
+      "The blue note is a passing note: slide through it on the way between D and E, don't sit on it.",
+      "It's in countless rock riffs and solos: the half steps D–E♭–E give a line its grit."
+     ],
+     "tutorials": [
+      "blues scale blue note rock guitar"
+     ],
+     "exercises": [
+      {
+       "id": "rock-blues-scale",
+       "kind": "scale",
+       "title": "A blues scale",
+       "key": "A",
+       "scale": "blues",
+       "frets": [
+        5,
+        8
+       ],
+       "min": 80,
+       "theory": "Box 1 with one extra note: fret 6 on the A string and fret 8 on the G string."
+      },
+      {
+       "id": "blue-note-lick",
+       "kind": "lick",
+       "title": "A lick through the blue note",
+       "tab": "4:5 4:7 4:5 5:7 5:6 5:5 6:8 6:5",
+       "min": 75,
+       "theory": "G A G, then E E♭ D down to C and A: the blue note between E and D makes the descent sound bluesy."
+      }
+     ]
+    },
+    {
+     "id": "rock-licks",
+     "title": "Classic rock licks",
+     "minutes": 12,
+     "theory": [
+      "A lick is a short phrase you can reuse: rock solos are often a few licks played with conviction, repeated and varied.",
+      "The bend from the 4th to the 5th (D to E on the G string, fret 7) is the most used move in rock lead.",
+      "Repeating triplet licks build tension; a long bend with vibrato releases it."
+     ],
+     "tutorials": [
+      "classic rock licks pentatonic lesson"
+     ],
+     "exercises": [
+      {
+       "id": "rock-bend-lick",
+       "kind": "lick",
+       "title": "Bend, then walk down",
+       "tab": "3:7b9 2:5 2:8 1:5 2:8 2:5 3:7 4:7",
+       "min": 75,
+       "theory": "D bent up to E, then E, G, A at the top and back down to the root on the D string."
+      },
+      {
+       "id": "rock-repeat-lick",
+       "kind": "lick",
+       "title": "A repeating triplet lick",
+       "tab": "1:8 1:5 2:8 1:8 1:5 2:8 1:8 1:5 2:8 3:7",
+       "min": 75,
+       "theory": "C A G three times on the top two strings, then down to D. Keep the three-note group even and let it roll."
+      },
+      {
+       "id": "rock-bend-g7",
+       "kind": "bend",
+       "title": "Whole-step bend: G string, fret 7 → E",
+       "string": 3,
+       "fret": 7,
+       "bend": 2,
+       "tries": 8,
+       "hold": 1.0,
+       "min": 70,
+       "theory": "Check the target first: fret 9 on the same string. Bend with three fingers and the wrist, not with one finger."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "r3",
+   "track": "rock",
+   "badge": "R3",
+   "number": 32,
+   "title": "Rock solos and songs",
+   "tone": "classic_rock",
+   "subtitle": "Phrasing a solo, double stops and a full rock song.",
+   "lessons": [
+    {
+     "id": "rock-phrasing",
+     "title": "Phrasing a solo: call and response",
+     "minutes": 10,
+     "theory": [
+      "A good solo talks: a short phrase asks a question, the next one answers it. Leave a breath between them.",
+      "The call usually ends on an unstable note (the bend to the 5th); the answer comes home to the root.",
+      "Fewer notes, more intention: one well-placed bend with vibrato says more than a fast scale."
+     ],
+     "tutorials": [
+      "rock solo phrasing call and response"
+     ],
+     "exercises": [
+      {
+       "id": "rock-call",
+       "kind": "lick",
+       "title": "The call",
+       "tab": "1:5 2:8 2:5 3:7b9",
+       "min": 75,
+       "theory": "A, G, E, then the bend to E on the G string: the phrase stays up in the air."
+      },
+      {
+       "id": "rock-answer",
+       "kind": "lick",
+       "title": "The answer",
+       "tab": "3:7 3:5 4:7 4:5 4:7~",
+       "min": 75,
+       "theory": "D, C, A, G and home to A with vibrato: the question resolved."
+      }
+     ]
+    },
+    {
+     "id": "rock-double-stops",
+     "title": "Double stops",
+     "minutes": 10,
+     "theory": [
+      "A double stop is two notes played together, usually on adjacent strings. On the top two strings at the same fret they form a fourth: the rock'n'roll lead sound.",
+      "Barre the two strings with one finger and pick both at once; slide into them from a fret below for extra attitude.",
+      "Double stops sit between a riff and a solo: perfect for fills between sung lines."
+     ],
+     "tutorials": [
+      "rock and roll double stops lead guitar"
+     ],
+     "exercises": [
+      {
+       "id": "double-stop-lick",
+       "kind": "lick",
+       "title": "Double stops in A",
+       "tab": "2:5+1:5 2:5+1:5 2:8+1:8 2:8+1:8 2:5+1:5 2:5+1:5 3:7+2:8 3:5+2:5",
+       "min": 75,
+       "theory": "E with A at fret 5, G with C at fret 8 and back, then D with G and C with E on the G and B strings: two strings picked together on every note."
+      }
+     ]
+    },
+    {
+     "id": "rock-song",
+     "title": "A full rock song",
+     "minutes": 15,
+     "theory": [
+      "A rock song is built from a few parts: intro riff, verse, chorus, a solo section and an ending. The riff often returns between them.",
+      "The chorus usually opens up: chords that ring after palm-muted verses, so the song gets bigger without playing faster.",
+      "Learn the form first: how many times each part repeats and what comes next. Then lock in with the drums (or the metronome)."
+     ],
+     "tutorials": [
+      "rock song structure guitar lesson"
+     ],
+     "exercises": [
+      {
+       "id": "rock-song-slow",
+       "kind": "chart",
+       "title": "The whole song at 70%",
+       "chart": "41-rock-song",
+       "speed": 0.7,
+       "min": 80,
+       "theory": "Five sections in A. Watch the section names: the verse is muted, the chorus rings, the solo section repeats the riff for you to improvise over."
+      },
+      {
+       "id": "rock-song-full",
+       "kind": "chart",
+       "title": "At full speed",
+       "chart": "41-rock-song",
+       "speed": 1.0,
+       "min": 80,
+       "theory": "At tempo, groove first: steady eighths in the right hand, and let the accents come from the riff."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "t1",
+   "track": "tango",
+   "badge": "T1",
+   "number": 33,
+   "title": "Tango rhythm",
+   "tone": "segovia_classical",
+   "subtitle": "The marcato, the síncopa and the minor-key harmony of tango.",
+   "lessons": [
+    {
+     "id": "tango-marcato",
+     "title": "Marcato in four",
+     "minutes": 10,
+     "theory": [
+      "The marcato is tango's basic accompaniment: four firm, short chords per bar, with a little more weight on beats 1 and 3.",
+      "Short means muted: release the fretting hand pressure right after each stroke so the chord stops. That dry sound is the tango bandoneón section on a guitar.",
+      "The arrastre is a drag into the beat: a quick slide or strum that starts just before the beat and lands on it, like the bandoneón's growl."
+     ],
+     "tutorials": [
+      "tango guitar marcato accompaniment lesson"
+     ],
+     "exercises": [
+      {
+       "id": "marcato-play",
+       "kind": "rhythm",
+       "title": "Marcato on the low A",
+       "bpm": 70,
+       "count": 4,
+       "pitch": 45,
+       "min": 70,
+       "patterns": [
+        "q q q q",
+        "q rq q rq",
+        "q q q q",
+        "h q q"
+       ],
+       "theory": "Four short notes per bar. The rests in some bars are where you stop the string; the last bar is the marcato with a held 1."
+      },
+      {
+       "id": "tango-tech-quiz",
+       "kind": "quiz",
+       "title": "Tango technique",
+       "quiz": "technique",
+       "topics": [
+        "tango"
+       ],
+       "count": 6,
+       "min": 80,
+       "theory": "Marcato, síncopa, milonga, arrastre and the dominant: the vocabulary of tango guitar."
+      }
+     ]
+    },
+    {
+     "id": "tango-sincopa",
+     "title": "The síncopa",
+     "minutes": 10,
+     "theory": [
+      "The síncopa is tango's signature accent: beat 1, then an accent on the \"and\" of 2 that anticipates beat 3, which stays silent.",
+      "It feels like a stumble on purpose: the music leans forward and then breathes.",
+      "Alternate bars of marcato and síncopa and you have the heartbeat of a tango orchestra."
+     ],
+     "tutorials": [
+      "tango sincopa rhythm guitar"
+     ],
+     "exercises": [
+      {
+       "id": "sincopa-tap",
+       "kind": "tap",
+       "title": "Tap the síncopa",
+       "bpm": 70,
+       "count": 4,
+       "min": 70,
+       "patterns": [
+        "q. e rq q",
+        "q q q q",
+        "q. e rq q",
+        "q. e q q"
+       ],
+       "theory": "A dotted quarter, an eighth, a rest and a quarter: 1, the \"and\" of 2, silence on 3, then 4."
+      }
+     ]
+    },
+    {
+     "id": "tango-minor",
+     "title": "Minor-key harmony: i – iv – V7",
+     "minutes": 12,
+     "theory": [
+      "Most tangos are in a minor key. In A minor the three chords that do the work are Am (i), Dm (iv) and E7 (V7).",
+      "E7 has G♯, a half step below A: that's why it pulls so hard back to Am. Tango loves to stretch that tension before resolving.",
+      "A7 often appears before Dm: a secondary dominant that leads into the iv chord."
+     ],
+     "tutorials": [
+      "tango harmony minor key guitar chords"
+     ],
+     "exercises": [
+      {
+       "id": "tango-change",
+       "kind": "change",
+       "title": "Am → Dm → E7 → Am",
+       "chords": [
+        "Am",
+        "Dm",
+        "E7",
+        "Am"
+       ],
+       "times": 4,
+       "min": 75,
+       "theory": "Keep the fingers close to the strings: Am and E7 share the shape, just one string apart."
+      },
+      {
+       "id": "tango-chart",
+       "kind": "chart",
+       "title": "A tango in A minor",
+       "chart": "42-tango-am",
+       "speed": 0.8,
+       "min": 80,
+       "theory": "Marcato on every bar. A7 leads into Dm; E7 waits two bars before coming home to Am."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "t2",
+   "track": "tango",
+   "badge": "T2",
+   "number": 34,
+   "title": "Milonga and the bass",
+   "tone": "segovia_classical",
+   "subtitle": "The milonga rhythm, bass lines and the bordoneo.",
+   "lessons": [
+    {
+     "id": "milonga-rhythm",
+     "title": "The milonga: 3 + 3 + 2",
+     "minutes": 10,
+     "theory": [
+      "The milonga is tango's faster, happier cousin. Its rhythm groups the eighths of a bar 3 + 3 + 2.",
+      "Played slow and with the thumb on the bass strings it becomes the milonga campera, the guitar music of the countryside.",
+      "Feel the last group as a spring: two short eighths that throw you into the next bar."
+     ],
+     "tutorials": [
+      "milonga rhythm guitar lesson"
+     ],
+     "exercises": [
+      {
+       "id": "milonga-tap",
+       "kind": "tap",
+       "title": "Tap the milonga",
+       "bpm": 70,
+       "count": 4,
+       "min": 70,
+       "patterns": [
+        "q. q. q",
+        "e. e. e e. e. e",
+        "q. q. q",
+        "e. e. e q q"
+       ],
+       "theory": "The 3 + 3 + 2 in full bars and in halves: dotted quarter, dotted quarter, quarter; or dotted eighths when it's twice as fast."
+      },
+      {
+       "id": "milonga-chart",
+       "kind": "chart",
+       "title": "A milonga",
+       "chart": "43-milonga",
+       "speed": 0.8,
+       "min": 80,
+       "theory": "The strum is the 3 + 3 + 2: down on 1, on the \"and\" of 2 and on 4. A major key this time: milongas are often brighter."
+      }
+     ]
+    },
+    {
+     "id": "tango-bass",
+     "title": "Bass lines",
+     "minutes": 10,
+     "theory": [
+      "Tango bass lines walk: they connect chords with steps and chromatic notes instead of jumping from root to root.",
+      "In A minor, the bass going down A – G – F – E is the same line as the Andalusian cadence: tango and flamenco share it.",
+      "Play the bass with the thumb, short and firm, as if it were the double bass of the orchestra."
+     ],
+     "tutorials": [
+      "tango bass line guitar walking"
+     ],
+     "exercises": [
+      {
+       "id": "tango-bass-down",
+       "kind": "lick",
+       "title": "The walking bass down and back",
+       "tab": "5:0 6:3 6:1 6:0 6:1 6:3 5:0 5:2",
+       "min": 75,
+       "theory": "A, G, F, E and back up through F and G to A, then B: a line, not four roots."
+      },
+      {
+       "id": "tango-chromatic-bass",
+       "kind": "lick",
+       "title": "A chromatic approach to Dm",
+       "tab": "5:0 5:2 5:3 5:4 4:0",
+       "min": 75,
+       "theory": "A, B, C, C♯ and D: the chromatic step C♯–D leads into the iv chord the way a bandoneón would."
+      }
+     ]
+    },
+    {
+     "id": "bordoneo",
+     "title": "Bordoneo: bass melody and arpeggio",
+     "minutes": 12,
+     "theory": [
+      "Bordoneo is the guitarist's tango and milonga accompaniment: the thumb plays a melody on the bass strings (bordones) while the fingers answer with the chord.",
+      "Keep the 3 + 3 + 2 in the thumb; the fingers fill the gaps.",
+      "Let the bass notes ring into each other only when they belong to the same chord."
+     ],
+     "tutorials": [
+      "bordoneo milonga guitar lesson"
+     ],
+     "exercises": [
+      {
+       "id": "bordoneo-am",
+       "kind": "lick",
+       "title": "Bordoneo on Am",
+       "tab": "5:0 4:2 3:2 2:1 6:0 4:2 3:2 2:1",
+       "min": 75,
+       "theory": "Bass A, then the chord tones E, A, C; bass E, then the chord again. The thumb leads, the fingers answer."
+      },
+      {
+       "id": "bordoneo-e7",
+       "kind": "lick",
+       "title": "Bordoneo on E7, back to Am",
+       "tab": "6:0 5:2 4:0 3:1 2:0 5:0 4:2 3:2 2:1 1:0",
+       "min": 75,
+       "theory": "E7 spelled from the bass: E, B, D, G♯, B, then A minor: the dominant resolving in one line."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "t3",
+   "track": "tango",
+   "badge": "T3",
+   "number": 35,
+   "title": "Tango melody and a full tango",
+   "tone": "segovia_classical",
+   "subtitle": "Harmonic minor melodies, the dominant and a whole tango.",
+   "lessons": [
+    {
+     "id": "tango-melody",
+     "title": "Harmonic minor: the tango melody",
+     "minutes": 12,
+     "theory": [
+      "Tango melodies love harmonic minor: the raised 7th (G♯ in A minor) gives the line its drama and its pull to the root.",
+      "Play melodies legato and expressive, as a violin or a singer would: slide into important notes and hold them.",
+      "The F–G♯ step, three frets wide, is the sound of the old tango's lament."
+     ],
+     "tutorials": [
+      "tango melody harmonic minor guitar"
+     ],
+     "exercises": [
+      {
+       "id": "tango-harmonic-scale",
+       "kind": "scale",
+       "title": "A harmonic minor at fret 5",
+       "key": "A",
+       "scale": "harmonic_minor",
+       "frets": [
+        4,
+        8
+       ],
+       "min": 80,
+       "theory": "G♯ sits on fret 6 of the D string and fret 4 of the high E: right below each A."
+      },
+      {
+       "id": "tango-melody-lick",
+       "kind": "lick",
+       "title": "A tango melody, descending",
+       "tab": "1:5 1:4 2:6 2:5 3:7 3:5 3:4 4:7 4:6 4:7",
+       "min": 75,
+       "theory": "A G♯ F E D C B A, then G♯ and home: the whole harmonic minor in one sigh."
+      }
+     ]
+    },
+    {
+     "id": "tango-dominant",
+     "title": "The dominant: tension and release",
+     "minutes": 10,
+     "theory": [
+      "E7 in A minor holds the music's breath: G♯ wants to rise to A, D wants to fall to C.",
+      "Tango often stops on the dominant, a fermata full of drama, before the last chord: the famous \"chan-chan\" ending is V7 then i, short and dry.",
+      "Hear the difference between a dominant seventh and a plain minor chord: the tritone inside E7 (G♯–D) is what creates the tension."
+     ],
+     "tutorials": [
+      "tango chan chan ending dominant"
+     ],
+     "exercises": [
+      {
+       "id": "tango-ear-quiz",
+       "kind": "quiz",
+       "title": "Dominant seventh or minor?",
+       "quiz": "hear_quality",
+       "qualities": [
+        "7",
+        "min",
+        "maj"
+       ],
+       "count": 8,
+       "min": 80,
+       "theory": "The dominant seventh sounds like a question that needs an answer; the minor triad sounds sad but settled."
+      },
+      {
+       "id": "chan-chan-chart",
+       "kind": "chart",
+       "title": "Endings: chan-chan",
+       "chart": "44-chan-chan",
+       "speed": 0.8,
+       "min": 80,
+       "theory": "Phrases of four bars, each ending on E7 → Am. Stop the last Am dead: that's the chan-chan."
+      }
+     ]
+    },
+    {
+     "id": "tango-piece",
+     "title": "A full tango",
+     "minutes": 15,
+     "theory": [
+      "A tango has two or three parts: a rhythmic A part in minor, a more lyrical B part (often in the relative major) and a return to A.",
+      "Change the accompaniment with the part: marcato and síncopa in A, a softer arpeggio in B.",
+      "Dynamics are everything in tango: sudden silences, a crescendo into the dominant and the chan-chan to finish."
+     ],
+     "tutorials": [
+      "tango form guitar arrangement"
+     ],
+     "exercises": [
+      {
+       "id": "tango-song-slow",
+       "kind": "chart",
+       "title": "The whole tango at 70%",
+       "chart": "45-tango-piece",
+       "speed": 0.7,
+       "min": 80,
+       "theory": "A in A minor, B in C major, A again and the ending. Watch the section names and change the feel with them."
+      },
+      {
+       "id": "tango-song-full",
+       "kind": "chart",
+       "title": "At full speed",
+       "chart": "45-tango-piece",
+       "speed": 1.0,
+       "min": 80,
+       "theory": "At tempo, keep the marcato short and the síncopa sharp: tango is danced, and dancers need a clear beat."
+      }
+     ]
+    }
+   ]
   }
  ]
 }

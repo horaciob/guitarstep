@@ -1,0 +1,10 @@
+title: Twelve-bar rock in A
+bpm: 120
+time: 4/4
+strum: DDDDDDDD
+note: All downstrokes with a light palm mute. D5 in bar 5, E5 in bar 9.
+
+[Twelve bars]
+A5 | A5 | A5 | A5
+D5 | D5 | A5 | A5
+E5 | D5 | A5 | E5

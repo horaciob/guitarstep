@@ -1,0 +1,22 @@
+title: A full flamenco piece
+bpm: 104
+time: 4/4
+strum: D..D..DU
+note: Rasgueo sections ring hard; the falseta is soft. Every section ends on E.
+
+[Intro]
+E | F | E | E
+
+[Rasgueo]
+Am | G | F | E
+Am | G | F | E
+
+[Falseta]
+Am | Dm | E | E
+Dm | C | F | E
+
+[Rasgueo]
+Am | G | F | E
+
+[Ending]
+F | E | F | E

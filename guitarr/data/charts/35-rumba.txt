@@ -1,0 +1,13 @@
+title: Rumba on the cadence
+bpm: 100
+time: 4/4
+strum: D..D..DU
+note: 3 + 3 + 2: down on 1, down on the "and" of 2, down-up on 4. Mute each chord short.
+
+[Rumba]
+Am | G | F | E
+Am | G | F | E
+
+[Rumba]
+Am | Dm | E | E
+Am | G | F | E

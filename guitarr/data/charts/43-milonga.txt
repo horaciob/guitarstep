@@ -1,0 +1,11 @@
+title: A milonga
+bpm: 80
+time: 4/4
+strum: D..D..D.
+note: 3 + 3 + 2 in the strum. Short and bouncy.
+
+[A]
+G | G | D7 | D7
+D7 | D7 | G | G
+C | C | G | G
+D7 | D7 | G | G

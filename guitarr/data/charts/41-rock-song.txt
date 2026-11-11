@@ -1,0 +1,22 @@
+title: A full rock song
+bpm: 120
+time: 4/4
+strum: D.DUD.DU
+note: Verse palm-muted, chorus ringing, solo section over the riff. Everything in A.
+
+[Intro]
+A5 | G5 D5 | A5 | G5 D5
+
+[Verse]
+A5 | A5 | D5 | A5
+A5 | A5 | E5 | E5
+
+[Chorus]
+D | A | E | A
+D | A | E | E
+
+[Solo]
+A5 | G5 D5 | A5 | G5 D5
+
+[Ending]
+D5 | E5 | A5 | -

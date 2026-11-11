@@ -1,0 +1,9 @@
+title: A classic rock riff
+bpm: 110
+time: 4/4
+strum: D.DUD.DU
+note: Power chords from the A minor pentatonic. Change on beat 3 where a bar has two chords.
+
+[Riff]
+A5 | G5 D5 | A5 | G5 D5
+A5 | C5 D5 | A5 | E5
