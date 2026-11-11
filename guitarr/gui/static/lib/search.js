@@ -31,11 +31,29 @@ export function closeTo(word, text) {
     || (tok.length > word.length && editDistance(word, tok.slice(0, word.length), 1) <= 1)));
 }
 
-/** Matches a query against folded texts: every word must be found. As typed first; only when that finds
- * nothing at all do close spellings count (so an exact match never brings look-alikes). */
+/** A word of `text` (folded) starts with `w`: "j" finds "John", not "Django". */
+export const startsWord = (text, w) => ` ${text}`.includes(` ${w}`);
+
+/** Matches a query against folded texts: every word must start a word of the text. As typed first; only when
+ * that finds nothing at all do close spellings count (so an exact match never brings look-alikes). */
 export function matcher(query, texts) {
   const words = fold(query).split(" ").filter(Boolean);
-  const exact = q => words.every(w => q.includes(w));
+  const exact = q => words.every(w => startsWord(q, w));
   const loose = words.length > 0 && !texts.some(exact);
-  return { words, loose, test: q => words.every(w => q.includes(w) || (loose && closeTo(w, q))) };
+  return { words, loose, test: q => words.every(w => startsWord(q, w) || (loose && closeTo(w, q))) };
+}
+
+/** How well a result fits (lower is better). `fields` are folded texts, most important first (name, player,
+ * bands, the rest): each word scores the first field where it starts a word, and a field that starts with the
+ * whole query ("jo" → "Joe Perry") comes before one that only contains it ("Billy Joe"). */
+export function rank(words, fields) {
+  if (!words.length) return 0;
+  const q = words.join(" ");
+  const lead = fields.findIndex(f => f.startsWith(q));
+  let score = lead < 0 ? fields.length : lead;
+  for (const w of words) {
+    const i = fields.findIndex(f => startsWord(f, w));
+    score += i < 0 ? fields.length + 1 : i;
+  }
+  return score;
 }

@@ -6,7 +6,7 @@ import { icon } from "../lib/icons.js";
 import { rig } from "../lib/rig/engine.js";
 import { AMP_KNOBS, AMPS, CABS, EFFECT_GROUPS, EFFECTS, GUITARS, MICS } from "../lib/rig/effects.js";
 import { ARTIST_INFO, ARTIST_STYLE, ARTIST_STYLES, ARTISTS, FACTORY, factory, makeEffect } from "../lib/rig/presets.js";
-import { fold, matcher } from "../lib/search.js";
+import { fold, matcher, rank } from "../lib/search.js";
 import { knob } from "../lib/rig/knob.js";
 import { RIFFS, VOICES } from "../lib/rig/synth.js";
 import { clipPlot, comparePlots, isDrive, stackCurve } from "../lib/rig/visuals.js";
@@ -103,19 +103,40 @@ function searchText(id, kind) {
   return fold(parts.join(" "));
 }
 
-/** Shows the cards that match the search (and, with no search, the chosen artist style). */
+/** What ranks a card in a search, most important first: its name, the player, the bands (then everything else). */
+function rankText(id, kind) {
+  if (kind === "user") return fold(id);
+  const info = ARTIST_INFO[id];
+  return [t(`rig.preset.${id}`), info ? info.artist : "", info ? info.bands.join(" ") : ""].map(fold).join("|");
+}
+
+let bestCard = null;                                          // the top result: Enter loads it
+
+/** Shows the cards that match the search (and, with no search, the chosen artist style), best matches first. */
 function applySearch() {
   const box = $("#rigQuick", root);
   if (!box) return;
   const cards = $$(".quick[data-q]", box);
   const { words, loose, test } = matcher(presetQuery, cards.map(c => c.dataset.q));
   let shown = 0;
+  const score = new Map();
   cards.forEach(c => {
     const byStyle = words.length || !c.dataset.style || artistStyle === "all" || c.dataset.style === artistStyle;
     const ok = byStyle && test(c.dataset.q);
     c.hidden = !ok;
     if (ok) shown++;
+    if (ok && words.length) score.set(c, rank(words, [...(c.dataset.r || "").split("|"), c.dataset.q]));
   });
+  // best matches first in each row (the usual order again with no search); results wrap instead of scrolling
+  const body = $("#quickBody", box);
+  if (body) body.classList.toggle("searching", !!words.length);
+  const cardOf = el => el.matches(".quick[data-q]") ? el : el.querySelector(".quick[data-q]");
+  $$(".quick-row:not(#favSounds)", box).forEach(row => {
+    const key = el => { const c = cardOf(el); return c && score.has(c) ? score.get(c) : 1e9; };
+    [...row.children].sort((a, b) => (words.length ? key(a) - key(b) : 0) || a.dataset.i - b.dataset.i)
+      .forEach(el => row.appendChild(el));
+  });
+  bestCard = [...score.entries()].sort((a, b) => a[1] - b[1])[0]?.[0] || null;
   $$(".quick-group", box).forEach(g => { g.hidden = !!words.length && (g.id === "favGroup" || !$$(".quick[data-q]:not([hidden])", g).length); });
   const add = $("#mySave", box);
   if (add) add.hidden = !!words.length;
@@ -126,6 +147,9 @@ function applySearch() {
   none.textContent = t("rig.search_none", { q: presetQuery.trim() });
   count.textContent = words.length ? t("rig.search_count", { count: shown }) + (loose && shown ? ` · ${t("rig.search_close")}` : "") : "";
 }
+
+/** Artist tones in alphabetical order of their names, so a player is easy to spot. */
+const artistIds = () => Object.keys(ARTISTS).sort((a, b) => fold(t(`rig.preset.${a}`)).localeCompare(fold(t(`rig.preset.${b}`))));
 
 function renderQuick() {
   const outer = $("#rigQuick", root);
@@ -138,6 +162,10 @@ function renderQuick() {
     const input = $("#presetSearch", outer);
     input.value = presetQuery;
     input.oninput = () => { presetQuery = input.value; applySearch(); };
+    input.onkeydown = e => {
+      if (e.key === "Enter" && bestCard) { e.preventDefault(); bestCard.click(); }
+      if (e.key === "Escape" && input.value) { e.preventDefault(); input.value = presetQuery = ""; applySearch(); }
+    };
   }
   const box = $("#quickBody", outer);
   const cur = rig.preset && rig.preset.kind === "factory" ? rig.preset.id : "";
@@ -145,7 +173,7 @@ function renderQuick() {
   // inFavs: the copy in the favorites row (not searched or counted: the card also sits in its own row)
   const card = (id, inFavs = false) => {
     const s = factory(id), n = [...s.pedals, ...s.post].filter(e => e.on).length, fav = favs.includes(id), name = t(`rig.preset.${id}`);
-    return `<div class="quick-wrap"><button class="quick${id === cur ? " on" : ""}" data-id="${id}"${inFavs ? "" : ` data-q="${esc(searchText(id))}"`}${ARTIST_STYLE[id] && !inFavs ? ` data-style="${ARTIST_STYLE[id]}"` : ""} aria-pressed="${id === cur}">${ampThumb(s.amp.type)}
+    return `<div class="quick-wrap"><button class="quick${id === cur ? " on" : ""}" data-id="${id}"${inFavs ? "" : ` data-q="${esc(searchText(id))}" data-r="${esc(rankText(id))}"`}${ARTIST_STYLE[id] && !inFavs ? ` data-style="${ARTIST_STYLE[id]}"` : ""} aria-pressed="${id === cur}">${ampThumb(s.amp.type)}
         <b>${esc(name)}</b>
         <small>${esc(t(`rig.amp_${s.amp.type}`))} · ${esc(t("rig.quick_fx", { count: n }))}</small>
         ${id === cur ? `<span class="quick-on">✓ ${esc(t("rig.quick_active"))}</span>` : ""}</button>
@@ -161,7 +189,7 @@ function renderQuick() {
       <button class="quick quick-add" id="mySave">${icon("plus", 22)}<b>${esc(t("rig.save_current"))}</b><small>${esc(t("rig.save_current_hint"))}</small></button>
       ${(rig.userPresets || []).map(p => {
         const on = p.id === mineId, amp = p.rig && p.rig.amp ? p.rig.amp.type : "";
-        return `<button class="quick${on ? " on" : ""}" data-user="${esc(p.id)}" data-q="${esc(searchText(p.name, "user"))}" aria-pressed="${on}">${amp ? ampThumb(amp) : ""}
+        return `<button class="quick${on ? " on" : ""}" data-user="${esc(p.id)}" data-q="${esc(searchText(p.name, "user"))}" data-r="${esc(rankText(p.name, "user"))}" aria-pressed="${on}">${amp ? ampThumb(amp) : ""}
           <b>${esc(p.name)}</b>
           <small>${amp ? `${esc(t(`rig.amp_${amp}`))} · ` : ""}${esc(t("rig.quick_fx", { count: fxCount(p.rig || {}) }))}</small>
           ${on ? `<span class="quick-on">✓ ${esc(t("rig.quick_active"))}</span>` : ""}</button>`;
@@ -173,7 +201,8 @@ function renderQuick() {
     <p class="muted small artists-hint">${esc(t("rig.artists_hint"))}</p>
     <div class="seg mini artist-styles" role="group" aria-label="${esc(t("rig.artist_filter"))}">${["all", ...ARTIST_STYLES].map(st =>
       `<button data-style="${st}" class="${st === artistStyle ? "active" : ""}" aria-pressed="${st === artistStyle}">${esc(t(`rig.artist_style.${st}`))}</button>`).join("")}</div>
-    <div class="quick-row" id="artistSounds">${Object.keys(ARTISTS).map(id => card(id)).join("")}</div></div>`;
+    <div class="quick-row" id="artistSounds">${artistIds().map(id => card(id)).join("")}</div></div>`;
+  $$(".quick-row", box).forEach(row => [...row.children].forEach((el, i) => { el.dataset.i = i; }));   // the usual order
   $$(".quick[data-id]", box).forEach(b => b.onclick = () => loadPreset(`factory:${b.dataset.id}`));
   $$(".quick-fav", box).forEach(b => b.onclick = async () => {
     const id = b.dataset.fav, inFavs = !!b.closest("#favSounds");

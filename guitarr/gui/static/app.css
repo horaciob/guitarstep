@@ -1257,6 +1257,7 @@ body.is-stage #main { max-width: none; padding: 12px 18px; }
 .gl .quick-wrap { position: relative; flex: 0 0 150px; display: flex; }
 .gl .quick-wrap > .quick { flex: 1 1 auto; min-width: 0; padding-right: 30px; }
 .gl .quick-wrap:has(> .quick[hidden]) { display: none; }
+.gl #quickBody.searching .quick-row { flex-wrap: wrap; overflow-x: visible; }   /* search results: all in view */
 .gl .quick-fav { position: absolute; top: 6px; right: 6px; width: 26px; height: 26px; padding: 0; border-radius: 50%; border: 1px solid transparent; background: transparent; color: var(--muted); font-size: 16px; line-height: 1; cursor: pointer; }
 .gl .quick-fav:hover, .gl .quick-fav:focus-visible { border-color: var(--border); color: var(--text); }
 .gl .quick-fav.on { color: var(--gl-warn, #e0a400); }

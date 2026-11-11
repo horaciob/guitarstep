@@ -1049,6 +1049,17 @@ def test_rig_preset_search(app_page):
     expect(visible).to_have_count(1)
     search.fill("page")                                         # an exact match doesn't bring look-alikes
     expect(app_page.locator("#searchCount")).not_to_contain_text("close spellings")
+    search.fill("j")                                            # one letter: names that start with it come first
+    artists = app_page.locator("#artistSounds .quick[data-q]:not([hidden])")
+    names = artists.locator("b").all_inner_texts()
+    first = [n for n in names if n.startswith("J")]
+    assert first and names[:len(first)] == first, names        # every "J…" name before a jazz match
+    assert app_page.locator("#quickBody.searching").count() == 1   # results wrap, all in view
+    search.press("Enter")                                       # Enter loads the top result
+    active = app_page.locator("#rigQuick .quick.on[data-q] b")
+    expect(active).to_have_text(re.compile("^J"))
+    search.press("Escape")                                      # Escape clears the search
+    expect(search).to_have_value("")
     search.fill("zzzz")
     expect(app_page.locator("#searchNone")).to_be_visible()
     search.fill("")
