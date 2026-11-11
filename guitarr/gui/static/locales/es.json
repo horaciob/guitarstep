@@ -1075,7 +1075,34 @@
     "cerati_soda": "Cerati: el chorus de Soda Stereo",
     "cerati_animal": "Cerati: el fuzz crudo de los 90",
     "charly_acoustic": "Charly García: la acústica de las canciones",
-    "malcolm_rhythm": "Malcolm Young: la muralla rítmica de AC/DC"
+    "malcolm_rhythm": "Malcolm Young: la muralla rítmica de AC/DC",
+    "john_williams": "John Williams: clásica clara y pareja",
+    "pepe_romero": "Pepe Romero: clásica española cálida",
+    "david_russell": "David Russell: sonido redondo que canta",
+    "barrueco": "Barrueco: preciso y transparente",
+    "yepes": "Yepes: resonante, en una sala grande",
+    "alirio_diaz": "Alirio Díaz: calidez venezolana",
+    "milos": "Miloš: clásica moderna y envolvente",
+    "vidovic": "Ana Vidović: suave y fluida",
+    "sabicas": "Sabicas: flamenco de concierto, nítido",
+    "ramon_montoya": "Ramón Montoya: flamenco de disco antiguo",
+    "sanlucar": "Sanlúcar: flamenco sinfónico",
+    "tomatito": "Tomatito: ataque flamenco con pegada",
+    "vicente_amigo": "Vicente Amigo: flamenco lírico",
+    "gerardo_nunez": "Gerardo Núñez: brillante y rítmico",
+    "pepe_habichuela": "Pepe Habichuela: el sonido terroso de Granada",
+    "moraito": "Moraíto: el compás seco de Jerez",
+    "canizares": "Cañizares: flamenco virtuoso",
+    "roberto_grela": "Roberto Grela: la melodía del tango al frente",
+    "anibal_arias": "Aníbal Arias: guitarra de tango cálida",
+    "cacho_tirao": "Cacho Tirao: tango de concierto",
+    "juanjo_dominguez": "Juanjo Domínguez: tango y folclore",
+    "ubaldo_de_lio": "Ubaldo De Lío: tango íntimo",
+    "malvicino": "Malvicino: nuevo tango eléctrico",
+    "jose_maria_aguilar": "José María Aguilar: las guitarras de Gardel",
+    "guillermo_barbieri": "Guillermo Barbieri: el tango canción de los comienzos",
+    "jose_canet": "José Canet: acompañamiento de tango",
+    "rafael_iriarte": "Rafael Iriarte: tango de la guardia vieja"
    },
    "param": {
     "threshold": "Umbral",
@@ -1258,7 +1285,10 @@
     "metal": "Metal",
     "shred": "Virtuosos",
     "jazz": "Jazz, fusión y country",
-    "acoustic": "Acústica y clásica"
+    "acoustic": "Acústica",
+    "classical": "Clásica",
+    "flamenco": "Flamenco",
+    "tango": "Tango"
    },
    "artist_filter": "Filtrar sonidos de artistas por estilo",
    "genre": {
@@ -1303,7 +1333,8 @@
     "flamenco": "flamenco",
     "rock_argentino": "rock nacional",
     "post_punk": "post-punk",
-    "new_wave": "new wave"
+    "new_wave": "new wave",
+    "tango": "tango"
    },
    "search_label": "Buscar sonidos",
    "search_placeholder": "Nombre, artista, banda o género (Pink Floyd, grunge, slide…)",
