@@ -1322,3 +1322,10 @@ dialog.placement { max-width: 520px; }
 .gl .then-now .tn-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
 .gl .then-now h3 { margin: 0 0 4px; }
 .gl .then-now audio { width: 100%; }
+
+/* weekly challenges */
+.weekly-list { list-style: none; padding: 0; margin: 8px 0 0; display: grid; gap: 10px; }
+.weekly-list li { display: grid; grid-template-columns: 1fr auto; gap: 4px 8px; align-items: center; }
+.weekly-list .bar { grid-column: 1 / -1; display: block; height: 6px; border-radius: 3px; background: var(--border); overflow: hidden; }
+.weekly-list .bar i { display: block; height: 100%; background: var(--gl-accent); }
+.weekly-list li.done span:first-child { color: var(--gl-ok); font-weight: 600; }

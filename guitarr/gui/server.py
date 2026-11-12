@@ -824,6 +824,13 @@ def api_skills():
     return skills.compute(progress.get())
 
 
+@app.get("/api/weekly")
+def api_weekly():
+    """This week's three challenges and how far you are in each."""
+    from .. import weekly
+    return weekly.view(progress.get())
+
+
 @app.get("/api/progress")
 def api_progress():
     return progress.get()

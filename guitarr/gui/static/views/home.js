@@ -75,6 +75,7 @@ function bindToday(el) {
 export async function mount(el) {
   const [p, course, hist, plan, today, facts, skills] = await Promise.all([api("/api/progress"), api("/api/course"), api("/api/history").catch(() => []),
     api("/api/plan").catch(() => null), api("/api/today").catch(() => null), api("/api/weak").catch(() => []), api("/api/skills").catch(() => null)]);
+  const weekly = await api("/api/weekly").catch(() => null);
   const lv = p.level;
   let weak = null;
   if (hist.length) {
@@ -130,6 +131,10 @@ export async function mount(el) {
         </div>
       </div>
       <div class="stack">
+      ${weekly ? `<div class="panel weekly-card"><h2>${esc(t("weekly.title"))}</h2><p class="muted small">${esc(t("weekly.hint", { xp: weekly.bonus }))}</p>
+        <ul class="weekly-list">${weekly.challenges.map(c => `<li class="${c.done ? "done" : ""}">
+          <span>${c.done ? "✓ " : ""}${esc(t(`weekly.c_${c.id}`, { count: c.need }))}</span><b>${c.n}/${c.need}</b>
+          <span class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="${c.need}" aria-valuenow="${c.n}" aria-label="${esc(t(`weekly.c_${c.id}`, { count: c.need }))}"><i style="width:${Math.round(100 * c.n / c.need)}%"></i></span></li>`).join("")}</ul></div>` : ""}
       ${skills ? `<div class="panel skills-card"><h2>${esc(t("skills.title"))}</h2>${radarSvg(skills)}
         <ul class="skills-list">${skills.map(s => `<li><span>${esc(t(`skills.${s.area}`))}</span><b>${s.value}%</b>
           <small class="muted">${esc(skillDetail(s))}</small></li>`).join("")}</ul></div>` : ""}

@@ -113,7 +113,8 @@
    "ear": "Oído ({{kind}}): {{score}}%",
    "warmup": "Calentamiento: {{drill}} a {{bpm}} BPM, {{score}}%",
    "improv": "Improvisaste sobre {{backing}}: {{score}}",
-   "neck": "Juego del diapasón: {{found}} notas en {{seconds}} s"
+   "neck": "Juego del diapasón: {{found}} notas en {{seconds}} s",
+   "challenge": "Desafío de la semana cumplido: {{what}}"
   },
   "errors": {
    "generic": "Algo salió mal",
@@ -3049,6 +3050,20 @@
    "tool_rhythm": "test de ritmo {{n}}% a tiempo",
    "tool_improv": "mejor solo {{n}}",
    "nothing": "entrenador de oído en Herramientas"
+  },
+  "weekly": {
+   "title": "Desafíos de la semana",
+   "hint": "+{{xp}} XP por cada uno. Nuevos cada lunes.",
+   "c_days5": "Practicá {{count}} días",
+   "c_exercises5": "Aprobá {{count}} ejercicios",
+   "c_lesson1": "Completá una lección",
+   "c_drill3": "Hacé {{count}} minutos de cambio de acordes",
+   "c_improv2": "Improvisá sobre una base {{count}} veces",
+   "c_neck3": "Jugá {{count}} veces al juego del diapasón",
+   "c_rhythm2": "Hacé {{count}} veces el test de ritmo",
+   "c_warmup4": "Hacé el calentamiento {{count}} veces",
+   "c_ear3": "Aprobá {{count}} rondas de entrenamiento auditivo",
+   "c_songs3": "Tocá {{count}} canciones o charts con el oyente"
   }
  },
  "content": {

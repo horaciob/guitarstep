@@ -132,6 +132,8 @@ export function issueText(it) {
 const NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 const noteOf = p => p == null ? "?" : NAMES[((p % 12) + 12) % 12] + (Math.floor(p / 12) - 1);
 
+const CHALLENGE_NEED = { days5: 5, exercises5: 5, lesson1: 1, drill3: 3, improv2: 2, neck3: 3, rhythm2: 2, warmup4: 4, ear3: 3, songs3: 3 };   // guitarr/weekly.py
+
 /** Text for a progress event `{code, params}` (see guitarr/progress.py). */
 export function eventText(e) {
   const p = e.params || {};
@@ -148,6 +150,7 @@ export function eventText(e) {
     case "drill": return t("event.drill", { chords: String(p.chords).replace("-", " ↔ "), n: p.changes });
     case "take_analysis": return t("event.take_analysis", { score: Math.round(p.score) });
     case "warmup": return t("event.warmup", { drill: t(`warmup.${p.drill}`), bpm: p.bpm, score: Math.round(p.score) });
+    case "challenge": return t("event.challenge", { what: t(`weekly.c_${p.id}`, { count: CHALLENGE_NEED[p.id] || 1 }) });
     case "neck": return t("event.neck", { found: p.found, seconds: p.seconds });
     case "improv": return t("event.improv", { backing: t(`improv.backing_${p.backing}`), score: Math.round(p.score) });
     case "practice": return t("event.practice", { name: p.name || "", score: Math.round(p.score), ...raw });

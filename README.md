@@ -82,6 +82,7 @@ retakes them in both themes.
 - **Groove**: where in the beat your timing slips (on the beat, the "and", sixteenths, triplets) and how even your attack is, including weak upstrokes.
 - **History**: score over time per song, plus your weakest bars, with a one-click "practice these bars with the trainer". **Then and now** puts your first recorded take of a song next to your latest, to listen to both.
 - **Progress**: XP, levels, a day streak and a feed of what you earned.
+- **Weekly challenges**: three small goals each week (practice on 5 days, plus two that rotate), +20 XP for each.
 - **Your skills**: a radar on the home page with how far you got in each area (chords, rhythm, technique, the neck, scales, harmony, blues, jazz, ear), from the exercises you passed and what the tools measured.
 
 ## Requirements

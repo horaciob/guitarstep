@@ -32,6 +32,7 @@ EVENT_TEXT = {
     "warmup": "Warm-up {drill} at {bpm} BPM: {score:.0f}%",
     "improv": "Improvised over {backing}: {score:.0f}",
     "neck": "Neck game: {found} notes in {seconds} s",
+    "challenge": "Weekly challenge done: {id}",
 }
 
 
@@ -50,6 +51,7 @@ def _empty() -> dict:
                 improv={},        # improvising → {backing: {best, last, day}}
                 neck={},          # neck game → {strings+accidentals-seconds: {best, last, day}}
                 start_level=None,  # where the placement says to start the course (a level id)
+                weekly={},        # this week's challenges → {week: {counts: {award code: n}, done: [ids]}}
                 facts={},         # weak spots: facts you missed → {label, lesson, exercise, misses, step, due}
                 budget=None,      # minutes you chose for today's plan (15, 30, 60, 120)
                 queue=[])         # song or chart sections you pinned to today's plan
@@ -266,6 +268,10 @@ def _award(d: dict, xp: int, code: str, **params) -> None:
         d["days"].append(today)
     ev = dict(at=datetime.now().isoformat(timespec="seconds"), xp=xp, code=code, params=params)
     d["events"] = ([ev] + d["events"])[:30]
+    if code != "challenge":                     # this week's challenges: a bonus for each one completed
+        from . import weekly
+        for cid in weekly.on_award(d, code):
+            _award(d, weekly.BONUS_XP, "challenge", id=cid)
 
 
 def practice_xp(score: float | None) -> int:

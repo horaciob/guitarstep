@@ -113,7 +113,8 @@
    "ear": "Ear training ({{kind}}): {{score}}%",
    "warmup": "Warm-up: {{drill}} at {{bpm}} BPM, {{score}}%",
    "improv": "Improvised over {{backing}}: {{score}}",
-   "neck": "Neck game: {{found}} notes in {{seconds}} s"
+   "neck": "Neck game: {{found}} notes in {{seconds}} s",
+   "challenge": "Weekly challenge done: {{what}}"
   },
   "errors": {
    "generic": "Something went wrong",
@@ -3049,6 +3050,20 @@
    "tool_rhythm": "rhythm test {{n}}% on time",
    "tool_improv": "best solo {{n}}",
    "nothing": "ear trainer in Tools"
+  },
+  "weekly": {
+   "title": "This week's challenges",
+   "hint": "+{{xp}} XP for each one. New ones every Monday.",
+   "c_days5": "Practice on {{count}} days",
+   "c_exercises5": "Pass {{count}} exercises",
+   "c_lesson1": "Complete a lesson",
+   "c_drill3": "Do {{count}} chord-change minutes",
+   "c_improv2": "Improvise over a backing {{count}} times",
+   "c_neck3": "Play the neck game {{count}} times",
+   "c_rhythm2": "Take the rhythm test {{count}} times",
+   "c_warmup4": "Do the warm-up {{count}} times",
+   "c_ear3": "Pass {{count}} ear-training rounds",
+   "c_songs3": "Play {{count}} songs or charts with the listener"
   }
  },
  "content": {}
