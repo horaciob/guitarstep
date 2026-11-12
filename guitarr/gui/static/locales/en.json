@@ -154,7 +154,9 @@
    "bad_scale": "Unknown scale.",
    "bad_key": "Unknown key.",
    "bad_strings": "Pick at least one string.",
-   "bad_answers": "Answer yes or no to each skill."
+   "bad_answers": "Answer yes or no to each skill.",
+   "no_chords": "No chords found: write the chords on their own line above the lyrics, or inline like [G].",
+   "too_long": "That's too long."
   },
   "practice": {
    "title": "🎧 Practice with listening",
@@ -595,8 +597,15 @@
    "deleted": "Chart deleted",
    "saved": "Saved: {{title}}",
    "headers": "Possible headers",
-   "headers_html": "<code>title</code>, <code>bpm</code>, <code>time</code> (4/4, 3/4, 6/8), <code>capo</code>, <code>strum</code> (D down, U up, . rest, _ hold, ^ the next chord early; one slot per eighth note), <code>swing</code> (light, medium, hard), <code>voicing</code> (shell, drop2, drop3, triad: voices any chord symbol, like <code>C#m7b5</code>), <code>level</code>, <code>note</code>. Sections go in brackets: <code>[Chorus]</code>. A <code>#</code> after a space starts a comment.",
-   "unknown_html": "Unknown chords: {{chords}} — check the names in <a href=\"#/chords\">Chords</a>."
+   "headers_html": "<code>title</code>, <code>bpm</code>, <code>time</code> (4/4, 3/4, 6/8), <code>capo</code>, <code>strum</code> (D down, U up, . rest, _ hold, ^ the next chord early; one slot per eighth note), <code>swing</code> (light, medium, hard), <code>voicing</code> (shell, drop2, drop3, triad: voices any chord symbol, like <code>C#m7b5</code>), <code>level</code>, <code>note</code>. Sections go in brackets: <code>[Chorus]</code>. A <code>#</code> after a space starts a comment. Lyrics go on a line starting with <code>&gt;</code> right under the chords, one piece per bar: <code>&gt; Here I am | on the road</code>.",
+   "unknown_html": "Unknown chords: {{chords}} — check the names in <a href=\"#/chords\">Chords</a>.",
+   "paste_title": "Paste a chord sheet (chords over lyrics)",
+   "paste_hint": "Paste a song as it's usually shared: the chords on their own line above the lyrics, or inline like [G]Here I [D]am. Each chord becomes a bar with its lyric; check the tempo and the bars after converting. It replaces the text below.",
+   "paste_placeholder": "[Verse]\nG           D            Em      C\nHere I am on the road again, and again",
+   "paste_convert": "Convert",
+   "paste_done_one": "Converted: {{count}} bar.",
+   "paste_done_other": "Converted: {{count}} bars.",
+   "paste_none": "No chords found: write the chords on their own line above the lyrics, or inline like [G]."
   },
   "tools": {
    "title": "Tools",

@@ -16,7 +16,13 @@ export function strumHtml(pattern) {
 export function barsHtml(chart) {
   let html = "", row = [], cell = [], acc = 0;
   const single = chart.bars.filter(b => b.section).length <= 1 && !chart.bars.slice(1).some(b => b.section);   // one section: no label
-  const cellHtml = c => `<div class="bar-cell">${c.map(([i, x]) => `<span data-i="${i}">${esc(x)}</span>`).join("")}</div>`;
+  const lyrics = chart.bars.some(b => b.lyric != null);
+  const cellHtml = c => {
+    const chords = c.map(([i, x]) => `<span data-i="${i}">${esc(x)}</span>`).join("");
+    if (!lyrics) return `<div class="bar-cell">${chords}</div>`;
+    const words = c.map(([i]) => chart.bars[i].lyric).filter(Boolean).join(" ");
+    return `<div class="bar-cell has-lyric"><div class="bar-chords">${chords}</div><small class="bar-lyric">${esc(words) || "&nbsp;"}</small></div>`;
+  };
   const flushRow = () => { if (row.length) html += `<div class="bars">${row.map(cellHtml).join("")}</div>`; row = []; };
   for (const [i, b] of chart.bars.entries()) {
     if (b.section && !single) {
@@ -59,14 +65,14 @@ export function chartGuide(box, chart, { speed = 1, note = "" } = {}) {
   box.innerHTML = `
     ${note ? `<p class="small">${esc(note)}</p>` : ""}
     <div class="guide-now"><b class="g-chord">${esc(chart.bars[0]?.chord || "–")}</b>
-      <span><span class="g-next"></span><small class="g-pos muted"></small></span>
+      <span><span class="g-next"></span><small class="g-pos muted"></small>${chart.bars.some(b => b.lyric != null) ? `<p class="g-lyric"></p>` : ""}</span>
       ${strumHtml(pat)}
       <button type="button" class="btn small g-shapes-btn" aria-expanded="false">${esc(t("lesson.show_shapes"))}</button>
       <div class="g-shapes mini-chords" hidden></div></div>
     ${barsHtml(chart)}
     <p class="muted small">${esc(t("lesson.guide_tempo", { bpm: Math.round(chart.bpm * speed), pct: Math.round(speed * 100) }))}${chart.swing ? ` ${esc(t("lesson.guide_swing"))}` : ""}${(chart.strum || "").includes("^") ? ` ${esc(t("lesson.guide_anticipation"))}` : ""}</p>`;
   const slots = $$(".strum span", box), cells = $$(".bar-cell span[data-i]", box);
-  const chordEl = $(".g-chord", box), nextEl = $(".g-next", box), posEl = $(".g-pos", box);
+  const chordEl = $(".g-chord", box), nextEl = $(".g-next", box), posEl = $(".g-pos", box), lyricEl = $(".g-lyric", box);
   const shapesEl = $(".g-shapes", box), shapesBtn = $(".g-shapes-btn", box);
   const openShapes = async open => {
     shapesEl.hidden = !open;
@@ -100,6 +106,7 @@ export function chartGuide(box, chart, { speed = 1, note = "" } = {}) {
     chordEl.textContent = chord;
     nextEl.textContent = next;
     posEl.textContent = pos;
+    if (lyricEl) lyricEl.textContent = i < 0 ? "" : chart.bars.slice(0, i + 1).findLast(b => b.lyric != null)?.lyric || "";
     slots.forEach((s, k) => s.classList.toggle("on", k === slot));
     cells.forEach(c => c.classList.toggle("on", +c.dataset.i === i));
     $$(".mini-chord", shapesEl).forEach(m => m.classList.toggle("on", i >= 0 && m.dataset.chord === chord));

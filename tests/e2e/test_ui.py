@@ -1271,3 +1271,17 @@ def test_placement_moves_where_the_course_continues(app_page):
     expect(app_page.locator("a.callout")).to_have_attribute("href", "#/lesson/barre")
     app_page.locator("#plReset").click()
     expect(app_page.locator(".placement-line")).not_to_contain_text("You start at")
+
+
+def test_paste_a_chord_sheet_into_the_chart_editor(app_page):
+    onboarded(app_page)
+    go(app_page, "chart/new")
+    app_page.locator("#pasteBox summary").click()
+    app_page.locator("#sheet").fill("[Verse]\nG           D\nHere I am on the road\n")
+    app_page.locator("#sheetGo").click()
+    expect(app_page.locator("#txt")).to_have_value(re.compile(r"G \| D\n> Here I am \| on the road"))
+    expect(app_page.locator("#preview .bar-lyric").first).to_have_text("Here I am")
+    app_page.locator("#pasteBox summary").click()
+    app_page.locator("#sheet").fill("only words")
+    app_page.locator("#sheetGo").click()
+    expect(app_page.locator("#sheetErr")).to_contain_text("No chords found")

@@ -154,7 +154,9 @@
    "bad_scale": "Esa escala no existe.",
    "bad_key": "Esa tonalidad no existe.",
    "bad_strings": "Elegí al menos una cuerda.",
-   "bad_answers": "Respondé sí o no a cada habilidad."
+   "bad_answers": "Respondé sí o no a cada habilidad.",
+   "no_chords": "No encontré acordes: escribí los acordes en su propia línea arriba de la letra, o en línea como [G].",
+   "too_long": "Es demasiado largo."
   },
   "practice": {
    "title": "🎧 Practicar con escucha",
@@ -595,8 +597,15 @@
    "deleted": "Cifrado borrado",
    "saved": "Guardado: {{title}}",
    "headers": "Encabezados posibles",
-   "headers_html": "<code>title</code>, <code>bpm</code>, <code>time</code> (4/4, 3/4, 6/8), <code>capo</code>, <code>strum</code> (D abajo, U arriba, . nada, _ sostener, ^ el acorde siguiente antes de tiempo; una casilla por corchea), <code>swing</code> (light, medium, hard), <code>voicing</code> (shell, drop2, drop3, triad: arma cualquier acorde, como <code>C#m7b5</code>), <code>level</code>, <code>note</code>. Las secciones van entre corchetes: <code>[Estribillo]</code>. Un <code>#</code> después de un espacio empieza un comentario. (Los encabezados del formato van en inglés.)",
-   "unknown_html": "No conozco: {{chords}} — mirá los nombres en <a href=\"#/chords\">Acordes</a>."
+   "headers_html": "<code>title</code>, <code>bpm</code>, <code>time</code> (4/4, 3/4, 6/8), <code>capo</code>, <code>strum</code> (D abajo, U arriba, . nada, _ sostener, ^ el acorde siguiente antes de tiempo; una casilla por corchea), <code>swing</code> (light, medium, hard), <code>voicing</code> (shell, drop2, drop3, triad: arma cualquier acorde, como <code>C#m7b5</code>), <code>level</code>, <code>note</code>. Las secciones van entre corchetes: <code>[Estribillo]</code>. Un <code>#</code> después de un espacio empieza un comentario. (Los encabezados del formato van en inglés.) La letra va en una línea que empieza con <code>&gt;</code> justo debajo de los acordes, un pedazo por compás: <code>&gt; Aquí estoy | en el camino</code>.",
+   "unknown_html": "No conozco: {{chords}} — mirá los nombres en <a href=\"#/chords\">Acordes</a>.",
+   "paste_title": "Pegar una canción con acordes (acordes arriba de la letra)",
+   "paste_hint": "Pegá una canción como se comparte siempre: los acordes en su propia línea arriba de la letra, o en línea como [G]Aquí [D]estoy. Cada acorde es un compás con su letra; revisá el tempo y los compases después de convertir. Reemplaza el texto de abajo.",
+   "paste_placeholder": "[Estrofa]\nG           D            Em      C\nAquí estoy de nuevo en el camino",
+   "paste_convert": "Convertir",
+   "paste_done_one": "Convertido: {{count}} compás.",
+   "paste_done_other": "Convertido: {{count}} compases.",
+   "paste_none": "No encontré acordes: escribí los acordes en su propia línea arriba de la letra, o en línea como [G]."
   },
   "tools": {
    "title": "Herramientas",

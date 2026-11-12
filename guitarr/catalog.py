@@ -125,7 +125,18 @@ def parse_chart(text: str, cid: str = "chart") -> dict:
     section = None
     prev = None
     unknown: list[str] = []
+    cells: list[int] = []          # first bar of each cell of the last chord line (lyrics attach there)
     for ln, raw in enumerate(text.splitlines(), start=1):
+        if raw.lstrip().startswith(">"):                  # lyrics for the chord line above, one cell per bar
+            words = [w.strip() for w in raw.lstrip()[1:].split("|")]
+            if not cells:
+                raise CatalogError(f"Line {ln}: lyrics ('>') need a line of chords above them")
+            if len(words) > len(cells):
+                raise CatalogError(f"Line {ln}: {len(words)} lyric cells for {len(cells)} bars")
+            for k, first in enumerate(cells):
+                bars[first]["lyric"] = words[k] if k < len(words) else ""
+            cells = []
+            continue
         # "#" starts a comment at the beginning of a line or after a space; inside a chord (C#m7) it's a sharp
         line = "" if raw.lstrip().startswith("#") else re.split(r"\s#(?:\s|$)", raw, maxsplit=1)[0].strip()
         if not line:
@@ -139,9 +150,11 @@ def parse_chart(text: str, cid: str = "chart") -> dict:
             section = m.group(1).strip()
             continue
         bpb = _beats_per_bar(meta.get("time", "4/4"), ln)
+        cells = []
         for cell in [c.strip() for c in line.split("|")]:
             if not cell:
                 continue
+            cells.append(len(bars))
             names = cell.split()
             per = bpb / len(names)
             for name in names:

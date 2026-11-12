@@ -1301,3 +1301,10 @@ body.is-stage #main { max-width: none; padding: 12px 18px; }
 .placement-line { margin: 8px 0 18px; }
 dialog.placement { max-width: 520px; }
 .placement-q { font-size: 1.15rem; margin: 14px 0 18px; }
+
+/* lyrics under the chords of a chart */
+.gl .bar-cell.has-lyric { flex-direction: column; align-items: center; gap: 2px; }
+.gl .bar-cell .bar-chords { display: flex; gap: 6px; justify-content: center; }
+.gl .bar-cell .bar-lyric { font-weight: 400; color: var(--muted); text-align: center; line-height: 1.25; }
+.gl .stage-bars .bar-lyric { font-size: calc(15px * var(--stage-size)); }
+.gl .g-lyric { margin: 4px 0 0; color: var(--muted); min-height: 1.3em; }

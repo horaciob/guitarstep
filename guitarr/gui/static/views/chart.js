@@ -40,6 +40,11 @@ export async function mount(el, { segs, params = {} }) {
       <div class="panel">
         ${patterns.length ? `<label class="field-inline small strum-pick">${esc(t("strum.insert"))}
           <select id="strumPick"><option value="">—</option>${patterns.map(p => `<option value="${esc(p.id)}">${esc(tc(`strums.${p.id}.name`, p.name))} · ${esc(p.time)}</option>`).join("")}</select></label>` : ""}
+        <details class="paste-sheet" id="pasteBox"><summary>${esc(t("chart.paste_title"))}</summary>
+          <p class="muted small">${esc(t("chart.paste_hint"))}</p>
+          <textarea id="sheet" rows="8" spellcheck="false" aria-label="${esc(t("chart.paste_title"))}" placeholder="${esc(t("chart.paste_placeholder"))}"></textarea>
+          <p class="field-error" id="sheetErr" hidden></p>
+          <button class="btn small" id="sheetGo" type="button">${esc(t("chart.paste_convert"))}</button></details>
         <textarea id="txt" spellcheck="false" rows="18" aria-label="${esc(t("chart.text_label"))}">${esc(text)}</textarea>
         <div class="row" style="margin-top:12px">
           <button class="btn primary" id="save">${esc(t("common.save"))}</button>
@@ -73,6 +78,17 @@ export async function mount(el, { segs, params = {} }) {
     return r;
   };
   txt.oninput = () => { clearTimeout(timer); timer = setTimeout(validate, 300); };
+  $("#sheetGo", el).onclick = async () => {
+    const err = $("#sheetErr", el);
+    try {
+      const r = await api("/api/charts/import-text", { json: { text: $("#sheet", el).value } });
+      if (r.error) { err.textContent = t("chart.paste_none"); err.hidden = false; return; }
+      txt.value = r.text; err.hidden = true;
+      $("#pasteBox", el).open = false;
+      toast(t("chart.paste_done", { count: r.bars }), true);
+      validate();
+    } catch (e) { err.textContent = e.message; err.hidden = false; }
+  };
   validate();
   $("#save", el).onclick = async () => {
     try {

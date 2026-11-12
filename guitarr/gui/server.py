@@ -353,6 +353,19 @@ def api_chart(cid: str):
         fail(404, "catalog", str(e))
 
 
+@app.post("/api/charts/import-text")
+def chart_import_text(body: dict):
+    """A chord sheet (chords over lyrics, or ChordPro) → chart text for the editor."""
+    from .. import chordsheet
+    text = str(body.get("text") or "")
+    if len(text) > 100_000:
+        fail(400, "too_long", "That's too long for a chord sheet")
+    try:
+        return chordsheet.convert(text)
+    except ValueError as e:                       # like /validate: not a failed request, just nothing to convert
+        return dict(error=dict(code="no_chords", message=str(e)))
+
+
 @app.post("/api/charts/validate")
 def api_chart_validate(body: dict):
     try:
