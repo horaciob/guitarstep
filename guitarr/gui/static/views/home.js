@@ -73,8 +73,8 @@ function bindToday(el) {
 }
 
 export async function mount(el) {
-  const [p, course, hist, plan, today, facts] = await Promise.all([api("/api/progress"), api("/api/course"), api("/api/history").catch(() => []),
-    api("/api/plan").catch(() => null), api("/api/today").catch(() => null), api("/api/weak").catch(() => [])]);
+  const [p, course, hist, plan, today, facts, skills] = await Promise.all([api("/api/progress"), api("/api/course"), api("/api/history").catch(() => []),
+    api("/api/plan").catch(() => null), api("/api/today").catch(() => null), api("/api/weak").catch(() => []), api("/api/skills").catch(() => null)]);
   const lv = p.level;
   let weak = null;
   if (hist.length) {
@@ -122,17 +122,48 @@ export async function mount(el) {
             : tc(`exercises.${f.lesson}/${f.exercise}`, f.title || f.exercise))} · ${esc(t("weak.misses", { count: f.misses }))}</small></span>
             <a class="btn small" href="${esc(f.route)}">${esc(t("weak.practice"))}</a></li>`).join("")}</ul></div>` : ""}
         ${weak ? `<a class="callout" href="#/history"><span>${t("home.weak_html", { song: esc(weak.h.reference.name || weak.h.id), bars: weak.bars.join(" & "), interpolation: { escapeValue: false } })}</span><span class="btn small">${esc(t("home.see"))}</span></a>` : ""}
-        <div class="quick">
+        <div class="home-quick">
           <a class="panel" href="#/charts"><b>♫ ${esc(t("home.q_chart"))}</b><span class="muted small">${esc(t("home.q_chart_hint"))}</span></a>
           <a class="panel" href="#/tools?tab=drill"><b>⏱ ${esc(t("home.q_drill"))}</b><span class="muted small">${esc(t("home.q_drill_hint"))}</span></a>
           <a class="panel" href="#/chords"><b>▦ ${esc(t("home.q_chords"))}</b><span class="muted small">${esc(t("home.q_chords_hint"))}</span></a>
           <a class="panel" href="#/tuner"><b>◎ ${esc(t("home.q_tune"))}</b><span class="muted small">${esc(t("home.q_tune_hint"))}</span></a>
         </div>
       </div>
+      <div class="stack">
+      ${skills ? `<div class="panel skills-card"><h2>${esc(t("skills.title"))}</h2>${radarSvg(skills)}
+        <ul class="skills-list">${skills.map(s => `<li><span>${esc(t(`skills.${s.area}`))}</span><b>${s.value}%</b>
+          <small class="muted">${esc(skillDetail(s))}</small></li>`).join("")}</ul></div>` : ""}
       <div class="panel"><h2>${esc(t("home.latest"))}</h2>
         ${p.events.length ? `<ul class="events">${p.events.slice(0, 8).map(e => `<li><span>${esc(eventText(e))}</span><span class="muted small">${e.xp ? `+${e.xp} XP · ` : ""}${esc(ago(e.at))}</span></li>`).join("")}</ul>`
           : `<p class="muted">${t("home.nothing_yet_html")}</p>`}
-      </div>
+      </div></div>
     </div>`;
   bindToday(el);
+}
+
+/** What a skill value was made from, in words ("12 of 40 exercises · best ear score 85%"). */
+function skillDetail(s) {
+  const parts = [];
+  if (s.total) parts.push(t("skills.exercises", { passed: s.passed, total: s.total }));
+  if (s.tool != null) parts.push(t(`skills.tool_${s.tool_kind}`, { n: s.tool }));
+  return parts.join(" · ") || t("skills.nothing");
+}
+
+/** A radar of the areas (0–100): the shape you have now. The list next to it carries the numbers. */
+function radarSvg(skills) {
+  const n = skills.length, R = 90, C = 120;
+  const pt = (k, v) => {
+    const a = -Math.PI / 2 + 2 * Math.PI * k / n;
+    return [C + Math.cos(a) * R * v / 100, C + Math.sin(a) * R * v / 100];
+  };
+  const ring = v => skills.map((_, k) => pt(k, v).join(",")).join(" ");
+  const shape = skills.map((s, k) => pt(k, Math.max(3, s.value)).join(",")).join(" ");
+  const labels = skills.map((s, k) => {
+    const [x, y] = pt(k, 122);
+    return `<text x="${x}" y="${y}" text-anchor="${x < C - 5 ? "end" : x > C + 5 ? "start" : "middle"}" dominant-baseline="middle">${esc(t(`skills.${s.area}`))}</text>`;
+  }).join("");
+  return `<svg class="radar" viewBox="-90 0 420 240" role="img" aria-label="${esc(t("skills.radar_label"))}">
+    ${[25, 50, 75, 100].map(v => `<polygon points="${ring(v)}" class="radar-ring"/>`).join("")}
+    ${skills.map((_, k) => `<line x1="${C}" y1="${C}" x2="${pt(k, 100)[0]}" y2="${pt(k, 100)[1]}" class="radar-ring"/>`).join("")}
+    <polygon points="${shape}" class="radar-shape"/>${labels}</svg>`;
 }

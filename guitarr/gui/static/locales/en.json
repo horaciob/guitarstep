@@ -3011,6 +3011,24 @@
    "result_start": "Start from the beginning: level 1 is the right place.",
    "result_hint": "Nothing was marked as passed. To skip a lesson for real, open it and pass its check.",
    "done": "Go to the course"
+  },
+  "skills": {
+   "title": "Your skills",
+   "radar_label": "Your skills by area; the list below has the numbers.",
+   "chords": "Chords",
+   "rhythm": "Rhythm",
+   "technique": "Technique",
+   "neck": "Neck & reading",
+   "scales": "Scales & solos",
+   "harmony": "Harmony",
+   "blues": "Blues & songs",
+   "jazz": "Jazz",
+   "ear": "Ear",
+   "exercises": "{{passed}} of {{total}} exercises",
+   "tool_ear": "ear trainer {{n}}%",
+   "tool_rhythm": "rhythm test {{n}}% on time",
+   "tool_improv": "best solo {{n}}",
+   "nothing": "ear trainer in Tools"
   }
  },
  "content": {}

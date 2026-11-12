@@ -816,6 +816,13 @@ def placement_set(body: dict):
     return dict(start_level=start)
 
 
+@app.get("/api/skills")
+def api_skills():
+    """Your skills by area (0–100), for the radar on the home page."""
+    from .. import skills
+    return skills.compute(progress.get())
+
+
 @app.get("/api/progress")
 def api_progress():
     return progress.get()

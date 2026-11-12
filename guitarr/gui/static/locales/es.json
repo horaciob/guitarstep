@@ -3011,6 +3011,24 @@
    "result_start": "Empezá desde el principio: el nivel 1 es el lugar indicado.",
    "result_hint": "No se marcó nada como aprobado. Para saltear una lección de verdad, abrila y pasá su prueba.",
    "done": "Ir al curso"
+  },
+  "skills": {
+   "title": "Tus habilidades",
+   "radar_label": "Tus habilidades por área; la lista de abajo tiene los números.",
+   "chords": "Acordes",
+   "rhythm": "Ritmo",
+   "technique": "Técnica",
+   "neck": "Diapasón y lectura",
+   "scales": "Escalas y solos",
+   "harmony": "Armonía",
+   "blues": "Blues y canciones",
+   "jazz": "Jazz",
+   "ear": "Oído",
+   "exercises": "{{passed}} de {{total}} ejercicios",
+   "tool_ear": "entrenador de oído {{n}}%",
+   "tool_rhythm": "test de ritmo {{n}}% a tiempo",
+   "tool_improv": "mejor solo {{n}}",
+   "nothing": "entrenador de oído en Herramientas"
   }
  },
  "content": {

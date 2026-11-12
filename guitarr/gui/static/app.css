@@ -314,9 +314,9 @@ a { color: inherit; }
 .gl .week span { display: flex; flex-direction: column; align-items: center; gap: 4px; }
 .gl .week i { width: 16px; height: 16px; border-radius: 4px; background: var(--gl-panel-2); border: 1px solid var(--border); }
 .gl .week .on i { background: var(--gl-accent); border-color: transparent; }
-.gl .quick { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-.gl .quick a { text-decoration: none; display: flex; flex-direction: column; gap: 2px; }
-.gl .quick a:hover { border-color: var(--gl-accent); }
+.gl .home-quick { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.gl .home-quick a { text-decoration: none; display: flex; flex-direction: column; gap: 2px; }
+.gl .home-quick a:hover { border-color: var(--gl-accent); }
 .gl .events { list-style: none; margin: 0; padding: 0; }
 .gl .events li { display: flex; justify-content: space-between; gap: 10px; padding: 7px 0; border-bottom: 1px dashed var(--border); font-size: 13px; }
 .gl .cam-layout { display: grid; grid-template-columns: 1.6fr 1fr; gap: 16px; align-items: start; }
@@ -1308,3 +1308,12 @@ dialog.placement { max-width: 520px; }
 .gl .bar-cell .bar-lyric { font-weight: 400; color: var(--muted); text-align: center; line-height: 1.25; }
 .gl .stage-bars .bar-lyric { font-size: calc(15px * var(--stage-size)); }
 .gl .g-lyric { margin: 4px 0 0; color: var(--muted); min-height: 1.3em; }
+
+/* skills radar */
+.radar { width: 100%; max-width: 420px; display: block; margin: 0 auto; }
+.radar text { font-size: 11px; fill: var(--text); }
+.radar .radar-ring { fill: none; stroke: var(--border); stroke-width: 1; }
+.radar .radar-shape { fill: var(--gl-accent); fill-opacity: .3; stroke: var(--gl-accent); stroke-width: 2; }
+.skills-list { list-style: none; padding: 0; margin: 8px 0 0; display: grid; gap: 4px; }
+.skills-list li { display: grid; grid-template-columns: 1fr auto; column-gap: 8px; }
+.skills-list small { grid-column: 1 / -1; }
