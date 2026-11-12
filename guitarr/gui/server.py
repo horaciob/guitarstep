@@ -1823,6 +1823,52 @@ async def ws_live(ws: WebSocket):
 STREAM_HEADER = 8      # each binary frame: uint64 LE index of its first sample, then float32 LE samples
 
 
+def _push_frame(src: StreamSource, b: bytes) -> None:
+    if len(b) > STREAM_HEADER and (len(b) - STREAM_HEADER) % 4 == 0:
+        src.push(int.from_bytes(b[:STREAM_HEADER], "little"), np.frombuffer(b, "<f4", offset=STREAM_HEADER))
+
+
+def _wants_browser(ws: WebSocket) -> bool:
+    """The tuner and the signal check listen to this browser's input (always, as a web service)."""
+    return not ws.query_params.get("simulate") and (service() or ws.query_params.get("input") == "browser")
+
+
+async def _browser_source(ws: WebSocket) -> StreamSource:
+    """The first message of a browser input: {"type": "start", "sr"}; binary frames follow."""
+    first = await ws.receive_json()
+    sr = _int(first.get("sr"))
+    if first.get("type") != "start" or not sr or not 8000 <= sr <= 192000:
+        raise CodedError("bad_start", "Send a start message with the sample rate first")
+    return StreamSource(sr)
+
+
+async def _send_readings(ws: WebSocket, th: threading.Thread, reading, every: float, src) -> None:
+    """Sends reading() every `every` seconds while the thread listens; a browser's frames are taken
+    in between (`src` a StreamSource). Returns when the thread ends or the browser leaves."""
+    recv = None
+    try:
+        while th.is_alive():
+            await ws.send_json(reading())
+            if not isinstance(src, StreamSource):
+                await asyncio.sleep(every)
+                continue
+            deadline = time.monotonic() + every
+            while (left := deadline - time.monotonic()) > 0:
+                if recv is None:
+                    recv = asyncio.ensure_future(ws.receive())   # kept across turns: cancelling it could lose a frame
+                done, _ = await asyncio.wait({recv}, timeout=left)
+                if not done:
+                    break
+                msg, recv = recv.result(), None
+                if msg["type"] == "websocket.disconnect":
+                    return
+                if msg.get("bytes") is not None:
+                    _push_frame(src, msg["bytes"])
+    finally:
+        if recv is not None:
+            recv.cancel()
+
+
 @app.websocket("/ws/stream")
 async def ws_stream(ws: WebSocket):
     """The guitar captured in the browser, graded here with the same listener.
@@ -1929,10 +1975,7 @@ async def ws_stream(ws: WebSocket):
             if msg["type"] == "websocket.disconnect":
                 break
             if msg.get("bytes") is not None:
-                b = msg["bytes"]
-                if len(b) > STREAM_HEADER and (len(b) - STREAM_HEADER) % 4 == 0:
-                    src.push(int.from_bytes(b[:STREAM_HEADER], "little"),
-                             np.frombuffer(b, "<f4", offset=STREAM_HEADER))
+                _push_frame(src, msg["bytes"])
                 continue
             m = json.loads(msg.get("text") or "{}")
             if m.get("type") == "stop":
@@ -1979,12 +2022,21 @@ async def ws_tuner(ws: WebSocket):
         device = (int(dev) if dev.lstrip("-").isdigit() else dev) if dev else a.get("device")
         channel = _int(ws.query_params.get("channel")) or a.get("channel") or 1
         samplerate = a.get("samplerate") if dev is None else None
-        if not sim:
-            no_server_audio()
-        src = FileSource(take_path(sim)) if sim else MicSource(device, channel, samplerate)
+        if _wants_browser(ws):
+            src = await _browser_source(ws)
+        else:
+            if not sim:
+                no_server_audio()
+            src = FileSource(take_path(sim)) if sim else MicSource(device, channel, samplerate)
     except HTTPException as e:
         await ws.send_json(dict(error=e.detail))
         await ws.close()
+        return
+    except CodedError as e:
+        await ws.send_json(dict(error=dict(code=e.code, message=str(e))))
+        await ws.close()
+        return
+    except (WebSocketDisconnect, RuntimeError):
         return
     except (AudioError, ValueError) as e:
         await ws.send_json(dict(error=dict(code="audio", message=str(e))))
@@ -1996,9 +2048,7 @@ async def ws_tuner(ws: WebSocket):
     th.start()
     try:
         await ws.send_json(dict(source=src.name))
-        while th.is_alive():
-            await ws.send_json(tuner.reading)
-            await asyncio.sleep(0.05)
+        await _send_readings(ws, th, lambda: tuner.reading, 0.05, src)
     except (WebSocketDisconnect, RuntimeError):
         pass
     finally:
@@ -2027,10 +2077,19 @@ async def ws_signal(ws: WebSocket):
         return
     try:
         sim = ws.query_params.get("simulate")            # a recorded take instead of the input (tests, demos)
-        src = FileSource(take_path(sim)) if sim else _input_source(ws.query_params)
+        if _wants_browser(ws):
+            src = await _browser_source(ws)
+        else:
+            src = FileSource(take_path(sim)) if sim else _input_source(ws.query_params)
     except HTTPException as e:
         await ws.send_json(dict(error=e.detail))
         await ws.close()
+        return
+    except CodedError as e:
+        await ws.send_json(dict(error=dict(code=e.code, message=str(e))))
+        await ws.close()
+        return
+    except (WebSocketDisconnect, RuntimeError):
         return
     except (AudioError, ValueError) as e:
         await ws.send_json(dict(error=dict(code="audio", message=str(e))))
@@ -2042,9 +2101,7 @@ async def ws_signal(ws: WebSocket):
     th.start()
     try:
         await ws.send_json(dict(source=src.name, sr=src.sr))
-        while th.is_alive():
-            await ws.send_json(probe.reading)
-            await asyncio.sleep(signalcheck.LEVEL_EVERY)
+        await _send_readings(ws, th, lambda: probe.reading, signalcheck.LEVEL_EVERY, src)
     except (WebSocketDisconnect, RuntimeError):
         pass
     finally:

@@ -117,6 +117,7 @@
    "challenge": "Desafío de la semana cumplido: {{what}}"
   },
   "errors": {
+   "no_microphone": "El navegador bloqueó la entrada de audio. Permitila en la barra de direcciones y probá de nuevo.",
    "generic": "Algo salió mal",
    "bad_filename": "Nombre de archivo inválido",
    "song_not_found": "No encontré la canción",

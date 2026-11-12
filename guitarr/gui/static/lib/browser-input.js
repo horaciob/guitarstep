@@ -2,6 +2,7 @@
 // grades the clean signal) goes to the server over /ws/stream, and the metronome clicks the server
 // schedules are played here, on the same audio clock as the input.
 import { api } from "./ui.js";
+import { t } from "./i18n.js";
 
 let current = null;
 // asked once, up front, so starting to listen doesn't wait for another round trip
@@ -13,8 +14,13 @@ export function isService() {
 
 /** Opens the input: { ctx, sr, latency_ms, onBlock(fn), close() }. Blocks are { start, samples, t0 }. */
 export async function openInput() {
-  const stream = await navigator.mediaDevices.getUserMedia({ audio: {
-    echoCancellation: false, noiseSuppression: false, autoGainControl: false, channelCount: 1 } });
+  let stream;
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ audio: {
+      echoCancellation: false, noiseSuppression: false, autoGainControl: false, channelCount: 1 } });
+  } catch (e) {
+    throw Object.assign(new Error(t("errors.no_microphone")), { code: "no_microphone", cause: e });
+  }
   const ctx = new AudioContext({ latencyHint: "interactive" });
   try {
     await ctx.audioWorklet.addModule("/static/lib/stream-worklet.js");
@@ -45,6 +51,32 @@ export function frame(block) {
   new DataView(buf).setBigUint64(0, BigInt(block.start), true);
   new Float32Array(buf, 8).set(block.samples);
   return buf;
+}
+
+/** The name of an input as the server reports it ("browser" is this page's own input). */
+export const sourceName = name => (name === "browser" ? t("account.browser_input") : name);
+
+/** A socket to a listener of the input (/ws/tuner, /ws/signal). As a web service the server waits for this
+ *  browser's input: it's opened here and streamed over the same socket ({type: "start", sr} first). A blocked
+ *  microphone arrives as a message like the server's errors: {error: {code, message}}. */
+export function inputSocket(path, params = {}) {
+  const qs = new URLSearchParams(Object.entries(params).filter(([, v]) => v != null && v !== ""));
+  const ws = new WebSocket(`${location.protocol === "https:" ? "wss" : "ws"}://${location.host}${path}${qs.toString() ? "?" + qs : ""}`);
+  ws.binaryType = "arraybuffer";
+  let input = null;
+  if (!params.simulate) ws.addEventListener("open", async () => {
+    if (!(await isService())) return;
+    try { input = await openInput(); } catch (e) {
+      ws.dispatchEvent(new MessageEvent("message", { data: JSON.stringify({ error: { code: e.code || "audio", message: e.message } }) }));
+      ws.close();
+      return;
+    }
+    if (ws.readyState !== 1) { input.close(); return; }
+    ws.send(JSON.stringify({ type: "start", sr: input.sr }));
+    input.onBlock(b => { if (ws.readyState === 1) ws.send(frame(b)); });
+  });
+  ws.addEventListener("close", () => input && input.close());
+  return ws;
 }
 
 /** Plays clicks given in seconds of the stream once t0 (the context time of sample 0) is known. */

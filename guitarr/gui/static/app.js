@@ -2,7 +2,7 @@
    Dependency-free ES module: vanilla JS + canvas + SVG. The router (main.js) calls
    showListenerView / hideListenerViews. All user-facing text goes through i18n. */
 import { issueText, msgIsError, msgText, t, tc } from "./lib/i18n.js";
-import { startLive } from "./lib/browser-input.js";
+import { inputSocket, sourceName, startLive } from "./lib/browser-input.js";
 import { $, $$, api, esc, instrument, loadInstrument, noteName, NOTE_NAMES, progressChanged, stringRow, toast } from "./lib/ui.js";
 import { levelVerdict, meterHtml, openInput, setGate, setMeter } from "./lib/input.js";
 import { bindTakePlayers, grooveHtml, takePlayer, timingVerdictHtml } from "./lib/take.js";
@@ -789,12 +789,12 @@ function initTuner() {
 $("#tStart").addEventListener("click", () => (tws ? stopTuner() : startTuner()));
 function startTuner() {
   if (App.live) return toast(t("tuner.stop_practice"));
-  tws = new WebSocket(`${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/ws/tuner`);
+  tws = inputSocket("/ws/tuner");
   $("#tStart").textContent = t("tuner.stop");
   tws.onmessage = ev => {
     const r = JSON.parse(ev.data);
     if (r.error) { toast(t(`errors.${r.error.code}`, { defaultValue: r.error.message })); stopTuner(); return; }
-    if (r.source) { $("#tSource").textContent = t("tuner.input", { name: r.source }); return; }
+    if (r.source) { $("#tSource").textContent = t("tuner.input", { name: sourceName(r.source) }); return; }
     const note = $("#tNote");
     if (!r.note) {
       note.textContent = "—"; note.className = "note";

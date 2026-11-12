@@ -203,6 +203,7 @@ def test_today_practice_on_home_and_deep_links(app_page):
 def test_reminder_settings_are_saved(app_page):
     onboarded(app_page)
     go(app_page, "settings")
+    expect(app_page.locator("#remStatus")).not_to_be_empty()     # loaded: it won't overwrite what we type
     app_page.locator("#remTime").fill("07:45")
     app_page.locator("#remOn").check()
     expect(app_page.locator("#remStatus")).to_contain_text("Reminder saved")

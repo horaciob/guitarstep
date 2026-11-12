@@ -165,6 +165,42 @@ def progress_untouched(c):
     return c.get("/api/history").json() == []
 
 
+def _frames(y, chunk=2048):
+    return [i.to_bytes(8, "little") + y[i:i + chunk].astype("<f4").tobytes() for i in range(0, len(y), chunk)]
+
+
+def test_the_tuner_and_the_signal_check_listen_to_the_browser():
+    import numpy as np
+    sr = 48000
+    t = np.arange(int(1.5 * sr)) / sr
+    a2 = (0.3 * np.sin(2 * np.pi * 110.0 * t)).astype(np.float32)
+    c = client()
+    with c.websocket_connect("/ws/tuner?input=browser") as ws:
+        ws.send_json(dict(type="start", sr=sr))
+        assert ws.receive_json() == dict(source="browser")
+        for f in _frames(a2):
+            ws.send_bytes(f)
+        for _ in range(100):
+            r = ws.receive_json()
+            if r.get("note"):
+                break
+        assert r["note"] == "A2" and r["string"] == 5 and abs(r["cents"]) < 5
+    with c.websocket_connect("/ws/signal?input=browser") as ws:
+        ws.send_json(dict(type="start", sr=sr))
+        assert ws.receive_json() == dict(source="browser", sr=sr)
+        quiet = (1e-4 * np.random.default_rng(1).standard_normal(2 * sr)).astype(np.float32)
+        for f in _frames(quiet):
+            ws.send_bytes(f)
+        for _ in range(100):
+            if ws.receive_json()["level_db"] < -60:
+                break
+        r = c.post("/api/signal/measure", json=dict(step="silence", seconds=1.5)).json()
+        assert r["floor_db"] < -60
+    with c.websocket_connect("/ws/tuner?input=browser") as ws:
+        ws.send_json(dict(type="start"))
+        assert ws.receive_json()["error"]["code"] == "bad_start"
+
+
 def test_browser_audio_needs_a_start_message():
     c = client()
     with c.websocket_connect("/ws/stream") as ws:

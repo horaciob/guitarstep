@@ -2,19 +2,17 @@
 // yet) and reports level + detected pitch. Used by the setup wizard and the settings page.
 import { errorText, t } from "./i18n.js";
 import { esc } from "./ui.js";
+import { inputSocket, sourceName } from "./browser-input.js";
 
 export const LEVEL_MIN = -70;   // dB shown at the left edge of a level meter
 
 export function openInput({ device = null, channel = null, onReading, onSource, onError } = {}) {
-  const qs = new URLSearchParams();
-  if (device !== null && device !== "") qs.set("device", device);
-  if (channel) qs.set("channel", channel);
-  const ws = new WebSocket(`${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/ws/tuner${qs.toString() ? "?" + qs : ""}`);
+  const ws = inputSocket("/ws/tuner", { device, channel });
   let closed = false;
   ws.onmessage = ev => {
     const r = JSON.parse(ev.data);
     if (r.error) { onError && onError(errorText(r.error)); return; }
-    if (r.source) { onSource && onSource(r.source); return; }
+    if (r.source) { onSource && onSource(sourceName(r.source)); return; }
     onReading && onReading(r);
   };
   ws.onerror = () => { if (!closed) onError && onError(t("setup.no_connection")); };

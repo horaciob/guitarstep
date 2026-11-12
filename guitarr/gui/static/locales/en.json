@@ -117,6 +117,7 @@
    "challenge": "Weekly challenge done: {{what}}"
   },
   "errors": {
+   "no_microphone": "The browser blocked the audio input. Allow it in the address bar and try again.",
    "generic": "Something went wrong",
    "bad_filename": "Invalid file name",
    "song_not_found": "Song not found",

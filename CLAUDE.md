@@ -29,7 +29,8 @@ and a local web UI teaches, tracks and shapes your sound.
 - **Rounding:** practice time is rounded to the minute before computing colors, goals and streaks.
 - **Two modes.** Without `GUITARR_DATABASE_URL`: the single-user local app. With it: the web service, where every
   request has a signed-in user, `config.HOME` is that user's folder (`config.use_home`), `S` is that user's state,
-  and audio comes from the browser (`/ws/stream`), never from the server's devices. Threads started for a request
+  and audio comes from the browser (`/ws/stream`; the tuner and the signal check take it over their own socket,
+  `lib/browser-input.js` `inputSocket`), never from the server's devices. Threads started for a request
   must be wrapped with `config.in_this_context`.
 - **Schema changes are migrations:** a new `guitarr/db/migrations/NNNN_name.sql` (`guitarr db new name`); never edit
   one that was applied.

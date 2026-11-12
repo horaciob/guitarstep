@@ -4,6 +4,7 @@
 import { t } from "../lib/i18n.js";
 import { $, $$, api, audioCtx, esc, instrument, noteName, toast } from "../lib/ui.js";
 import { icon } from "../lib/icons.js";
+import { inputSocket, sourceName } from "../lib/browser-input.js";
 
 const STEPS = ["silence", "guitar", "gain", "notes", "listen", "done"];
 const RANGE = [-70, 0];                 // dB shown by the meter
@@ -41,7 +42,7 @@ export function unmount() {
 
 // ------------------------------------------------------------------ live input
 function connect() {
-  ws = new WebSocket(`${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/ws/signal${simulate ? "?simulate=" + encodeURIComponent(simulate) : ""}`);
+  ws = inputSocket("/ws/signal", { simulate });
   ws.onmessage = ev => {
     const r = JSON.parse(ev.data);
     if (r.error) {
@@ -49,7 +50,7 @@ function connect() {
       $("#sgSource", root).className = "err";
       return;
     }
-    if (r.source) { $("#sgSource", root).textContent = t("signal.listening_to", { name: r.source }); return; }
+    if (r.source) { $("#sgSource", root).textContent = t("signal.listening_to", { name: sourceName(r.source) }); return; }
     onReading(r);
   };
   ws.onclose = () => { if (root) $("#sgSource", root).textContent = t("signal.disconnected"); };
