@@ -996,9 +996,12 @@ def test_rig_artist_tones(app_page):
     onboarded(app_page)
     go(app_page, "rig")
     row = app_page.locator("#artistSounds .quick:not([hidden])")
-    expect(row).to_have_count(168)
+    expect(row).to_have_count(375)
     app_page.locator('.artist-styles button[data-style="acoustic"]').click()     # filter by style
-    expect(row).to_have_count(4)
+    expect(row).to_have_count(11)
+    app_page.locator('.artist-styles button[data-style="world"]').click()
+    expect(row).to_have_count(11)
+    expect(app_page.locator('#artistSounds .quick[data-id="ali_farka_toure"]')).to_be_visible()
     app_page.locator('.artist-styles button[data-style="classical"]').click()
     expect(row).to_have_count(10)
     expect(app_page.locator('#artistSounds .quick[data-id="segovia_classical"]')).to_be_visible()
@@ -1022,7 +1025,7 @@ def test_rig_preset_search(app_page):
     search = app_page.locator("#presetSearch")
     visible = app_page.locator("#rigQuick .quick[data-q]:not([hidden])")
     search.fill("pink floyd")                                   # by band
-    expect(visible).to_have_count(2)
+    expect(visible).to_have_count(3)                            # Gilmour's lead, clean and acoustic setups
     expect(visible.first).to_contain_text("Gilmour")
     search.fill("grunge")                                       # by genre
     expect(app_page.locator('#artistSounds .quick[data-id="cobain_grunge"]')).to_be_visible()
@@ -1082,6 +1085,8 @@ def test_rig_preset_search(app_page):
     expect(visible.first.locator(".quick-why")).to_have_text("Liam Gallagher · Oasis")   # and says why it's there
     search.fill("gilmour")                                      # a match on the name needs no explanation
     expect(app_page.locator("#artistSounds .quick-why:not([hidden])")).to_have_count(0)
+    search.fill("frusciante")                                   # several setups for one player
+    expect(visible).to_have_count(3)
     search.fill("nile rodgers")                                 # the newer artist tones
     expect(visible.first).to_contain_text("Nile Rodgers")
     search.fill("qwxrt gibons")                                 # nothing: the closest names, one click each
@@ -1113,7 +1118,7 @@ def test_rig_favorite_sounds(app_page):
     expect(app_page.locator("#favSounds .quick[data-id]")).to_have_count(1)
     app_page.locator("#presetSearch").fill("gilmour")              # a search shows each sound once
     expect(app_page.locator("#favGroup")).to_be_hidden()
-    expect(app_page.locator("#searchCount")).to_contain_text("2")
+    expect(app_page.locator("#searchCount")).to_contain_text("3")
     app_page.locator("#presetSearch").fill("")
     app_page.locator('#favSounds .quick-fav[data-fav="gilmour_lead"]').click()
     expect(app_page.locator("#favGroup")).to_have_count(0)
