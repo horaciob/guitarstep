@@ -278,7 +278,11 @@ function renderQuick() {
   $$(".artist-styles button", box).forEach(b => b.onclick = () => {
     artistStyle = b.dataset.style;
     try { localStorage.setItem(STYLE_KEY, artistStyle); } catch { /* ok */ }
-    renderQuick();
+    $$(".artist-styles button", box).forEach(x => {                // only the filter changes: no need to rebuild 375 cards
+      x.classList.toggle("active", x === b);
+      x.setAttribute("aria-pressed", x === b);
+    });
+    applySearch();
   });
   applySearch();
   $$(".quick[data-user]", box).forEach(b => b.onclick = () => loadPreset(`user:${b.dataset.user}`));
