@@ -65,6 +65,7 @@ retakes them in both themes.
 - **Tutorials**: each lesson suggests video searches, and you can pin your favorite video (YouTube links play inline).
 - **Chord dictionary**: 39 chords with clickable diagrams. **Check** listens to you strum and tells you what was missing ("missing C# (major 3rd), extra C").
 - **Camera**: hand tracking (MediaPipe, fully local) checks that each finger is on the right string and fret.
+- **Improvise**: play anything over a backing (12-bar blues, a minor groove, a rock riff, pop, a Dorian vamp, a ii–V–I) with bass and drums. Every note is heard against the chord of the moment (chord tone, scale note, approach note or outside), and the report scores the solo and says what to work on: landing on chord tones, leaving space, using more of the neck.
 - **Listen slower**: a song's recording (or any audio file you open) at 50–100% speed without changing its pitch, with an A–B loop. On each song's page and in Tools.
 - **Tools**: metronome with tap tempo; a **chord-change minute** that counts only the clean changes it heard and keeps your record per chord pair; a fretboard explorer with scales and arpeggios.
 

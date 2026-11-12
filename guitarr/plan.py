@@ -32,7 +32,8 @@ _lock = threading.Lock()
 
 BUILTIN = ("technique", "repertoire", "theory", "free")
 DEFAULT_MINUTES = dict(technique=10, repertoire=15, theory=5, free=0)
-AUTO_CATEGORY = dict(exercise="technique", chord="technique", drill="technique", warmup="technique", practice="repertoire")
+AUTO_CATEGORY = dict(exercise="technique", chord="technique", drill="technique", warmup="technique", improv="technique",
+                     practice="repertoire")
 AUTO_IDS = ("technique", "repertoire", "free")     # counted on their own (free = playing with the tone rig on)
 MAX_FREE_CHUNK_S = 120                             # the page reports free play every ~30 s
 MAX_GAP_S = 8.0          # a longer silence between notes is a pause, not practice

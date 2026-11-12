@@ -111,7 +111,8 @@
    "variation_passed": "In another key: {{title}}",
    "rhythm": "Rhythm test at {{bpm}} BPM: {{within}}% on time",
    "ear": "Ear training ({{kind}}): {{score}}%",
-   "warmup": "Warm-up: {{drill}} at {{bpm}} BPM, {{score}}%"
+   "warmup": "Warm-up: {{drill}} at {{bpm}} BPM, {{score}}%",
+   "improv": "Improvised over {{backing}}: {{score}}"
   },
   "errors": {
    "generic": "Something went wrong",
@@ -147,7 +148,10 @@
    "capture_too_short": "Record at least half a second of playing",
    "capture_silent": "One of the recordings is silent",
    "bad_days": "Choose how old the takes to delete are",
-   "bad_favorites": "Favorites must be a list of sound ids"
+   "bad_favorites": "Favorites must be a list of sound ids",
+   "bad_backing": "Unknown backing.",
+   "bad_scale": "Unknown scale.",
+   "bad_key": "Unknown key."
   },
   "practice": {
    "title": "🎧 Practice with listening",
@@ -676,7 +680,8 @@
    "over_legend": "Filled = chord tones (1 3 5 7), outlined = the scale's other notes, named as tensions (9, 11, 13).",
    "over_notes": "Chord tones: {{tones}} · tensions: {{tensions}}",
    "warmup_tab": "Daily warm-up",
-   "slow_tab": "Slow down"
+   "slow_tab": "Slow down",
+   "improv_tab": "Improvise"
   },
   "camera": {
    "title": "Camera",
@@ -2901,6 +2906,55 @@
    "clear": "Clear A–B",
    "ab": "A {{a}} · B {{b}}",
    "hint": "Slowing down keeps the pitch, so you can play along in tune. Set A where the passage starts, B where it ends."
+  },
+  "improv": {
+   "intro": "Play whatever you like over the band. Every note is heard against the chord of that moment: a chord tone (★), a note of the scale (✓) or outside (✗). An outside note that steps right into a good one is an approach note, which is fine.",
+   "backing": "Backing",
+   "key": "Key",
+   "scale": "Scale",
+   "choruses": "Times through",
+   "band": "Bass and drums",
+   "backing_blues_a": "12-bar blues in A",
+   "backing_minor_am": "Minor groove in A",
+   "backing_rock_e": "Rock riff in E",
+   "backing_pop_c": "Pop in C",
+   "backing_dorian_d": "Dorian vamp in D",
+   "backing_jazz_c": "ii–V–I in C",
+   "scale_follow": "Follow each chord",
+   "scale_minor_pentatonic": "Minor pentatonic",
+   "scale_major_pentatonic": "Major pentatonic",
+   "scale_blues": "Blues",
+   "scale_natural_minor": "Natural minor",
+   "scale_major": "Major",
+   "scale_dorian": "Dorian",
+   "scale_mixolydian": "Mixolydian",
+   "scale_label": "{{key}} {{scale}} on the neck",
+   "chords": "Chords: {{chords}}",
+   "follow_hint": "Each chord brings its own scale (a dominant 7th takes Mixolydian, a minor 7th Dorian…). Aim for the chord's notes.",
+   "start": "Start improvising",
+   "now": "Now",
+   "next": "Next",
+   "count_chord": "★ {{n}} chord tones",
+   "count_scale": "✓ {{n}} in the scale",
+   "count_outside": "✗ {{n}} outside",
+   "cls_chord": "{{note}}: a note of {{chord}}",
+   "cls_scale": "{{note}}: in the scale",
+   "cls_outside": "{{note}}: outside over {{chord}}",
+   "too_few": "Only {{n}} notes: play a little more to get a reading.",
+   "fits": "notes that fit",
+   "landing": "chord tones on the beat",
+   "space": "beats left silent",
+   "range": "range",
+   "semitones": "{{n}} st",
+   "distinct": "different notes",
+   "counts": "★ {{chord}} chord tones · ✓ {{scale}} in the scale · ↗ {{approach}} approach notes · ✗ {{outside}} outside",
+   "tip_outside": "Many notes were outside. Look at the scale on the neck and stay inside it for a while.",
+   "tip_land_chord": "Land on a note of the chord on the beat (★): the root, third or fifth. It makes the solo sound like it belongs to the song.",
+   "tip_breathe": "You barely stopped. Leave some space: play a short phrase, rest, answer it.",
+   "tip_play_more": "Lots of silence. Space is good, but try longer phrases too.",
+   "tip_range": "You stayed on a few notes. Move up the neck or to other strings for the next phrase.",
+   "tip_none": "Nice: in the scale, landing on the chords and leaving space. Try a faster tempo or another backing.",
+   "record": "new best!"
   }
  },
  "content": {}

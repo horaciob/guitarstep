@@ -1229,3 +1229,16 @@ def test_slow_down_player_sets_a_loop(app_page, tmp_path):
     assert app_page.evaluate("document.querySelector('#slowAudio').currentTime") == 1
     app_page.locator("#slowClear").click()
     expect(app_page.locator("#slowLoop")).to_be_disabled()
+
+
+def test_improvise_tab_suggests_a_scale_per_backing(app_page):
+    onboarded(app_page)
+    go(app_page, "tools?tab=improv")
+    expect(app_page.locator("#iScale")).to_have_value("blues")
+    expect(app_page.locator("#iChords")).to_contain_text("A7 | D7")
+    app_page.select_option("#iBacking", "jazz_c")
+    expect(app_page.locator("#iKey")).to_have_value("C")
+    expect(app_page.locator("#iScale")).to_have_value("major")
+    expect(app_page.locator("#iBpm")).to_have_value("100")
+    app_page.select_option("#iScale", "follow")
+    expect(app_page.locator("#iNeck")).to_contain_text("Each chord brings its own scale")

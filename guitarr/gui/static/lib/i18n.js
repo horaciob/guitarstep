@@ -105,6 +105,7 @@ export function msgText(m) {
     case "pass": return `↻ ${p.new_speed != null
       ? t("msg.pass_speed", { n: p.n, score: Math.round(p.score), from: Math.round(p.old_speed * 100), to: Math.round(p.new_speed * 100) })
       : t("msg.pass", { n: p.n, score: Math.round(p.score) })}`;
+    case "improv": return `${p.cls === "outside" ? "✗" : p.cls === "chord" ? "★" : "✓"} ${t(`improv.cls_${p.cls}`, { note: p.note, chord: p.chord || "", ...raw })}`;
     default: return m.text || "";
   }
 }
@@ -147,6 +148,7 @@ export function eventText(e) {
     case "drill": return t("event.drill", { chords: String(p.chords).replace("-", " ↔ "), n: p.changes });
     case "take_analysis": return t("event.take_analysis", { score: Math.round(p.score) });
     case "warmup": return t("event.warmup", { drill: t(`warmup.${p.drill}`), bpm: p.bpm, score: Math.round(p.score) });
+    case "improv": return t("event.improv", { backing: t(`improv.backing_${p.backing}`), score: Math.round(p.score) });
     case "practice": return t("event.practice", { name: p.name || "", score: Math.round(p.score), ...raw });
     default: return e.code;
   }

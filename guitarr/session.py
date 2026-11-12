@@ -19,7 +19,7 @@ from .audio_io import FileSource, Metronome, MicSource
 from .core import Reference
 from .plan import active_seconds
 from .dsp import CHROMA_LEN, CHROMA_OFF, HOP, MIN_GAP, NFFT, PITCH_LEN, PITCH_OFF, Detector, Recorder, db, yin
-from .follow import (BendFollower, Judge, TempoFollower, Trainer, WaitFollower, describe, fmt_dt,
+from .follow import (BendFollower, ImprovFollower, Judge, TempoFollower, Trainer, WaitFollower, describe, fmt_dt,
                      group_events, min_repeat_gap, pass_score)
 
 PITCH_WIN, PITCH_STEP = 2048, 0.03   # continuous pitch (bend mode): window (samples) and step (s)
@@ -27,7 +27,7 @@ PITCH_WIN, PITCH_STEP = 2048, 0.03   # continuous pitch (bend mode): window (sam
 
 @dataclass
 class LiveOptions:
-    mode: str = "wait"               # wait | tempo | bend
+    mode: str = "wait"               # wait | tempo | bend | improv
     speed: float = 1.0
     device: str | int | None = None
     channel: int = 1
@@ -53,7 +53,12 @@ class LiveOptions:
     backing: bool = False            # bass & drums with the metronome (chord charts)
     hum_hz: int | None = None        # mains hum to filter out (50 / 60), from the signal check
     hold: float = 1.0                # bend mode: seconds to hold the target
+    improv_key: str = "A"            # improv mode: the scale the notes are heard against
+    improv_scale: str = "minor_pentatonic"
     save_dir: Path = field(default_factory=lambda: config.TAKES_DIR)
+
+
+TIMED = ("tempo", "improv")        # modes that play on the metronome
 
 
 class LiveSession:
@@ -72,10 +77,13 @@ class LiveSession:
         self.det = Detector(self.rec, opts.gate_db, opts.sensitivity,
                             min_gap=float(np.clip(0.6 * gap, 0.035, MIN_GAP)), legato=opts.legato)
         self.repeat_gap = float(np.clip(0.6 * gap, 0.04, 0.1))
-        self.use_click = opts.mode == "tempo" and opts.click and not opts.simulate
+        self.use_click = opts.mode in TIMED and opts.click and not opts.simulate
         self.pitch_pos = 0
         if opts.mode == "wait":
             self.follower = WaitFollower(self.events, self.judge, opts.loop)
+        elif opts.mode == "improv":
+            self.follower = ImprovFollower(self.events, self.judge, opts.speed, self.grid, opts.improv_key,
+                                           opts.improv_scale, click=self.use_click)
         elif opts.mode == "bend":
             src = ref.notes[0].glide_from
             self.follower = BendFollower(self.events, self.judge, src if src is not None else ref.notes[0].pitch - 2,
@@ -159,7 +167,7 @@ class LiveSession:
                                 and d.db <= prev.db + 1:
                             continue  # the same note still ringing, detected again
                         prev = d
-                        if f.mode == "tempo" and f.t0 is None:
+                        if f.mode in TIMED and f.t0 is None:
                             f.start(d.t)  # no metronome: your first note sets the start
                         self._say(f.on_detection(d), d.t, on_message)
                     if f.mode == "bend":
@@ -220,8 +228,8 @@ class LiveSession:
             lo, hi = max(0, k - before), min(len(evs), k + after)
             judged = [e for e in evs if e.status != "pending"]
             good = sum(e.status in ("ok", "octave") for e in judged)
-            countdown = f.countdown(self.now) if f.mode == "tempo" else None
-            pos = f.position(self.now) if f.mode == "tempo" else None
+            countdown = f.countdown(self.now) if f.mode in TIMED else None
+            pos = f.position(self.now) if f.mode in TIMED else None
             bar, beat = self.grid.bar_of(evs[k].time)
             return dict(
                 running=self.running, mode=f.mode, source=self.src.name,
@@ -233,16 +241,49 @@ class LiveSession:
                 lane=[dict(i=i, label=e.label(), status=e.status, detail=e.detail, tab=e.tab,
                            pitches=e.pitches, time=round(e.time, 3), current=i == f.k,
                            dt=None if e.dt is None else round(e.dt * 1000)) for i, e in enumerate(evs[lo:hi], lo)],
-                waiting_first=f.mode == "tempo" and f.t0 is None, countdown=countdown,
+                waiting_first=f.mode in TIMED and f.t0 is None, countdown=countdown,
                 last=self.last, log=list(self.log),
                 stats=dict(judged=len(judged), pct=round(100 * good / len(judged)) if judged else None,
                            errors=sum(e.status in ("wrong", "missed") or e.errors > 0 for e in judged),
                            extras=len(getattr(f, "extras", []))),
                 passes=list(f.passes), error=self.error, done=self.report is not None,
+                improv=self._improv_now() if f.mode == "improv" else None,
             )
+
+    def _ref_now(self) -> float | None:
+        f = self.follower
+        if f.t0 is None:
+            return None
+        return f.bar0 + (self.now - f._bar_start()) * f.speed
+
+    def _improv_now(self) -> dict:
+        """The chord you're over now and the next one, and what your notes were so far."""
+        f, ref_t = self.follower, self._ref_now()
+        chord = f.chord_at(ref_t) if ref_t is not None else f.events[0].label()
+        nxt = next((e.label() for e in f.events if ref_t is not None and e.time > ref_t + 0.05 and e.label() != chord), None)
+        counts = {k: sum(n["cls"] == k for n in f.notes) for k in ("chord", "scale", "outside")}
+        return dict(chord=chord, next=nxt, key=f.key, scale=f.scale, counts=counts)
+
+    def _improv_report(self, saved: Path | None) -> dict:
+        from . import improv
+
+        f = self.follower
+        ref_now = self._ref_now()
+        end = f.section_end if ref_now is None else min(f.section_end, ref_now)
+        beats = max(0.0, self.grid.beat_pos(end) - self.grid.beat_pos(f.bar0))
+        summary = improv.report(f.notes, self.grid, beats)
+        summary.update(key=f.key, scale=f.scale, judged=len(f.notes), played_s=active_seconds(self.note_times))
+        return dict(kind="live", mode="improv", speed=self.opts.speed,
+                    reference=dict(name=self.ref.name, path=self.ref.path, track=self.ref.track),
+                    date=self.started.isoformat(timespec="seconds"), summary=summary, passes=[], issues=[], bars=[],
+                    notes=[dict(t=round(n["t"], 3), midi=n["midi"], cls=n["cls"], chord=n["chord"]) for n in f.notes[:2000]],
+                    take=str(saved) if saved else None, take_info=takeclick.info(saved) if saved else None,
+                    overflows=self.src.overflows, simulated=bool(self.opts.simulate))
 
     def build_report(self, saved: Path | None) -> dict:
         f, grid, opts = self.follower, self.grid, self.opts
+        if f.mode == "improv":
+            return self._improv_report(saved)
         evs = self.events
         # pending events with failed attempts (wait mode, stopped before getting them) count as wrong
         judged = [e for e in evs if e.status != "pending" or e.errors]

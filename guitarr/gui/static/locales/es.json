@@ -111,7 +111,8 @@
    "variation_passed": "En otra tonalidad: {{title}}",
    "rhythm": "Test de ritmo a {{bpm}} BPM: {{within}}% a tiempo",
    "ear": "Oído ({{kind}}): {{score}}%",
-   "warmup": "Calentamiento: {{drill}} a {{bpm}} BPM, {{score}}%"
+   "warmup": "Calentamiento: {{drill}} a {{bpm}} BPM, {{score}}%",
+   "improv": "Improvisaste sobre {{backing}}: {{score}}"
   },
   "errors": {
    "generic": "Algo salió mal",
@@ -147,7 +148,10 @@
    "capture_too_short": "Grabá al menos medio segundo tocando",
    "capture_silent": "Una de las grabaciones está en silencio",
    "bad_days": "Elegí de qué antigüedad son las tomas a borrar",
-   "bad_favorites": "Los favoritos tienen que ser una lista de sonidos"
+   "bad_favorites": "Los favoritos tienen que ser una lista de sonidos",
+   "bad_backing": "Esa base no existe.",
+   "bad_scale": "Esa escala no existe.",
+   "bad_key": "Esa tonalidad no existe."
   },
   "practice": {
    "title": "🎧 Practicar con escucha",
@@ -676,7 +680,8 @@
    "over_legend": "Relleno = notas del acorde (1 3 5 7), contorno = las otras notas de la escala, nombradas como tensiones (9, 11, 13).",
    "over_notes": "Notas del acorde: {{tones}} · tensiones: {{tensions}}",
    "warmup_tab": "Calentamiento diario",
-   "slow_tab": "Más lento"
+   "slow_tab": "Más lento",
+   "improv_tab": "Improvisar"
   },
   "camera": {
    "title": "Cámara",
@@ -2901,6 +2906,55 @@
    "clear": "Borrar A–B",
    "ab": "A {{a}} · B {{b}}",
    "hint": "Al bajar la velocidad no cambia la afinación, así que podés tocar encima afinado. Marcá A donde empieza el pasaje y B donde termina."
+  },
+  "improv": {
+   "intro": "Tocá lo que quieras sobre la banda. Cada nota se escucha contra el acorde de ese momento: nota del acorde (★), nota de la escala (✓) o fuera (✗). Una nota fuera que pasa por semitono o tono a una buena es una nota de aproximación, y está bien.",
+   "backing": "Base",
+   "key": "Tonalidad",
+   "scale": "Escala",
+   "choruses": "Vueltas",
+   "band": "Bajo y batería",
+   "backing_blues_a": "Blues de 12 compases en La",
+   "backing_minor_am": "Groove menor en La",
+   "backing_rock_e": "Riff de rock en Mi",
+   "backing_pop_c": "Pop en Do",
+   "backing_dorian_d": "Vamp dórico en Re",
+   "backing_jazz_c": "ii–V–I en Do",
+   "scale_follow": "Seguir cada acorde",
+   "scale_minor_pentatonic": "Pentatónica menor",
+   "scale_major_pentatonic": "Pentatónica mayor",
+   "scale_blues": "Blues",
+   "scale_natural_minor": "Menor natural",
+   "scale_major": "Mayor",
+   "scale_dorian": "Dórica",
+   "scale_mixolydian": "Mixolidia",
+   "scale_label": "{{scale}} de {{key}} en el diapasón",
+   "chords": "Acordes: {{chords}}",
+   "follow_hint": "Cada acorde trae su escala (un séptima de dominante va con la mixolidia, un menor séptima con la dórica…). Apuntá a las notas del acorde.",
+   "start": "Empezar a improvisar",
+   "now": "Ahora",
+   "next": "Después",
+   "count_chord": "★ {{n}} notas del acorde",
+   "count_scale": "✓ {{n}} en la escala",
+   "count_outside": "✗ {{n}} fuera",
+   "cls_chord": "{{note}}: nota de {{chord}}",
+   "cls_scale": "{{note}}: en la escala",
+   "cls_outside": "{{note}}: fuera sobre {{chord}}",
+   "too_few": "Solo {{n}} notas: tocá un poco más para tener una lectura.",
+   "fits": "notas que encajan",
+   "landing": "notas del acorde en el tiempo",
+   "space": "tiempos en silencio",
+   "range": "registro",
+   "semitones": "{{n}} st",
+   "distinct": "notas distintas",
+   "counts": "★ {{chord}} notas del acorde · ✓ {{scale}} en la escala · ↗ {{approach}} de aproximación · ✗ {{outside}} fuera",
+   "tip_outside": "Muchas notas quedaron fuera. Mirá la escala en el diapasón y quedate adentro un rato.",
+   "tip_land_chord": "Caé en una nota del acorde en el tiempo (★): la fundamental, la tercera o la quinta. Así el solo suena parte de la canción.",
+   "tip_breathe": "Casi no paraste. Dejá aire: tocá una frase corta, descansá y respondela.",
+   "tip_play_more": "Mucho silencio. El espacio está bien, pero probá frases más largas también.",
+   "tip_range": "Te quedaste en pocas notas. Subí por el diapasón o pasá a otras cuerdas en la próxima frase.",
+   "tip_none": "Muy bien: en la escala, cayendo en los acordes y dejando aire. Probá más rápido u otra base.",
+   "record": "¡nuevo récord!"
   }
  },
  "content": {

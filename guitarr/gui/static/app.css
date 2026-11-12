@@ -1282,3 +1282,13 @@ body.is-stage #main { max-width: none; padding: 12px 18px; }
 
 /* slow-down player */
 #slowAudio { width: 100%; margin: 8px 0; }
+
+/* improvise */
+.improv-now { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; justify-content: center; margin: 12px 0; }
+.improv-now > div { display: flex; flex-direction: column; align-items: center; }
+.improv-now b { font-size: 2rem; }
+.improv-counts { flex-direction: row !important; gap: 10px; flex-wrap: wrap; }
+.improv-c.chord { color: var(--gl-ok); font-weight: 600; } .improv-c.outside { color: var(--gl-err); }
+.improv-neck { margin: 8px 0; }
+.improv-tips li { margin: 4px 0; }
+#iBpm { width: 5em; }

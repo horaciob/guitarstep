@@ -211,6 +211,25 @@ def ref_options(body: dict) -> tuple[RefOptions, dict]:
                          capo=0, strum=pat["strum"], bars=[dict(chord=c, beats=bpb, frets=catalog.get_chord(c)["frets"])
                                                             for _ in range(2) for c in chords])
             return RefOptions(chart=chart), dict(type="practice", chart=True)
+        if body.get("improv"):                        # improvising over a backing; every note heard against the chord
+            from .. import improv, theory
+            r = body["improv"]
+            backing = r.get("backing") or "blues_a"
+            if backing not in improv.BACKINGS:
+                fail(400, "bad_backing", "Unknown backing")
+            b = improv.BACKINGS[backing]
+            scale = r.get("scale") or b["scale"]
+            if scale != improv.FOLLOW and scale not in theory.SCALES:
+                fail(400, "bad_scale", "Unknown scale")
+            key = r.get("key") or b["key"]
+            try:
+                theory.pc(key)
+            except theory.TheoryError:
+                fail(400, "bad_key", "Unknown key")
+            bpm = max(40.0, min(200.0, _float(r.get("bpm")) or b["bpm"]))
+            choruses = max(1, min(8, _int(r.get("choruses")) or 2))
+            return RefOptions(chart=improv.chart(backing, bpm, choruses)), dict(
+                type="improv", mode="improv", backing=backing, key=key, scale=scale, bpm=bpm)
         if body.get("drill"):
             chords = list(body["drill"]["chords"])[:2]
             return RefOptions(chart=catalog.chart_alternating(chords, 60)), dict(
@@ -617,6 +636,13 @@ def stats():
                                                      active_days=sum(g["minutes"] > 0 for g in grid),
                                                      songs=len(songs_played), sessions=sum(x["sessions"] for x in songs_played),
                                                      streak=progress.get()["streak"]))
+
+
+@app.get("/api/improv/backings")
+def improv_backings():
+    """The backings you can improvise over: their chords, tempo and the scale suggested for each."""
+    from .. import improv
+    return improv.BACKINGS
 
 
 @app.get("/api/glossary")
@@ -1377,6 +1403,7 @@ def live_start(body: dict):
             simulate=sim, fast=bool(body.get("fast")) and sim is not None,
             backing=bool(body.get("backing")) and chart, hold=ctx.get("hold", 1.0),
             hum_hz=None if sim else a.get("hum_hz"),
+            improv_key=ctx.get("key", "A"), improv_scale=ctx.get("scale", "minor_pentatonic"),
             # swing is felt, not measured: a swung chart gets a wider timing window
             timing_tol=0.09 if chart and (ropts.chart or {}).get("swing") else 0.06,
         )

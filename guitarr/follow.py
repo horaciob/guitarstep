@@ -690,6 +690,49 @@ class TempoFollower:
         return msg
 
 
+class ImprovFollower(TempoFollower):
+    """Improvising over a chart's backing: there are no right notes to wait for. Each note is heard against
+    the chord of that moment and the scale (see improv.py); the chords only drive the metronome and the backing."""
+
+    mode = "improv"
+
+    def __init__(self, events, judge, speed, grid, key: str, scale: str, click: bool = True):
+        super().__init__(events, judge, speed, 0.2, grid, click=click, count_extras=False)
+        self.key, self.scale = key, scale
+        self.notes: list[dict] = []            # {t (reference time), midi, cls, chord}
+
+    def chord_at(self, ref_t: float) -> str | None:
+        label = None
+        for e in self.events:
+            if e.time > ref_t + 0.05:
+                break
+            label = e.label()
+        return label
+
+    def on_detection(self, det: Detection) -> dict | None:
+        from .improv import classify
+
+        if self.t0 is None or det.midi is None:
+            return None
+        start = self._bar_start()
+        if not start - 0.1 <= det.t <= self.pass_end:
+            return None
+        ref_t = self.bar0 + (det.t - start) * self.speed
+        midi = int(round(det.midi)) + self.judge.transpose
+        chord = self.chord_at(ref_t)
+        cls = classify(midi, chord, self.key, self.scale)
+        self.notes.append(dict(t=ref_t, midi=midi, cls=cls, chord=chord))
+        return message("improv", note=note_name(midi), cls=cls, chord=chord)
+
+    def tick(self, now: float) -> dict | None:
+        if self.t0 is not None and not self.finished and now > self.pass_end:
+            self.finished = True
+        return None
+
+    def beats_played(self) -> float:
+        return self.grid.beat_pos(self.section_end) - self.grid.beat_pos(self.bar0)
+
+
 def snapshot_events(events: list[Event]) -> list[dict]:
     return [dict(time=e.time, label=e.label(), status=e.status, errors=e.errors, detail=e.detail,
                  dt=e.dt) for e in events]

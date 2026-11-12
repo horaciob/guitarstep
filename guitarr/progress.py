@@ -30,6 +30,7 @@ EVENT_TEXT = {
     "ear": "Ear training ({kind}): {score:.0f}%",
     "variation_passed": "Variation passed: {lesson}/{exercise}",
     "warmup": "Warm-up {drill} at {bpm} BPM: {score:.0f}%",
+    "improv": "Improvised over {backing}: {score:.0f}",
 }
 
 
@@ -45,6 +46,7 @@ def _empty() -> dict:
                 rhythm={},        # rhythm test → best (steadiest) result per tempo
                 ear={},           # ear trainer → best score per kind
                 warmup={},        # daily warm-up → {drill: {bpm (the goal), best, day}}
+                improv={},        # improvising → {backing: {best, last, day}}
                 facts={},         # weak spots: facts you missed → {label, lesson, exercise, misses, step, due}
                 budget=None,      # minutes you chose for today's plan (15, 30, 60, 120)
                 queue=[])         # song or chart sections you pinned to today's plan
@@ -462,6 +464,13 @@ def on_session(ctx: dict | None, report: dict) -> dict:
                     d["rhythm"][key] = dict(std=st["std"], within=st["within"], day=date.today().isoformat())
                     out["record"] = best is not None
                 _award(d, 5, "rhythm", bpm=ctx.get("bpm"), within=st["within"])
+                out["xp"] = 5
+        elif kind == "improv":
+            if score is not None:
+                prev = d["improv"].get(ctx["backing"], {}).get("best")
+                d["improv"][ctx["backing"]] = dict(best=max(score, prev or 0), last=score, day=date.today().isoformat())
+                out.update(score=score, record=prev is not None and score > prev)
+                _award(d, 5, "improv", backing=ctx["backing"], score=score)
                 out["xp"] = 5
         elif kind == "echo":
             if score is not None:

@@ -5,6 +5,7 @@ import { $, $$, api, chordSvg, esc, instrument, NOTE_NAMES, strum, toast } from 
 import { neck } from "../lib/fretboard.js";
 import { listen } from "../lib/listen.js";
 import { slowPlayer } from "../lib/slowplayer.js";
+import { improvise, stopImprov } from "./improv.js";
 import { earTrainer, metronome, randomBox, rhythmTest, stopAll, strumLibrary, warmup } from "./practice_tools.js";
 
 let drill = null, countdownTimer = null, slow = null;
@@ -14,8 +15,8 @@ export async function mount(el, { params }) {
   el.innerHTML = `
     <div class="gl-head"><h1>${esc(t("tools.title"))}</h1></div>
     <div class="seg tabs" id="tabs">
-      ${["metronome", "warmup", "rhythm", "strums", "drill", "ear", "random", "slow", "fretboard", "finder"].map(k =>
-        `<button data-tab="${k}">${esc(t(`tools.${k === "rhythm" ? "rhythm_tab" : k === "strums" ? "strums_tab" : k === "ear" ? "ear_tab" : k === "random" ? "random_tab" : k === "warmup" ? "warmup_tab" : k === "slow" ? "slow_tab" : k}`))}</button>`).join("")}
+      ${["metronome", "warmup", "rhythm", "strums", "drill", "ear", "improv", "random", "slow", "fretboard", "finder"].map(k =>
+        `<button data-tab="${k}">${esc(t(`tools.${k === "rhythm" ? "rhythm_tab" : k === "strums" ? "strums_tab" : k === "ear" ? "ear_tab" : k === "random" ? "random_tab" : k === "warmup" ? "warmup_tab" : k === "slow" ? "slow_tab" : k === "improv" ? "improv_tab" : k}`))}</button>`).join("")}
     </div>
     <div id="tool"></div>`;
   $$("#tabs button", el).forEach(b => {
@@ -31,12 +32,14 @@ export async function mount(el, { params }) {
   else if (tab === "rhythm") await rhythmTest(box);
   else if (tab === "ear") await earTrainer(box, params);
   else if (tab === "strums") await strumLibrary(box);
+  else if (tab === "improv") await improvise(box);
   else if (tab === "slow") { box.innerHTML = `<div class="panel" id="slowBox"></div>`; slow = slowPlayer($("#slowBox", box)); }
   else metronome(box);
 }
 
 export function unmount() {
   stopAll();
+  stopImprov();
   if (drill) drill.stop();
   drill = null;
   clearInterval(countdownTimer);
