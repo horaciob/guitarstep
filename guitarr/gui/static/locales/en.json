@@ -1338,6 +1338,8 @@
    },
    "search_label": "Search sounds",
    "search_placeholder": "Name, artist, band or genre (Pink Floyd, grunge, slide…)",
+   "search_clear": "Clear the search",
+   "search_key": "Press / to search",
    "search_none": "No sound matches “{{q}}”.",
    "search_count": "{{count}} sounds",
    "search_close": "including close spellings",
@@ -2345,7 +2347,9 @@
    "stage": "Stage mode",
    "stage_html": "<kbd>←</kbd> <kbd>→</kbd> or <kbd>PageUp</kbd> <kbd>PageDown</kbd> change song · <kbd>Space</kbd> scroll · <kbd>↑</kbd> <kbd>↓</kbd> speed · <kbd>M</kbd> click · <kbd>+</kbd> <kbd>−</kbd> size",
    "metronome": "Metronome",
-   "metronome_html": "<kbd>M</kbd> start / stop · <kbd>Space</kbd> tap tempo · <kbd>+</kbd> <kbd>−</kbd> tempo"
+   "metronome_html": "<kbd>M</kbd> start / stop · <kbd>Space</kbd> tap tempo · <kbd>+</kbd> <kbd>−</kbd> tempo",
+   "rig": "Amp & effects",
+   "rig_html": "<kbd>/</kbd> search sounds · <kbd>Enter</kbd> load the top result · <kbd>Esc</kbd> clear the search"
   },
   "sources": {
    "title": "Where each value comes from",

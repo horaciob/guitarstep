@@ -28,6 +28,8 @@ const fmt = (unit, v) => {
 const paramLabel = id => /^[bc]\d+$/.test(id) ? (+id.slice(1) >= 1000 ? `${+id.slice(1) / 1000}k` : id.slice(1)) : t(`rig.param.${id}`);
 const ackHeadphones = () => { try { return localStorage.getItem(HP_KEY) === "1"; } catch { return false; } };
 
+let onSlash, barSize;
+
 export async function mount(el) {
   root = el;
   await rig.load();
@@ -66,6 +68,24 @@ export async function mount(el) {
   rig.addEventListener("midi", onMidi);
   const tick = () => { meters(); tunerTick(); raf = requestAnimationFrame(tick); };
   raf = requestAnimationFrame(tick);
+  onSlash = e => {                                            // "/" jumps to the search (not while typing)
+    if (e.key !== "/" || e.metaKey || e.ctrlKey || e.altKey || e.target.closest("input, textarea, select, [contenteditable]")) return;
+    const input = root && $("#presetSearch", root);
+    if (input) { e.preventDefault(); input.focus(); input.select(); }
+  };
+  document.addEventListener("keydown", onSlash);
+  // the search sticks right below whatever stays at the top: the rig bar (wide screens) and the app bar (phones)
+  const place = () => {
+    const bar = $("#rigBar", el), rail = document.querySelector(".rail");
+    let top = 0;
+    if (rail && getComputedStyle(rail).position === "sticky" && rail.offsetWidth >= innerWidth * 0.9) top += rail.offsetHeight;
+    if (bar && getComputedStyle(bar).position === "sticky") top += bar.offsetHeight + 8;
+    el.style.setProperty("--rig-search-top", `${Math.ceil(top)}px`);
+  };
+  barSize = new ResizeObserver(place);
+  barSize.observe($("#rigBar", el));
+  const rail = document.querySelector(".rail");
+  if (rail) barSize.observe(rail);
 }
 
 export function unmount() {
@@ -76,6 +96,8 @@ export function unmount() {
   if (onMidi) rig.removeEventListener("midi", onMidi);
   if (onRec) rig.removeEventListener("change", onRec);
   clearInterval(recTick);
+  if (onSlash) document.removeEventListener("keydown", onSlash);
+  if (barSize) barSize.disconnect();
   if (rig.tuning) rig.setTuning(false);
   knobsByTarget.clear();
   root = null;
@@ -142,6 +164,8 @@ function applySearch() {
   if (add) add.hidden = !!words.length;
   const styles = $(".artist-styles", box);
   if (styles) styles.hidden = !!words.length;                 // a search looks through every style
+  const clear = $("#searchClear", box);
+  if (clear) clear.hidden = !presetQuery;
   const none = $("#searchNone", box), count = $("#searchCount", box);
   none.hidden = !words.length || shown > 0;
   none.textContent = t("rig.search_none", { q: presetQuery.trim() });
@@ -155,9 +179,12 @@ function renderQuick() {
   const outer = $("#rigQuick", root);
   if (!outer) return;
   if (!$("#presetSearch", outer)) {
-    outer.innerHTML = `<div class="rig-search"><label class="sr-only" for="presetSearch">${esc(t("rig.search_label"))}</label>
-        <input type="search" id="presetSearch" placeholder="${esc(t("rig.search_placeholder"))}" autocomplete="off">
-        <small class="muted" id="searchCount" aria-live="polite"></small></div>
+    outer.innerHTML = `<div class="rig-search" role="search">
+        <label for="presetSearch">${esc(t("rig.search_label"))} <kbd title="${esc(t("rig.search_key"))}">/</kbd></label>
+        <div class="search-row"><div class="search-field">${icon("search", 18)}
+          <input type="search" id="presetSearch" placeholder="${esc(t("rig.search_placeholder"))}" autocomplete="off" spellcheck="false">
+          <button type="button" class="search-clear" id="searchClear" aria-label="${esc(t("rig.search_clear"))}" title="${esc(t("rig.search_clear"))}" hidden>${icon("close", 16)}</button></div>
+        <small class="muted" id="searchCount" aria-live="polite"></small></div></div>
       <p class="muted" id="searchNone" hidden></p><div id="quickBody"></div>`;
     const input = $("#presetSearch", outer);
     input.value = presetQuery;
@@ -166,6 +193,7 @@ function renderQuick() {
       if (e.key === "Enter" && bestCard) { e.preventDefault(); bestCard.click(); }
       if (e.key === "Escape" && input.value) { e.preventDefault(); input.value = presetQuery = ""; applySearch(); }
     };
+    $("#searchClear", outer).onclick = () => { input.value = presetQuery = ""; applySearch(); input.focus(); };
   }
   const box = $("#quickBody", outer);
   const cur = rig.preset && rig.preset.kind === "factory" ? rig.preset.id : "";

@@ -1338,6 +1338,8 @@
    },
    "search_label": "Buscar sonidos",
    "search_placeholder": "Nombre, artista, banda o género (Pink Floyd, grunge, slide…)",
+   "search_clear": "Borrar la búsqueda",
+   "search_key": "Apretá / para buscar",
    "search_none": "Ningún sonido coincide con “{{q}}”.",
    "search_count": "{{count}} sonidos",
    "search_close": "incluye nombres parecidos",
@@ -2345,7 +2347,9 @@
    "stage": "Modo escenario",
    "stage_html": "<kbd>←</kbd> <kbd>→</kbd> o <kbd>RePág</kbd> <kbd>AvPág</kbd> cambiar de tema · <kbd>Espacio</kbd> desplazar · <kbd>↑</kbd> <kbd>↓</kbd> velocidad · <kbd>M</kbd> clic · <kbd>+</kbd> <kbd>−</kbd> tamaño",
    "metronome": "Metrónomo",
-   "metronome_html": "<kbd>M</kbd> empezar / parar · <kbd>Espacio</kbd> marcar el tempo · <kbd>+</kbd> <kbd>−</kbd> tempo"
+   "metronome_html": "<kbd>M</kbd> empezar / parar · <kbd>Espacio</kbd> marcar el tempo · <kbd>+</kbd> <kbd>−</kbd> tempo",
+   "rig": "Ampli y efectos",
+   "rig_html": "<kbd>/</kbd> buscar sonidos · <kbd>Enter</kbd> cargar el primer resultado · <kbd>Esc</kbd> borrar la búsqueda"
   },
   "sources": {
    "title": "De dónde sale cada valor",

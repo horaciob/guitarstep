@@ -84,7 +84,7 @@ try { setDock(localStorage.getItem(DOCK_KEY) === "1"); } catch { setDock(false);
 $("#dockToggle").onclick = () => setDock(!document.body.classList.contains("nav-dock"));
 
 // "?" shows the keyboard shortcuts, anywhere
-const KEY_GROUPS = ["global", "exercise", "quiz", "stage", "metronome"];
+const KEY_GROUPS = ["global", "exercise", "quiz", "stage", "metronome", "rig"];
 function showKeys() {
   let dlg = $("#keysDialog");
   if (!dlg) { dlg = document.createElement("dialog"); dlg.id = "keysDialog"; dlg.className = "rig-dialog keys-dialog"; document.body.append(dlg); }

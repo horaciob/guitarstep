@@ -1060,6 +1060,17 @@ def test_rig_preset_search(app_page):
     expect(active).to_have_text(re.compile("^J"))
     search.press("Escape")                                      # Escape clears the search
     expect(search).to_have_value("")
+    expect(app_page.get_by_label("Search sounds")).to_be_visible()   # a visible label, not just a placeholder
+    clear = app_page.locator("#searchClear")
+    expect(clear).to_be_hidden()
+    app_page.locator("body").click(position={"x": 5, "y": 5})
+    app_page.keyboard.press("/")                                # "/" jumps to the search
+    expect(search).to_be_focused()
+    search.fill("tango")
+    expect(clear).to_be_visible()                               # ✕ clears it
+    clear.click()
+    expect(search).to_have_value("")
+    expect(clear).to_be_hidden()
     search.fill("zzzz")
     expect(app_page.locator("#searchNone")).to_be_visible()
     search.fill("")
