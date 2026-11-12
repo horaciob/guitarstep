@@ -243,3 +243,24 @@ def test_notes_together_must_be_plain_and_on_different_strings():
             catalog.parse_lick(tab)
     shifted = catalog.parse_lick("6:3+1:3", shift=-5)                    # falls off the neck: an octave up
     assert [s["fret"] for s in shifted] == [10, 10]
+
+
+def test_vibrato_width_and_rate():
+    from guitarr.follow import vibrato
+
+    t = np.arange(0, 1.0, 0.01)
+    v = vibrato(list(t), list(20 * np.sin(2 * np.pi * 5 * t)))
+    assert 35 <= v["width"] <= 42 and 4.5 <= v["rate"] <= 5.5
+    assert vibrato(list(t), list(3 * np.sin(2 * np.pi * 5 * t))) is None      # held still
+    assert vibrato(list(t), list(np.linspace(-20, 20, len(t)))) is None        # a drift, not a vibrato
+
+
+def test_a_held_bend_with_vibrato_reports_it(tmp_path):
+    from guitarr import catalog
+
+    ref = load_reference(RefOptions(tab=catalog.bend_steps(dict(string=3, fret=7, bend=2, tries=1))), log=lambda m: None)
+    ts = np.arange(0.45, 1.9, 0.01)
+    keys = [(0, 62), (0.3, 62)] + [(x, 64 + 0.18 * np.sin(2 * np.pi * 5 * (x - 0.45))) for x in ts]
+    r = run_wav(tmp_path, synth_curve([keys]), ref, mode="bend", hold=1.0)
+    b = r["summary"]["bend"]
+    assert b["n"] == 1 and b["vib_n"] == 1 and 25 <= b["width"] <= 45 and 4 <= b["rate"] <= 6

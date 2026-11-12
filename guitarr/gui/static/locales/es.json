@@ -81,7 +81,8 @@
    "bend_ok": "sostenido, {{cents}} cents, oscilación {{wobble}}",
    "bend_flat": "el bend no llegó ({{cents}} cents abajo)",
    "bend_sharp": "el bend se pasó ({{cents}} cents arriba)",
-   "bend_short": "llegaste, pero lo sostuviste solo {{held}} s"
+   "bend_short": "llegaste, pero lo sostuviste solo {{held}} s",
+   "bend_vib": "sostenido, {{cents}} cents, vibrato de {{width}} cents a {{rate}} Hz"
   },
   "msg": {
    "wrong": "{{detail}} — esperaba {{label}}",
@@ -260,7 +261,12 @@
    "where": "c.{{bar}} t.{{beat}}",
    "no_mistakes": "¡Sin errores! 🎉",
    "take_saved": "Tu toma quedó grabada.",
-   "analyze_take": "Analizarla en detalle"
+   "analyze_take": "Analizarla en detalle",
+   "bend_avg": "Tus bends llegan en promedio {{cents}} cents {{dir}} ({{n}} sostenidos).",
+   "bend_dir_sharp": "arriba",
+   "bend_dir_flat": "abajo",
+   "bend_dir_on": "afinados",
+   "bend_vib_avg": "Vibrato: {{width}} cents de ancho a {{rate}} Hz en promedio ({{n}} intentos). Un vibrato que canta ronda los 30–60 cents a 4–7 Hz."
   },
   "analyze": {
    "title": "Analizar una toma",
@@ -2864,6 +2870,23 @@
   "speak": {
    "read": "Leer en voz alta",
    "stop": "Dejar de leer"
+  },
+  "groove": {
+   "title": "Groove: en qué parte del tiempo",
+   "pos_beat": "en el tiempo",
+   "pos_and": "en el “y”",
+   "pos_sixteenth": "en las semicorcheas",
+   "pos_triplet": "en los tresillos",
+   "pos_other": "en el medio",
+   "tend_early": "adelantado",
+   "tend_late": "atrasado",
+   "tend_on_time": "a tiempo",
+   "notes": "{{n}} notas, ±{{std}} ms",
+   "tip": "Para trabajar: tocás {{pos}} {{ms}} ms {{tend}}. Contá la subdivisión en voz alta con el metrónomo.",
+   "dyn_even": "Ataque parejo: tus notas sueltas varían un {{spread}}% de volumen.",
+   "dyn_uneven": "Ataque desparejo: tus notas sueltas varían un {{spread}}% de volumen. Buscá el mismo volumen en cada nota.",
+   "dyn_off_softer": "Las notas fuera del tiempo suenan {{db}} dB más suaves que las del tiempo: probablemente tus púas hacia arriba son más débiles.",
+   "dyn_off_louder": "Las notas fuera del tiempo suenan {{db}} dB más fuertes que las del tiempo: estás acentuando las púas hacia arriba."
   }
  },
  "content": {
@@ -7075,22 +7098,5 @@
    "flamenco-palos/palos-quiz": "Tiempos por ciclo, posición de casa y carácter: cómo se distinguen los estilos flamencos.",
    "picado/picado-chromatic": "Trastes 0 a 4 y vuelta en la E grave. Tocalo una vez empezando con i y otra empezando con m: los dos dedos tienen que poder empezar."
   }
- },
- "groove": {
-  "title": "Groove: en qué parte del tiempo",
-  "pos_beat": "en el tiempo",
-  "pos_and": "en el “y”",
-  "pos_sixteenth": "en las semicorcheas",
-  "pos_triplet": "en los tresillos",
-  "pos_other": "en el medio",
-  "tend_early": "adelantado",
-  "tend_late": "atrasado",
-  "tend_on_time": "a tiempo",
-  "notes": "{{n}} notas, ±{{std}} ms",
-  "tip": "Para trabajar: tocás {{pos}} {{ms}} ms {{tend}}. Contá la subdivisión en voz alta con el metrónomo.",
-  "dyn_even": "Ataque parejo: tus notas sueltas varían un {{spread}}% de volumen.",
-  "dyn_uneven": "Ataque desparejo: tus notas sueltas varían un {{spread}}% de volumen. Buscá el mismo volumen en cada nota.",
-  "dyn_off_softer": "Las notas fuera del tiempo suenan {{db}} dB más suaves que las del tiempo: probablemente tus púas hacia arriba son más débiles.",
-  "dyn_off_louder": "Las notas fuera del tiempo suenan {{db}} dB más fuertes que las del tiempo: estás acentuando las púas hacia arriba."
  }
 }

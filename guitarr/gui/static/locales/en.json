@@ -81,7 +81,8 @@
    "bend_ok": "held, {{cents}} cents, wobble {{wobble}}",
    "bend_flat": "bend fell short ({{cents}} cents flat)",
    "bend_sharp": "bend went too far ({{cents}} cents sharp)",
-   "bend_short": "reached it, but held only {{held}} s"
+   "bend_short": "reached it, but held only {{held}} s",
+   "bend_vib": "held, {{cents}} cents, vibrato {{width}} cents at {{rate}} Hz"
   },
   "msg": {
    "wrong": "{{detail}} — expected {{label}}",
@@ -260,7 +261,12 @@
    "where": "bar {{bar}} beat {{beat}}",
    "no_mistakes": "No mistakes! 🎉",
    "take_saved": "Your take was recorded.",
-   "analyze_take": "Analyze it in detail"
+   "analyze_take": "Analyze it in detail",
+   "bend_avg": "Your bends land {{cents}} cents {{dir}} on average ({{n}} held).",
+   "bend_dir_sharp": "sharp",
+   "bend_dir_flat": "flat",
+   "bend_dir_on": "in tune",
+   "bend_vib_avg": "Vibrato: {{width}} cents wide at {{rate}} Hz on average ({{n}} tries). A singing vibrato is about 30–60 cents at 4–7 Hz."
   },
   "analyze": {
    "title": "Analyze a take",
@@ -2864,24 +2870,24 @@
   "speak": {
    "read": "Read aloud",
    "stop": "Stop reading"
+  },
+  "groove": {
+   "title": "Groove: where in the beat",
+   "pos_beat": "on the beat",
+   "pos_and": "on the “and”",
+   "pos_sixteenth": "on the sixteenths",
+   "pos_triplet": "on the triplets",
+   "pos_other": "in between",
+   "tend_early": "early",
+   "tend_late": "late",
+   "tend_on_time": "on time",
+   "notes": "{{n}} notes, ±{{std}} ms",
+   "tip": "Work on this: you play {{pos}} {{ms}} ms {{tend}}. Count the subdivision out loud with the metronome.",
+   "dyn_even": "Even attack: your single notes vary {{spread}}% in level.",
+   "dyn_uneven": "Uneven attack: your single notes vary {{spread}}% in level. Aim for the same volume on every note.",
+   "dyn_off_softer": "The notes off the beat are {{db}} dB softer than the ones on it: your upstrokes are probably weaker.",
+   "dyn_off_louder": "The notes off the beat are {{db}} dB louder than the ones on it: you're accenting the upstrokes."
   }
  },
- "content": {},
- "groove": {
-  "title": "Groove: where in the beat",
-  "pos_beat": "on the beat",
-  "pos_and": "on the “and”",
-  "pos_sixteenth": "on the sixteenths",
-  "pos_triplet": "on the triplets",
-  "pos_other": "in between",
-  "tend_early": "early",
-  "tend_late": "late",
-  "tend_on_time": "on time",
-  "notes": "{{n}} notes, ±{{std}} ms",
-  "tip": "Work on this: you play {{pos}} {{ms}} ms {{tend}}. Count the subdivision out loud with the metronome.",
-  "dyn_even": "Even attack: your single notes vary {{spread}}% in level.",
-  "dyn_uneven": "Uneven attack: your single notes vary {{spread}}% in level. Aim for the same volume on every note.",
-  "dyn_off_softer": "The notes off the beat are {{db}} dB softer than the ones on it: your upstrokes are probably weaker.",
-  "dyn_off_louder": "The notes off the beat are {{db}} dB louder than the ones on it: you're accenting the upstrokes."
- }
+ "content": {}
 }

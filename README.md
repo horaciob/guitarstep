@@ -57,6 +57,7 @@ retakes them in both themes.
 - **Speed trainer**: loop a section; the tempo goes up after every clean pass and down after a bad one.
 - **Chord charts**: chords per bar, played with a metronome. Filler strums don't count as mistakes, and a capo is handled for you (tab and chord names stay relative to the capo). Write your own in a simple text format.
 - **Legato detection**: hammer-ons, pull-offs and slides are caught even without a pick attack.
+- **Bends and vibrato**: each held bend says how many cents sharp or flat it landed, and a vibrato on it is measured (width in cents, speed in Hz).
 
 **Learn**
 - **Course**: 23 levels, 134 lessons and 336 exercises, from open strings to barre chords, fingerpicking and arpeggios, the blues, reading, scales, harmony and jazz. Every exercise is passed by playing it, and nothing is used before a lesson teaches it (a test checks the order). Each exercise has a short theory note (📖) that 🔊 reads aloud. The listener hears notes played together too: pinches in fingerpicking and double stops. Each level recap asks what the 📖 notes said (a sentence with a glossary word left out).

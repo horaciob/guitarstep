@@ -298,6 +298,8 @@ class LiveSession:
                                                     if e.dt is not None and e.status in ("ok", "octave")])
             summary["groove"] = dict(timing=rows, tip=groove.tip(rows), dynamics=None)
             summary["timing_verdict"] = latency.verdict([1000 * x for x in dts], latency.info().get("method"))
+        if f.mode == "bend":
+            summary["bend"] = bend_summary(judged)
         if any(e.status != "pending" for e in evs):
             summary["score"] = pass_score(judged, getattr(f, "pass_extras", 0) if f.mode == "tempo" else 0,
                                           opts.timing_tol)
@@ -312,6 +314,17 @@ class LiveSession:
             overflows=self.src.overflows,
             simulated=bool(opts.simulate),
         )
+
+
+def bend_summary(judged) -> dict | None:
+    """Where your held bends land on average, and your average vibrato."""
+    held = [e.detail for e in judged if e.status == "ok" and e.detail and "cents" in e.detail]
+    if not held:
+        return None
+    vib = [d for d in held if d.get("kind") == "bend_vib"]
+    return dict(n=len(held), mean_cents=round(float(np.mean([d["cents"] for d in held]))),
+                vib_n=len(vib), width=round(float(np.mean([d["width"] for d in vib]))) if vib else None,
+                rate=round(float(np.mean([d["rate"] for d in vib])), 1) if vib else None)
 
 
 class _Ev:

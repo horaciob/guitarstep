@@ -71,6 +71,7 @@ export function detailText(d) {
     case "unclear": return t("detail.unclear", { heard: d.heard });
     case "missed": return t("detail.missed");
     case "bend_ok": return t("detail.bend_ok", { cents: (d.cents > 0 ? "+" : "") + d.cents, wobble: d.wobble });
+    case "bend_vib": return t("detail.bend_vib", { cents: (d.cents > 0 ? "+" : "") + d.cents, width: d.width, rate: d.rate });
     case "bend_flat": return t("detail.bend_flat", { cents: Math.abs(d.cents) });
     case "bend_sharp": return t("detail.bend_sharp", { cents: d.cents });
     case "bend_short": return t("detail.bend_short", { held: d.held });

@@ -56,6 +56,8 @@ def describe(d: dict | None) -> str:
         return "didn't sound"
     if k == "bend_ok":
         return f"held, {d['cents']:+.0f} cents, wobble {d['wobble']:.0f}"
+    if k == "bend_vib":
+        return f"held, {d['cents']:+.0f} cents, vibrato {d['width']:.0f} cents at {d['rate']:.1f} Hz"
     if k == "bend_flat":
         return f"bend fell short ({abs(d['cents']):.0f} cents flat)"
     if k == "bend_sharp":
@@ -350,6 +352,31 @@ class WaitFollower:
 
 
 # ---------------------------------------------------------------- bend mode
+VIB_MIN_CENTS = 15     # narrower than this (peak to peak) is a steady hold, not a vibrato
+VIB_RATES = (2.5, 10)  # Hz: slower is drifting, faster is noise
+
+
+def vibrato(times: list[float], cents: list[float]) -> dict | None:
+    """Width (cents, peak to peak) and rate (Hz) of the vibrato in a held note, or None if it's held still."""
+    if len(cents) < 8 or times[-1] - times[0] < 0.4:
+        return None
+    t, c = np.asarray(times), np.asarray(cents, float)
+    c = c - np.polyval(np.polyfit(t, c, 1), t)          # a slow drift isn't a vibrato
+    width = float(np.percentile(c, 95) - np.percentile(c, 5))
+    if width < VIB_MIN_CENTS:
+        return None
+    h, side, flips = width / 4, 0, 0                     # zero crossings with hysteresis
+    for x in c:
+        s = 1 if x > h else -1 if x < -h else 0
+        if s and s != side:
+            flips += side != 0
+            side = s
+    rate = flips / 2 / (t[-1] - t[0])
+    if not VIB_RATES[0] <= rate <= VIB_RATES[1]:
+        return None
+    return dict(width=round(width), rate=round(rate, 1))
+
+
 class BendFollower:
     """Bend practice: every event is one try at bending from `glide_from` up to the event's
     pitch and holding it there. It follows the continuous pitch (`on_pitch`), not onsets.
@@ -382,6 +409,7 @@ class BendFollower:
         self.rising = False
         self.since = None         # start of the current in-tune stretch
         self.cents: list[float] = []
+        self.ctimes: list[float] = []
         self.longest = 0.0
         self.sharp = self.inside = 0
         self.quiet_from = None
@@ -433,8 +461,9 @@ class BendFollower:
         if abs(dev) <= self.tol:
             self.inside += 1
             if self.since is None:
-                self.since, self.cents = t, []
+                self.since, self.cents, self.ctimes = t, [], []
             self.cents.append(dev * 100)
+            self.ctimes.append(t)
             self.longest = max(self.longest, t - self.since)
             if t - self.since >= self.hold:
                 return self._hit()
@@ -451,6 +480,9 @@ class BendFollower:
         ev.status = "ok"
         ev.detail = dict(kind="bend_ok", cents=round(float(np.mean(self.cents))),
                          wobble=round(float(np.std(self.cents))))
+        vib = vibrato(self.ctimes, self.cents)
+        if vib:
+            ev.detail.update(kind="bend_vib", **vib)
         self._next()
         return message("hit", label=ev.label(), detail=ev.detail, dt_ms=None)
 

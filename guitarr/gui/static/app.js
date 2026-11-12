@@ -566,6 +566,11 @@ function renderReport(r) {
     if (s.tuning_cents != null && Math.abs(s.tuning_cents) > 15) html += stat(`${signed(s.tuning_cents)}¢`, t("report.tune"), "warn");
     html += `</div>`;
     if (s.timing_verdict) html += timingVerdictHtml(s.timing_verdict);
+    if (s.bend) {
+      const c = s.bend.mean_cents, dir = Math.abs(c) < 10 ? "on" : c > 0 ? "sharp" : "flat";
+      html += `<p class="small">${esc(t("report.bend_avg", { cents: Math.abs(c), dir: t(`report.bend_dir_${dir}`), n: s.bend.n }))}</p>`;
+      if (s.bend.vib_n) html += `<p class="small">${esc(t("report.bend_vib_avg", { width: s.bend.width, rate: s.bend.rate, n: s.bend.vib_n }))}</p>`;
+    }
     if (r.passes && r.passes.length > 1) html += `<p class="muted">${esc(t("report.passes"))}: ${r.passes.map(p => `${Math.round(p.score)}%${p.speed ? " @" + Math.round(p.speed * 100) + "%" : ""}`).join(" · ")}</p>`;
   } else {
     html += stat(Math.round(s.score), t("report.score"), s.score >= 85 ? "good" : s.score >= 60 ? "warn" : "bad");
