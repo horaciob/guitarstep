@@ -119,3 +119,51 @@ def test_requests_from_other_sites_are_refused():
     own = {"Host": "127.0.0.1:8765", "Origin": "http://127.0.0.1:8765"}
     assert c.put("/api/plan/goal", json=dict(weekly_minutes=300), headers=own).status_code == 200
     assert c.put("/api/plan/goal", json=dict(weekly_minutes=300)).status_code == 200
+
+
+def _stream(c, start, wav, chunk=2048, drop=None):
+    import numpy as np
+    import soundfile as sf
+    y, sr = sf.read(wav, dtype="float32", always_2d=True)
+    y = y.mean(axis=1)
+    with c.websocket_connect("/ws/stream") as ws:
+        ws.send_json(dict(type="start", sr=sr, **start))
+        assert ws.receive_json()["type"] == "ready"
+        for k, i in enumerate(range(0, len(y), chunk)):
+            if k != drop:
+                ws.send_bytes(i.to_bytes(8, "little") + y[i:i + chunk].astype("<f4").tobytes())
+        ws.send_json(dict(type="stop"))
+        while True:
+            m = ws.receive_json()
+            if m["type"] != "state":
+                return m
+
+
+def test_browser_audio_is_graded_like_the_local_input():
+    from guitarr.gui.server import song_path, take_path
+    from guitarr.reference import RefOptions, load_reference
+    from guitarr.session import LiveOptions, LiveSession
+    c = client()
+    d = c.post("/api/demo").json()
+    m = _stream(c, dict(song=d["song"], mode="tempo", speed=0.9), take_path(d["take"]))
+    assert m["type"] == "report", m
+    local = LiveSession(load_reference(RefOptions(path=song_path(d["song"])), log=lambda m: None),
+                        LiveOptions(mode="tempo", speed=0.9, simulate=take_path(d["take"]), fast=True)).run()
+    assert m["report"]["summary"] == local["summary"]
+    met = m["metrics"]
+    assert met["gaps"] == 0 and met["cpu_per_audio_s"] > 0 and met["heard_s"] >= met["received_s"]
+    # a lost chunk becomes silence: the clock (and the timing of everything after it) stays right
+    lost = _stream(c, dict(song=d["song"], mode="tempo", speed=0.9), take_path(d["take"]), drop=40)
+    assert lost["metrics"]["gaps"] == 1 and lost["metrics"]["received_s"] == met["received_s"]
+    assert progress_untouched(c)
+
+
+def progress_untouched(c):
+    return c.get("/api/history").json() == []
+
+
+def test_browser_audio_needs_a_start_message():
+    c = client()
+    with c.websocket_connect("/ws/stream") as ws:
+        ws.send_json(dict(type="start", song="nope.gp5"))
+        assert ws.receive_json()["detail"]["code"] == "bad_start"

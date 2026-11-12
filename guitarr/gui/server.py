@@ -23,7 +23,7 @@ from fastapi.staticfiles import StaticFiles
 
 from ..errors import CodedError
 from .. import __version__, backup, catalog, config, history, latency, plan, progress, reminder, rig, routine, signalcheck
-from ..audio_io import AudioError, FileSource, MicSource, devices
+from ..audio_io import AudioError, FileSource, MicSource, StreamSource, devices
 from ..reference import AUDIO_EXT, REFERENCE_EXT, RefOptions, ReferenceError, list_tracks, load_reference
 
 STATIC = Path(__file__).parent / "static"
@@ -1652,6 +1652,113 @@ async def ws_live(ws: WebSocket):
             await asyncio.sleep(0.05)
     except (WebSocketDisconnect, RuntimeError):
         pass
+
+
+# ---------------------------------------------------------------- audio from the browser (web service, phase 0)
+STREAM_HEADER = 8      # each binary frame: uint64 LE index of its first sample, then float32 LE samples
+
+
+@app.websocket("/ws/stream")
+async def ws_stream(ws: WebSocket):
+    """The guitar captured in the browser, graded here with the same listener.
+
+    Client → server: {"type": "start", "sr", "song" | "chart", "mode", "speed", "latency_ms"},
+    then binary frames, then {"type": "stop"}; {"type": "ping", "t"} is answered with a pong.
+    Server → client: "ready", "state" (~20 per second, with how many seconds were heard), "pong",
+    and at the end "report" with the measurements (CPU per second of audio). A probe: it records
+    no progress, history or practice time."""
+    import numpy as np
+    from ..session import LiveOptions, LiveSession
+
+    await ws.accept()
+    try:
+        start = await ws.receive_json()
+        sr = _int(start.get("sr"))
+        if start.get("type") != "start" or not sr or not 8000 <= sr <= 192000:
+            raise CodedError("bad_start", "Send a start message with the sample rate first")
+        ropts, ctx = ref_options(start)
+        try:
+            ref = load_reference(ropts, log=lambda m: None)
+        except ReferenceError as e:
+            raise CodedError("reference", str(e))
+    except CodedError as e:
+        await ws.send_json(dict(type="error", detail=dict(code=e.code, message=str(e))))
+        await ws.close()
+        return
+    except HTTPException as e:
+        await ws.send_json(dict(type="error", detail=e.detail))
+        await ws.close()
+        return
+    except (WebSocketDisconnect, RuntimeError, ValueError):
+        return
+    a = audio_settings()
+    chart = ropts.chart is not None
+    opts = LiveOptions(
+        mode=ctx.get("mode") or start.get("mode", "wait"), speed=ctx.get("speed") or _float(start.get("speed")) or 1.0,
+        latency_ms=_float(start.get("latency_ms")) or 0.0,
+        gate_db=a["gate_db"] if a.get("gate_db") is not None else -50.0, sensitivity=a.get("sensitivity") or 1.0,
+        legato=not chart, count_extras=not chart, transpose=_int(start.get("transpose")) or 0,
+        timing_tol=0.09 if chart and (ropts.chart or {}).get("swing") else 0.06,
+    )
+    src = StreamSource(sr)
+    sess = LiveSession(ref, opts, src=src)
+    out: dict = {}
+
+    def run():
+        t0 = time.thread_time()
+        try:
+            out["report"] = sess.run()
+        except Exception as e:  # sent to the browser below
+            sess.error = sess.error or str(e)
+        out["cpu_s"] = time.thread_time() - t0
+
+    th = threading.Thread(target=run, daemon=True)
+    th.start()
+
+    def metrics() -> dict:
+        heard = sess.rec.n / sr
+        return dict(heard_s=round(heard, 3), received_s=round(src.n / sr, 3), gaps=src.overflows,
+                    cpu_s=round(out.get("cpu_s", 0.0), 3),
+                    cpu_per_audio_s=round(out["cpu_s"] / heard, 4) if "cpu_s" in out and heard else None)
+
+    async def send_states():
+        while th.is_alive():
+            await ws.send_json(dict(type="state", state=sess.snapshot(), metrics=metrics()))
+            await asyncio.sleep(0.05)
+
+    sender = asyncio.create_task(send_states())
+    try:
+        await ws.send_json(dict(type="ready", events=len(sess.events), source=src.name, sr=sr))
+        while th.is_alive():
+            msg = await ws.receive()
+            if msg["type"] == "websocket.disconnect":
+                break
+            if msg.get("bytes") is not None:
+                b = msg["bytes"]
+                if len(b) > STREAM_HEADER and (len(b) - STREAM_HEADER) % 4 == 0:
+                    src.push(int.from_bytes(b[:STREAM_HEADER], "little"),
+                             np.frombuffer(b, "<f4", offset=STREAM_HEADER))
+                continue
+            m = json.loads(msg.get("text") or "{}")
+            if m.get("type") == "stop":
+                src.end()
+                break
+            if m.get("type") == "ping":
+                await ws.send_json(dict(type="pong", t=m.get("t")))
+        src.end()
+        await asyncio.to_thread(th.join, 30)
+        sender.cancel()
+        if sess.error:
+            await ws.send_json(dict(type="error", detail=dict(code="audio", message=sess.error)))
+        else:
+            await ws.send_json(dict(type="report", report=out.get("report"), metrics=metrics()))
+        await ws.close()
+    except (WebSocketDisconnect, RuntimeError, ValueError):
+        pass
+    finally:
+        sender.cancel()
+        sess.stop()
+        src.end()
 
 
 # ---------------------------------------------------------------- tuner

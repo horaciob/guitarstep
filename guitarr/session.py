@@ -62,11 +62,15 @@ TIMED = ("tempo", "improv")        # modes that play on the metronome
 
 
 class LiveSession:
-    def __init__(self, ref: Reference, opts: LiveOptions):
+    def __init__(self, ref: Reference, opts: LiveOptions, src=None):
+        """`src`: an input that is already open (e.g. a StreamSource fed by a browser)."""
         self.ref, self.opts, self.grid = ref, opts, ref.grid
         self.events = group_events(ref.notes)
         self.judge = Judge(opts.transpose, name_shift=-ref.capo)
-        if opts.simulate:
+        self.remote = src is not None
+        if src is not None:
+            self.src = src
+        elif opts.simulate:
             self.src = FileSource(opts.simulate, realtime=not opts.fast)
         else:
             self.src = MicSource(opts.device, opts.channel, opts.samplerate)
@@ -77,7 +81,8 @@ class LiveSession:
         self.det = Detector(self.rec, opts.gate_db, opts.sensitivity,
                             min_gap=float(np.clip(0.6 * gap, 0.035, MIN_GAP)), legato=opts.legato)
         self.repeat_gap = float(np.clip(0.6 * gap, 0.04, 0.1))
-        self.use_click = opts.mode in TIMED and opts.click and not opts.simulate
+        # the metronome plays on this machine's speakers: not for audio from a browser (yet)
+        self.use_click = opts.mode in TIMED and opts.click and not opts.simulate and not self.remote
         self.pitch_pos = 0
         if opts.mode == "wait":
             self.follower = WaitFollower(self.events, self.judge, opts.loop)

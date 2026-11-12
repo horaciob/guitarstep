@@ -27,6 +27,7 @@ const VIEWS = {
   stage: () => import("./views/stage.js"),
   setlists: () => import("./views/setlists.js"),
   report: () => import("./views/report.js"),
+  stream: () => import("./views/stream.js"),
 };
 const NAV_OF = { lesson: "course", chart: "charts", camera: "chords", setup: "settings", signal: "settings", song: "practice", stage: "setlists", report: "plan" };
 const view = $("#view");

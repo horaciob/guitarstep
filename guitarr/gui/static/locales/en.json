@@ -161,7 +161,8 @@
    "bad_tone": "Unknown sound.",
    "not_assignment": "That file isn't a guitarr assignment.",
    "no_beat": "Couldn't find a steady beat in the recording.",
-   "not_audio": "That song isn't a recording."
+   "not_audio": "That song isn't a recording.",
+   "bad_start": "Send a start message with the sample rate first"
   },
   "practice": {
    "title": "🎧 Practice with listening",
@@ -3140,6 +3141,32 @@
    "kind_chart": "chart",
    "kind_song": "your song",
    "kind_sound": "sound"
+  },
+  "stream": {
+   "title": "Play from the browser (test)",
+   "subtitle": "Your guitar is captured in this browser and graded by the server, as a web service would. Nothing here counts as practice or progress.",
+   "song": "Song",
+   "mode": "Mode",
+   "mode_wait": "Wait for me",
+   "mode_tempo": "In tempo (no metronome)",
+   "start": "Start",
+   "stop": "Stop",
+   "idle": "Pick a song and start playing.",
+   "no_songs": "Add a song first.",
+   "listening": "Listening…",
+   "done": "Done: {{judged}} notes graded.",
+   "err_mic": "The browser did not allow the microphone.",
+   "err_connection": "Lost the connection to the server.",
+   "m_rtt": "Round trip to the server",
+   "m_behind": "Grading behind your playing",
+   "m_heard": "Audio received",
+   "m_gaps": "Chunks lost",
+   "m_score": "So far",
+   "m_cpu": "Server CPU",
+   "ms": "{{n}} ms",
+   "s": "{{n}} s",
+   "pct": "{{n}}% of {{judged}}",
+   "cpu": "{{pct}}% of one core (about {{n}} players at once)"
   }
  },
  "content": {}

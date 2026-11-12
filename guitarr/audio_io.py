@@ -144,6 +144,47 @@ class FileSource:
         self._stop.set()
 
 
+class StreamSource:
+    """Audio pushed from elsewhere (a browser over a WebSocket) as if it were the live input.
+
+    Each chunk carries the index of its first sample, so time is counted on the sender's
+    audio clock: a lost chunk becomes silence instead of shifting everything after it."""
+
+    def __init__(self, sr: int, name: str = "browser"):
+        self.sr = int(sr)
+        self.name = name
+        self.q: queue.Queue = queue.Queue()
+        self.adc0 = 0.0
+        self.overflows = 0          # chunks lost on the way (filled with silence)
+        self.n = 0                  # samples queued so far
+        self._ended = False
+
+    def push(self, start: int, samples: np.ndarray) -> None:
+        if self._ended:
+            return
+        if start > self.n:          # a gap: fill it so the clock stays right
+            self.overflows += 1
+            self.q.put(np.zeros(start - self.n, np.float32))
+            self.n = start
+        skip = self.n - start       # an overlap (resent chunk): drop what we already have
+        if skip < len(samples):
+            blk = np.asarray(samples[skip:], np.float32)
+            self.q.put(blk)
+            self.n += len(blk)
+
+    def end(self) -> None:
+        if not self._ended:
+            self._ended = True
+            self.q.put(np.zeros(int(self.sr * 0.6), np.float32))  # trailing silence
+            self.q.put(None)
+
+    def start(self):
+        pass
+
+    def stop(self):
+        self.end()
+
+
 class Metronome:
     """Clicks scheduled in input time (aligned with the ADC clock).
 

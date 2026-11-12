@@ -1367,3 +1367,8 @@ dialog.palette li.on small { color: inherit; }
 .gl .match-table { border-collapse: collapse; font-size: 12px; margin-top: 6px; }
 .gl .match-table th, .gl .match-table td { padding: 2px 6px; text-align: right; }
 .gl .match-table th:first-child { text-align: left; }
+
+/* web service probe (#/stream) */
+.stream-metrics { display: grid; grid-template-columns: max-content 1fr; gap: 4px 16px; margin: 8px 0 0; }
+.stream-metrics dt { color: var(--muted); }
+.stream-metrics dd { margin: 0; font-variant-numeric: tabular-nums; }

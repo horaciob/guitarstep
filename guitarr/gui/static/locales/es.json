@@ -161,7 +161,8 @@
    "bad_tone": "Ese sonido no existe.",
    "not_assignment": "Ese archivo no es una tarea de guitarr.",
    "no_beat": "No encontré un pulso estable en la grabación.",
-   "not_audio": "Esa canción no es una grabación."
+   "not_audio": "Esa canción no es una grabación.",
+   "bad_start": "Primero mandá un mensaje de inicio con la frecuencia de muestreo"
   },
   "practice": {
    "title": "🎧 Practicar con escucha",
@@ -3140,6 +3141,32 @@
    "kind_chart": "chart",
    "kind_song": "tu canción",
    "kind_sound": "sonido"
+  },
+  "stream": {
+   "title": "Tocar desde el navegador (prueba)",
+   "subtitle": "Tu guitarra se captura en este navegador y la califica el servidor, como en un servicio web. Nada de esto cuenta como práctica ni progreso.",
+   "song": "Canción",
+   "mode": "Modo",
+   "mode_wait": "Esperarme",
+   "mode_tempo": "A tempo (sin metrónomo)",
+   "start": "Empezar",
+   "stop": "Parar",
+   "idle": "Elegí una canción y empezá a tocar.",
+   "no_songs": "Primero agregá una canción.",
+   "listening": "Escuchando…",
+   "done": "Listo: {{judged}} notas calificadas.",
+   "err_mic": "El navegador no permitió el micrófono.",
+   "err_connection": "Se cortó la conexión con el servidor.",
+   "m_rtt": "Ida y vuelta al servidor",
+   "m_behind": "Calificación atrasada respecto de lo que tocás",
+   "m_heard": "Audio recibido",
+   "m_gaps": "Trozos perdidos",
+   "m_score": "Hasta ahora",
+   "m_cpu": "CPU del servidor",
+   "ms": "{{n}} ms",
+   "s": "{{n}} s",
+   "pct": "{{n}}% de {{judged}}",
+   "cpu": "{{pct}}% de un núcleo (unos {{n}} jugadores a la vez)"
   }
  },
  "content": {
