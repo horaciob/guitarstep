@@ -125,6 +125,8 @@ and exits) and the app (`guitarr`, which starts only after the migrations succee
 - **Sign in** with your email. Without SMTP settings the one-time link is printed to the log:
   `docker compose logs guitarr`. To send real emails, set `GUITARR_SMTP_HOST`, `GUITARR_SMTP_USER`,
   `GUITARR_SMTP_PASSWORD`, `GUITARR_MAIL_FROM` and `GUITARR_PUBLIC_URL` (in a `.env` file beside `compose.yaml`).
+  Opening the link shows whose account it is, and a button signs in; it warns when the link was asked for in
+  another browser (someone could send you a link to their own account).
 - **Audio:** your browser captures the guitar (the clean input, without the tone rig) and streams it to the
   server, which grades it. The metronome clicks play in the browser. This works on macOS and Windows too.
   Browsers open the microphone only on `https://` or on `localhost`.

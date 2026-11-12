@@ -10,6 +10,13 @@
 </head>
 <body>
 <main class="gl signin">
+  <form class="panel" id="confirmForm" hidden>
+    <h1>guitarr</h1>
+    <p id="confirmAs"></p>
+    <p class="field-err" id="confirmElsewhere" hidden data-i18n="signin.elsewhere"></p>
+    <p class="field-err" id="confirmErr" hidden></p>
+    <button class="btn primary" type="submit" data-i18n="signin.continue"></button>
+  </form>
   <form class="panel" id="signinForm" novalidate>
     <h1>guitarr</h1>
     <p class="muted" data-i18n="signin.intro"></p>

@@ -20,11 +20,14 @@ def links(pg_url, monkeypatch):
     return sent
 
 
+def token_of(link):
+    return link.split("token=")[1]
+
+
 def signed_in(links, email):
     c = TestClient(app)
     assert c.post("/api/auth/link", json=dict(email=email)).status_code == 200
-    r = c.get(links[email].replace("http://testserver", ""), follow_redirects=False)
-    assert r.status_code == 303 and r.headers["location"] == "/"
+    assert c.post("/api/auth/verify", json=dict(token=token_of(links[email]))).status_code == 200
     assert c.get("/api/auth/me").json()["user"]["email"].lower() == email.lower()
     return c
 
@@ -44,10 +47,26 @@ def test_everything_needs_a_signed_in_user(links):
 def test_sign_in_link_works_once_and_sign_out_ends_the_session(links):
     c = signed_in(links, "ana@example.com")
     assert "signinForm" not in c.get("/").text
-    again = TestClient(app).get(links["ana@example.com"].replace("http://testserver", ""), follow_redirects=False)
-    assert again.headers["location"] == "/?signin=expired"
+    again = TestClient(app).post("/api/auth/verify", json=dict(token=token_of(links["ana@example.com"])))
+    assert again.json()["detail"]["code"] == "bad_link"
     assert c.post("/api/auth/signout").status_code == 200
     assert c.get("/api/progress").status_code == 401
+
+
+def test_opening_a_link_only_shows_whose_it_is(links):
+    """A link someone else sent you (or a mail scanner opening it) signs nobody in by itself."""
+    mine, other = TestClient(app), TestClient(app)
+    mine.post("/api/auth/link", json=dict(email="eve@example.com"))
+    link = links["eve@example.com"]
+    page = other.get(link.replace("http://testserver", ""))
+    assert page.status_code == 200 and "confirmForm" in page.text
+    assert other.get("/api/progress").status_code == 401                  # opening it didn't sign in
+    tok = token_of(link)
+    assert other.get(f"/api/auth/link?token={tok}").json() == dict(email="eve@example.com", same_browser=False)
+    assert mine.get(f"/api/auth/link?token={tok}").json()["same_browser"] is True
+    assert other.get("/api/auth/link?token=nope").json()["detail"]["code"] == "bad_link"
+    assert mine.post("/api/auth/verify", json=dict(token=tok)).status_code == 200   # still unused
+    assert mine.get("/api/progress").status_code == 200
 
 
 def test_too_many_links_are_refused(links):

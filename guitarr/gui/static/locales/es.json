@@ -3180,7 +3180,10 @@
    "expired": "Ese link ya se usó o venció. Pedí uno nuevo.",
    "email": "Email",
    "send": "Mandame un link",
-   "sent": "Revisá {{email}}: el link sirve durante 15 minutos."
+   "sent": "Revisá {{email}}: el link sirve durante 15 minutos.",
+   "as": "¿Entrar como {{email}}?",
+   "continue": "Entrar",
+   "elsewhere": "Este link se pidió desde otro navegador o dispositivo. Seguí solo si lo pediste vos: alguien podría haberte mandado un link de su propia cuenta."
   },
   "account": {
    "sign_out": "Cerrar sesión",

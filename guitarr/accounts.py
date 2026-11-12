@@ -23,6 +23,7 @@ LINK_MINUTES = 15
 SESSION_DAYS = 30
 LINKS_PER_HOUR = 5                 # per email address
 COOKIE = "guitarr_session"
+BROWSER_COOKIE = "guitarr_login"   # marks the browser that asked for a link
 EMAIL = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 
 
@@ -37,8 +38,9 @@ def normalize_email(email) -> str:
     return e
 
 
-def request_link(email, base_url: str, send=None) -> None:
-    """Sends a sign-in link (a new account is made when it's first used)."""
+def request_link(email, base_url: str, send=None, browser: str | None = None) -> None:
+    """Sends a sign-in link (a new account is made when it's first used). `browser` is the
+    BROWSER_COOKIE of the browser that asked, to tell later whether the link is opened there."""
     email = normalize_email(email)
     token = secrets.token_urlsafe(32)
     with db.pool().connection() as conn:
@@ -46,8 +48,9 @@ def request_link(email, base_url: str, send=None) -> None:
                          "AND created_at > now() - interval '1 hour'", (email,)).fetchone()["n"]
         if n >= LINKS_PER_HOUR:
             raise CodedError("too_many_links", "Too many sign-in links for this address; try again in an hour")
-        conn.execute("INSERT INTO login_tokens (token_hash, email, expires_at) "
-                     "VALUES (%s, %s, now() + make_interval(mins => %s))", (_hash(token), email, LINK_MINUTES))
+        conn.execute("INSERT INTO login_tokens (token_hash, email, expires_at, browser_hash) "
+                     "VALUES (%s, %s, now() + make_interval(mins => %s), %s)",
+                     (_hash(token), email, LINK_MINUTES, browser and _hash(browser)))
     url = f"{(os.environ.get('GUITARR_PUBLIC_URL') or base_url).rstrip('/')}/auth/verify?token={token}"
     (send or send_link)(email, url)
 
@@ -68,6 +71,17 @@ def send_link(email: str, url: str) -> None:
         if os.environ.get("GUITARR_SMTP_USER"):
             s.login(os.environ["GUITARR_SMTP_USER"], os.environ.get("GUITARR_SMTP_PASSWORD", ""))
         s.send_message(msg)
+
+
+def peek_link(token: str, browser: str | None = None) -> dict:
+    """Whose link this is, without using it: opening a link only shows "sign in as …" (so a link
+    someone else sent you, or a mail scanner opening it, doesn't sign anybody in)."""
+    with db.pool().connection() as conn:
+        row = conn.execute("SELECT email, browser_hash FROM login_tokens WHERE token_hash = %s AND used_at IS NULL "
+                           "AND expires_at > now()", (_hash(token or ""),)).fetchone()
+    if row is None:
+        raise CodedError("bad_link", "This sign-in link is used or expired; ask for a new one")
+    return dict(email=row["email"], same_browser=bool(browser and row["browser_hash"] == _hash(browser)))
 
 
 def redeem_link(token: str) -> tuple[str, dict]:

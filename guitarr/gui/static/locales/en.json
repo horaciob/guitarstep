@@ -3180,7 +3180,10 @@
    "expired": "That link was used or expired. Ask for a new one.",
    "email": "Email",
    "send": "Send me a link",
-   "sent": "Check {{email}}: the link works for 15 minutes."
+   "sent": "Check {{email}}: the link works for 15 minutes.",
+   "as": "Sign in as {{email}}?",
+   "continue": "Sign in",
+   "elsewhere": "This link was asked for in another browser or device. Continue only if you asked for it yourself: someone could have sent you a link to their own account."
   },
   "account": {
    "sign_out": "Sign out",

@@ -404,25 +404,46 @@ def _need_service():
         fail(404, "not_a_service", "Accounts exist only in the web service")
 
 
+def _secure_cookies() -> bool:
+    return (os.environ.get("GUITARR_PUBLIC_URL") or "").startswith("https://")
+
+
 @app.post("/api/auth/link")
 def auth_link(body: dict, request: Request):
     """Emails a sign-in link (printed to the server log without SMTP settings)."""
+    from fastapi.responses import JSONResponse
+    import secrets
     _need_service()
-    accounts.request_link(body.get("email"), str(request.base_url))
-    return dict(ok=True)
+    browser = request.cookies.get(accounts.BROWSER_COOKIE) or secrets.token_urlsafe(24)
+    accounts.request_link(body.get("email"), str(request.base_url), browser=browser)
+    r = JSONResponse(dict(ok=True))
+    r.set_cookie(accounts.BROWSER_COOKIE, browser, max_age=accounts.LINK_MINUTES * 60, httponly=True,
+                 samesite="lax", secure=_secure_cookies())
+    return r
 
 
 @app.get("/auth/verify")
-def auth_verify(token: str = ""):
-    from fastapi.responses import RedirectResponse
+def auth_verify():
+    """The link from the email: a page that shows whose account it is; its button signs in (POST)."""
     _need_service()
-    try:
-        session, _ = accounts.redeem_link(token)
-    except CodedError:
-        return RedirectResponse("/?signin=expired", status_code=303)
-    r = RedirectResponse("/", status_code=303)
+    return FileResponse(STATIC / "signin.html", headers={"Cache-Control": "no-store", "Referrer-Policy": "no-referrer"})
+
+
+@app.get("/api/auth/link")
+def auth_link_info(request: Request, token: str = ""):
+    _need_service()
+    return accounts.peek_link(token, request.cookies.get(accounts.BROWSER_COOKIE))
+
+
+@app.post("/api/auth/verify")
+def auth_redeem(body: dict):
+    from fastapi.responses import JSONResponse
+    _need_service()
+    session, _ = accounts.redeem_link(str(body.get("token") or ""))
+    r = JSONResponse(dict(ok=True))
     r.set_cookie(accounts.COOKIE, session, max_age=accounts.SESSION_DAYS * 86400, httponly=True, samesite="lax",
-                 secure=(os.environ.get("GUITARR_PUBLIC_URL") or "").startswith("https://"))
+                 secure=_secure_cookies())
+    r.delete_cookie(accounts.BROWSER_COOKIE)
     return r
 
 
