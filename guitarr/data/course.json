@@ -8393,6 +8393,86 @@
      ]
     },
     {
+     "id": "golpe",
+     "title": "Golpe, apagado and the continuous rasgueo",
+     "minutes": 12,
+     "theory": [
+      "The golpe is a tap of the ring finger on the tap plate below the strings. It marks a beat without cutting the chord, and it's almost always followed at once by an index upstroke.",
+      "Apagado cuts a chord short: with the left hand, release the pressure without letting go of the shape; with the right, lay the palm on the strings right after a downstroke.",
+      "The index upstroke brushes from the 1st string to about the 4th, not all six. Accents come from the fingers, not the arm: keep the forearm still.",
+      "The continuous rasgueo (rasgueo redondo) rolls little, ring, middle and index out one after another; as the index lands, the little finger is already ready to start again, so the sound never stops."
+     ],
+     "tutorials": [
+      "flamenco golpe technique rasgueado continuo"
+     ],
+     "exercises": [
+      {
+       "id": "golpe-play",
+       "kind": "rhythm",
+       "title": "Golpe and upstroke on an E chord",
+       "bpm": 70,
+       "count": 4,
+       "pitch": 40,
+       "min": 70,
+       "patterns": [
+        "q rq q rq",
+        "q re e q re e",
+        "s s s s re e q re e",
+        "q re e s s s s re e"
+       ],
+       "marks": [
+        [
+         "↓",
+         "↓"
+        ],
+        [
+         "↓",
+         "↑",
+         "↓",
+         "↑"
+        ],
+        [
+         "e",
+         "a",
+         "m",
+         "i",
+         "↑",
+         "↓",
+         "↑"
+        ],
+        [
+         "↓",
+         "↑",
+         "e",
+         "a",
+         "m",
+         "i",
+         "↑"
+        ]
+       ],
+       "theory": "Each rest is a golpe: tap the plate on the beat, then the index comes up on the \"and\". ↓ is a downstroke, ↑ the index up, e-a-m-i the four-finger rasgueo."
+      },
+      {
+       "id": "redondo-play",
+       "kind": "rhythm",
+       "title": "The continuous rasgueo",
+       "bpm": 50,
+       "count": 3,
+       "pitch": 40,
+       "min": 70,
+       "patterns": [
+        "s s s s s s s s s s s s s s s s",
+        "s s s s s s s s q q",
+        "te te te te te te te te te te te te"
+       ],
+       "theory": "Sixteenths or triplets without a break: little, ring, middle, index, and again. Even and soft first; the speed comes once the circle is smooth."
+      }
+     ],
+     "tips": [
+      "Practise the continuous rasgueo for one minute a day, fast and without stopping, on any chord."
+     ]
+    },
+    {
      "id": "rumba",
      "title": "Rumba flamenca",
      "minutes": 10,
@@ -8484,13 +8564,131 @@
      ]
     },
     {
+     "id": "flamenco-harmony",
+     "title": "Harmony of the flamenco mode",
+     "minutes": 12,
+     "theory": [
+      "Flamenco counts the degrees of its mode downward from the tonic: in E, Am is IV, G is III, F is II and E is I. That's why the Andalusian cadence reads IV–III–II–I.",
+      "Those four are the principal chords. The secondary ones are C (VI), Dm (VII) and the diminished chord on B (V).",
+      "The resolution is II–I, a half step: F → E. Dm → E (VII–I) is a softer substitute, and G → C (III–VI) is a half cadence: a rest away from home.",
+      "Secondary chords can stand in for principal ones: C in place of G (Am–C–F–E) or Dm in place of Am (Dm–G–F–E). And any chord except I can be approached by its own dominant: C7 leads from G into F."
+     ],
+     "tutorials": [
+      "flamenco harmony phrygian chords explained"
+     ],
+     "exercises": [
+      {
+       "id": "vi-for-iii",
+       "kind": "change",
+       "title": "Am → C → F → E",
+       "chords": [
+        "Am",
+        "C",
+        "F",
+        "E"
+       ],
+       "times": 4,
+       "min": 75,
+       "theory": "C replaces G: the bass still walks down (A, C, F, E) but the colour is softer."
+      },
+      {
+       "id": "vii-for-iv",
+       "kind": "change",
+       "title": "Dm → G → F → E",
+       "chords": [
+        "Dm",
+        "G",
+        "F",
+        "E"
+       ],
+       "times": 4,
+       "min": 75,
+       "theory": "Dm replaces Am at the start: the same cadence, opened from a different door."
+      },
+      {
+       "id": "harmony-chart",
+       "kind": "chart",
+       "title": "Substitutes and a secondary dominant",
+       "chart": "47-flamenco-harmony",
+       "speed": 0.8,
+       "min": 80,
+       "theory": "Four versions of the same road home: the plain cadence, VI for III, VII for IV, and C7 pulling G into F."
+      },
+      {
+       "id": "harmony-quiz",
+       "kind": "quiz",
+       "title": "Degrees and cadences of the flamenco mode",
+       "quiz": "technique",
+       "topics": [
+        "flamenco_harmony"
+       ],
+       "count": 6,
+       "min": 80,
+       "theory": "Which degree is each chord, where the music resolves and which chords can stand in for others."
+      }
+     ]
+    },
+    {
+     "id": "por-medio",
+     "title": "Por arriba and por medio",
+     "minutes": 12,
+     "theory": [
+      "Flamenco guitar has two home positions: por arriba, on E (Am–G–F–E), and por medio, on A (Dm–C–B♭–A). Each palo has its usual one.",
+      "Por medio, the resolution is B♭ → A, again a half step. The open high E often rings through the chords as a pedal note.",
+      "The capo moves either position to suit the singer without changing the shapes: that's why flamenco guitarists name keys by position, not by pitch.",
+      "Tangos and tientos live por medio, in a cycle of 8 beats (two bars of 4/4) with accents on 1, 3, 5 and 7. The A chord holds the whole second bar."
+     ],
+     "tutorials": [
+      "flamenco por medio tangos guitar lesson"
+     ],
+     "exercises": [
+      {
+       "id": "por-medio-change",
+       "kind": "change",
+       "title": "Dm → C → B♭ → A",
+       "chords": [
+        "Dm",
+        "C",
+        "Bb",
+        "A"
+       ],
+       "times": 4,
+       "min": 75,
+       "theory": "The Andalusian cadence a fourth higher. B♭ is a barre at fret 1; slide the whole hand down to the open A shape."
+      },
+      {
+       "id": "a-phrygian-dominant",
+       "kind": "scale",
+       "title": "The mode of A, with C♯",
+       "key": "A",
+       "scale": "phrygian_dominant",
+       "frets": [
+        0,
+        4
+       ],
+       "min": 80,
+       "theory": "A B♭ C♯ D E F G: the scale of por medio. B♭ is fret 1 on the A string, C♯ fret 4."
+      },
+      {
+       "id": "tangos-chart",
+       "kind": "chart",
+       "title": "Tangos por medio",
+       "chart": "46-tangos-por-medio",
+       "speed": 0.8,
+       "min": 80,
+       "theory": "Every second bar is A: that's where each 8-beat cycle comes home. Mute short on beats 2 and 4."
+      }
+     ]
+    },
+    {
      "id": "picado",
      "title": "Picado: fast runs with i and m",
      "minutes": 10,
      "theory": [
       "Picado is flamenco's scale technique: the index (i) and middle (m) fingers alternate, each one resting on the next string after it plucks (apoyando).",
       "Alternate strictly, even when you change strings: i-m-i-m. A repeated finger breaks the speed and the evenness.",
-      "Start slow and loud: picado is a strong, clear sound, not a whisper. Speed comes from relaxing, not from pushing."
+      "Start slow and loud: picado is a strong, clear sound, not a whisper. Speed comes from relaxing, not from pushing.",
+      "The picado works on single strings too: a chromatic run on one string trains the alternation without the extra problem of crossing strings."
      ],
      "tutorials": [
       "flamenco picado technique exercise"
@@ -8511,6 +8709,14 @@
        "tab": "6:0 6:1 6:4 5:0 5:2 5:3 4:0 4:2 4:0 5:3 5:2 5:0 6:4 6:1 6:0",
        "min": 75,
        "theory": "On the low strings: E F G♯ A B C D E and back. In flamenco this low run is often played with the thumb alone, but start with picado."
+      },
+      {
+       "id": "picado-chromatic",
+       "kind": "lick",
+       "title": "Chromatic picado on one string",
+       "tab": "6:0 6:1 6:2 6:3 6:4 6:3 6:2 6:1 6:0",
+       "min": 75,
+       "theory": "Frets 0 to 4 and back on the low E. Play it once starting with i and once starting with m: both fingers must be able to lead."
       }
      ]
     },
@@ -8592,6 +8798,86 @@
        "speed": 0.75,
        "min": 80,
        "theory": "Four bars of three: twelve beats. The chord changes fall on the accents; feel the cycle end on the last E."
+      }
+     ]
+    },
+    {
+     "id": "alegrias",
+     "title": "Alegrías: the 12 beats in a major key",
+     "minutes": 12,
+     "theory": [
+      "Alegrías use the same 12-beat compás as soleá, but in a major key: E major (alegrías por Rosa), A or C.",
+      "The last bar of each cycle (beats 10 to 12) holds E, B7 or A. A cycle that ends on B7 asks; the next one, ending on E, answers.",
+      "The accents can move: 1, 4, 7, 10 and 12 is a common alternative to 3, 6, 8, 10 and 12, used where the harmony changes. Half cycles of six beats appear too, always in pairs."
+     ],
+     "tutorials": [
+      "alegrías flamenco guitar compás lesson"
+     ],
+     "exercises": [
+      {
+       "id": "accents-tap",
+       "kind": "tap",
+       "title": "Another accent map",
+       "bpm": 90,
+       "count": 3,
+       "min": 70,
+       "patterns": [
+        "q rq rq q",
+        "rq rq q rq",
+        "rq q rq q"
+       ],
+       "theory": "Accents on 1, 4, 7, 10 and 12, four beats per bar: bar 1 is beats 1–4, bar 2 beats 5–8, bar 3 beats 9–12. Tap only the accents."
+      },
+      {
+       "id": "alegrias-chart",
+       "kind": "chart",
+       "title": "Alegrías in E",
+       "chart": "48-alegrias",
+       "speed": 0.75,
+       "min": 80,
+       "theory": "Each line is two cycles: the first ends on B7, the second comes home to E. Count 12 and feel bar 4 of each cycle land."
+      }
+     ]
+    },
+    {
+     "id": "flamenco-palos",
+     "title": "The palos and their compás",
+     "minutes": 10,
+     "theory": [
+      "Each flamenco style (palo) has its own compás and its home position. In 12 beats of 3/4: soleá (E), bulería (A or E), alegrías (major keys) and fandango.",
+      "The siguiriya alternates 3/4 and 6/8 in a cycle of five uneven beats: 2 + 2 + 3 + 3 + 2 eighths. It lives por medio, on A, and its rasgueos lean on the bass strings.",
+      "In 4/4, eight beats per cycle: tientos and tangos (A), the farruca (A minor) and the zapateado (C major). Taranta, granaína and malagueña are in free time.",
+      "Bulerías can count from 12: the cycle starts on beat 12, the last of the previous one, so the first accent falls before the 1."
+     ],
+     "tutorials": [
+      "flamenco palos compás explained"
+     ],
+     "exercises": [
+      {
+       "id": "bulerias-tap",
+       "kind": "tap",
+       "title": "Bulería counted from 12",
+       "bpm": 100,
+       "count": 3,
+       "min": 70,
+       "patterns": [
+        "q rq rq q",
+        "rh q rq",
+        "q rq q rq"
+       ],
+       "theory": "Four beats per bar starting on 12: 12-1-2-3, 4-5-6-7, 8-9-10-11. Tap the accents 12, 3, 6, 8 and 10."
+      },
+      {
+       "id": "palos-quiz",
+       "kind": "quiz",
+       "title": "Which palo, which compás?",
+       "quiz": "technique",
+       "topics": [
+        "palos"
+       ],
+       "count": 6,
+       "min": 80,
+       "theory": "Beats per cycle, home position and character: how flamenco styles tell themselves apart."
       }
      ]
     },

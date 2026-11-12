@@ -1,0 +1,13 @@
+title: Alegrías in E
+bpm: 120
+time: 3/4
+strum: D.D.DU
+note: Four bars of three are one 12-beat cycle. B7 asks, E answers.
+
+[Compás]
+E | E | E | B7
+B7 | B7 | B7 | E
+
+[Compás]
+A | A | E | B7
+B7 | B7 | B7 | E

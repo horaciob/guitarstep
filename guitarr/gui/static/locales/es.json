@@ -2021,6 +2021,76 @@
    "tech_compas12_even": "Doce tiempos igual de fuertes",
    "tech_compas12_waltz": "Acentos en el 1, 4, 7 y 10",
    "tech_compas12_fours": "Tres grupos de cuatro, con acento en cada 1",
+   "tech_golpe": "El golpe en el flamenco es…",
+   "tech_golpe_ring_plate": "Un toque del anular sobre el golpeador",
+   "tech_golpe_thumb_bass": "Un golpe de pulgar en los bordones",
+   "tech_golpe_palm_body": "Una palmada sobre la caja",
+   "tech_golpe_pick_tap": "Un toque con la púa",
+   "tech_apagado": "Para cortar un acorde (apagado) con la mano izquierda…",
+   "tech_apagado_release": "Aflojás la presión sin soltar la posición",
+   "tech_apagado_lift_far": "Levantás los dedos lejos del mástil",
+   "tech_apagado_harder": "Apretás más fuerte",
+   "tech_apagado_next_chord": "Saltás antes al acorde siguiente",
+   "tech_index_up": "En un rasgueo, la subida del índice suele rozar…",
+   "tech_index_up_to_fourth": "De la 1ª cuerda hasta más o menos la 4ª",
+   "tech_index_up_all_six": "Las seis cuerdas, fuerte",
+   "tech_index_up_bass_only": "Solo los bordones",
+   "tech_index_up_silent": "Ninguna cuerda: es un movimiento mudo",
+   "tech_degrees_down": "En el modo flamenco, los grados de Am – G – F – E (IV – III – II – I) se cuentan…",
+   "tech_degrees_down_down": "Hacia abajo desde la tónica, E",
+   "tech_degrees_down_up": "Hacia arriba desde A",
+   "tech_degrees_down_fifths": "Por quintas",
+   "tech_degrees_down_random": "Sin un orden fijo",
+   "tech_resolution": "Por arriba, la cadencia de resolución es…",
+   "tech_resolution_f_e": "F → E (II – I, medio tono)",
+   "tech_resolution_g_e": "G → E",
+   "tech_resolution_am_e": "Am → E",
+   "tech_resolution_b7_e": "B7 → E",
+   "tech_por_medio": "La cadencia andaluza por medio (en La) es…",
+   "tech_por_medio_dm_c_bb_a": "Dm – C – B♭ – A",
+   "tech_por_medio_am_g_f_e": "Am – G – F – E",
+   "tech_por_medio_d_c_b_a": "D – C – B – A",
+   "tech_por_medio_gm_f_e_d": "Gm – F – E – D",
+   "tech_secondary": "Entre G y F, ¿qué acorde lleva a F como su propia dominante?",
+   "tech_secondary_c7": "C7",
+   "tech_secondary_g7": "G7",
+   "tech_secondary_b7": "B7",
+   "tech_secondary_e7": "E7",
+   "tech_half_cadence": "Por arriba, ¿qué movimiento es una semicadencia (un descanso fuera de casa, III – VI)?",
+   "tech_half_cadence_g_c": "G → C",
+   "tech_half_cadence_f_e": "F → E",
+   "tech_half_cadence_dm_e": "Dm → E",
+   "tech_half_cadence_am_e": "Am → E",
+   "tech_solea_beats": "¿Cuántos tiempos tiene un ciclo de soleá?",
+   "tech_solea_beats_b12": "12",
+   "tech_solea_beats_b8": "8",
+   "tech_solea_beats_b5": "5",
+   "tech_solea_beats_b4": "4",
+   "tech_siguiriya": "El ciclo de la siguiriya es…",
+   "tech_siguiriya_five_uneven": "Cinco tiempos desiguales: 2 + 2 + 3 + 3 + 2 corcheas",
+   "tech_siguiriya_twelve_even": "Doce tiempos iguales",
+   "tech_siguiriya_eight": "Ocho tiempos en dos compases de 4/4",
+   "tech_siguiriya_free": "Tiempo libre, sin compás",
+   "tech_tangos": "Los tangos y los tientos cuentan ciclos de…",
+   "tech_tangos_eight": "8 tiempos (dos compases de 4/4)",
+   "tech_tangos_twelve": "12 tiempos",
+   "tech_tangos_five": "5 tiempos desiguales",
+   "tech_tangos_six": "6 tiempos",
+   "tech_alegrias": "Las alegrías son…",
+   "tech_alegrias_major": "12 tiempos en tonalidad mayor",
+   "tech_alegrias_mode_e": "En el modo de Mi, como la soleá",
+   "tech_alegrias_minor_only": "Siempre en tonalidad menor",
+   "tech_alegrias_free": "En tiempo libre",
+   "tech_por_medio_palo": "¿Qué palo se toca normalmente por medio (en La)?",
+   "tech_por_medio_palo_siguiriya": "Siguiriya",
+   "tech_por_medio_palo_alegrias": "Alegrías",
+   "tech_por_medio_palo_farruca": "Farruca",
+   "tech_por_medio_palo_zapateado": "Zapateado",
+   "tech_from12": "Una bulería contada \"desde el 12\" empieza su ciclo…",
+   "tech_from12_on_12": "En el tiempo 12, el último del ciclo anterior",
+   "tech_from12_on_1": "En el tiempo 1",
+   "tech_from12_on_6": "En el tiempo 6",
+   "tech_from12_on_10": "En el tiempo 10",
    "tech_boogie": "En el riff de boogie en A, la nota de arriba se mueve entre…",
    "tech_boogie_fifth_sixth": "La quinta (E) y la sexta (F♯)",
    "tech_boogie_octave": "La fundamental y la octava",
@@ -5008,7 +5078,8 @@
     "theory": [
      "El picado es la técnica de escalas del flamenco: el índice (i) y el medio (m) se alternan, y cada uno queda apoyado en la cuerda siguiente después de pulsar.",
      "Alterná siempre, incluso cuando cambiás de cuerda: i-m-i-m. Un dedo repetido rompe la velocidad y la parejura.",
-     "Empezá lento y fuerte: el picado es un sonido firme y claro, no un susurro. La velocidad sale de relajarse, no de apurarse."
+     "Empezá lento y fuerte: el picado es un sonido firme y claro, no un susurro. La velocidad sale de relajarse, no de apurarse.",
+     "El picado también se trabaja en una sola cuerda: una escala cromática en una cuerda entrena la alternancia sin el problema extra de cruzar cuerdas."
     ],
     "tips": [],
     "tutorials": [
@@ -5277,6 +5348,72 @@
     "tips": [],
     "tutorials": [
      "forma del tango arreglo guitarra"
+    ]
+   },
+   "golpe": {
+    "title": "Golpe, apagado y el rasgueo continuo",
+    "theory": [
+     "El golpe es un toque del dedo anular sobre el golpeador, debajo de las cuerdas. Marca un tiempo sin cortar el acorde, y casi siempre lo sigue enseguida una subida del índice.",
+     "El apagado corta un acorde: con la mano izquierda, aflojá la presión sin soltar la posición; con la derecha, apoyá la palma sobre las cuerdas justo después de un golpe hacia abajo.",
+     "La subida del índice roza de la 1ª cuerda hasta más o menos la 4ª, no las seis. Los acentos salen de los dedos, no del brazo: el antebrazo queda quieto.",
+     "El rasgueo continuo (rasgueo redondo) abre meñique, anular, medio e índice uno tras otro; cuando el índice cae, el meñique ya está listo para empezar de nuevo, así que el sonido nunca se corta."
+    ],
+    "tips": [
+     "Practicá el rasgueo continuo un minuto por día, rápido y sin parar, sobre cualquier acorde."
+    ],
+    "tutorials": [
+     "golpe guitarra flamenca rasgueo continuo"
+    ]
+   },
+   "flamenco-harmony": {
+    "title": "La armonía del modo flamenco",
+    "theory": [
+     "El flamenco cuenta los grados de su modo hacia abajo desde la tónica: en Mi, Am es IV, G es III, F es II y E es I. Por eso la cadencia andaluza se lee IV–III–II–I.",
+     "Esos cuatro son los acordes principales. Los secundarios son C (VI), Dm (VII) y el acorde disminuido sobre B (V).",
+     "La resolución es II–I, medio tono: F → E. Dm → E (VII–I) es un sustituto más suave, y G → C (III–VI) es una semicadencia: un descanso fuera de casa.",
+     "Los acordes secundarios pueden reemplazar a los principales: C en lugar de G (Am–C–F–E) o Dm en lugar de Am (Dm–G–F–E). Y a cualquier acorde salvo el I se puede llegar desde su propia dominante: C7 lleva de G a F."
+    ],
+    "tips": [],
+    "tutorials": [
+     "armonía flamenca modo frigio acordes"
+    ]
+   },
+   "por-medio": {
+    "title": "Por arriba y por medio",
+    "theory": [
+     "La guitarra flamenca tiene dos posiciones de casa: por arriba, en Mi (Am–G–F–E), y por medio, en La (Dm–C–B♭–A). Cada palo tiene la suya.",
+     "Por medio, la resolución es B♭ → A, otra vez medio tono. La E aguda al aire suele sonar a través de los acordes como nota pedal.",
+     "La cejilla mueve cualquiera de las dos posiciones al tono del cantaor sin cambiar las formas: por eso los guitarristas flamencos nombran los tonos por posición, no por altura.",
+     "Los tangos y los tientos viven por medio, en un ciclo de 8 tiempos (dos compases de 4/4) con acentos en el 1, 3, 5 y 7. El acorde de A ocupa todo el segundo compás."
+    ],
+    "tips": [],
+    "tutorials": [
+     "por medio tangos flamencos guitarra clase"
+    ]
+   },
+   "alegrias": {
+    "title": "Alegrías: los 12 tiempos en mayor",
+    "theory": [
+     "Las alegrías usan el mismo compás de 12 tiempos que la soleá, pero en tonalidad mayor: Mi mayor (alegrías por Rosa), La o Do.",
+     "El último compás de cada ciclo (tiempos 10 a 12) lleva E, B7 o A. Un ciclo que termina en B7 pregunta; el siguiente, que termina en E, contesta.",
+     "Los acentos pueden moverse: 1, 4, 7, 10 y 12 es una alternativa común a 3, 6, 8, 10 y 12, usada donde cambia la armonía. También aparecen medios ciclos de seis tiempos, siempre de a pares."
+    ],
+    "tips": [],
+    "tutorials": [
+     "alegrías guitarra flamenca compás clase"
+    ]
+   },
+   "flamenco-palos": {
+    "title": "Los palos y su compás",
+    "theory": [
+     "Cada estilo flamenco (palo) tiene su compás y su posición de casa. En 12 tiempos de 3/4: soleá (Mi), bulería (La o Mi), alegrías (tonos mayores) y fandango.",
+     "La siguiriya alterna 3/4 y 6/8 en un ciclo de cinco tiempos desiguales: 2 + 2 + 3 + 3 + 2 corcheas. Vive por medio, en La, y sus rasgueos se apoyan en los bordones.",
+     "En 4/4, ocho tiempos por ciclo: tientos y tangos (La), la farruca (La menor) y el zapateado (Do mayor). La taranta, la granaína y la malagueña van en tiempo libre.",
+     "Las bulerías pueden contar desde el 12: el ciclo empieza en el tiempo 12, el último del anterior, así que el primer acento cae antes del 1."
+    ],
+    "tips": [],
+    "tutorials": [
+     "palos flamencos compás explicado"
     ]
    }
   },
@@ -5699,7 +5836,21 @@
    "tango-dominant/tango-ear-quiz": "¿Séptima de dominante o menor?",
    "tango-dominant/chan-chan-chart": "Finales: chan-chan",
    "tango-piece/tango-song-slow": "El tango entero al 70%",
-   "tango-piece/tango-song-full": "A velocidad completa"
+   "tango-piece/tango-song-full": "A velocidad completa",
+   "golpe/golpe-play": "Golpe y subida sobre un acorde de E",
+   "golpe/redondo-play": "El rasgueo continuo",
+   "flamenco-harmony/vi-for-iii": "Am → C → F → E",
+   "flamenco-harmony/vii-for-iv": "Dm → G → F → E",
+   "flamenco-harmony/harmony-chart": "Sustitutos y una dominante secundaria",
+   "flamenco-harmony/harmony-quiz": "Grados y cadencias del modo flamenco",
+   "por-medio/por-medio-change": "Dm → C → B♭ → A",
+   "por-medio/a-phrygian-dominant": "El modo de La, con C♯",
+   "por-medio/tangos-chart": "Tangos por medio",
+   "alegrias/accents-tap": "Otro mapa de acentos",
+   "alegrias/alegrias-chart": "Alegrías en Mi",
+   "flamenco-palos/bulerias-tap": "Bulería contada desde el 12",
+   "flamenco-palos/palos-quiz": "¿Qué palo, qué compás?",
+   "picado/picado-chromatic": "Picado cromático en una cuerda"
   },
   "charts": {
    "01-em-am": {
@@ -5881,6 +6032,18 @@
    "45-tango-piece": {
     "title": "Un tango completo",
     "note": "La parte A en La menor con marcato, la B en Do mayor más ligada y después otra vez la A y el chan-chan."
+   },
+   "46-tangos-por-medio": {
+    "title": "Tangos por medio",
+    "note": "Ciclos de 8 tiempos: el acorde de A ocupa cada segundo compás. Golpe y apagado en el 2 y el 4."
+   },
+   "47-flamenco-harmony": {
+    "title": "Sustitutos y una dominante secundaria",
+    "note": "Cada línea termina en E. Escuchá qué cambia cada sustituto en el color."
+   },
+   "48-alegrias": {
+    "title": "Alegrías en Mi",
+    "note": "Cuatro compases de tres son un ciclo de 12 tiempos. B7 pregunta, E contesta."
    }
   },
   "sections": {
@@ -5922,7 +6085,12 @@
    "Compás": "Compás",
    "Falseta": "Falseta",
    "Rasgueo": "Rasgueo",
-   "Solo": "Solo"
+   "Solo": "Solo",
+   "Tangos": "Tangos",
+   "Characteristic": "Característica",
+   "VI for III": "VI en lugar de III",
+   "VII for IV": "VII en lugar de IV",
+   "Secondary dominant": "Dominante secundaria"
   },
   "glossary": {
    "half_step": {
@@ -6631,7 +6799,21 @@
    "tango-dominant/tango-ear-quiz": "La séptima de dominante suena como una pregunta que necesita respuesta; la tríada menor suena triste pero quieta.",
    "tango-dominant/chan-chan-chart": "Frases de cuatro compases, cada una terminando en E7 → Am. Cortá el último Am en seco: ese es el chan-chan.",
    "tango-piece/tango-song-slow": "A en La menor, B en Do mayor, otra vez A y el final. Mirá los nombres de las secciones y cambiá la sensación con ellas.",
-   "tango-piece/tango-song-full": "A tempo, mantené el marcato corto y la síncopa filosa: el tango se baila, y los que bailan necesitan un pulso claro."
+   "tango-piece/tango-song-full": "A tempo, mantené el marcato corto y la síncopa filosa: el tango se baila, y los que bailan necesitan un pulso claro.",
+   "golpe/golpe-play": "Cada silencio es un golpe: tocá el golpeador en el tiempo y el índice sube en el \"y\". ↓ es hacia abajo, ↑ el índice hacia arriba y e-a-m-i el rasgueo de cuatro dedos.",
+   "golpe/redondo-play": "Semicorcheas o tresillos sin cortes: meñique, anular, medio, índice, y otra vez. Primero parejo y suave; la velocidad llega cuando el círculo es fluido.",
+   "flamenco-harmony/vi-for-iii": "C reemplaza a G: el bajo sigue bajando (A, C, F, E) pero el color es más suave.",
+   "flamenco-harmony/vii-for-iv": "Dm reemplaza a Am al principio: la misma cadencia, abierta desde otra puerta.",
+   "flamenco-harmony/harmony-chart": "Cuatro versiones del mismo camino a casa: la cadencia simple, VI en lugar de III, VII en lugar de IV y C7 llevando de G a F.",
+   "flamenco-harmony/harmony-quiz": "Qué grado es cada acorde, dónde resuelve la música y qué acordes pueden reemplazar a otros.",
+   "por-medio/por-medio-change": "La cadencia andaluza una cuarta más arriba. B♭ es una cejilla en el traste 1; bajá toda la mano hasta la forma de A al aire.",
+   "por-medio/a-phrygian-dominant": "A B♭ C♯ D E F G: la escala de por medio. B♭ es el traste 1 de la cuerda A y C♯ el traste 4.",
+   "por-medio/tangos-chart": "Cada segundo compás es A: ahí vuelve a casa cada ciclo de 8 tiempos. Apagá corto en los tiempos 2 y 4.",
+   "alegrias/accents-tap": "Acentos en el 1, 4, 7, 10 y 12, cuatro tiempos por compás: el compás 1 son los tiempos 1–4, el 2 los 5–8 y el 3 los 9–12. Marcá solo los acentos.",
+   "alegrias/alegrias-chart": "Cada línea son dos ciclos: el primero termina en B7 y el segundo vuelve a E. Contá 12 y sentí caer el compás 4 de cada ciclo.",
+   "flamenco-palos/bulerias-tap": "Cuatro tiempos por compás empezando en el 12: 12-1-2-3, 4-5-6-7, 8-9-10-11. Marcá los acentos 12, 3, 6, 8 y 10.",
+   "flamenco-palos/palos-quiz": "Tiempos por ciclo, posición de casa y carácter: cómo se distinguen los estilos flamencos.",
+   "picado/picado-chromatic": "Trastes 0 a 4 y vuelta en la E grave. Tocalo una vez empezando con i y otra empezando con m: los dos dedos tienen que poder empezar."
   }
  }
 }

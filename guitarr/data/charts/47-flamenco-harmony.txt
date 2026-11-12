@@ -1,0 +1,17 @@
+title: Substitutes and a secondary dominant
+bpm: 80
+time: 4/4
+strum: D.D.DUDU
+note: Each line ends on E. Hear what each substitute changes in the colour.
+
+[Characteristic]
+Am | G | F | E
+
+[VI for III]
+Am | C | F | E
+
+[VII for IV]
+Dm | G | F | E
+
+[Secondary dominant]
+G | C7 | F | E
