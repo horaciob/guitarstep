@@ -80,3 +80,11 @@ def test_section_analysis_ignores_notes_outside_the_section(demo_dir):
     res, _ = analysis.analyze_take(ref, demo_dir / "take.wav", FileOptions(), log=lambda m: None)
     assert {it["bar"] for it in res["issues"]} <= {1, 2}
     assert res["summary"]["extra"] == 0
+
+
+def test_demo_take_reports_its_groove(demo_dir):
+    ref = load_reference(RefOptions(demo_dir / "reference.mid"), log=lambda m: None)
+    res, _ = analysis.analyze_take(ref, demo_dir / "take.wav", FileOptions(), log=lambda m: None)
+    g = res["summary"]["groove"]
+    assert g["timing"] and {r["pos"] for r in g["timing"]} <= {"beat", "and", "sixteenth", "triplet", "other"}
+    assert g["dynamics"] is None or g["dynamics"]["code"] in ("even", "uneven", "off_softer", "off_louder")

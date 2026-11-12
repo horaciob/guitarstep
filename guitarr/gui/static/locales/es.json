@@ -7075,5 +7075,22 @@
    "flamenco-palos/palos-quiz": "Tiempos por ciclo, posición de casa y carácter: cómo se distinguen los estilos flamencos.",
    "picado/picado-chromatic": "Trastes 0 a 4 y vuelta en la E grave. Tocalo una vez empezando con i y otra empezando con m: los dos dedos tienen que poder empezar."
   }
+ },
+ "groove": {
+  "title": "Groove: en qué parte del tiempo",
+  "pos_beat": "en el tiempo",
+  "pos_and": "en el “y”",
+  "pos_sixteenth": "en las semicorcheas",
+  "pos_triplet": "en los tresillos",
+  "pos_other": "en el medio",
+  "tend_early": "adelantado",
+  "tend_late": "atrasado",
+  "tend_on_time": "a tiempo",
+  "notes": "{{n}} notas, ±{{std}} ms",
+  "tip": "Para trabajar: tocás {{pos}} {{ms}} ms {{tend}}. Contá la subdivisión en voz alta con el metrónomo.",
+  "dyn_even": "Ataque parejo: tus notas sueltas varían un {{spread}}% de volumen.",
+  "dyn_uneven": "Ataque desparejo: tus notas sueltas varían un {{spread}}% de volumen. Buscá el mismo volumen en cada nota.",
+  "dyn_off_softer": "Las notas fuera del tiempo suenan {{db}} dB más suaves que las del tiempo: probablemente tus púas hacia arriba son más débiles.",
+  "dyn_off_louder": "Las notas fuera del tiempo suenan {{db}} dB más fuertes que las del tiempo: estás acentuando las púas hacia arriba."
  }
 }

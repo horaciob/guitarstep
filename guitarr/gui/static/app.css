@@ -1273,3 +1273,9 @@ body.is-stage #main { max-width: none; padding: 12px 18px; }
 .gl .quick-fav:hover, .gl .quick-fav:focus-visible { border-color: var(--border); color: var(--text); }
 .gl .quick-fav.on { color: var(--gl-warn, #e0a400); }
 .gl .pedal .tap-tempo { margin-top: 4px; background: rgba(0, 0, 0, .28); color: var(--ink, #fff); border: 1px solid currentColor; font-weight: 700; }
+
+/* groove: timing per part of the beat */
+.groove-table { border-collapse: collapse; margin: 6px 0; }
+.groove-table td { padding: 3px 10px 3px 0; }
+.groove-table .g-early td:nth-child(3), .groove-table .g-late td:nth-child(3) { color: var(--gl-warn); font-weight: 600; }
+.groove-table .g-on_time td:nth-child(3) { color: var(--gl-ok); }

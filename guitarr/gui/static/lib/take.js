@@ -46,3 +46,16 @@ export function timingVerdictHtml(v) {
   const link = v.code === "steady_system" ? ` <a href="#/settings">${esc(t("timing_v.fix_link"))}</a>` : "";
   return `<p class="callout small timing-verdict ${cls}">${esc(t(`timing_v.${v.code}`, p))}${link}</p>`;
 }
+
+/** Where in the beat the timing slips, and how even the attack is (the server's `summary.groove`). */
+export function grooveHtml(g) {
+  if (!g || (!g.timing.length && !g.dynamics)) return "";
+  const signed = v => `${v > 0 ? "+" : ""}${v}`;
+  const rows = g.timing.map(r => `<tr class="g-${r.tend}"><td>${esc(t(`groove.pos_${r.pos}`))}</td>
+    <td class="mono">${esc(signed(r.mean_ms))} ms</td><td>${esc(t(`groove.tend_${r.tend}`))}</td>
+    <td class="muted small">${esc(t("groove.notes", { n: r.n, std: r.std_ms }))}</td></tr>`).join("");
+  const tip = g.tip ? `<p class="callout small">${esc(t("groove.tip", { pos: t(`groove.pos_${g.tip.pos}`), ms: g.tip.ms, tend: t(`groove.tend_${g.tip.tend}`) }))}</p>` : "";
+  const d = g.dynamics;
+  const dyn = d ? `<p class="small groove-dyn">${esc(t(`groove.dyn_${d.code}`, { spread: d.spread_pct, db: Math.abs(d.offbeat_db ?? 0) }))}</p>` : "";
+  return `<div class="groove"><h3>${esc(t("groove.title"))}</h3>${rows ? `<table class="groove-table">${rows}</table>` : ""}${tip}${dyn}</div>`;
+}

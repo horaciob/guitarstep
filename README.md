@@ -74,6 +74,7 @@ retakes them in both themes.
 
 **Review**
 - **Take analysis**: transcribes a recording and aligns it with the reference, even at another tempo, then draws a piano roll of reference vs. what you played.
+- **Groove**: where in the beat your timing slips (on the beat, the "and", sixteenths, triplets) and how even your attack is, including weak upstrokes.
 - **History**: score over time per song, plus your weakest bars, with a one-click "practice these bars with the trainer".
 - **Progress**: XP, levels, a day streak and a feed of what you earned.
 

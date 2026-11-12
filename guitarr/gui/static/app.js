@@ -4,7 +4,7 @@
 import { issueText, msgIsError, msgText, t, tc } from "./lib/i18n.js";
 import { $, $$, api, esc, instrument, loadInstrument, noteName, NOTE_NAMES, progressChanged, stringRow, toast } from "./lib/ui.js";
 import { levelVerdict, meterHtml, openInput, setGate, setMeter } from "./lib/input.js";
-import { bindTakePlayers, takePlayer, timingVerdictHtml } from "./lib/take.js";
+import { bindTakePlayers, grooveHtml, takePlayer, timingVerdictHtml } from "./lib/take.js";
 
 // Reads a color token and normalizes it to #rrggbb (accepts hsl/rgb) so a hex alpha can be appended.
 const _cc = document.createElement("canvas").getContext("2d");
@@ -580,6 +580,7 @@ function renderReport(r) {
     html += `</div>`;
     if (s.masked) html += `<p class="muted">${esc(t("report.masked", { n: s.masked }))}</p>`;
   }
+  html += grooveHtml(s.groove);
   if (r.transpose_suggestion) html += `<p class="callout">${esc(t("report.transpose_hint", { k: r.transpose_suggestion }))}</p>`;
   if (r.bars && r.bars.length) {
     html += `<h3>${esc(t("report.per_bar"))}</h3><div class="heat">` + r.bars.map(b => {

@@ -6,6 +6,7 @@ from pathlib import Path
 
 import numpy as np
 
+from . import groove
 from .core import Note, Reference, note_name, shifted
 from .reference import Log, transcribe
 
@@ -219,6 +220,8 @@ def compare(reference: Reference, usr: list[Note], opts: FileOptions, log: Log =
     ref_status = {}  # ref index -> status (only inside the section)
     usr_status = ["outside"] * len(usr_w)
     issues, dts = [], []
+    hits, levels = [], []  # for the groove: (ref time, deviation) and (ref time, level of single notes)
+    chord_at = {round(n.start, 2) for k2, n in enumerate(ref) if any(abs(m.start - n.start) < 0.03 for m in ref[k2 + 1:k2 + 7])}
 
     def add(t, kind, msg, **kw):
         bar, beat = grid.bar_of(t)
@@ -231,6 +234,9 @@ def compare(reference: Reference, usr: list[Note], opts: FileOptions, log: Log =
         dt = u.start - r.start
         if kind == "ok":
             dts.append(dt)
+            hits.append((r.start, dt))
+            if round(r.start, 2) not in chord_at:
+                levels.append((r.start, u.amp))
             st = "ok"
             if abs(dt) > opts.timing_tol:
                 st = "timing"
@@ -288,6 +294,8 @@ def compare(reference: Reference, usr: list[Note], opts: FileOptions, log: Log =
         timing_std_ms=round(1000 * float(np.std(dts)), 1) if dts else None,
         score=round(100 * max(0, n_ok - 0.5 * n_timing - 0.5 * n_extra) / n_sec, 1),
     )
+    rows = groove.timing_by_position(grid, hits)
+    summary["groove"] = dict(timing=rows, tip=groove.tip(rows), dynamics=groove.dynamics(grid, levels))
     sec_idx = [i for i, n in enumerate(ref) if in_sec(n.start)]
     t_lo, t_hi = lo - 1.0, margin_hi + 0.5
     return dict(

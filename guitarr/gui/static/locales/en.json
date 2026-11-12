@@ -2866,5 +2866,22 @@
    "stop": "Stop reading"
   }
  },
- "content": {}
+ "content": {},
+ "groove": {
+  "title": "Groove: where in the beat",
+  "pos_beat": "on the beat",
+  "pos_and": "on the “and”",
+  "pos_sixteenth": "on the sixteenths",
+  "pos_triplet": "on the triplets",
+  "pos_other": "in between",
+  "tend_early": "early",
+  "tend_late": "late",
+  "tend_on_time": "on time",
+  "notes": "{{n}} notes, ±{{std}} ms",
+  "tip": "Work on this: you play {{pos}} {{ms}} ms {{tend}}. Count the subdivision out loud with the metronome.",
+  "dyn_even": "Even attack: your single notes vary {{spread}}% in level.",
+  "dyn_uneven": "Uneven attack: your single notes vary {{spread}}% in level. Aim for the same volume on every note.",
+  "dyn_off_softer": "The notes off the beat are {{db}} dB softer than the ones on it: your upstrokes are probably weaker.",
+  "dyn_off_louder": "The notes off the beat are {{db}} dB louder than the ones on it: you're accenting the upstrokes."
+ }
 }

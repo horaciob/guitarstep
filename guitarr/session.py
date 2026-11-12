@@ -14,7 +14,7 @@ from pathlib import Path
 
 import numpy as np
 
-from . import config, latency, takeclick
+from . import config, groove, latency, takeclick
 from .audio_io import FileSource, Metronome, MicSource
 from .core import Reference
 from .plan import active_seconds
@@ -294,6 +294,9 @@ class LiveSession:
             score=None, played_s=active_seconds(self.note_times),
         )
         if f.mode == "tempo" and dts:
+            rows = groove.timing_by_position(grid, [(e.time, e.dt) for e in judged
+                                                    if e.dt is not None and e.status in ("ok", "octave")])
+            summary["groove"] = dict(timing=rows, tip=groove.tip(rows), dynamics=None)
             summary["timing_verdict"] = latency.verdict([1000 * x for x in dts], latency.info().get("method"))
         if any(e.status != "pending" for e in evs):
             summary["score"] = pass_score(judged, getattr(f, "pass_extras", 0) if f.mode == "tempo" else 0,
