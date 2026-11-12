@@ -245,6 +245,8 @@ G | D | C G | %      # "C G" = two chords in one bar; % repeats; - is a silent b
 > Here I | am on the | road | again   # optional lyrics: one piece per bar of the line above
 ```
 
+**A chart from a recording**: in the editor (or on an audio song's page), pick a recording and guitarr finds the tempo and the chord of each bar, as a first draft to check by ear.
+
 **Paste a chord sheet**: in the editor, paste a song with the chords over the lyrics (or ChordPro, `[G]Here I [D]am`) and it becomes a chart, with the lyrics under each bar.
 
 33 charts are built in (`guitarr/data/charts/`). Your own charts live in `~/.guitarr/charts/`; write them in the web editor or by hand. Built-in exercises are never overwritten: duplicating one creates `<id>-mine`.

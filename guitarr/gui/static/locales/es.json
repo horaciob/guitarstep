@@ -159,7 +159,9 @@
    "no_chords": "No encontré acordes: escribí los acordes en su propia línea arriba de la letra, o en línea como [G].",
    "too_long": "Es demasiado largo.",
    "bad_tone": "Ese sonido no existe.",
-   "not_assignment": "Ese archivo no es una tarea de guitarr."
+   "not_assignment": "Ese archivo no es una tarea de guitarr.",
+   "no_beat": "No encontré un pulso estable en la grabación.",
+   "not_audio": "Esa canción no es una grabación."
   },
   "practice": {
    "title": "🎧 Practicar con escucha",
@@ -613,7 +615,11 @@
    "paste_convert": "Convertir",
    "paste_done_one": "Convertido: {{count}} compás.",
    "paste_done_other": "Convertido: {{count}} compases.",
-   "paste_none": "No encontré acordes: escribí los acordes en su propia línea arriba de la letra, o en línea como [G]."
+   "paste_none": "No encontré acordes: escribí los acordes en su propia línea arriba de la letra, o en línea como [G].",
+   "rec_title": "Armarlo desde una grabación",
+   "rec_hint": "Elegí un archivo de audio: guitarr encuentra el tempo y el acorde de cada compás y escribe un primer borrador acá. Es un borrador: revisá cada acorde de oído. El archivo no se guarda.",
+   "rec_working": "Escuchando los acordes… (unos segundos por minuto de música)",
+   "rec_done": "Un borrador de {{bars}} compases a {{bpm}} BPM. Revisá los acordes de oído."
   },
   "tools": {
    "title": "Herramientas",
@@ -2649,7 +2655,8 @@
    "slow_hint": "La grabación de la canción, más lenta y en loop.",
    "tone": "Sonido para esta canción",
    "tone_none": "— ninguno —",
-   "tone_saved": "Guardado: se ofrece cuando practicás esta canción."
+   "tone_saved": "Guardado: se ofrece cuando practicás esta canción.",
+   "to_chart": "Armar un chart desde esta grabación"
   },
   "setlists": {
    "title": "Setlists",

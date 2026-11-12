@@ -28,6 +28,8 @@ export async function mount(el, { segs, params = {} }) {
   if (id) {
     const c = await api(`/api/charts/${encodeURIComponent(id)}`);
     text = c.text; mine = c.mine;
+  } else if (params.draft) {                         // a draft made elsewhere (a chart from a recording)
+    try { text = sessionStorage.getItem("guitarr.chart.draft") || text; sessionStorage.removeItem("guitarr.chart.draft"); } catch { /* private window */ }
   } else if (params.strum) {                         // "use in a chart" from the strumming library
     text = setHeader(setHeader(text, "strum", params.strum), "time", params.time || "4/4");
   }
@@ -45,6 +47,10 @@ export async function mount(el, { segs, params = {} }) {
           <textarea id="sheet" rows="8" spellcheck="false" aria-label="${esc(t("chart.paste_title"))}" placeholder="${esc(t("chart.paste_placeholder"))}"></textarea>
           <p class="field-error" id="sheetErr" hidden></p>
           <button class="btn small" id="sheetGo" type="button">${esc(t("chart.paste_convert"))}</button></details>
+        <details class="paste-sheet" id="recBox"><summary>${esc(t("chart.rec_title"))}</summary>
+          <p class="muted small">${esc(t("chart.rec_hint"))}</p>
+          <input type="file" id="recFile" accept="audio/*" aria-describedby="recMsg">
+          <p class="small" id="recMsg" aria-live="polite"></p></details>
         <textarea id="txt" spellcheck="false" rows="18" aria-label="${esc(t("chart.text_label"))}">${esc(text)}</textarea>
         <div class="row" style="margin-top:12px">
           <button class="btn primary" id="save">${esc(t("common.save"))}</button>
@@ -78,6 +84,19 @@ export async function mount(el, { segs, params = {} }) {
     return r;
   };
   txt.oninput = () => { clearTimeout(timer); timer = setTimeout(validate, 300); };
+  $("#recFile", el).onchange = async ev => {
+    const f = ev.target.files[0], msg = $("#recMsg", el);
+    if (!f) return;
+    msg.className = "small muted"; msg.textContent = t("chart.rec_working");
+    const fd = new FormData();
+    fd.append("file", f);
+    try {
+      const r = await api("/api/charts/from-audio", { method: "POST", body: fd });
+      txt.value = r.text;
+      msg.className = "small"; msg.textContent = t("chart.rec_done", { bars: r.bars, bpm: r.bpm });
+      validate();
+    } catch (e) { msg.className = "small field-error"; msg.textContent = e.message; }
+  };
   $("#sheetGo", el).onclick = async () => {
     const err = $("#sheetErr", el);
     try {

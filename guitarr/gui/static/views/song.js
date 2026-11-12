@@ -33,7 +33,8 @@ export async function mount(el, { segs }) {
     <label class="field-inline small song-tone">${esc(t("song.tone"))} <select id="songTone">${await toneOptions(f.tone || "")}</select></label>
     <section class="panel sec-progress" id="secProgress" aria-labelledby="secTitle"></section>
     <section class="panel" aria-labelledby="slowTitle"><h2 id="slowTitle">${esc(t("slow.title"))}</h2>
-      ${AUDIO.test(name) ? `<p class="muted small">${esc(t("song.slow_hint"))}</p>` : ""}<div id="slowBox"></div></section>
+      ${AUDIO.test(name) ? `<p class="muted small">${esc(t("song.slow_hint"))}</p>` : ""}<div id="slowBox"></div>
+      ${AUDIO.test(name) ? `<p class="row left"><button class="btn small" id="toChart">${esc(t("song.to_chart"))}</button><span class="small muted" id="toChartMsg" aria-live="polite"></span></p>` : ""}</section>
     <section class="panel song-theory" id="songTheory" aria-labelledby="thTitle"><h2 id="thTitle">${esc(t("songtheory.title"))}</h2>
       <p class="muted">${esc(t("songtheory.loading"))}</p></section>
     <section class="panel" aria-labelledby="vidTitle">
@@ -58,6 +59,16 @@ export async function mount(el, { segs }) {
     if (url && !/^https?:\/\//.test(url)) { err.textContent = t("song.bad_url"); err.hidden = false; return; }
     try { await api(`/api/songs/${encodeURIComponent(name)}/video`, { json: { url: $("#vidUrl", el).value } }); err.hidden = true; mount(el, { segs }); }
     catch (e) { err.textContent = e.code === "bad_url" ? t("song.bad_url") : e.message; err.hidden = false; }
+  };
+  const toChart = $("#toChart", el);
+  if (toChart) toChart.onclick = async () => {
+    const msg = $("#toChartMsg", el);
+    toChart.disabled = true; msg.textContent = t("chart.rec_working");
+    try {
+      const r = await api(`/api/songs/${encodeURIComponent(name)}/chart`, { method: "POST" });
+      try { sessionStorage.setItem("guitarr.chart.draft", r.text); } catch { /* private window */ }
+      location.hash = "#/chart/new?draft=1";
+    } catch (e) { msg.textContent = e.message; toChart.disabled = false; }
   };
   $("#songTone", el).onchange = async e => {
     try { await api(`/api/songs/${encodeURIComponent(name)}/tone`, { json: { tone: e.target.value } }); toast(t("song.tone_saved"), true); }

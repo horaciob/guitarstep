@@ -367,6 +367,39 @@ def chart_import_text(body: dict):
         return dict(error=dict(code="no_chords", message=str(e)))
 
 
+@app.post("/api/charts/from-audio")
+async def chart_from_audio(file: UploadFile = File(...)):
+    """A first-draft chart from a recording you upload (chords per bar, the tempo); nothing is kept."""
+    import tempfile
+
+    from .. import chordrec
+    from ..reference import AUDIO_EXT
+    suffix = Path(file.filename or "").suffix.lower()
+    if suffix not in AUDIO_EXT:
+        fail(400, "bad_format", "Upload an audio file (wav, mp3, flac, ogg, m4a)")
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d) / f"rec{suffix}"
+        with open(tmp, "wb") as f:
+            shutil.copyfileobj(file.file, f)
+        try:
+            return await asyncio.to_thread(chordrec.from_audio, tmp, Path(file.filename).stem)
+        except ValueError as e:
+            fail(400, "no_beat", str(e))
+
+
+@app.post("/api/songs/{name}/chart")
+def song_chart(name: str):
+    """A first-draft chart from one of your uploaded recordings."""
+    from .. import chordrec
+    p = song_path(name)
+    if p.suffix.lower() not in AUDIO_EXT:
+        fail(400, "not_audio", f"'{name}' is not a recording")
+    try:
+        return chordrec.from_audio(p, Path(name).stem)
+    except ValueError as e:
+        fail(400, "no_beat", str(e))
+
+
 @app.post("/api/charts/validate")
 def api_chart_validate(body: dict):
     try:

@@ -159,7 +159,9 @@
    "no_chords": "No chords found: write the chords on their own line above the lyrics, or inline like [G].",
    "too_long": "That's too long.",
    "bad_tone": "Unknown sound.",
-   "not_assignment": "That file isn't a guitarr assignment."
+   "not_assignment": "That file isn't a guitarr assignment.",
+   "no_beat": "Couldn't find a steady beat in the recording.",
+   "not_audio": "That song isn't a recording."
   },
   "practice": {
    "title": "🎧 Practice with listening",
@@ -613,7 +615,11 @@
    "paste_convert": "Convert",
    "paste_done_one": "Converted: {{count}} bar.",
    "paste_done_other": "Converted: {{count}} bars.",
-   "paste_none": "No chords found: write the chords on their own line above the lyrics, or inline like [G]."
+   "paste_none": "No chords found: write the chords on their own line above the lyrics, or inline like [G].",
+   "rec_title": "Make it from a recording",
+   "rec_hint": "Pick an audio file: guitarr finds the tempo and the chord in each bar and writes a first draft here. It's a draft: check every chord by ear. The file isn't kept.",
+   "rec_working": "Listening for the chords… (about as long as a few seconds per minute of music)",
+   "rec_done": "A draft with {{bars}} bars at {{bpm}} BPM. Check the chords by ear."
   },
   "tools": {
    "title": "Tools",
@@ -2649,7 +2655,8 @@
    "slow_hint": "The song's own recording, slower and in a loop.",
    "tone": "Sound for this song",
    "tone_none": "— none —",
-   "tone_saved": "Saved: it's offered when you practice this song."
+   "tone_saved": "Saved: it's offered when you practice this song.",
+   "to_chart": "Make a chart from this recording"
   },
   "setlists": {
    "title": "Setlists",

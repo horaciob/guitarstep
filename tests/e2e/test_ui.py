@@ -1357,3 +1357,22 @@ def test_search_everything_with_ctrl_k(app_page):
     app_page.keyboard.press("Enter")
     expect(app_page).to_have_url(re.compile(r"#/rig$"))
     expect(app_page.locator('#rigQuick .quick[data-id="gallagher_wall"]')).to_contain_text("active")
+
+
+def test_chart_from_a_recording_in_the_editor(app_page, tmp_path):
+    import soundfile as sf
+
+    from guitarr import catalog
+    from tests.test_learning import SR, synth_strums
+
+    prog = ["G", "D", "Em", "C"] * 2
+    chart = dict(id="x", title="x", bpm=90, beats_per_bar=4, capo=0,
+                 bars=[dict(chord=c, beats=4, frets=catalog.get_chord(c)["frets"]) for c in prog])
+    wav = tmp_path / "jam.wav"
+    sf.write(wav, synth_strums(chart, lead=0.5), SR)
+    onboarded(app_page)
+    go(app_page, "chart/new")
+    app_page.locator("#recBox summary").click()
+    app_page.locator("#recFile").set_input_files(str(wav))
+    expect(app_page.locator("#recMsg")).to_contain_text("A draft with", timeout=20000)
+    expect(app_page.locator("#txt")).to_have_value(re.compile(r"G \| D \| Em \| C"))
