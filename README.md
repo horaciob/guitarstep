@@ -116,6 +116,7 @@ Dependency versions are pinned in `pyproject.toml` and `requirements.txt`: basic
 
 ```bash
 docker compose up --build        # → http://localhost:8765
+GUITARR_PORT=8766 docker compose up --build    # another port, e.g. while the local app uses 8765
 ```
 
 This runs guitarr as a web service: Postgres (`db`), the schema migrations (`migrate`, which runs once

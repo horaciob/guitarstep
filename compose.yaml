@@ -1,6 +1,7 @@
 # guitarr as a web service, on your machine, with Docker Compose.
 #
 #   docker compose up --build          → http://localhost:8765
+#   GUITARR_PORT=8766 docker compose up --build      (if the local app already uses 8765)
 #
 # Sign in with your email: without SMTP settings the one-time link is printed to the log
 # (docker compose logs guitarr). The guitar is captured by your browser and streamed to the
@@ -16,11 +17,10 @@
 # Settings come from the environment or a .env file beside this one (POSTGRES_PASSWORD,
 # GUITARR_SMTP_HOST, GUITARR_SMTP_USER, GUITARR_SMTP_PASSWORD, GUITARR_MAIL_FROM, GUITARR_PUBLIC_URL).
 x-guitarr: &guitarr
-  build: .
-  image: guitarr:0.2.0
+  image: guitarr:web
   environment:
     GUITARR_DATABASE_URL: postgresql://guitarr:${POSTGRES_PASSWORD:-guitarr}@db:5432/guitarr
-    GUITARR_PUBLIC_URL: ${GUITARR_PUBLIC_URL:-http://localhost:8765}
+    GUITARR_PUBLIC_URL: ${GUITARR_PUBLIC_URL:-http://localhost:${GUITARR_PORT:-8765}}
     GUITARR_SMTP_HOST: ${GUITARR_SMTP_HOST:-}
     GUITARR_SMTP_PORT: ${GUITARR_SMTP_PORT:-587}
     GUITARR_SMTP_USER: ${GUITARR_SMTP_USER:-}
@@ -46,6 +46,7 @@ services:
   migrate:
     <<: *guitarr
     command: ["guitarr", "db", "migrate"]
+    pull_policy: never          # the image the guitarr service builds
     depends_on:
       db:
         condition: service_healthy
@@ -54,8 +55,10 @@ services:
   guitarr:
     <<: *guitarr
     container_name: guitarr
+    build: .
+    pull_policy: build          # rebuilt on every up (cached layers make it quick): never a stale image
     ports:
-      - "127.0.0.1:8765:8765"   # this machine only
+      - "127.0.0.1:${GUITARR_PORT:-8765}:8765"   # this machine only (GUITARR_PORT=8766 if the local app uses 8765)
     volumes:
       - guitarr-data:/data      # each user's songs, takes, history and progress (/data/users/<id>), and the shared cache
     depends_on:
