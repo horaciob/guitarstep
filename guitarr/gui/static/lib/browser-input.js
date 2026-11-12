@@ -87,31 +87,74 @@ export function inputSocket(path, params = {}) {
   return ws;
 }
 
-/** Plays clicks given in seconds of the stream once t0 (the context time of sample 0) is known. A click is
- *  [time, accent], or [time, i] with `tones` (Hz): the cable test gives each click its own tone. */
-export function clickPlayer(ctx, tones = null) {
+/** Plays sounds given in seconds of the stream once t0 (the context time of sample 0) is known.
+ *  `sound(at, key)` makes one at context time `at`. */
+function scheduler(ctx, sound) {
   const queue = [];
   let t0 = null;
   const timer = setInterval(() => {
     if (t0 === null) return;
     const horizon = ctx.currentTime + 0.3;
     while (queue.length && t0 + queue[0][0] < horizon) {
-      const [ct, accent] = queue.shift(), at = t0 + ct;
-      if (at < ctx.currentTime) continue;            // too late to play: skip it
-      const osc = ctx.createOscillator(), g = ctx.createGain();
-      osc.frequency.value = tones ? tones[accent] : accent ? 1600 : 1000;
-      g.gain.setValueAtTime(0.5, at);
-      g.gain.exponentialRampToValueAtTime(0.001, at + 0.04);
-      osc.connect(g).connect(ctx.destination);
-      osc.start(at);
-      osc.stop(at + 0.05);
+      const [ct, key] = queue.shift(), at = t0 + ct;
+      if (at >= ctx.currentTime) sound(at, key);       // too late to play: skip it
     }
   }, 50);
   return {
-    add(clicks) { queue.push(...clicks); queue.sort((a, b) => a[0] - b[0]); },
+    add(items) { queue.push(...items); queue.sort((a, b) => a[0] - b[0]); },
     start(t) { if (t0 === null) t0 = t; },
     stop() { clearInterval(timer); queue.length = 0; },
   };
+}
+
+/** The metronome: a click is [time, accent], or [time, i] with `tones` (Hz): the cable test gives each its own tone. */
+export function clickPlayer(ctx, tones = null) {
+  return scheduler(ctx, (at, accent) => {
+    const osc = ctx.createOscillator(), g = ctx.createGain();
+    osc.frequency.value = tones ? tones[accent] : accent ? 1600 : 1000;
+    g.gain.setValueAtTime(0.5, at);
+    g.gain.exponentialRampToValueAtTime(0.001, at + 0.04);
+    osc.connect(g).connect(ctx.destination);
+    osc.start(at);
+    osc.stop(at + 0.05);
+  });
+}
+
+/** Bass & drums for a chart: [time, "kick" | "snare" | "hat" | "bass:<midi>"], the sounds of audio_io.BackingSounds. */
+export function backingPlayer(ctx, volume = 0.5) {
+  const out = ctx.createGain();
+  out.gain.value = volume;
+  out.connect(ctx.destination);
+  const noise = ctx.createBuffer(1, Math.round(0.2 * ctx.sampleRate), ctx.sampleRate);
+  const d = noise.getChannelData(0);
+  for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+  const env = (at, peak, decay, len) => {
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(peak, at);
+    g.gain.setTargetAtTime(0, at, decay);
+    g.connect(out);
+    return [g, at + len];
+  };
+  const tone = (at, freq, peak, decay, len, glide = null) => {
+    const osc = ctx.createOscillator(), [g, end] = env(at, peak, decay, len);
+    osc.frequency.setValueAtTime(freq, at);
+    if (glide) osc.frequency.setTargetAtTime(glide, at, 0.03);
+    osc.connect(g); osc.start(at); osc.stop(end);
+  };
+  const hiss = (at, peak, decay, len, cutoff) => {
+    const src = ctx.createBufferSource(), hp = ctx.createBiquadFilter(), [g, end] = env(at, peak, decay, len);
+    src.buffer = noise; hp.type = "highpass"; hp.frequency.value = cutoff;
+    src.connect(hp).connect(g); src.start(at); src.stop(end);
+  };
+  return scheduler(ctx, (at, key) => {
+    if (key === "kick") tone(at, 120, 0.9, 0.09, 0.25, 45);
+    else if (key === "snare") { hiss(at, 0.35, 0.05, 0.18, 1500); tone(at, 185, 0.3, 0.03, 0.18); }
+    else if (key === "hat") hiss(at, 0.12, 0.012, 0.05, 7000);
+    else if (key.startsWith("bass:")) {
+      const f = 440 * 2 ** ((+key.slice(5) - 69) / 12);
+      [[1, 0.7], [2, 0.245], [3, 0.084]].forEach(([h, a]) => tone(at, f * h, a, 0.35, 0.7));
+    }
+  });
 }
 
 /** /api/live/start, with the guitar coming from this browser when this is the web service. */
@@ -145,15 +188,16 @@ export async function startCalibration(body) {
 function attach(input, hello, clicksNow = [], tones = null) {
   const ws = new WebSocket(`${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/ws/stream`);
   ws.binaryType = "arraybuffer";
-  const clicks = clickPlayer(input.ctx, tones);
+  const clicks = clickPlayer(input.ctx, tones), backing = backingPlayer(input.ctx);
   clicks.add(clicksNow);
-  const me = current = { close() { clicks.stop(); input.close(); if (ws.readyState <= 1) ws.close(); if (current === me) current = null; } };
+  const me = current = { close() { clicks.stop(); backing.stop(); input.close(); if (ws.readyState <= 1) ws.close(); if (current === me) current = null; } };
   ws.onopen = () => ws.send(JSON.stringify(hello));
   ws.onmessage = ev => {
     const m = JSON.parse(ev.data);
     if (m.type === "ready") {
-      input.onBlock(b => { clicks.start(b.t0); if (ws.readyState === 1) ws.send(frame(b)); });
+      input.onBlock(b => { clicks.start(b.t0); backing.start(b.t0); if (ws.readyState === 1) ws.send(frame(b)); });
     } else if (m.type === "clicks") clicks.add(m.clicks);
+    else if (m.type === "backing") backing.add(m.items);
     else if (m.type === "ended" || m.type === "error") me.close();
   };
   ws.onclose = () => me.close();

@@ -1883,7 +1883,8 @@ async def ws_stream(ws: WebSocket):
       (CPU per second of audio). A probe records no progress, history or practice time.
     Then binary frames (see STREAM_HEADER), and {"type": "stop"} to finish; {"type": "ping", "t"} is
     answered with a pong. The clicks to play come as {"type": "clicks", "clicks": [[t, accent]...]},
-    in seconds of the stream (sample index / sr), appended as the session schedules them."""
+    in seconds of the stream (sample index / sr), appended as the session schedules them; with "backing"
+    the bass & drums likewise as {"type": "backing", "items": [[t, "kick" | "snare" | "hat" | "bass:<midi>"]...]}."""
     from ..session import LiveOptions, LiveSession
 
     await ws.accept()
@@ -1961,13 +1962,19 @@ async def ws_stream(ws: WebSocket):
                     cpu_s=round(out.get("cpu_s", 0.0), 3),
                     cpu_per_audio_s=round(out["cpu_s"] / heard, 4) if "cpu_s" in out and heard else None)
 
+    backing_on = bool(sess and sess.opts.backing and sess.use_click)
+
     async def send_updates():
-        sent = 0
+        sent = sent_b = 0
         while alive():
             clicks = list(getattr(sess.follower, "clicks", None) or []) if sess else []
             if len(clicks) > sent:
                 await ws.send_json(dict(type="clicks", clicks=[[round(t, 4), bool(a)] for t, a in clicks[sent:]]))
                 sent = len(clicks)
+            backing = list(getattr(sess.follower, "backing", None) or []) if backing_on else []
+            if len(backing) > sent_b:        # bass & drums for a chart: played by the browser like the clicks
+                await ws.send_json(dict(type="backing", items=[[round(t, 4), k] for t, k in backing[sent_b:]]))
+                sent_b = len(backing)
             if probe:
                 await ws.send_json(dict(type="state", state=sess.snapshot(), metrics=metrics()))
             await asyncio.sleep(0.05)

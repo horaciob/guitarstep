@@ -128,7 +128,8 @@ and exits) and the app (`guitarr`, which starts only after the migrations succee
   Opening the link shows whose account it is, and a button signs in; it warns when the link was asked for in
   another browser (someone could send you a link to their own account).
 - **Audio:** your browser captures the guitar (the clean input, without the tone rig) and streams it to the
-  server, which grades it. The metronome clicks play in the browser. This works on macOS and Windows too.
+  server, which grades it. The metronome clicks (and a chart's bass & drums) play in the browser. This works on
+  macOS and Windows too.
   The tuner, the signal check and the latency calibration use the browser's input as well; a calibration is
   kept for that input and used whenever you practice with it (else the browser's own latency estimate).
   Browsers open the microphone only on `https://` or on `localhost`.

@@ -240,6 +240,30 @@ def test_latency_calibration_with_the_browsers_input():
         assert ws.receive_json()["detail"]["code"] == "no_session"
 
 
+def test_a_charts_bass_and_drums_play_in_the_browser():
+    import numpy as np
+    from guitarr.gui import server
+    c = client()
+    r = c.post("/api/live/start", json=dict(chart="01-em-am", mode="tempo", backing=True, input="browser", sr=48000))
+    assert r.status_code == 200 and r.json()["stream"]
+    got = {"clicks": [], "backing": []}
+    with c.websocket_connect("/ws/stream") as ws:
+        ws.send_json(dict(type="attach"))
+        assert ws.receive_json()["type"] == "ready"
+        for f in _frames(np.zeros(48000 * 3, np.float32)):
+            ws.send_bytes(f)
+        while not (got["clicks"] and got["backing"]):
+            m = ws.receive_json()
+            if m["type"] == "clicks":
+                got["clicks"] += m["clicks"]
+            elif m["type"] == "backing":
+                got["backing"] += m["items"]
+        c.post("/api/live/stop")
+    server.S.thread.join(10)
+    kinds = {k.split(":")[0] for _, k in got["backing"]}
+    assert {"kick", "bass"} <= kinds and got["backing"][0][0] >= got["clicks"][0][0]
+
+
 def test_browser_audio_needs_a_start_message():
     c = client()
     with c.websocket_connect("/ws/stream") as ws:
