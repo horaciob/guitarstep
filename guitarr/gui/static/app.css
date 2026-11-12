@@ -1317,3 +1317,8 @@ dialog.placement { max-width: 520px; }
 .skills-list { list-style: none; padding: 0; margin: 8px 0 0; display: grid; gap: 4px; }
 .skills-list li { display: grid; grid-template-columns: 1fr auto; column-gap: 8px; }
 .skills-list small { grid-column: 1 / -1; }
+
+/* history: then and now */
+.gl .then-now .tn-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+.gl .then-now h3 { margin: 0 0 4px; }
+.gl .then-now audio { width: 100%; }

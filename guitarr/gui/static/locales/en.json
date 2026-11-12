@@ -344,7 +344,12 @@
    "kind_take": "take",
    "kind_tempo": "tempo",
    "kind_wait": "wait",
-   "all": "all"
+   "all": "all",
+   "then_now": "Then and now",
+   "then": "Your first take",
+   "now": "Your latest take",
+   "then_now_up": "{{n}} points better than your first recorded take, after {{sessions}} sessions. Listen to both.",
+   "then_now_down": "{{n}} points below your first recorded take (maybe a faster tempo or a harder section). Listen to both."
   },
   "settings": {
    "title": "Audio settings",

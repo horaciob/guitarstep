@@ -47,3 +47,28 @@ def test_json_is_written_whole_or_not_at_all(tmp_path, monkeypatch):
         pass
     assert p.read_text(encoding="utf-8") == '{\n "a": "ñ"\n}'          # the old file is intact
     assert sorted(x.name for x in p.parent.iterdir()) == ["data.json"]   # and no temp file is left
+
+
+def test_then_and_now_pairs_the_first_and_latest_takes():
+    import numpy as np
+    import soundfile as sf
+    from fastapi.testclient import TestClient
+
+    from guitarr import config, history
+    from guitarr.gui.server import app
+
+    config.TAKES_DIR.mkdir(parents=True, exist_ok=True)
+    ref = dict(name="Tune", path="/x/tune.mid", track=None)
+    for k, score in enumerate((55, 70, 88)):
+        take = config.TAKES_DIR / f"take-2026010{k + 1}-100000.wav"
+        sf.write(take, np.zeros(8000, np.float32), 8000)
+        history.save(dict(kind="live", mode="tempo", reference=ref, take=str(take), speed=0.8 + 0.1 * k,
+                          summary=dict(score=score)))
+    history.save(dict(kind="live", mode="wait", reference=ref, summary=dict(score=90)))      # no take: not paired
+    h = TestClient(app).get(f"/api/history/{history.song_id('/x/tune.mid')}").json()
+    tn = h["then_now"]
+    assert tn["then"]["take"].endswith("01-100000.wav") and tn["now"]["take"].endswith("03-100000.wav")
+    assert (tn["then"]["score"], tn["now"]["score"], tn["sessions"]) == (55, 88, 4)
+    (config.TAKES_DIR / tn["then"]["take"]).unlink()                                           # deleted takes don't count
+    (config.TAKES_DIR / "take-20260102-100000.wav").unlink()
+    assert TestClient(app).get(f"/api/history/{history.song_id('/x/tune.mid')}").json()["then_now"] is None

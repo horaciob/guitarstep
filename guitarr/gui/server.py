@@ -1798,7 +1798,24 @@ def api_history_song(sid: str):
         song = rpath
     else:
         song = Path(rpath).name if rpath and (config.SONGS_DIR / Path(rpath).name).exists() else None
-    return dict(id=sid, reference=ref, song=song, sessions=light, problem_bars=history.problem_bars(sessions))
+    return dict(id=sid, reference=ref, song=song, sessions=light, problem_bars=history.problem_bars(sessions),
+                then_now=_then_now(sessions))
+
+
+def _then_now(sessions: list[dict]) -> dict | None:
+    """Your first recorded take of a song next to your latest, to hear how far you came (both takes still on disk)."""
+    from .. import takeclick
+
+    def take(s):
+        name = Path(s.get("take") or "").name
+        return name if name and (config.TAKES_DIR / name).exists() else None
+
+    rec = [s for s in sessions if take(s)]
+    if len(rec) < 2:
+        return None
+    pick = lambda s: dict(take=take(s), date=s.get("date"), score=history.session_score(s),
+                          speed=s.get("final_speed") or s.get("speed"), info=takeclick.info(config.TAKES_DIR / take(s)))
+    return dict(then=pick(rec[0]), now=pick(rec[-1]), sessions=len(sessions))
 
 
 # ---------------------------------------------------------------- startup

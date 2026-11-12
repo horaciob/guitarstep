@@ -344,7 +344,12 @@
    "kind_take": "toma",
    "kind_tempo": "tempo",
    "kind_wait": "espera",
-   "all": "todo"
+   "all": "todo",
+   "then_now": "Antes y ahora",
+   "then": "Tu primera toma",
+   "now": "Tu última toma",
+   "then_now_up": "{{n}} puntos mejor que tu primera toma grabada, después de {{sessions}} sesiones. Escuchá las dos.",
+   "then_now_down": "{{n}} puntos debajo de tu primera toma grabada (quizás más rápido o una sección más difícil). Escuchá las dos."
   },
   "settings": {
    "title": "Ajustes de audio",

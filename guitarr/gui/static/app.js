@@ -842,11 +842,21 @@ async function loadSongHistory(id) {
       `</div>${h.song ? `<div class="callout" style="margin-top:12px"><span>${esc(t("history.practice_hint"))}</span><button class="btn primary small" id="hPractice">${esc(t("history.practice_bars", { from: a, to: z }))}</button></div>` : ""}</div>`;
     App.histPractice = [h.song, a, z];
   }
+  if (h.then_now) {
+    const { then, now } = h.then_now, side = (k, x) => `<div class="tn-side"><h3>${esc(t(`history.${k}`))}</h3>
+      <p class="small muted">${esc((x.date || "").slice(0, 10))} · ${esc(t("report.score"))} <b>${fmtPct(x.score)}</b>${typeof x.speed === "number" ? ` · ${Math.round(x.speed * 100)}%` : ""}</p>
+      ${takePlayer(x.take, x.info)}</div>`;
+    const d = then.score != null && now.score != null ? Math.round(now.score - then.score) : null;
+    html += `<div class="panel then-now"><h2>${esc(t("history.then_now"))}</h2>
+      ${d != null ? `<p>${esc(t(d >= 0 ? "history.then_now_up" : "history.then_now_down", { n: Math.abs(d), sessions: h.then_now.sessions }))}</p>` : ""}
+      <div class="tn-grid">${side("then", then)}${side("now", now)}</div></div>`;
+  }
   html += `<div class="panel"><h2>${esc(t("history.sessions"))}</h2><table class="sessions"><tr><th>${esc(t("history.col_date"))}</th><th>${esc(t("history.col_kind"))}</th><th>${esc(t("history.col_bars"))}</th><th>${esc(t("history.col_speed"))}</th><th>${esc(t("history.col_score"))}</th></tr>` +
     ss.slice().reverse().map(s => `<tr><td>${esc((s.date || "").replace("T", " ").slice(0, 16))}</td><td>${esc(t(s.kind === "file" ? "history.kind_take" : s.mode === "tempo" ? "history.kind_tempo" : "history.kind_wait"))}</td>
       <td>${esc(s.section ? `${s.section.start_bar || 1}–${s.section.end_bar || t("practice.end")}` : t("history.all"))}</td>
       <td>${typeof s.speed === "number" && s.kind !== "file" ? Math.round(s.speed * 100) + "%" : "—"}</td><td><b>${fmtPct(s.score)}</b></td></tr>`).join("") + `</table></div>`;
   $("#hDetail").innerHTML = html;
+  bindTakePlayers($("#hDetail"));
   const btn = $("#hPractice");
   if (btn) btn.onclick = () => practiceBars(...App.histPractice);
   drawHistChart(ss);
