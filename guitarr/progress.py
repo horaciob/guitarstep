@@ -49,6 +49,7 @@ def _empty() -> dict:
                 warmup={},        # daily warm-up → {drill: {bpm (the goal), best, day}}
                 improv={},        # improvising → {backing: {best, last, day}}
                 neck={},          # neck game → {strings+accidentals-seconds: {best, last, day}}
+                start_level=None,  # where the placement says to start the course (a level id)
                 facts={},         # weak spots: facts you missed → {label, lesson, exercise, misses, step, due}
                 budget=None,      # minutes you chose for today's plan (15, 30, 60, 120)
                 queue=[])         # song or chart sections you pinned to today's plan
@@ -549,7 +550,8 @@ def print_progress() -> None:
           + ("" if d["practiced_today"] else "  (no practice yet today)"))
     all_l = catalog.lessons()
     print(f"  lessons: {len([x for x in all_l if x['id'] in d['lessons']])}/{len(all_l)}")
-    nxt = next((x for x in all_l if x["id"] not in d["lessons"]), None)
+    from .placement import next_lesson
+    nxt = next_lesson(set(d["lessons"]), d.get("start_level"))
     if nxt:
         print(f"    next: {nxt['title']}  (guitarr gui → Course)")
     print(f"  mastered chords: {', '.join(sorted(d['chords'])) or '—'}")
@@ -559,3 +561,10 @@ def print_progress() -> None:
         print("  latest:")
         for e in d["events"][:5]:
             print(f"    {event_text(e)}" + (f"  +{e['xp']} XP" if e.get("xp") else ""))
+
+
+def set_start_level(lid: str | None) -> None:
+    with _lock:
+        d = _read()
+        d["start_level"] = lid
+        _write(d)

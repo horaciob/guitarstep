@@ -774,8 +774,33 @@ def api_course():
 
     levels = [level_dict(lv) for lv in catalog.course()["levels"]]
     optional = [level_dict(lv) for lv in catalog.course()["optional"]]
-    nxt = next((x for lv in levels for x in lv["lessons"] if not x["done"]), None)
-    return dict(levels=levels, optional=optional, next=nxt and dict(id=nxt["id"], title=nxt["title"]))
+    from ..placement import next_lesson
+    nxt = next_lesson(set(p["lessons"]), p.get("start_level"))
+    return dict(levels=levels, optional=optional, next=nxt and dict(id=nxt["id"], title=nxt["title"]),
+                start_level=p.get("start_level"))
+
+
+@app.get("/api/placement")
+def placement_get():
+    from .. import placement
+    levels = {lv["id"]: lv for lv in catalog.course()["levels"]}
+    return dict(levels=[dict(id=lid, number=levels[lid]["number"], title=levels[lid]["title"]) for lid in placement.LEVELS],
+                start_level=progress.get().get("start_level"))
+
+
+@app.post("/api/placement")
+def placement_set(body: dict):
+    """Saves where to start, from the yes/no answers (or `reset` to start from the beginning)."""
+    from .. import placement
+    if body.get("reset"):
+        start = None
+    else:
+        answers = body.get("answers")
+        if not isinstance(answers, list) or not answers or not all(isinstance(a, bool) for a in answers):
+            fail(400, "bad_answers", "Answer yes or no to each skill")
+        start = placement.start_from(answers[:len(placement.LEVELS)])
+    progress.set_start_level(start)
+    return dict(start_level=start)
 
 
 @app.get("/api/progress")

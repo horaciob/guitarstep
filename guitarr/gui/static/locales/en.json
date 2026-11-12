@@ -153,7 +153,8 @@
    "bad_backing": "Unknown backing.",
    "bad_scale": "Unknown scale.",
    "bad_key": "Unknown key.",
-   "bad_strings": "Pick at least one string."
+   "bad_strings": "Pick at least one string.",
+   "bad_answers": "Answer yes or no to each skill."
   },
   "practice": {
    "title": "🎧 Practice with listening",
@@ -2974,6 +2975,33 @@
    "no_best": "No record here yet.",
    "found_so_far": "✓ {{n}} of {{all}}",
    "result": "{{n}} notes in {{seconds}} s ({{first}} on the first try)"
+  },
+  "placement": {
+   "open": "Already play? Find your level",
+   "again": "Find my level again",
+   "reset": "start from the beginning",
+   "starting_at": "You start at level {{level}}.",
+   "title": "Find your level",
+   "step": "Skill {{k}} of {{n}}. Answer honestly: you can always go back to earlier lessons.",
+   "yes": "Yes, I can",
+   "no": "Not yet",
+   "back": "Back",
+   "close": "Close",
+   "skill_n1": "I can play an E minor chord and switch to another chord without stopping.",
+   "skill_n2": "I play the open chords D, A, E, G and C and change between them in time.",
+   "skill_n3": "I strum steady patterns with down and up strokes, in 4/4 and 3/4.",
+   "skill_n16": "I can read simple rhythms: whole, half, quarter and eighth notes and their rests.",
+   "skill_n4": "I play seventh chords, power chords and the basic blues shape.",
+   "skill_n5": "I play barre chords (F, Bm) and the minor pentatonic scale.",
+   "skill_n21": "I use alternate picking, palm muting, hammer-ons, pull-offs and bends.",
+   "skill_n23": "I fingerpick patterns (Travis picking) and play arpeggios.",
+   "skill_n6": "I play a blues shuffle, blues licks and a turnaround.",
+   "skill_n8": "I can find any note on the neck and name intervals.",
+   "skill_n9": "I know the major scale, how keys work and several scale positions.",
+   "result": "Start at level {{level}}. The next lesson suggested is there now.",
+   "result_start": "Start from the beginning: level 1 is the right place.",
+   "result_hint": "Nothing was marked as passed. To skip a lesson for real, open it and pass its check.",
+   "done": "Go to the course"
   }
  },
  "content": {}

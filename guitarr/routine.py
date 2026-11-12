@@ -10,7 +10,7 @@ from __future__ import annotations
 from datetime import date, datetime
 
 from . import warmup
-from . import catalog, history, plan, progress
+from . import catalog, history, placement, plan, progress
 
 TUNE_MIN = 2
 REVIEW_MIN = 3
@@ -110,7 +110,7 @@ def build(today: date | None = None) -> dict:
         f = facts[0]
         add(f"weak:{f['key']}", "weak", REVIEW_MIN, progress.fact_route(f), False, "technique", label=f["label"], more=len(facts) - 1)
 
-    nxt = next((x for x in lessons if x["id"] not in d["lessons"]), None)
+    nxt = placement.next_lesson(set(d["lessons"]), d.get("start_level"))
     done_lesson = next((e["params"]["lesson"] for e in events if e["code"] in ("exercise_passed", "lesson_completed")), None)
     if nxt or done_lesson:
         lid = done_lesson or nxt["id"]

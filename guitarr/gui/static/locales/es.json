@@ -153,7 +153,8 @@
    "bad_backing": "Esa base no existe.",
    "bad_scale": "Esa escala no existe.",
    "bad_key": "Esa tonalidad no existe.",
-   "bad_strings": "Elegí al menos una cuerda."
+   "bad_strings": "Elegí al menos una cuerda.",
+   "bad_answers": "Respondé sí o no a cada habilidad."
   },
   "practice": {
    "title": "🎧 Practicar con escucha",
@@ -2974,6 +2975,33 @@
    "no_best": "Todavía no hay récord acá.",
    "found_so_far": "✓ {{n}} de {{all}}",
    "result": "{{n}} notas en {{seconds}} s ({{first}} al primer intento)"
+  },
+  "placement": {
+   "open": "¿Ya tocás? Encontrá tu nivel",
+   "again": "Volver a buscar mi nivel",
+   "reset": "empezar desde el principio",
+   "starting_at": "Empezás en el nivel {{level}}.",
+   "title": "Encontrá tu nivel",
+   "step": "Habilidad {{k}} de {{n}}. Respondé con sinceridad: siempre podés volver a lecciones anteriores.",
+   "yes": "Sí, puedo",
+   "no": "Todavía no",
+   "back": "Atrás",
+   "close": "Cerrar",
+   "skill_n1": "Puedo tocar un Mi menor y pasar a otro acorde sin frenar.",
+   "skill_n2": "Toco los acordes abiertos Re, La, Mi, Sol y Do y cambio entre ellos a tiempo.",
+   "skill_n3": "Rasgueo patrones parejos con golpes hacia abajo y hacia arriba, en 4/4 y 3/4.",
+   "skill_n16": "Leo ritmos simples: redondas, blancas, negras, corcheas y sus silencios.",
+   "skill_n4": "Toco acordes de séptima, power chords y la figura básica del blues.",
+   "skill_n5": "Toco acordes con cejilla (Fa, Sim) y la escala pentatónica menor.",
+   "skill_n21": "Uso púa alternada, palm mute, hammer-ons, pull-offs y bends.",
+   "skill_n23": "Toco patrones de fingerpicking (Travis) y arpegios.",
+   "skill_n6": "Toco un shuffle de blues, licks de blues y un turnaround.",
+   "skill_n8": "Encuentro cualquier nota en el diapasón y nombro intervalos.",
+   "skill_n9": "Conozco la escala mayor, cómo funcionan las tonalidades y varias posiciones de escala.",
+   "result": "Empezá en el nivel {{level}}. La próxima lección sugerida ahora está ahí.",
+   "result_start": "Empezá desde el principio: el nivel 1 es el lugar indicado.",
+   "result_hint": "No se marcó nada como aprobado. Para saltear una lección de verdad, abrila y pasá su prueba.",
+   "done": "Ir al curso"
   }
  },
  "content": {

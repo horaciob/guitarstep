@@ -1251,3 +1251,23 @@ def test_neck_game_tab(app_page):
     app_page.locator('#nSet button[data-set="all"]').click()
     expect(app_page.locator('#nSet button[data-set="all"]')).to_have_attribute("aria-pressed", "true")
     expect(app_page.locator('#nSet button[data-set="low"]')).to_have_attribute("aria-pressed", "false")
+
+
+def test_placement_moves_where_the_course_continues(app_page):
+    onboarded(app_page)
+    go(app_page, "course")
+    app_page.locator("#plOpen").click()
+    dlg = app_page.locator("dialog.placement")
+    expect(dlg).to_contain_text("E minor chord")
+    dlg.get_by_role("button", name="Yes, I can").click()
+    dlg.get_by_role("button", name="Back").click()
+    expect(dlg).to_contain_text("Skill 1 of 11")
+    for _ in range(5):
+        dlg.get_by_role("button", name="Yes, I can").click()
+    dlg.get_by_role("button", name="Not yet").click()
+    expect(dlg).to_contain_text("Start at level 6")
+    dlg.get_by_role("button", name="Go to the course").click()
+    expect(app_page.locator(".placement-line")).to_contain_text("You start at level 6")
+    expect(app_page.locator("a.callout")).to_have_attribute("href", "#/lesson/barre")
+    app_page.locator("#plReset").click()
+    expect(app_page.locator(".placement-line")).not_to_contain_text("You start at")
