@@ -996,9 +996,9 @@ def test_rig_artist_tones(app_page):
     onboarded(app_page)
     go(app_page, "rig")
     row = app_page.locator("#artistSounds .quick:not([hidden])")
-    expect(row).to_have_count(128)
+    expect(row).to_have_count(168)
     app_page.locator('.artist-styles button[data-style="acoustic"]').click()     # filter by style
-    expect(row).to_have_count(3)
+    expect(row).to_have_count(4)
     app_page.locator('.artist-styles button[data-style="classical"]').click()
     expect(row).to_have_count(10)
     expect(app_page.locator('#artistSounds .quick[data-id="segovia_classical"]')).to_be_visible()
@@ -1032,8 +1032,9 @@ def test_rig_preset_search(app_page):
     search.fill("andres")                                       # without the accent
     expect(app_page.locator('#artistSounds .quick[data-id="segovia_classical"]')).to_be_visible()
     search.fill("chicago slide")                                # every word must match
-    expect(visible).to_have_count(1)
-    expect(visible.first).to_contain_text("Muddy Waters")
+    expect(visible).to_have_count(2)                            # Elmore James and Muddy Waters
+    expect(app_page.locator('#artistSounds .quick[data-id="muddy_waters"]')).to_be_visible()
+    expect(app_page.locator('#artistSounds .quick[data-id="elmore_james"]')).to_be_visible()
     search.fill("argentine rock")                               # by genre ("rock nacional" in Spanish)
     expect(app_page.locator('#artistSounds .quick[data-id="cerati_soda"]')).to_be_visible()
     search.fill("redonditos")                                   # by band
@@ -1071,6 +1072,21 @@ def test_rig_preset_search(app_page):
     clear.click()
     expect(search).to_have_value("")
     expect(clear).to_be_hidden()
+    search.fill("ghalager")                                     # typed by ear: sounds like Gallagher
+    expect(app_page.locator('#artistSounds .quick[data-id="gallagher_wall"]')).to_be_visible()
+    search.fill("jendrix")
+    expect(app_page.locator('#artistSounds .quick[data-id="hendrix_vibe"]')).to_be_visible()
+    search.fill("liam gallagher")                               # other names: Oasis's singer finds the Oasis sound
+    expect(visible).to_have_count(1)
+    expect(visible.first).to_contain_text("Noel Gallagher")
+    search.fill("nile rodgers")                                 # the newer artist tones
+    expect(visible.first).to_contain_text("Nile Rodgers")
+    search.fill("qwxrt gibons")                                 # nothing: the closest names, one click each
+    hint = app_page.locator("#searchNone [data-suggest]")
+    expect(hint.first).to_be_visible()
+    app_page.locator('#searchNone [data-suggest="Billy Gibbons"]').click()
+    expect(search).to_have_value("Billy Gibbons")
+    expect(app_page.locator('#artistSounds .quick[data-id="billy_gibbons"]')).to_be_visible()
     search.fill("zzzz")
     expect(app_page.locator("#searchNone")).to_be_visible()
     search.fill("")

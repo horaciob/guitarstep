@@ -6,7 +6,7 @@ import { icon } from "../lib/icons.js";
 import { rig } from "../lib/rig/engine.js";
 import { AMP_KNOBS, AMPS, CABS, EFFECT_GROUPS, EFFECTS, GUITARS, MICS } from "../lib/rig/effects.js";
 import { ARTIST_INFO, ARTIST_STYLE, ARTIST_STYLES, ARTISTS, FACTORY, factory, makeEffect } from "../lib/rig/presets.js";
-import { fold, matcher, rank } from "../lib/search.js";
+import { fold, matcher, rank, suggest } from "../lib/search.js";
 import { knob } from "../lib/rig/knob.js";
 import { RIFFS, VOICES } from "../lib/rig/synth.js";
 import { clipPlot, comparePlots, isDrive, stackCurve } from "../lib/rig/visuals.js";
@@ -119,7 +119,7 @@ function searchText(id, kind) {
   const parts = [t(`rig.preset.${id}`)];
   const info = ARTIST_INFO[id];
   if (info) {
-    parts.push(info.artist, ...info.bands, ...info.genres.map(g => `${t(`rig.genre.${g}`)} ${g.replace(/_/g, " ")}`));
+    parts.push(info.artist, ...info.bands, ...(info.also || []), ...info.genres.map(g => `${t(`rig.genre.${g}`)} ${g.replace(/_/g, " ")}`));
     if (ARTIST_STYLE[id]) parts.push(t(`rig.artist_style.${ARTIST_STYLE[id]}`));
   }
   return fold(parts.join(" "));
@@ -129,7 +129,7 @@ function searchText(id, kind) {
 function rankText(id, kind) {
   if (kind === "user") return fold(id);
   const info = ARTIST_INFO[id];
-  return [t(`rig.preset.${id}`), info ? info.artist : "", info ? info.bands.join(" ") : ""].map(fold).join("|");
+  return [t(`rig.preset.${id}`), info ? info.artist : "", info ? [...info.bands, ...(info.also || [])].join(" ") : ""].map(fold).join("|");
 }
 
 let bestCard = null;                                          // the top result: Enter loads it
@@ -169,6 +169,21 @@ function applySearch() {
   const none = $("#searchNone", box), count = $("#searchCount", box);
   none.hidden = !words.length || shown > 0;
   none.textContent = t("rig.search_none", { q: presetQuery.trim() });
+  if (words.length && !shown) {                               // nothing found: the closest names, one click each
+    const named = cards.filter(c => c.dataset.id);
+    const picks = suggest(presetQuery, named.map(c => (c.dataset.r || "").split("|").slice(0, 2).join(" ")));
+    if (picks.length) {
+      const label = c => c.querySelector("b").textContent.split(":")[0];
+      none.innerHTML = `${esc(none.textContent)} ${esc(t("rig.search_suggest"))} ${picks.map(i =>
+        `<button type="button" class="link-btn" data-suggest="${esc(label(named[i]))}">${esc(label(named[i]))}</button>`).join(", ")}`;
+      $$("[data-suggest]", none).forEach(b => b.onclick = () => {
+        const input = $("#presetSearch", box);
+        input.value = presetQuery = b.dataset.suggest;
+        applySearch();
+        input.focus();
+      });
+    }
+  }
   count.textContent = words.length ? t("rig.search_count", { count: shown }) + (loose && shown ? ` · ${t("rig.search_close")}` : "") : "";
 }
 

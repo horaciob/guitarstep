@@ -21,14 +21,38 @@ export function editDistance(a, b, max) {
   return prev[b.length];
 }
 
-/** A typo still finds it: "henrix" → Hendrix, "ricotta" → Ricota, "stever" → Stevie. Words of 3 letters or
- * fewer must be exact; `text` is already folded. A word may also be the start of a longer one ("henri" → hendrix). */
+/** How a folded word sounds, for names typed by ear (in English or Spanish): no h, no doubled letters, and letters
+ * that sound alike made one. "ghalager" and "gallagher" both become "galager"; "jendrix", "yimi" find Hendrix, Jimi. */
+export const soundKey = w => w.replace(/ph/g, "f").replace(/[jh]/g, "").replace(/[kq]/g, "c").replace(/v/g, "b")
+  .replace(/z/g, "s").replace(/y/g, "i").replace(/w/g, "u").replace(/(.)\1+/g, "$1");
+
+/** A typo still finds it: "henrix" → Hendrix, "ricotta" → Ricota, "stever" → Stevie, "ghalager" → Gallagher.
+ * Words of 3 letters or fewer must be exact or sound the same; `text` is already folded. A word may also be the
+ * start of a longer one ("henri" → hendrix). */
 export function closeTo(word, text) {
   if (word.length >= 4 && text.replace(/ /g, "").includes(word)) return true;     // "pinkfloyd", "acdc"
+  const toks = text.split(" ").filter(tok => tok.length >= 3);
+  const ws = soundKey(word);
+  if (ws.length >= 3 && toks.some(tok => {                                         // sounds like it
+    const ts = soundKey(tok);
+    return ts.startsWith(ws) || (ws.length >= 4 && editDistance(ws, ts.slice(0, ws.length + 1), 1) <= 1);
+  })) return true;
   const max = word.length >= 5 ? 2 : word.length === 4 ? 1 : 0;
   if (!max) return false;
-  return text.split(" ").some(tok => tok.length >= 3 && (editDistance(word, tok, max) <= max
-    || (tok.length > word.length && editDistance(word, tok.slice(0, word.length), 1) <= 1)));
+  return toks.some(tok => editDistance(word, tok, max) <= max
+    || (tok.length > word.length && editDistance(word, tok.slice(0, word.length), 1) <= 1));
+}
+
+/** For a search that found nothing: the indexes of the `names` (folded) closest to what was typed, best first. */
+export function suggest(query, names, n = 3) {
+  const words = fold(query).split(" ").filter(Boolean).map(soundKey);
+  if (!words.length) return [];
+  const dist = name => {
+    const toks = name.split(" ").filter(Boolean).map(soundKey);
+    return words.reduce((sum, w) => sum + Math.min(...toks.map(t => editDistance(w, t.slice(0, Math.max(w.length, 3)), 9))), 0)
+      / words.reduce((s, w) => s + w.length, 0);
+  };
+  return names.map((name, i) => [dist(name), i]).filter(([d]) => d <= 0.5).sort((a, b) => a[0] - b[0]).slice(0, n).map(([, i]) => i);
 }
 
 /** A word of `text` (folded) starts with `w`: "j" finds "John", not "Django". */
