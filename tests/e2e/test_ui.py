@@ -1079,6 +1079,9 @@ def test_rig_preset_search(app_page):
     search.fill("liam gallagher")                               # other names: Oasis's singer finds the Oasis sound
     expect(visible).to_have_count(1)
     expect(visible.first).to_contain_text("Noel Gallagher")
+    expect(visible.first.locator(".quick-why")).to_have_text("Liam Gallagher · Oasis")   # and says why it's there
+    search.fill("gilmour")                                      # a match on the name needs no explanation
+    expect(app_page.locator("#artistSounds .quick-why:not([hidden])")).to_have_count(0)
     search.fill("nile rodgers")                                 # the newer artist tones
     expect(visible.first).to_contain_text("Nile Rodgers")
     search.fill("qwxrt gibons")                                 # nothing: the closest names, one click each

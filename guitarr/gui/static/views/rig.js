@@ -6,7 +6,7 @@ import { icon } from "../lib/icons.js";
 import { rig } from "../lib/rig/engine.js";
 import { AMP_KNOBS, AMPS, CABS, EFFECT_GROUPS, EFFECTS, GUITARS, MICS } from "../lib/rig/effects.js";
 import { ARTIST_INFO, ARTIST_STYLE, ARTIST_STYLES, ARTISTS, FACTORY, factory, makeEffect } from "../lib/rig/presets.js";
-import { fold, matcher, rank, suggest } from "../lib/search.js";
+import { fold, matcher, rank, startsWord, suggest } from "../lib/search.js";
 import { knob } from "../lib/rig/knob.js";
 import { RIFFS, VOICES } from "../lib/rig/synth.js";
 import { clipPlot, comparePlots, isDrive, stackCurve } from "../lib/rig/visuals.js";
@@ -134,6 +134,17 @@ function rankText(id, kind) {
 
 let bestCard = null;                                          // the top result: Enter loads it
 
+/** The other names and bands of an artist tone that the search words point at, when the card's name doesn't show them. */
+function whyText(card, words) {
+  const info = ARTIST_INFO[card.dataset.id];
+  if (!info) return "";
+  const shown = fold(card.querySelector("b").textContent);
+  const hit = x => { const f = fold(x); return words.some(w => startsWord(f, w) && !startsWord(shown, w)); };
+  const also = (info.also || []).filter(hit);
+  const bands = also.length ? info.bands.slice(0, 1) : info.bands.filter(hit);
+  return [...also, ...bands].join(" · ");
+}
+
 /** Shows the cards that match the search (and, with no search, the chosen artist style), best matches first. */
 function applySearch() {
   const box = $("#rigQuick", root);
@@ -159,6 +170,14 @@ function applySearch() {
       .forEach(el => row.appendChild(el));
   });
   bestCard = [...score.entries()].sort((a, b) => a[1] - b[1])[0]?.[0] || null;
+  // a card found by another name or a band says so ("Liam Gallagher · Oasis"), or the match would look wrong
+  cards.forEach(c => {
+    const why = c.querySelector(".quick-why");
+    if (!why) return;
+    const text = score.has(c) ? whyText(c, words) : "";
+    why.textContent = text;
+    why.hidden = !text;
+  });
   $$(".quick-group", box).forEach(g => { g.hidden = !!words.length && (g.id === "favGroup" || !$$(".quick[data-q]:not([hidden])", g).length); });
   const add = $("#mySave", box);
   if (add) add.hidden = !!words.length;
@@ -218,6 +237,7 @@ function renderQuick() {
     const s = factory(id), n = [...s.pedals, ...s.post].filter(e => e.on).length, fav = favs.includes(id), name = t(`rig.preset.${id}`);
     return `<div class="quick-wrap"><button class="quick${id === cur ? " on" : ""}" data-id="${id}"${inFavs ? "" : ` data-q="${esc(searchText(id))}" data-r="${esc(rankText(id))}"`}${ARTIST_STYLE[id] && !inFavs ? ` data-style="${ARTIST_STYLE[id]}"` : ""} aria-pressed="${id === cur}">${ampThumb(s.amp.type)}
         <b>${esc(name)}</b>
+        ${inFavs ? "" : `<small class="quick-why" hidden></small>`}
         <small>${esc(t(`rig.amp_${s.amp.type}`))} · ${esc(t("rig.quick_fx", { count: n }))}</small>
         ${id === cur ? `<span class="quick-on">✓ ${esc(t("rig.quick_active"))}</span>` : ""}</button>
       <button class="quick-fav${fav ? " on" : ""}" data-fav="${id}" aria-pressed="${fav}" title="${esc(t(fav ? "rig.fav_remove" : "rig.fav_add"))}" aria-label="${esc(t(fav ? "rig.fav_remove_named" : "rig.fav_add_named", { name }))}">${fav ? "★" : "☆"}</button></div>`;
