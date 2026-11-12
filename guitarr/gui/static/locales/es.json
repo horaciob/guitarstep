@@ -781,7 +781,9 @@
    "silence": "Silencio. Tocá una cuerda (revisá el cable y el canal)",
    "play_string": "Tocá una cuerda y mirá la barra",
    "signal_check": "Chequear mi señal",
-   "signal_check_hint": "recomendado para guitarras eléctricas"
+   "signal_check_hint": "recomendado para guitarras eléctricas",
+   "latency": "Medí la demora de tu equipo",
+   "latency_hint": "Un minuto en Ajustes: hace exactos el \"adelantado\" y el \"atrasado\""
   },
   "rig": {
    "title": "Ampli y efectos",

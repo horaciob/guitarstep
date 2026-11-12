@@ -781,7 +781,9 @@
    "silence": "Silence. Play a string (check the cable and the channel)",
    "play_string": "Play a string and watch the bar",
    "signal_check": "Check my signal",
-   "signal_check_hint": "recommended for electric guitars"
+   "signal_check_hint": "recommended for electric guitars",
+   "latency": "Measure your timing delay",
+   "latency_hint": "One minute in Settings: makes \"early\" and \"late\" exact"
   },
   "rig": {
    "title": "Amp & effects",

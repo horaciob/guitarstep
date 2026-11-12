@@ -137,6 +137,7 @@ export async function mount(el, { params }) {
       <p class="lead">${esc(t("setup.done_lead"))}</p>
       <div class="choice-grid">
         ${firstLesson ? `<a class="choice primary" href="#/lesson/${encodeURIComponent(firstLesson.id)}">${icon("course", 22)}<b>${esc(t("setup.start_course"))}</b><small>${esc(lt)}</small></a>` : ""}
+        <a class="choice" href="#/settings">${icon("tuner", 22)}<b>${esc(t("setup.latency"))}</b><small>${esc(t("setup.latency_hint"))}</small></a>
         <a class="choice" href="#/signal">${icon("analyze", 22)}<b>${esc(t("setup.signal_check"))}</b><small>${esc(t("setup.signal_check_hint"))}</small></a>
         <a class="choice" href="#/charts">${icon("charts", 22)}<b>${esc(t("setup.play_chart"))}</b><small>${esc(t("setup.play_chart_hint"))}</small></a>
         <a class="choice" href="#/practice?demo=1">${icon("sparkle", 22)}<b>${esc(t("setup.try_demo"))}</b><small>${esc(t("setup.try_demo_hint"))}</small></a>
