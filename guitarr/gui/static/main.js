@@ -26,8 +26,9 @@ const VIEWS = {
   song: () => import("./views/song.js"),
   stage: () => import("./views/stage.js"),
   setlists: () => import("./views/setlists.js"),
+  report: () => import("./views/report.js"),
 };
-const NAV_OF = { lesson: "course", chart: "charts", camera: "chords", setup: "settings", signal: "settings", song: "practice", stage: "setlists" };
+const NAV_OF = { lesson: "course", chart: "charts", camera: "chords", setup: "settings", signal: "settings", song: "practice", stage: "setlists", report: "plan" };
 const view = $("#view");
 let current = null;   // mounted module (to unmount it when leaving)
 let seq = 0;

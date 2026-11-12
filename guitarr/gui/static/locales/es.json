@@ -3064,6 +3064,30 @@
    "c_warmup4": "Hacé el calentamiento {{count}} veces",
    "c_ear3": "Aprobá {{count}} rondas de entrenamiento auditivo",
    "c_songs3": "Tocá {{count}} canciones o charts con el oyente"
+  },
+  "report_week": {
+   "title": "Tu semana de práctica",
+   "print": "Imprimir o guardar como PDF",
+   "range": "{{from}} – {{to}}",
+   "total": "tiempo de práctica",
+   "active_days": "días con práctica",
+   "streak": "días seguidos",
+   "lessons": "lecciones completas",
+   "per_day": "Día por día",
+   "day": "Día",
+   "minutes": "Tiempo",
+   "what": "Qué",
+   "songs": "Canciones y charts con el oyente",
+   "song": "Canción",
+   "sessions": "Sesiones",
+   "first_last": "Primer → último puntaje",
+   "best": "Mejor",
+   "no_songs": "Estos días no tocaste canciones ni charts con el oyente.",
+   "earned": "Lo que ganaste",
+   "nothing": "Estos días no ganaste nada.",
+   "capped": "Solo se guardan los últimos 30 eventos, así que pueden faltar algunos de esta semana.",
+   "generated": "Hecho con guitarr el {{at}}.",
+   "open": "Reporte semanal"
   }
  },
  "content": {

@@ -831,6 +831,13 @@ def api_weekly():
     return weekly.view(progress.get())
 
 
+@app.get("/api/report/week")
+def api_report_week():
+    """The last 7 days on one page (to print or save as a PDF)."""
+    from .. import report
+    return report.week()
+
+
 @app.get("/api/progress")
 def api_progress():
     return progress.get()

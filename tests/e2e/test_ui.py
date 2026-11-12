@@ -1314,3 +1314,11 @@ def test_a_chart_offers_its_rig_sound(app_page):
     expect(tone).to_contain_text("in use")
     go(app_page, "practice?chart=01-em-am")
     expect(tone).to_be_hidden()
+
+
+def test_weekly_report_page(app_page):
+    onboarded(app_page)
+    go(app_page, "plan")
+    app_page.get_by_role("link", name="Weekly report").click()
+    expect(app_page.get_by_role("heading", name="Your practice week")).to_be_visible()
+    expect(app_page.locator(".report-table").first.locator("tr")).to_have_count(8)

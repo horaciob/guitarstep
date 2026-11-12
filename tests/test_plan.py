@@ -305,3 +305,13 @@ def test_free_play_leaves_out_time_a_session_was_listening():
         assert c.post("/api/plan/free", json=dict(seconds="lots", window_s=3)).json()["detail"]["code"] == "bad_seconds"
     finally:
         S.listened = []
+
+
+def test_weekly_report_has_the_last_seven_days():
+    from fastapi.testclient import TestClient
+
+    from guitarr.gui.server import app
+
+    r = TestClient(app).get("/api/report/week").json()
+    assert len(r["days"]) == 7 and r["days"][-1]["date"] == r["end"] and r["minutes"] == 0
+    assert {"songs", "events", "skills", "streak", "categories"} <= set(r)

@@ -1329,3 +1329,18 @@ dialog.placement { max-width: 520px; }
 .weekly-list .bar { grid-column: 1 / -1; display: block; height: 6px; border-radius: 3px; background: var(--border); overflow: hidden; }
 .weekly-list .bar i { display: block; height: 100%; background: var(--gl-accent); }
 .weekly-list li.done span:first-child { color: var(--gl-ok); font-weight: 600; }
+
+/* weekly report (printable) */
+.report-page section { margin: 18px 0; }
+.report-table { width: 100%; border-collapse: collapse; }
+.report-table th, .report-table td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+.report-table .rbar { display: inline-block; width: 80px; height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; vertical-align: middle; }
+.report-table .rbar i { display: block; height: 100%; background: var(--gl-accent); }
+.report-events { padding-left: 18px; }
+@media print {
+  .rail, .tabbar, .no-print, .gl-toast { display: none !important; }
+  body, .gl, main, #view { background: #fff !important; color: #000 !important; margin: 0 !important; padding: 0 !important; }
+  body, .shell, #main { display: block !important; grid-template-columns: none !important; width: auto !important; max-width: none !important; }
+  .report-page { max-width: none; }
+  .report-table .rbar i { background: #000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}

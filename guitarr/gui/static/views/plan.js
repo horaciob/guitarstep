@@ -10,7 +10,8 @@ let root = null, data = null, fetchedAt = 0, tick = 0, editing = null;
 export async function mount(el) {
   root = el;
   editing = null;
-  el.innerHTML = `<div class="gl-head"><h1>${esc(t("plan.title"))}</h1><p class="muted">${esc(t("plan.subtitle"))}</p></div><div id="planBody"></div>
+  el.innerHTML = `<div class="gl-head"><h1>${esc(t("plan.title"))}</h1><p class="muted">${esc(t("plan.subtitle"))}</p>
+    <a class="btn small" href="#/report">${esc(t("report_week.open"))}</a></div><div id="planBody"></div>
     <div id="planStats"></div>`;
   await load();
   renderStats($("#planStats", el));
