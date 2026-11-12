@@ -63,8 +63,8 @@ def get(sid: str) -> dict:
     return s
 
 
-def update(sid: str, items: list[dict] | None = None, name: str | None = None) -> dict:
-    """Replaces the items (in order) and/or the name."""
+def update(sid: str, items: list[dict] | None = None, name: str | None = None, note: str | None = None) -> dict:
+    """Replaces the items (in order), the name and/or the note (a teacher's words for an assignment)."""
     with _lock:
         data = _read()
         s = next((x for x in data if x["id"] == sid), None)
@@ -75,6 +75,8 @@ def update(sid: str, items: list[dict] | None = None, name: str | None = None) -
             if not name:
                 raise SetlistError("empty_name")
             s["name"] = name[:80]
+        if note is not None:
+            s["note"] = note.strip()[:2000]
         if items is not None:
             clean = []
             for it in items[:MAX_ITEMS]:

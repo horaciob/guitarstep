@@ -1322,3 +1322,17 @@ def test_weekly_report_page(app_page):
     app_page.get_by_role("link", name="Weekly report").click()
     expect(app_page.get_by_role("heading", name="Your practice week")).to_be_visible()
     expect(app_page.locator(".report-table").first.locator("tr")).to_have_count(8)
+
+
+def test_import_an_assignment_file(app_page, tmp_path):
+    import json
+
+    f = tmp_path / "week.guitarr.json"
+    f.write_text(json.dumps(dict(guitarr_assignment=1, name="From my teacher", note="Slow and clean.",
+                                 items=[dict(kind="chart", id="01-em-am")])))
+    onboarded(app_page)
+    go(app_page, "setlists")
+    app_page.locator("#assignFile").set_input_files(str(f))
+    expect(app_page.locator("#openTitle")).to_have_text("From my teacher")
+    expect(app_page.locator(".assign-note")).to_contain_text("Slow and clean.")
+    expect(app_page.locator("#assignDl")).to_have_attribute("href", re.compile(r"/assignment\?note=Slow%20and%20clean\."))

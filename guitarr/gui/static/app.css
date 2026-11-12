@@ -1344,3 +1344,9 @@ dialog.placement { max-width: 520px; }
   .report-page { max-width: none; }
   .report-table .rbar i { background: #000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
+
+/* teacher assignments */
+.gl .assign-note { margin: 10px 0; padding: 8px 12px; border-left: 3px solid var(--gl-accent); background: var(--gl-panel-2); border-radius: 4px; }
+.gl .assign-note p { margin: 2px 0 0; white-space: pre-wrap; }
+.gl .assign-share { margin-top: 14px; }
+.gl .assign-share textarea { width: 100%; }

@@ -158,7 +158,8 @@
    "bad_answers": "Respondé sí o no a cada habilidad.",
    "no_chords": "No encontré acordes: escribí los acordes en su propia línea arriba de la letra, o en línea como [G].",
    "too_long": "Es demasiado largo.",
-   "bad_tone": "Ese sonido no existe."
+   "bad_tone": "Ese sonido no existe.",
+   "not_assignment": "Ese archivo no es una tarea de guitarr."
   },
   "practice": {
    "title": "🎧 Practicar con escucha",
@@ -3088,6 +3089,18 @@
    "capped": "Solo se guardan los últimos 30 eventos, así que pueden faltar algunos de esta semana.",
    "generated": "Hecho con guitarr el {{at}}.",
    "open": "Reporte semanal"
+  },
+  "assign": {
+   "import": "Importar una tarea de tu profe",
+   "import_hint": "Un archivo .guitarr.json: se convierte en una setlist con la nota y los charts de tu profe.",
+   "not_assignment": "Ese archivo no es una tarea de guitarr.",
+   "imported": "Importada: {{name}}.",
+   "missing_songs": "Pedile a tu profe estos archivos de canciones: {{songs}}.",
+   "share": "Compartir como tarea (para un alumno)",
+   "share_hint": "Baja esta setlist como archivo, con tu nota y tus propios charts adentro. Tu alumno la importa en su página de Setlists; su reporte semanal (Plan) te muestra cómo le fue. Los archivos de canciones subidos no viajan: mandalos aparte.",
+   "note": "Nota para tu alumno",
+   "download": "Bajar la tarea",
+   "note_from": "La nota de tu profe"
   }
  },
  "content": {

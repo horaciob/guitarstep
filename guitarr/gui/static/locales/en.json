@@ -158,7 +158,8 @@
    "bad_answers": "Answer yes or no to each skill.",
    "no_chords": "No chords found: write the chords on their own line above the lyrics, or inline like [G].",
    "too_long": "That's too long.",
-   "bad_tone": "Unknown sound."
+   "bad_tone": "Unknown sound.",
+   "not_assignment": "That file isn't a guitarr assignment."
   },
   "practice": {
    "title": "🎧 Practice with listening",
@@ -3088,6 +3089,18 @@
    "capped": "Only the latest 30 events are kept, so older ones this week may be missing.",
    "generated": "Made with guitarr on {{at}}.",
    "open": "Weekly report"
+  },
+  "assign": {
+   "import": "Import an assignment from your teacher",
+   "import_hint": "A .guitarr.json file: it becomes a setlist with your teacher's note and charts.",
+   "not_assignment": "That file isn't a guitarr assignment.",
+   "imported": "Imported: {{name}}.",
+   "missing_songs": "Ask your teacher for these song files: {{songs}}.",
+   "share": "Share as an assignment (for a student)",
+   "share_hint": "Downloads this setlist as a file, with your note and your own charts inside. Your student imports it on their Setlists page; their weekly report (Plan) shows you how it went. Uploaded song files don't travel: send them separately.",
+   "note": "Note for your student",
+   "download": "Download the assignment",
+   "note_from": "Your teacher's note"
   }
  },
  "content": {}

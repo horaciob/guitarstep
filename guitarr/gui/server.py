@@ -1303,9 +1303,36 @@ def setlists_update(sid: str, body: dict):
     from .. import setlists
 
     try:
-        return _setlist_view(setlists.update(sid, body.get("items"), body.get("name")))
+        return _setlist_view(setlists.update(sid, body.get("items"), body.get("name"), body.get("note")))
     except setlists.SetlistError as e:
         fail(404 if str(e) == "no_setlist" else 400, str(e), "Setlist not found" if str(e) == "no_setlist" else "Invalid setlist")
+
+
+@app.get("/api/setlists/{sid}/assignment")
+def setlist_assignment(sid: str, note: str = ""):
+    """The setlist as an assignment file (with your note and your own charts inside), to send to a student."""
+    from .. import assignment, setlists
+
+    try:
+        data = assignment.export(sid, note)
+    except setlists.SetlistError as e:
+        fail(404, str(e), "Setlist not found")
+    fname = re.sub(r"[^\w\-]+", "-", data["name"]).strip("-").lower() or "assignment"
+    return Response(json.dumps(data, ensure_ascii=False, indent=1), media_type="application/json",
+                    headers={"Content-Disposition": f'attachment; filename="{fname}.guitarr.json"'})
+
+
+@app.post("/api/assignments")
+def assignment_import(body: dict):
+    """Imports an assignment file: a new setlist with the teacher's note and charts."""
+    from .. import assignment
+
+    try:
+        r = assignment.import_(body)
+    except assignment.AssignmentError as e:
+        code = str(e).split(":")[0]
+        fail(400, code, {"not_assignment": "That file isn't a guitarr assignment"}.get(code, str(e)))
+    return dict(r, setlist=_setlist_view(r["setlist"]))
 
 
 @app.delete("/api/setlists/{sid}")

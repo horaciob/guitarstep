@@ -18,6 +18,9 @@ export async function mount(el, { params = {} }) {
       <button class="btn primary" type="submit">${esc(t("setlists.create"))}</button>
       <p class="field-error" id="newErr" hidden></p>
     </form>
+    <div class="panel assign-import"><label class="field"><span>${esc(t("assign.import"))}</span>
+      <input type="file" id="assignFile" accept=".json,application/json" aria-describedby="assignErr"></label>
+      <p class="muted small">${esc(t("assign.import_hint"))}</p><p class="field-error" id="assignErr" hidden></p></div>
     <div class="setlist-cards">${lists.map(s => `
       <a class="panel setlist-card${open && open.id === s.id ? " on" : ""}" href="#/setlists?id=${esc(s.id)}">
         <b>${esc(s.name)}</b><small class="muted">${esc(t("setlists.n_items", { count: s.items.length }))}${s.warnings.length ? ` · ⚠ ${esc(t("setlists.n_retunes", { count: s.warnings.length }))}` : ""}</small></a>`).join("")}</div>
@@ -39,6 +42,7 @@ export async function mount(el, { params = {} }) {
               <span class="si-del"><button class="ib" data-act="remove" aria-label="${esc(t("setlists.remove"))}">✕</button></span></span>
           </li>`;
       }).join("")}</ol>
+      ${open.note ? `<blockquote class="assign-note"><small class="muted">${esc(t("assign.note_from"))}</small><p>${esc(open.note)}</p></blockquote>` : ""}
       ${open.items.length ? "" : `<p class="muted">${esc(t("setlists.empty"))}</p>`}
       <div class="row wrap">
         <label class="field-inline small">${esc(t("setlists.add_chart"))}
@@ -46,6 +50,10 @@ export async function mount(el, { params = {} }) {
         ${songs.length ? `<label class="field-inline small">${esc(t("setlists.add_song"))}
           <select id="addSong"><option value="">—</option>${songs.map(s => `<option value="${esc(s.name)}">${esc(s.name)}</option>`).join("")}</select></label>` : ""}
       </div>
+      <details class="assign-share"><summary>${esc(t("assign.share"))}</summary>
+        <p class="muted small">${esc(t("assign.share_hint"))}</p>
+        <label class="field"><span>${esc(t("assign.note"))}</span><textarea id="assignNote" rows="3" maxlength="2000">${esc(open.note || "")}</textarea></label>
+        <a class="btn small" id="assignDl" download>${esc(t("assign.download"))}</a></details>
     </section>` : lists.length ? `<p class="muted">${esc(t("setlists.pick"))}</p>` : ""}`;
 
   $("#newForm", el).onsubmit = async ev => {
@@ -57,7 +65,22 @@ export async function mount(el, { params = {} }) {
       location.hash = `#/setlists?id=${s.id}`;
     } catch (e) { err.textContent = t(`setlists.err_${e.code}`, { defaultValue: e.message }); err.hidden = false; }
   };
+  $("#assignFile", el).onchange = async ev => {
+    const f = ev.target.files[0], err = $("#assignErr", el);
+    if (!f) return;
+    let data;
+    try { data = JSON.parse(await f.text()); } catch { err.textContent = t("assign.not_assignment"); err.hidden = false; return; }
+    try {
+      const r = await api("/api/assignments", { json: data });
+      toast(t("assign.imported", { name: r.setlist.name }) + (r.missing_songs.length ? ` ${t("assign.missing_songs", { songs: r.missing_songs.join(", ") })}` : ""), true);
+      location.hash = `#/setlists?id=${r.setlist.id}`;
+    } catch (e) { err.textContent = e.code === "not_assignment" ? t("assign.not_assignment") : e.message; err.hidden = false; }
+  };
   if (!open) return;
+  const dl = $("#assignDl", el), note = $("#assignNote", el);
+  const href = () => { dl.href = `/api/setlists/${encodeURIComponent(open.id)}/assignment?note=${encodeURIComponent(note.value)}`; };
+  note.oninput = href;
+  href();
   const items = open.items.map(({ kind, id }) => ({ kind, id }));
   const save = async next => {
     try { await api(`/api/setlists/${open.id}`, { method: "PUT", json: { items: next } }); mount(el, { params }); }
