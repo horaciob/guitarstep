@@ -1646,7 +1646,18 @@
     "e_dot": "Una corchea con puntillo al tempo",
     "e": "Una corchea al tempo",
     "t": "Un tresillo de corchea al tempo"
-   }
+   },
+   "ab_title": "Comparar A/B",
+   "ab_store": "Guardar como {{s}}",
+   "ab_play": "Escuchar {{s}}",
+   "ab_match": "Mismo volumen",
+   "ab_clear": "Borrar",
+   "ab_hint": "Guardá el sonido que tenés ahora como A, cambialo (o elegí otro), guardalo como B y alterná. Lo más fuerte siempre suena mejor, así que el más fuerte se baja mientras comparás.",
+   "ab_measuring": "Tocá un poco con cada uno para medir su volumen.",
+   "ab_same": "Los dos suenan igual de fuerte.",
+   "ab_louder": "{{s}} sonaba {{db}} dB más fuerte: se bajó para igualar.",
+   "midi_program": "Un cambio de programa en tu controlador MIDI carga tus favoritos en orden (o los sonidos de fábrica).",
+   "midi_loaded": "Programa MIDI {{n}}: {{name}}"
   },
   "plan": {
    "title": "Plan de práctica",

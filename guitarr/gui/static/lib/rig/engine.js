@@ -166,6 +166,7 @@ class Rig extends EventTarget {
   }
   onMidi(data) {
     const [status, cc, value] = data;
+    if ((status & 0xf0) === 0xc0) { this.emit("program", { n: cc }); return; }   // program change: the page picks the sound
     if ((status & 0xf0) !== 0xb0) return;                     // control change only
     if (this.midiLearning) {
       this.source.midi = { ...(this.source.midi || {}), cc };
@@ -259,8 +260,9 @@ class Rig extends EventTarget {
     this.inTrim.connect(this.inMeter);
     this.inTrim.connect(this.chainIn);
     this.level = gainNode(c);           // the sound's own level (saved with presets)
+    this.match = gainNode(c);           // A/B comparison: turns the louder sound down to the quieter (not saved)
     this.chainOut.connect(this.level);
-    this.level.connect(this.mix);
+    this.level.connect(this.match).connect(this.mix);
     this.level.connect(this.looper).connect(this.mix);
     this.mix.connect(this.mixMeter);
     this.mix.connect(this.master).connect(this.dcBlock).connect(this.limiter).connect(this.outMeter).connect(c.destination);
@@ -273,6 +275,7 @@ class Rig extends EventTarget {
     ramp(this.ctx, this.inTrim.gain, dbToGain(this.state.input.trim));
     ramp(this.ctx, this.master.gain, this.tuning ? 0 : dbToGain(this.state.master.volume));
     ramp(this.ctx, this.level.gain, dbToGain(this.state.level || 0));
+    if (this.match) ramp(this.ctx, this.match.gain, dbToGain(this.matchDb || 0));
   }
 
   // ---------------------------------------------------------------- sources
@@ -542,6 +545,23 @@ class Rig extends EventTarget {
 
   // ---------------------------------------------------------------- looper, meters
   loop(cmd) { if (this.looper && this.running) this.looper.port.postMessage(cmd); }
+
+  /** A/B level matching: dB applied after the sound's own level (0 = off). */
+  setMatch(db) {
+    this.matchDb = db;
+    if (this.ctx) ramp(this.ctx, this.match.gain, dbToGain(db));
+  }
+
+  /** RMS of the sound (before the master volume and without the A/B match), in dB, or null when silent. */
+  loudness() {
+    if (!this.mixMeter || !this.running) return null;
+    const a = new Float32Array(this.mixMeter.fftSize);
+    this.mixMeter.getFloatTimeDomainData(a);
+    let sum = 0;
+    for (const v of a) sum += v * v;
+    const rms = Math.sqrt(sum / a.length);
+    return rms > 1e-5 ? 20 * Math.log10(rms) - (this.matchDb || 0) : null;
+  }
 
   levels() {
     const peak = an => {

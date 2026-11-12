@@ -1646,7 +1646,18 @@
     "e_dot": "A dotted eighth at the tempo",
     "e": "An eighth note at the tempo",
     "t": "An eighth-note triplet at the tempo"
-   }
+   },
+   "ab_title": "Compare A/B",
+   "ab_store": "Store as {{s}}",
+   "ab_play": "Play {{s}}",
+   "ab_match": "Same loudness",
+   "ab_clear": "Clear",
+   "ab_hint": "Store the sound you have now as A, change it (or pick another), store it as B, then switch. Louder always sounds better, so the louder one is turned down while you compare.",
+   "ab_measuring": "Play a little on each to measure their loudness.",
+   "ab_same": "Both are equally loud.",
+   "ab_louder": "{{s}} was {{db}} dB louder: turned down to match.",
+   "midi_program": "A program change on your MIDI controller loads your favorites in order (or the factory sounds).",
+   "midi_loaded": "MIDI program {{n}}: {{name}}"
   },
   "plan": {
    "title": "Practice plan",

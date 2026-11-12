@@ -1285,3 +1285,21 @@ def test_paste_a_chord_sheet_into_the_chart_editor(app_page):
     app_page.locator("#sheet").fill("only words")
     app_page.locator("#sheetGo").click()
     expect(app_page.locator("#sheetErr")).to_contain_text("No chords found")
+
+
+def test_rig_compare_a_and_b(app_page):
+    onboarded(app_page)
+    go(app_page, "rig")                            # the rig stays off: nothing is played
+    app_page.locator('#rigQuick .quick[data-id="sixties_fuzz"]').click()
+    app_page.locator("#abA").click()
+    expect(app_page.locator("#abInfo")).to_contain_text("A: ")
+    app_page.locator('#rigQuick .quick[data-id="jazz_box"]').click()
+    app_page.locator("#abB").click()
+    expect(app_page.locator("#abSwap")).to_be_enabled()
+    app_page.locator("#abSwap").click()
+    expect(app_page.locator('#rigQuick .quick[data-id="sixties_fuzz"]')).to_contain_text("active")
+    expect(app_page.locator("#abA")).to_have_class(re.compile("primary"))
+    app_page.locator("#abSwap").click()
+    expect(app_page.locator('#rigQuick .quick[data-id="jazz_box"]')).to_contain_text("active")
+    app_page.locator("#abClear").click()
+    expect(app_page.locator("#abSwap")).to_be_disabled()

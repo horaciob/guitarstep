@@ -12,7 +12,7 @@ import { RIFFS, VOICES } from "../lib/rig/synth.js";
 import { clipPlot, comparePlots, isDrive, stackCurve } from "../lib/rig/visuals.js";
 
 const HP_KEY = "guitarr.rig.headphones";
-let root = null, raf = 0, onChange = null, onLoop = null, onParam = null, onMidi = null, onRec = null, confirmDelete = false;
+let root = null, raf = 0, onChange = null, onLoop = null, onParam = null, onMidi = null, onRec = null, onProgram = null, confirmDelete = false;
 const knobsByTarget = new Map();      // "uid:param" or "master" → knob element (to follow an expression pedal)
 
 const fmt = (unit, v) => {
@@ -66,6 +66,15 @@ export async function mount(el) {
   onMidi = () => renderTools();
   rig.addEventListener("param", onParam);
   rig.addEventListener("midi", onMidi);
+  onProgram = e => {                                            // MIDI program change: your favorites in order (or the factory sounds)
+    const favs = (rig.favorites || []).filter(id => factory(id));
+    const list = favs.length ? favs : Object.keys(FACTORY);
+    const id = list[e.detail.n % list.length];
+    loadPreset(`factory:${id}`);
+    toast(t("rig.midi_loaded", { name: t(`rig.preset.${id}`), n: e.detail.n + 1 }), true);
+  };
+  rig.addEventListener("program", onProgram);
+  ab.timer = setInterval(abSample, 100);
   const tick = () => { meters(); tunerTick(); raf = requestAnimationFrame(tick); };
   raf = requestAnimationFrame(tick);
   onSlash = e => {                                            // "/" jumps to the search (not while typing)
@@ -94,6 +103,9 @@ export function unmount() {
   if (onLoop) rig.removeEventListener("looper", onLoop);
   if (onParam) rig.removeEventListener("param", onParam);
   if (onMidi) rig.removeEventListener("midi", onMidi);
+  if (onProgram) rig.removeEventListener("program", onProgram);
+  clearInterval(ab.timer);
+  ab.on = null; rig.setMatch(0);
   if (onRec) rig.removeEventListener("change", onRec);
   clearInterval(recTick);
   if (onSlash) document.removeEventListener("keydown", onSlash);
@@ -381,6 +393,7 @@ function askHeadphones() {
 
 function loadPreset(v) {
   if (!v) return;
+  ab.on = null; rig.setMatch(0);                               // a sound picked by hand isn't one of the A/B pair
   const [kind, id] = [v.slice(0, v.indexOf(":")), v.slice(v.indexOf(":") + 1)];
   if (kind === "factory") rig.loadState(factory(id), { kind, id });
   else {
@@ -503,7 +516,10 @@ function renderTools() {
             <select id="midiTarget"><option value="">—</option>${targets.map(tg => `<option value="${esc(tg.id)}" ${tg.id === m.target ? "selected" : ""}>${esc(label(tg))}</option>`).join("")}</select></label></div>
           <p class="muted small">${esc(t("rig.midi_devices", { names: [...rig.midiAccess.inputs.values()].map(i => i.name).join(", ") || "—" }))}</p>`
         : `<div class="row left wrap"><button class="btn small" id="midiConnect">${esc(t("rig.midi_connect"))}</button><span class="muted small">${esc(t("rig.midi_hint"))}</span></div>`}
-    </div>`;
+      ${rig.midiAccess ? `<p class="muted small">${esc(t("rig.midi_program"))}</p>` : ""}
+    </div>
+    <div class="tool-col" id="abCol"></div>`;
+  renderAB();
   const tb = $("#tuneBtn", box);
   if (tb) tb.onclick = () => { rig.setTuning(!rig.tuning); renderTools(); };
   const mc = $("#midiConnect", box);
@@ -515,6 +531,74 @@ function renderTools() {
   if (ml) ml.onclick = () => { rig.learnMidi(!rig.midiLearning); renderTools(); };
   const mt = $("#midiTarget", box);
   if (mt) mt.onchange = e => rig.setMidiTarget(e.target.value || null);
+}
+
+// ------------------------------------------------------------------ A/B: two sounds, switched instantly, at the same loudness
+const ab = { A: null, B: null, on: null, loud: { A: [], B: [] }, match: true, timer: 0 };
+
+function renderAB() {
+  const col = root && $("#abCol", root);
+  if (!col) return;
+  const both = ab.A && ab.B;
+  const diff = abDiff();
+  col.innerHTML = `<h2>${esc(t("rig.ab_title"))}</h2>
+    <div class="row left wrap">
+      <button class="btn small${ab.on === "A" ? " primary" : ""}" id="abA">${esc(ab.A ? t("rig.ab_play", { s: "A" }) : t("rig.ab_store", { s: "A" }))}</button>
+      <button class="btn small${ab.on === "B" ? " primary" : ""}" id="abB">${esc(ab.B ? t("rig.ab_play", { s: "B" }) : t("rig.ab_store", { s: "B" }))}</button>
+      <button class="btn small" id="abSwap" ${both ? "" : "disabled"}>A ⇄ B</button>
+      <label class="check small"><input type="checkbox" id="abMatch" ${ab.match ? "checked" : ""}> ${esc(t("rig.ab_match"))}</label>
+      ${ab.A || ab.B ? `<button class="btn small ghost" id="abClear">${esc(t("rig.ab_clear"))}</button>` : ""}
+    </div>
+    <p class="muted small" id="abInfo">${esc([ab.A ? `A: ${ab.A.name}` : "", ab.B ? `B: ${ab.B.name}` : ""].filter(Boolean).join(" · ") || t("rig.ab_hint"))}</p>
+    <p class="small" id="abLevel" aria-live="polite">${esc(both && ab.match ? (diff == null ? t("rig.ab_measuring") : Math.abs(diff) < 0.5 ? t("rig.ab_same")
+      : t("rig.ab_louder", { s: diff > 0 ? "A" : "B", db: Math.abs(diff).toFixed(1) })) : "")}</p>`;
+  const slotBtn = s => () => {
+    if (!ab[s]) {                                               // store the sound you have now
+      ab[s] = { state: JSON.parse(JSON.stringify(rig.state)), preset: rig.preset ? { ...rig.preset } : null, name: presetName() };
+      ab.loud[s] = []; ab.on = s;
+      applyMatch(); renderAB(); return;
+    }
+    switchTo(s);
+  };
+  $("#abA", col).onclick = slotBtn("A");
+  $("#abB", col).onclick = slotBtn("B");
+  $("#abSwap", col).onclick = () => switchTo(ab.on === "A" ? "B" : "A");
+  $("#abMatch", col).onchange = e => { ab.match = e.target.checked; applyMatch(); renderAB(); };
+  const clear = $("#abClear", col);
+  if (clear) clear.onclick = () => { ab.A = ab.B = ab.on = null; ab.loud = { A: [], B: [] }; applyMatch(); renderAB(); };
+}
+
+function switchTo(s) {
+  const slot = ab[s];
+  if (!slot) return;
+  ab.on = s;
+  rig.loadState(slot.state, slot.preset);
+  applyMatch();
+  renderAll();
+}
+
+/** How much louder A is than B (dB), from what was measured while you played each; null until both have enough. */
+function abDiff() {
+  const avg = x => x.length >= 8 ? x.reduce((a, b) => a + b, 0) / x.length : null;
+  const a = avg(ab.loud.A), b = avg(ab.loud.B);
+  return a == null || b == null ? null : a - b;
+}
+
+function applyMatch() {
+  const d = abDiff();
+  if (!ab.match || d == null || !ab.on) return rig.setMatch(0);
+  rig.setMatch(ab.on === "A" ? Math.min(0, -d) : Math.min(0, d));   // only the louder one is turned down
+}
+
+function abSample() {                                           // loudness of the sound playing now, while there's signal
+  if (!ab.on || !rig.running) return;
+  const L = rig.loudness(), lv = rig.levels();
+  if (L == null || lv.input < -50) return;
+  const arr = ab.loud[ab.on];
+  arr.push(L);
+  if (arr.length > 80) arr.shift();
+  applyMatch();
+  if (arr.length % 8 === 0) renderAB();                         // the reading changes slowly: refresh now and then
 }
 
 function tunerTick() {
