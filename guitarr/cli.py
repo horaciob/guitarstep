@@ -127,6 +127,9 @@ def build_parser() -> argparse.ArgumentParser:
     d = sub.add_parser("demo", help="generate test files with planted mistakes")
     d.add_argument("--out", type=Path, default=Path("demo"))
 
+    jc = sub.add_parser("judge-check", help="measure the chord judge on your own recordings (see guitarr/judgecheck.py)")
+    jc.add_argument("folder", type=Path, help="a folder with one subfolder per chord asked (G/ok-1.wav, G/Em-1.wav…)")
+    jc.add_argument("--json", action="store_true", help="print the result as JSON")
     sub.add_parser("devices", help="list audio devices")
     tr = sub.add_parser("tracks", help="list the tracks of a MIDI / Guitar Pro file")
     tr.add_argument("file", type=Path)
@@ -390,6 +393,14 @@ def main(argv=None) -> None:
             out = make_demo(args.out)
             print("Done:", *sorted(p.name for p in out.iterdir()))
             print(f"Try: guitarr file {out}/reference.mid {out}/take.wav")
+        elif args.cmd == "judge-check":
+            import json
+
+            from .judgecheck import print_report, run
+            if not args.folder.is_dir():
+                raise ValueError(f"{args.folder} is not a folder")
+            r = run(args.folder, log=print)
+            print(json.dumps(r, indent=1)) if args.json else print_report(r)
         elif args.cmd == "gui":
             from .gui.server import serve
             serve(args.host, args.port, open_browser=not args.no_browser)

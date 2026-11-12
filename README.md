@@ -295,6 +295,8 @@ To add a language, copy `en.json` to `<lang>.json`, translate it, and add the la
   - major/minor swaps detected: 20 of 30.
 
   A real guitar sounds different, so the thresholds may need adjusting once tested with real recordings. The design deliberately prefers missing a subtle error over flagging a correct chord.
+
+  **Measure it on your guitar**: record one strum per file in a folder per chord you were asked for, named after what you played (`G/ok-1.wav`, `G/A-1.wav`, `Am/A-1.wav`), then run `guitarr judge-check recordings/`. It reports false mistakes, wrong chords caught and major/minor swaps caught. Chords that share two notes (G and Em) can pass as right.
 - **Live timing** depends on the measured latency: run `guitarr calibrate` once per setup.
 - **Guitar Pro repeats** are not unfolded. **Demucs** separation is slow and optional.
 - The **camera** needs a clear, front-facing view of the neck. Calibration is stored per browser.
