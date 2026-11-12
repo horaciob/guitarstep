@@ -1,0 +1,10 @@
+title: A funk vamp
+bpm: 96
+time: 4/4
+strum: D.UD.UDU
+tone: nile_rodgers
+note: Sixteenth strums, the chord ringing only on the accents. Everything else muted.
+
+[Vamp]
+E7 | E7 | A7 | A7
+E7 | E7 | A7 | E7

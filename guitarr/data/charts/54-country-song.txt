@@ -1,0 +1,18 @@
+title: A full country song
+bpm: 110
+time: 4/4
+strum: D.D.D.D.
+tone: james_burton
+note: Boom-chick in the verse, ringing chords in the chorus, the D–G turnaround at the end of each line.
+
+[Verse]
+G | G | C | G
+G | G | D | D
+G | G | C | G
+C | D | G | G
+
+[Chorus]
+C | C | G | G
+C | C | D | D
+G | C | G | D
+C | D | G | G

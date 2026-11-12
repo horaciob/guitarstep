@@ -28,7 +28,7 @@ def test_levels_and_ids():
 
 def test_optional_courses_follow_the_main_one():
     main, optional = catalog.course()["levels"], catalog.course()["optional"]
-    assert {lv["track"] for lv in optional} == {"metal", "flamenco", "rock", "tango"}
+    assert {lv["track"] for lv in optional} == {"metal", "flamenco", "rock", "tango", "funk", "bossa", "country", "fingerstyle"}
     assert all(lv.get("track") and lv.get("badge") and lv["lessons"] for lv in optional)
     assert len({lv["badge"] for lv in optional}) == len(optional)
     assert len({lv["id"] for lv in main + optional}) == len(main + optional)

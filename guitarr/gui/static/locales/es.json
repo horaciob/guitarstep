@@ -3465,6 +3465,22 @@
    "t3": {
     "title": "Melodía de tango y un tango completo",
     "subtitle": "Melodías en menor armónica, la dominante y un tango entero."
+   },
+   "k1": {
+    "title": "Guitarra rítmica funk",
+    "subtitle": "Semicorcheas, acordes chicos, rasgueos apagados y el uno."
+   },
+   "b1": {
+    "title": "Bossa nova",
+    "subtitle": "El ritmo de bossa, los acordes de séptima y una canción."
+   },
+   "c1": {
+    "title": "Guitarra country",
+    "subtitle": "Boom-chick, la pentatónica mayor y una canción country."
+   },
+   "p1": {
+    "title": "Guitarra fingerstyle",
+    "subtitle": "Un pulgar independiente, la melodía arriba y percusión en el cuerpo."
    }
   },
   "lessons": {
@@ -5951,6 +5967,150 @@
     "tutorials": [
      "palos flamencos compás explicado"
     ]
+   },
+   "funk-sixteenths": {
+    "title": "El motor de semicorcheas",
+    "theory": [
+     "La guitarra rítmica funk es el hi-hat de un baterista en seis cuerdas: la mano que rasguea nunca deja de moverse abajo y arriba en semicorcheas, cuatro por tiempo.",
+     "La mayoría de esos golpes van apagados (la mano que pisa se afloja y las cuerdas quedan muertas); solo algunos dejan sonar el acorde. El groove está en cuáles suenan.",
+     "Abajo en el tiempo y en el \"y\", arriba en la \"e\" y la \"a\": mantené la mano en movimiento aunque a propósito no toque las cuerdas."
+    ],
+    "tips": [],
+    "tutorials": [
+     "guitarra funk semicorcheas clase"
+    ]
+   },
+   "funk-chords": {
+    "title": "Acordes chicos y golpes cortos",
+    "theory": [
+     "Los guitarristas de funk usan formas chicas en las primeras cuerdas: tres o cuatro notas alcanzan y dejan lugar al bajo y a los teclados.",
+     "Un golpe corto es un acorde cortado: rasgueá y soltá la presión enseguida. El silencio después del acorde es parte del ritmo.",
+     "Los acordes de séptima de dominante y de menor séptima son el sonido funk: nunca resuelven del todo, así que un vamp sobre un acorde puede durar minutos."
+    ],
+    "tips": [],
+    "tutorials": [
+     "acordes funk guitarra golpes cortos"
+    ]
+   },
+   "funk-riffs": {
+    "title": "Riffs de una nota",
+    "theory": [
+     "Muchas partes de funk son líneas de una nota en las cuerdas graves, trabadas con el bombo: cortas, repetidas y llenas de silencios.",
+     "La pentatónica menor de Mi en posición abierta da casi todas: E, G, A, B, D.",
+     "Tocalas staccato: levantá el dedo justo después de cada nota para que la línea suene ajustada, como un bajo."
+    ],
+    "tips": [],
+    "tutorials": [
+     "riff funk guitarra una nota clase"
+    ]
+   },
+   "bossa-rhythm": {
+    "title": "El ritmo de bossa nova",
+    "theory": [
+     "La bossa nova es samba tocada suave en una guitarra de nylon: el pulgar mantiene un bajo parejo en los tiempos 1 y 3, y los dedos pulsan el acorde en el medio.",
+     "Los acordes caen en síncopas, antes del tiempo: ese empuje es el swing de la bossa, y el pulgar de abajo nunca cambia.",
+     "Tocá suave y parejo. La bossa está cerca del habla: sin grandes acentos, todo fluye."
+    ],
+    "tips": [],
+    "tutorials": [
+     "ritmo bossa nova guitarra clase"
+    ]
+   },
+   "bossa-chords": {
+    "title": "Acordes de séptima: maj7, m7 y 7",
+    "theory": [
+     "La bossa nova vive en los acordes de séptima: séptima mayor (suave, abierta), menor séptima (cálida) y séptima de dominante (quiere moverse).",
+     "El ii–V–I es su movimiento más común: Dm7 – G7 – Cmaj7 en Do. Cada acorde cambia solo una o dos notas respecto del anterior.",
+     "Buscá la nota que se mueve: de Dm7 a G7 el C baja a B, de G7 a Cmaj7 el F baja a E. Esos pasitos son la melodía dentro de los acordes."
+    ],
+    "tips": [],
+    "tutorials": [
+     "acordes bossa nova maj7 m7 guitarra"
+    ]
+   },
+   "bossa-song": {
+    "title": "Una forma de canción de bossa",
+    "theory": [
+     "Una canción típica de bossa pasa por varias tonalidades con ii–V y aterriza suave en acordes de séptima mayor.",
+     "Am7 – Dm7 – G7 – Cmaj7 camina alrededor de Do por quintas: cada acorde lleva al siguiente, una cuarta arriba.",
+     "E7 y A7 toman prestada tensión de fuera de la tonalidad en la vuelta: empujan hacia Am7 y Dm7."
+    ],
+    "tips": [],
+    "tutorials": [
+     "canción bossa nova guitarra acompañamiento"
+    ]
+   },
+   "boom-chick": {
+    "title": "Boom-chick: bajo y rasgueo",
+    "theory": [
+     "La guitarra rítmica country alterna una nota grave (boom) y un rasgueo corto de las primeras cuerdas (chick): bajo en el 1 y el 3, acorde en el 2 y el 4.",
+     "El bajo alterna entre la fundamental y la quinta: en G, la 6ª cuerda (G) y después la 4ª (D).",
+     "Hacé el chick corto y liviano; el boom es el que sostiene el tiempo, como un bajista."
+    ],
+    "tips": [],
+    "tutorials": [
+     "boom chick country guitarra clase"
+    ]
+   },
+   "country-licks": {
+    "title": "Licks country: la pentatónica mayor",
+    "theory": [
+     "Las líneas solistas country salen de la pentatónica mayor: G A B D E en G. Suena brillante y abierta, sin la tercera menor del blues.",
+     "Los hammer-ons de la tercera menor a la mayor (A♯ a B en G) dan el \"twang\" country en un solo movimiento.",
+     "Las cuerdas al aire sonando contra notas pisadas son una marca del country: dejalas sostener."
+    ],
+    "tips": [],
+    "tutorials": [
+     "licks country guitarra pentatónica mayor"
+    ]
+   },
+   "country-song": {
+    "title": "Una canción country",
+    "theory": [
+     "La mayoría de las canciones country usan tres acordes, I, IV y V (G, C y D en G), con el boom-chick bajo la estrofa.",
+     "Un turnaround al final de la frase (D a G) lleva la canción de vuelta al principio.",
+     "Tocá el estribillo un poco más fuerte y dejá sonar los acordes; volvé al boom-chick ajustado en la estrofa."
+    ],
+    "tips": [],
+    "tutorials": [
+     "canción country fácil guitarra clase"
+    ]
+   },
+   "thumb-independence": {
+    "title": "Un pulgar independiente",
+    "theory": [
+     "En el fingerstyle el pulgar toca el bajo en cada tiempo, como el bombo de un baterista, mientras los dedos tocan la melodía arriba.",
+     "Lo difícil es que sean independientes: el pulgar mantiene su tiempo haga lo que haga la mano.",
+     "Empezá con el pulgar solo hasta que salga automático y después sumá de a una nota de melodía arriba."
+    ],
+    "tips": [],
+    "tutorials": [
+     "fingerstyle independencia del pulgar ejercicio"
+    ]
+   },
+   "percussive": {
+    "title": "Percusión en la guitarra",
+    "theory": [
+     "El fingerstyle percusivo suma una batería a la guitarra: el pulgar golpea las cuerdas cerca de la boca para un redoblante en el 2 y el 4, y el talón de la mano golpea el cuerpo como bombo.",
+     "El golpe es un apagado y un golpe a la vez: el costado del pulgar cae sobre las cuerdas y las frena con un chasquido.",
+     "Empezá por el ritmo solo, marcado, antes de sumar acordes: primero el groove tiene que ser parejo."
+    ],
+    "tips": [],
+    "tutorials": [
+     "fingerstyle percusivo técnica slap"
+    ]
+   },
+   "fingerstyle-piece": {
+    "title": "Un groove fingerstyle",
+    "theory": [
+     "Am – F – C – G es la progresión de mil versiones fingerstyle: la fundamental en el pulgar y el acorde arriba.",
+     "Rasgueá los acordes con los dedos (abajo con las uñas, arriba con el pulgar) y sumá el golpe en el 2 y el 4.",
+     "Cuando salga parejo, tocá más fuerte la nota de arriba de cada acorde: esa es la melodía."
+    ],
+    "tips": [],
+    "tutorials": [
+     "groove fingerstyle am f c g guitarra"
+    ]
    }
   },
   "exercises": {
@@ -6386,7 +6546,28 @@
    "alegrias/alegrias-chart": "Alegrías en Mi",
    "flamenco-palos/bulerias-tap": "Bulería contada desde el 12",
    "flamenco-palos/palos-quiz": "¿Qué palo, qué compás?",
-   "picado/picado-chromatic": "Picado cromático en una cuerda"
+   "picado/picado-chromatic": "Picado cromático en una cuerda",
+   "funk-sixteenths/funk-16ths": "Semicorcheas en una cuerda",
+   "funk-sixteenths/funk-tap": "Marcá las síncopas",
+   "funk-chords/funk-change": "E7 ↔ A7",
+   "funk-chords/funk-vamp": "Un vamp funk",
+   "funk-riffs/funk-riff": "Un riff en las cuerdas graves",
+   "funk-riffs/funk-groove": "Un groove funk",
+   "bossa-rhythm/bossa-thumb": "El pulgar solo",
+   "bossa-rhythm/bossa-tap": "Marcá las síncopas del acorde",
+   "bossa-chords/bossa-change": "Dm7 → G7 → Cmaj7",
+   "bossa-chords/bossa-ii-v-i": "Un ii–V–I de bossa",
+   "bossa-song/bossa-song-chart": "Una bossa completa",
+   "boom-chick/boom-chick-g": "Boom-chick en G",
+   "boom-chick/boom-chick-chart": "Boom-chick en G",
+   "country-licks/g-major-pent": "Pentatónica mayor de G",
+   "country-licks/country-lick": "Un lick con twang en G",
+   "country-song/country-song-chart": "Una canción country completa",
+   "thumb-independence/thumb-bass": "Bajo alternado en Am",
+   "thumb-independence/thumb-melody": "Bajo y melodía juntos",
+   "percussive/perc-tap": "Bombo y redoblante",
+   "percussive/perc-rhythm": "Golpe en el 2 y el 4",
+   "fingerstyle-piece/fingerstyle-chart": "Groove Am – F – C – G"
   },
   "charts": {
    "01-em-am": {
@@ -6580,6 +6761,34 @@
    "48-alegrias": {
     "title": "Alegrías en Mi",
     "note": "Cuatro compases de tres son un ciclo de 12 tiempos. B7 pregunta, E contesta."
+   },
+   "49-funk-vamp": {
+    "title": "Un vamp funk",
+    "note": "Rasgueo en semicorcheas, el acorde suena solo en los acentos. Todo lo demás apagado."
+   },
+   "50-funk-groove": {
+    "title": "Un groove funk",
+    "note": "Em7 y A7, el vamp menor. Acordes cortos, mucho aire."
+   },
+   "51-bossa-ii-v-i": {
+    "title": "Un ii–V–I de bossa",
+    "note": "Pulgar en el 1 y el 3, acordes en las síncopas. Suave y parejo."
+   },
+   "52-bossa-song": {
+    "title": "Una bossa completa",
+    "note": "El ciclo de quintas en la parte A; E7 y A7 empujan a casa en la parte B."
+   },
+   "53-boom-chick": {
+    "title": "Boom-chick en G",
+    "note": "Bajo en el 1 y el 3 (fundamental y después quinta), un acorde corto en el 2 y el 4."
+   },
+   "54-country-song": {
+    "title": "Una canción country completa",
+    "note": "Boom-chick en la estrofa, acordes abiertos en el estribillo y el turnaround D–G al final de cada frase."
+   },
+   "55-fingerstyle-groove": {
+    "title": "Groove Am – F – C – G",
+    "note": "La fundamental en el pulgar, el acorde arriba y el golpe en el 2 y el 4."
    }
   },
   "sections": {
@@ -6626,7 +6835,9 @@
    "Characteristic": "Característica",
    "VI for III": "VI en lugar de III",
    "VII for IV": "VII en lugar de IV",
-   "Secondary dominant": "Dominante secundaria"
+   "Secondary dominant": "Dominante secundaria",
+   "Vamp": "Vamp",
+   "Groove": "Groove"
   },
   "glossary": {
    "half_step": {
@@ -7349,7 +7560,28 @@
    "alegrias/alegrias-chart": "Cada línea son dos ciclos: el primero termina en B7 y el segundo vuelve a E. Contá 12 y sentí caer el compás 4 de cada ciclo.",
    "flamenco-palos/bulerias-tap": "Cuatro tiempos por compás empezando en el 12: 12-1-2-3, 4-5-6-7, 8-9-10-11. Marcá los acentos 12, 3, 6, 8 y 10.",
    "flamenco-palos/palos-quiz": "Tiempos por ciclo, posición de casa y carácter: cómo se distinguen los estilos flamencos.",
-   "picado/picado-chromatic": "Trastes 0 a 4 y vuelta en la E grave. Tocalo una vez empezando con i y otra empezando con m: los dos dedos tienen que poder empezar."
+   "picado/picado-chromatic": "Trastes 0 a 4 y vuelta en la E grave. Tocalo una vez empezando con i y otra empezando con m: los dos dedos tienen que poder empezar.",
+   "funk-sixteenths/funk-16ths": "Tocá cada compás en la E grave al aire: grupos de cuatro semicorcheas, silencios donde el acorde iría apagado. Contá \"1 e y a\".",
+   "funk-sixteenths/funk-tap": "El funk acentúa las semicorcheas del medio: marcá cada compás y sentí las notas que caen fuera del tiempo.",
+   "funk-chords/funk-change": "Dos acordes de dominante a una cuarta: el vamp funk clásico. Hacelos cortos y limpios.",
+   "funk-chords/funk-vamp": "Rasgueo en semicorcheas con el acorde sonando solo en los acentos. Apagá todo lo demás con la mano que pisa.",
+   "funk-riffs/funk-riff": "E, después sube por la pentatónica y vuelve a bajar: notas cortas y la E al aire como pulso.",
+   "funk-riffs/funk-groove": "Em7 y A7, un compás cada uno: el vamp menor. Acentuá la \"a\" del tiempo 2.",
+   "bossa-rhythm/bossa-thumb": "En la cuerda A al aire: bajo en el 1 y el 3 (negra con puntillo y corchea), la base pareja del ritmo.",
+   "bossa-rhythm/bossa-tap": "Esta es la parte de los dedos: acordes en el \"y\" de los tiempos. Marcalos con la mano relajada.",
+   "bossa-chords/bossa-change": "El ii–V–I en Do. Mantené cerca de las cuerdas los dedos que no necesitan moverse.",
+   "bossa-chords/bossa-ii-v-i": "Dos compases por acorde al principio y después uno: pulgar en el 1 y el 3, acordes en las síncopas.",
+   "bossa-song/bossa-song-chart": "Parte A sobre el ciclo de quintas, parte B con E7 y A7 empujando de vuelta a casa. Mantené el pulgar parejo en los cambios.",
+   "boom-chick/boom-chick-g": "Bajo G (6ª cuerda), notas del acorde, bajo D (4ª cuerda), notas del acorde. Dejá sonar el bajo y hacé corto el acorde.",
+   "boom-chick/boom-chick-chart": "G, C y D con el bajo en el 1 y el 3: primero la fundamental de cada acorde, después su quinta.",
+   "country-licks/g-major-pent": "Posición abierta, con las cuerdas al aire: G A B D E.",
+   "country-licks/country-lick": "Un hammer de A♯ a B en la cuerda G, después baja por la pentatónica hasta G.",
+   "country-song/country-song-chart": "Estrofa con boom-chick, estribillo abierto y el turnaround D–G al final de cada frase.",
+   "thumb-independence/thumb-bass": "Solo el pulgar: A en la 5ª cuerda, E en la 4ª, ida y vuelta, parejo.",
+   "thumb-independence/thumb-melody": "Cada nota del bajo lleva una nota de melodía arriba: C, B, A y después G bajando. Mantené el pulgar parejo.",
+   "percussive/perc-tap": "Marcá el groove: bombo en el 1 y en el \"y\" del 2, redoblante en el 2 y el 4.",
+   "percussive/perc-rhythm": "En la E grave al aire: el bajo en el 1 y el 3, el golpe (corto y apagado) en el 2 y el 4.",
+   "fingerstyle-piece/fingerstyle-chart": "Un compás por acorde, con el golpe en el 2 y el 4."
   }
  }
 }

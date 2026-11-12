@@ -1,0 +1,10 @@
+title: Boom-chick in G
+bpm: 100
+time: 4/4
+strum: D.D.D.D.
+tone: james_burton
+note: Bass on 1 and 3 (root, then fifth), a short chord on 2 and 4.
+
+[Verse]
+G | G | C | C
+D | D | G | G

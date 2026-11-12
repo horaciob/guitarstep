@@ -1,0 +1,10 @@
+title: A funk groove
+bpm: 100
+time: 4/4
+strum: D.DU.UDU
+tone: funk
+note: Em7 and A7, the minor vamp. Short chords, lots of air.
+
+[Groove]
+Em7 | A7 | Em7 | A7
+Em7 | A7 | Em7 | Em7

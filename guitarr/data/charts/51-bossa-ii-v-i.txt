@@ -1,0 +1,13 @@
+title: A bossa ii–V–I
+bpm: 110
+time: 4/4
+strum: D.UD.UD.
+tone: joao_gilberto
+note: Thumb on 1 and 3, chords on the syncopations. Soft and even.
+
+[A]
+Dm7 | Dm7 | G7 | G7
+Cmaj7 | Cmaj7 | Cmaj7 | Cmaj7
+
+[B]
+Dm7 | G7 | Cmaj7 | Cmaj7

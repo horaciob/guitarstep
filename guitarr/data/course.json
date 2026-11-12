@@ -9676,6 +9676,464 @@
      ]
     }
    ]
+  },
+  {
+   "id": "k1",
+   "track": "funk",
+   "badge": "K1",
+   "number": 36,
+   "title": "Funk rhythm guitar",
+   "tone": "nile_rodgers",
+   "subtitle": "Sixteenth notes, small chords, muted strums and the one.",
+   "lessons": [
+    {
+     "id": "funk-sixteenths",
+     "title": "The sixteenth-note engine",
+     "minutes": 10,
+     "theory": [
+      "Funk rhythm guitar is a drummer's hi-hat on six strings: the strumming hand never stops moving down and up in sixteenth notes, four per beat.",
+      "Most of those strokes are muted (the fretting hand relaxes so the strings go dead); only a few let the chord ring. The groove is in which ones sound.",
+      "Down on the beat and on the \"and\", up on the \"e\" and the \"a\": keep the hand moving even when it misses the strings on purpose."
+     ],
+     "tutorials": [
+      "funk rhythm guitar sixteenth notes lesson"
+     ],
+     "exercises": [
+      {
+       "id": "funk-16ths",
+       "kind": "rhythm",
+       "title": "Sixteenths on one string",
+       "bpm": 70,
+       "count": 4,
+       "pitch": 40,
+       "min": 70,
+       "patterns": [
+        "s s s s s s s s q q",
+        "q s s s s q s s s s",
+        "s rs s s s rs s s q q",
+        "e s s e s s q q"
+       ],
+       "theory": "Play each bar on the open low E: groups of four sixteenths, rests where the chord would be muted. Count \"1 e and a\"."
+      },
+      {
+       "id": "funk-tap",
+       "kind": "tap",
+       "title": "Tap the syncopations",
+       "bpm": 70,
+       "count": 4,
+       "min": 70,
+       "patterns": [
+        "e. s q e. s q",
+        "s e. q s e. q",
+        "q e. s q q",
+        "e. s e. s h"
+       ],
+       "theory": "Funk accents the sixteenths in between: tap each bar and feel the notes that fall off the beat."
+      }
+     ]
+    },
+    {
+     "id": "funk-chords",
+     "title": "Small chords and stabs",
+     "minutes": 10,
+     "theory": [
+      "Funk players use small shapes on the top strings: three or four notes are enough, and they leave room for the bass and the keys.",
+      "A stab is a chord cut short: strum and release the pressure right away. Silence after the chord is part of the rhythm.",
+      "Dominant 7th and minor 7th chords are the funk sound: they never fully resolve, so a vamp on one chord can go on for minutes."
+     ],
+     "tutorials": [
+      "funk guitar chords stabs lesson"
+     ],
+     "exercises": [
+      {
+       "id": "funk-change",
+       "kind": "change",
+       "title": "E7 ↔ A7",
+       "chords": [
+        "E7",
+        "A7"
+       ],
+       "times": 4,
+       "min": 75,
+       "theory": "Two dominant chords a fourth apart: the classic funk vamp. Keep both short and clean."
+      },
+      {
+       "id": "funk-vamp",
+       "kind": "chart",
+       "title": "A funk vamp",
+       "chart": "49-funk-vamp",
+       "speed": 0.8,
+       "min": 80,
+       "theory": "Sixteenth strums with the chord ringing only on the accents. Mute everything else with the fretting hand."
+      }
+     ]
+    },
+    {
+     "id": "funk-riffs",
+     "title": "Single-note riffs",
+     "minutes": 10,
+     "theory": [
+      "Many funk parts are single-note lines on the low strings, locked with the bass drum: short, repeated and full of rests.",
+      "The E minor pentatonic in open position gives most of them: E, G, A, B, D.",
+      "Play them staccato: lift the finger right after each note so the line sounds tight, like a bass."
+     ],
+     "tutorials": [
+      "funk guitar single note riff lesson"
+     ],
+     "exercises": [
+      {
+       "id": "funk-riff",
+       "kind": "lick",
+       "title": "A riff on the low strings",
+       "tab": "6:0 6:0 6:3 5:0 5:2 5:0 6:3 6:0",
+       "min": 75,
+       "theory": "E, then up the pentatonic and back down: short notes, the open E as the pulse."
+      },
+      {
+       "id": "funk-groove",
+       "kind": "chart",
+       "title": "A funk groove",
+       "chart": "50-funk-groove",
+       "speed": 0.8,
+       "min": 80,
+       "theory": "Em7 and A7, one bar each: the minor vamp. Accent the \"a\" of beat 2."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "b1",
+   "track": "bossa",
+   "badge": "B1",
+   "number": 37,
+   "title": "Bossa nova",
+   "tone": "joao_gilberto",
+   "subtitle": "The bossa rhythm, seventh chords and a song.",
+   "lessons": [
+    {
+     "id": "bossa-rhythm",
+     "title": "The bossa nova rhythm",
+     "minutes": 10,
+     "theory": [
+      "Bossa nova is samba played softly on a nylon-string guitar: the thumb keeps a steady bass on beats 1 and 3, the fingers pluck the chord in between.",
+      "The chords fall on syncopations, ahead of the beat: that push is the swing of bossa, and the thumb underneath never changes.",
+      "Play quietly and evenly. Bossa is close to speech: no big accents, everything flowing."
+     ],
+     "tutorials": [
+      "bossa nova guitar rhythm lesson"
+     ],
+     "exercises": [
+      {
+       "id": "bossa-thumb",
+       "kind": "rhythm",
+       "title": "The thumb alone",
+       "bpm": 70,
+       "count": 4,
+       "pitch": 45,
+       "min": 70,
+       "patterns": [
+        "h h",
+        "q. e q. e",
+        "q. e h",
+        "h q. e"
+       ],
+       "theory": "On the open A string: bass on 1 and 3 (a dotted quarter and an eighth), the steady base of the rhythm."
+      },
+      {
+       "id": "bossa-tap",
+       "kind": "tap",
+       "title": "Tap the chord syncopations",
+       "bpm": 70,
+       "count": 4,
+       "min": 70,
+       "patterns": [
+        "q e e re e q",
+        "e e re q. q",
+        "re e q re e q",
+        "e q e re e q"
+       ],
+       "theory": "These are the fingers' part: chords on the \"and\" of the beats. Tap them with a relaxed hand."
+      }
+     ]
+    },
+    {
+     "id": "bossa-chords",
+     "title": "Seventh chords: maj7, m7 and 7",
+     "minutes": 12,
+     "theory": [
+      "Bossa nova lives on seventh chords: major 7th (soft, open), minor 7th (warm) and dominant 7th (it wants to move).",
+      "The ii–V–I is its most common move: Dm7 – G7 – Cmaj7 in C. Each chord changes only a note or two from the last.",
+      "Look for the note that moves: from Dm7 to G7 the C falls to B, from G7 to Cmaj7 the F falls to E. Those little steps are the melody inside the chords."
+     ],
+     "tutorials": [
+      "bossa nova chords maj7 m7 guitar"
+     ],
+     "exercises": [
+      {
+       "id": "bossa-change",
+       "kind": "change",
+       "title": "Dm7 → G7 → Cmaj7",
+       "chords": [
+        "Dm7",
+        "G7",
+        "Cmaj7"
+       ],
+       "times": 3,
+       "min": 75,
+       "theory": "The ii–V–I in C. Keep the fingers that don't need to move close to the strings."
+      },
+      {
+       "id": "bossa-ii-v-i",
+       "kind": "chart",
+       "title": "A bossa ii–V–I",
+       "chart": "51-bossa-ii-v-i",
+       "speed": 0.8,
+       "min": 80,
+       "theory": "Two bars per chord at first, then one: thumb on 1 and 3, chords on the syncopations."
+      }
+     ]
+    },
+    {
+     "id": "bossa-song",
+     "title": "A bossa song form",
+     "minutes": 12,
+     "theory": [
+      "A typical bossa song moves through several keys with ii–V's and lands softly on major 7th chords.",
+      "Am7 – Dm7 – G7 – Cmaj7 walks around C by fifths: each chord leads to the next one a fourth up.",
+      "E7 and A7 borrow tension from outside the key on the way back: they push towards Am7 and Dm7."
+     ],
+     "tutorials": [
+      "bossa nova song guitar comping"
+     ],
+     "exercises": [
+      {
+       "id": "bossa-song-chart",
+       "kind": "chart",
+       "title": "A full bossa",
+       "chart": "52-bossa-song",
+       "speed": 0.9,
+       "min": 80,
+       "theory": "A part on the cycle of fifths, B part with E7 and A7 pushing back home. Keep the thumb steady through the changes."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "c1",
+   "track": "country",
+   "badge": "C1",
+   "number": 38,
+   "title": "Country guitar",
+   "tone": "james_burton",
+   "subtitle": "Boom-chick, the major pentatonic and a country song.",
+   "lessons": [
+    {
+     "id": "boom-chick",
+     "title": "Boom-chick: bass, then strum",
+     "minutes": 10,
+     "theory": [
+      "Country rhythm guitar alternates a bass note (boom) and a short strum of the top strings (chick): bass on 1 and 3, chord on 2 and 4.",
+      "The bass alternates between the root and the fifth: on G, the 6th string (G) then the 4th string (D).",
+      "Keep the chick short and light; the boom is what holds the time, like a bass player."
+     ],
+     "tutorials": [
+      "country boom chick guitar strum lesson"
+     ],
+     "exercises": [
+      {
+       "id": "boom-chick-g",
+       "kind": "lick",
+       "title": "Boom-chick on G",
+       "tab": "6:3 2:0 4:0 2:0 6:3 2:0 4:0 1:3",
+       "min": 75,
+       "theory": "Bass G (6th string), chord notes, bass D (4th string), chord notes. Let the bass ring, keep the chord short."
+      },
+      {
+       "id": "boom-chick-chart",
+       "kind": "chart",
+       "title": "Boom-chick in G",
+       "chart": "53-boom-chick",
+       "speed": 0.8,
+       "min": 80,
+       "theory": "G, C and D with the bass on 1 and 3: the root of each chord first, then its fifth."
+      }
+     ]
+    },
+    {
+     "id": "country-licks",
+     "title": "Country licks: the major pentatonic",
+     "minutes": 10,
+     "theory": [
+      "Country lead lines come from the major pentatonic: G A B D E in G. It sounds bright and open, without the bluesy flat third.",
+      "Hammer-ons from the minor to the major third (A♯ to B in G) give the country \"twang\" in one move.",
+      "Open strings ringing against fretted notes are a country trademark: let them sustain."
+     ],
+     "tutorials": [
+      "country guitar licks major pentatonic"
+     ],
+     "exercises": [
+      {
+       "id": "g-major-pent",
+       "kind": "scale",
+       "title": "G major pentatonic",
+       "key": "G",
+       "scale": "major_pentatonic",
+       "frets": [
+        0,
+        3
+       ],
+       "min": 80,
+       "theory": "Open position, with the open strings: G A B D E."
+      },
+      {
+       "id": "country-lick",
+       "kind": "lick",
+       "title": "A twangy lick in G",
+       "tab": "3:3h4 2:3 3:4 3:2 4:5 4:2 5:5 6:3",
+       "min": 75,
+       "theory": "A hammer from A♯ to B on the G string, then down the pentatonic to G."
+      }
+     ]
+    },
+    {
+     "id": "country-song",
+     "title": "A country song",
+     "minutes": 12,
+     "theory": [
+      "Most country songs use three chords, I, IV and V (G, C and D in G), with the boom-chick under the verse.",
+      "A turnaround at the end of the line (D to G) brings the song back to the top.",
+      "Play the chorus a bit louder and let the chords ring; go back to the tight boom-chick for the verse."
+     ],
+     "tutorials": [
+      "easy country song guitar lesson"
+     ],
+     "exercises": [
+      {
+       "id": "country-song-chart",
+       "kind": "chart",
+       "title": "A full country song",
+       "chart": "54-country-song",
+       "speed": 0.9,
+       "min": 80,
+       "theory": "Verse with boom-chick, chorus ringing, the D–G turnaround at the end of each line."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "p1",
+   "track": "fingerstyle",
+   "badge": "P1",
+   "number": 39,
+   "title": "Fingerstyle guitar",
+   "tone": "emmanuel_fingerstyle",
+   "subtitle": "An independent thumb, melody on top and percussion on the body.",
+   "lessons": [
+    {
+     "id": "thumb-independence",
+     "title": "An independent thumb",
+     "minutes": 12,
+     "theory": [
+      "In fingerstyle the thumb plays the bass on every beat, like a drummer's kick, while the fingers play the melody on top.",
+      "The hard part is letting them be independent: the thumb keeps its beat whatever the fingers do.",
+      "Start with the thumb alone until it's automatic, then add one melody note at a time on top of it."
+     ],
+     "tutorials": [
+      "fingerstyle thumb independence exercise"
+     ],
+     "exercises": [
+      {
+       "id": "thumb-bass",
+       "kind": "lick",
+       "title": "Alternating bass on Am",
+       "tab": "5:0 4:2 5:0 4:2 5:0 4:2 5:0 4:2",
+       "min": 75,
+       "theory": "Thumb only: A on the 5th string, E on the 4th, back and forth, evenly."
+      },
+      {
+       "id": "thumb-melody",
+       "kind": "lick",
+       "title": "Bass and melody together",
+       "tab": "5:0 2:1 4:2 2:0 5:0 3:2 4:2 3:0",
+       "min": 75,
+       "theory": "Each bass note gets a melody note above it: C, B, A, then G on the way down. Keep the thumb steady."
+      }
+     ]
+    },
+    {
+     "id": "percussive",
+     "title": "Percussion on the guitar",
+     "minutes": 10,
+     "theory": [
+      "Percussive fingerstyle adds a drum kit to the guitar: the thumb slaps the strings near the soundhole for a snare on 2 and 4, the heel of the hand thumps the body for a kick.",
+      "The slap is a mute and a hit at once: the side of the thumb lands on the strings and stops them with a crack.",
+      "Start with the rhythm alone, tapped, before adding chords: the groove must be steady first."
+     ],
+     "tutorials": [
+      "percussive fingerstyle slap technique"
+     ],
+     "exercises": [
+      {
+       "id": "perc-tap",
+       "kind": "tap",
+       "title": "Kick and snare",
+       "bpm": 80,
+       "count": 4,
+       "min": 70,
+       "patterns": [
+        "q q q q",
+        "q e e q q",
+        "e e q e e q",
+        "q q e e q"
+       ],
+       "theory": "Tap the groove: the kick on 1 and the \"and\" of 2, the snare on 2 and 4."
+      },
+      {
+       "id": "perc-rhythm",
+       "kind": "rhythm",
+       "title": "Slap on 2 and 4",
+       "bpm": 80,
+       "count": 4,
+       "pitch": 40,
+       "min": 70,
+       "patterns": [
+        "q q q q",
+        "q e e q q",
+        "q q q e e",
+        "e e q e e q"
+       ],
+       "theory": "On the open low E: the bass on 1 and 3, the slap (a short muted hit) on 2 and 4."
+      }
+     ]
+    },
+    {
+     "id": "fingerstyle-piece",
+     "title": "A fingerstyle groove",
+     "minutes": 12,
+     "theory": [
+      "Am – F – C – G is the progression of a thousand fingerstyle covers: put the root in the thumb and the chord on top.",
+      "Strum the chords with the fingers (down with the nails, up with the thumb) and add the slap on 2 and 4.",
+      "Once it's steady, play the top note of each chord louder: that's the melody."
+     ],
+     "tutorials": [
+      "fingerstyle groove am f c g guitar"
+     ],
+     "exercises": [
+      {
+       "id": "fingerstyle-chart",
+       "kind": "chart",
+       "title": "Am – F – C – G groove",
+       "chart": "55-fingerstyle-groove",
+       "speed": 0.8,
+       "min": 80,
+       "theory": "One bar per chord, with the slap on 2 and 4."
+      }
+     ]
+    }
+   ]
   }
  ]
 }

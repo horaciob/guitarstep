@@ -1,0 +1,14 @@
+title: A full bossa
+bpm: 116
+time: 4/4
+strum: D.UD.UD.
+tone: joao_gilberto
+note: The cycle of fifths in the A part; E7 and A7 push home in the B part.
+
+[A]
+Am7 | Dm7 | G7 | Cmaj7
+Fmaj7 | Dm7 | E7 | E7
+
+[B]
+Am7 | A7 | Dm7 | G7
+Cmaj7 | Fmaj7 | E7 | Am7

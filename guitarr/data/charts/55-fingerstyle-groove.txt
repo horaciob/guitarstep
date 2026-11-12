@@ -1,0 +1,13 @@
+title: Am – F – C – G groove
+bpm: 84
+time: 4/4
+strum: D.UD.UDU
+tone: emmanuel_fingerstyle
+note: Root in the thumb, chord on top, the slap on 2 and 4.
+
+[Groove]
+Am | F | C | G
+Am | F | C | G
+
+[Ending]
+Am | F | G | Am
