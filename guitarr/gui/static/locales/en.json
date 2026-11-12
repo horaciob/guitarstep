@@ -2717,7 +2717,7 @@
   "keys": {
    "title": "Keyboard shortcuts",
    "global": "Anywhere",
-   "global_html": "<kbd>?</kbd> this help · <kbd>Esc</kbd> close a dialog or a full screen",
+   "global_html": "<kbd>?</kbd> this help · <kbd>Esc</kbd> close a dialog or a full screen · <kbd>Ctrl</kbd>+<kbd>K</kbd> (<kbd>⌘</kbd><kbd>K</kbd>) search everything",
    "exercise": "Exercise screen",
    "exercise_html": "<kbd>Space</kbd> start / stop · <kbd>Enter</kbd> next exercise · <kbd>Esc</kbd> back to the lesson",
    "quiz": "Questions",
@@ -3101,6 +3101,21 @@
    "note": "Note for your student",
    "download": "Download the assignment",
    "note_from": "Your teacher's note"
+  },
+  "palette": {
+   "open": "Search",
+   "title": "Search everything",
+   "placeholder": "A lesson, chord, chart, song, sound or tool…",
+   "results": "Results",
+   "none": "Nothing found for “{{q}}”.",
+   "keys": "↑ ↓ to move · Enter to go · Esc to close · Ctrl K (⌘K) from anywhere",
+   "kind_page": "page",
+   "kind_tool": "tool",
+   "kind_lesson": "lesson",
+   "kind_chord": "chord",
+   "kind_chart": "chart",
+   "kind_song": "your song",
+   "kind_sound": "sound"
   }
  },
  "content": {}

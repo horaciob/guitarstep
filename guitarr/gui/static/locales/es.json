@@ -2717,7 +2717,7 @@
   "keys": {
    "title": "Atajos de teclado",
    "global": "En cualquier lado",
-   "global_html": "<kbd>?</kbd> esta ayuda · <kbd>Esc</kbd> cerrar un diálogo o una pantalla completa",
+   "global_html": "<kbd>?</kbd> esta ayuda · <kbd>Esc</kbd> cerrar un diálogo o una pantalla completa · <kbd>Ctrl</kbd>+<kbd>K</kbd> (<kbd>⌘</kbd><kbd>K</kbd>) buscar en todo",
    "exercise": "Pantalla del ejercicio",
    "exercise_html": "<kbd>Espacio</kbd> empezar / parar · <kbd>Enter</kbd> siguiente ejercicio · <kbd>Esc</kbd> volver a la lección",
    "quiz": "Preguntas",
@@ -3101,6 +3101,21 @@
    "note": "Nota para tu alumno",
    "download": "Bajar la tarea",
    "note_from": "La nota de tu profe"
+  },
+  "palette": {
+   "open": "Buscar",
+   "title": "Buscar en todo",
+   "placeholder": "Una lección, acorde, chart, canción, sonido o herramienta…",
+   "results": "Resultados",
+   "none": "No encontré nada para “{{q}}”.",
+   "keys": "↑ ↓ para moverte · Enter para ir · Esc para cerrar · Ctrl K (⌘K) desde cualquier lado",
+   "kind_page": "página",
+   "kind_tool": "herramienta",
+   "kind_lesson": "lección",
+   "kind_chord": "acorde",
+   "kind_chart": "chart",
+   "kind_song": "tu canción",
+   "kind_sound": "sonido"
   }
  },
  "content": {

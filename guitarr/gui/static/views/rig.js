@@ -30,9 +30,13 @@ const ackHeadphones = () => { try { return localStorage.getItem(HP_KEY) === "1";
 
 let onSlash, barSize;
 
-export async function mount(el) {
+export async function mount(el, { params = {} } = {}) {
   root = el;
   await rig.load();
+  if (params.preset && factory(params.preset)) {               // a link to a sound (from the search): load it
+    rig.loadState(factory(params.preset), { kind: "factory", id: params.preset });
+    history.replaceState(null, "", "#/rig");
+  }
   el.innerHTML = `
     <div class="gl-head head-row"><div><h1>${esc(t("rig.title"))}</h1><p class="muted">${esc(t("rig.subtitle"))}</p></div></div>
     <div class="rig-bar panel" id="rigBar"></div>

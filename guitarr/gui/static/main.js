@@ -95,7 +95,14 @@ function showKeys() {
 }
 document.addEventListener("keydown", e => {
   if (e.key === "?" && !e.target.closest("input, textarea, select, [contenteditable]")) { e.preventDefault(); showKeys(); }
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {           // search everything
+    e.preventDefault();
+    palette.then(m => m.openPalette());
+  }
 });
+const palette = import("./lib/palette.js");          // loaded up front, so the box opens before your next key
+$("#searchAll").onclick = () => palette.then(m => m.openPalette());
+window.addEventListener("hashchange", () => palette.then(m => m.stalePalette()));
 
 async function refreshProgress() {
   try {

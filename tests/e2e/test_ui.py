@@ -1336,3 +1336,23 @@ def test_import_an_assignment_file(app_page, tmp_path):
     expect(app_page.locator("#openTitle")).to_have_text("From my teacher")
     expect(app_page.locator(".assign-note")).to_contain_text("Slow and clean.")
     expect(app_page.locator("#assignDl")).to_have_attribute("href", re.compile(r"/assignment\?note=Slow%20and%20clean\."))
+
+
+def test_search_everything_with_ctrl_k(app_page):
+    onboarded(app_page)
+    go(app_page, "home")
+    expect(app_page.locator(".plan-card")).to_be_visible()
+    app_page.keyboard.press("Control+k")
+    box = app_page.locator("dialog.palette")
+    expect(box).to_be_visible()
+    app_page.keyboard.type("tango")
+    expect(box.locator("li").first).to_contain_text(re.compile("tango", re.I))
+    app_page.keyboard.type(" a minor")
+    app_page.keyboard.press("Enter")
+    expect(app_page).to_have_url(re.compile(r"#/practice\?chart=42-tango-am"))
+    app_page.keyboard.press("Control+k")
+    app_page.keyboard.type("liam gallagher")
+    expect(box.locator("li").first).to_contain_text("Noel Gallagher")
+    app_page.keyboard.press("Enter")
+    expect(app_page).to_have_url(re.compile(r"#/rig$"))
+    expect(app_page.locator('#rigQuick .quick[data-id="gallagher_wall"]')).to_contain_text("active")

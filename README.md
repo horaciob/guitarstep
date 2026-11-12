@@ -169,6 +169,8 @@ guitarr gui                              # and start practicing
 
 Audio runs in Python (low latency); the browser only displays state received over a WebSocket ~20 times per second.
 
+**Search everything**: <kbd>Ctrl</kbd>+<kbd>K</kbd> (<kbd>⌘</kbd><kbd>K</kbd>), or Search at the top of the menu, finds pages, tools, lessons, chords, charts, your songs and the rig's sounds (by player or band too).
+
 ## Command line
 
 | Command | Purpose |
