@@ -516,7 +516,8 @@ def test_accessibility_audit(browser, server_url, scheme):
     axe = axe_mod.Axe()
     problems = []
     for route in ["home", "plan", "course", "lesson/strings", "lesson/first-change", "chords", "practice", "charts", "rig", "tuner",
-                  "tools", "tools?tab=drill", "tools?tab=fretboard", "analyze", "history", "settings", "setup"]:
+                  "tools", "tools?tab=drill", "tools?tab=fretboard", "tools?tab=improv", "tools?tab=neck", "tools?tab=slow",
+                  "setlists", "chart/new", "report", "analyze", "history", "settings", "setup"]:
         page.goto(f"{server_url}/#/{route}")
         page.wait_for_timeout(500)
         for v in axe.run(page).response["violations"]:
