@@ -1,6 +1,7 @@
 // "Listen to me": asks the backend to listen to the guitar for a task (chord, exercise,
 // chord-change minute…) and reports the state until the report with the earned XP arrives.
 import { api, progressChanged } from "./ui.js";
+import { startLive } from "./browser-input.js";
 
 export function listen(payload, { onState, onMessage, timeoutS = 0 } = {}) {
   let stopped = false, lastMsg = "", timer = null;
@@ -10,7 +11,7 @@ export function listen(payload, { onState, onMessage, timeoutS = 0 } = {}) {
     try { await api("/api/live/stop", { method: "POST" }); } catch { /* already finished */ }
   };
   const done = (async () => {
-    await api("/api/live/start", { json: payload });
+    await startLive(payload);
     if (timeoutS) timer = setTimeout(stop, timeoutS * 1000);
     for (;;) {
       await new Promise(r => setTimeout(r, 120));

@@ -6,7 +6,8 @@ and a local web UI teaches, tracks and shapes your sound.
 ## Run and test
 - `.venv/bin/python -m guitarr gui --no-browser` → http://127.0.0.1:8765
 - `.venv/bin/python -m pytest -q` (no audio hardware needed; every test gets its own `~/.guitarr` via `tests/conftest.py`)
-- Docker: `docker compose up --build` (no live audio input on macOS/Windows)
+- Docker: `docker compose up --build` runs the web service (Postgres + migrations + app; sign-in links go to the log)
+- Database tests need Postgres: a throwaway cluster from the local `initdb`, or `GUITARR_TEST_DATABASE_URL`; else they skip
 
 ## Layout
 - `guitarr/` — Python: listening (`session.py`, `follow.py`, `dsp.py`), analysis, `progress.py` (XP, streak),
@@ -26,6 +27,12 @@ and a local web UI teaches, tracks and shapes your sound.
 - **No `alert`, `confirm` or `prompt`.** Confirm in place ("Remove? Yes / No") or use a `<dialog>`.
 - **Color never stands alone:** every status color comes with a number or a word.
 - **Rounding:** practice time is rounded to the minute before computing colors, goals and streaks.
+- **Two modes.** Without `GUITARR_DATABASE_URL`: the single-user local app. With it: the web service, where every
+  request has a signed-in user, `config.HOME` is that user's folder (`config.use_home`), `S` is that user's state,
+  and audio comes from the browser (`/ws/stream`), never from the server's devices. Threads started for a request
+  must be wrapped with `config.in_this_context`.
+- **Schema changes are migrations:** a new `guitarr/db/migrations/NNNN_name.sql` (`guitarr db new name`); never edit
+  one that was applied.
 - **Gear names are generic** (no brands) in the tone rig.
 - **Audio safety while testing:** don't play sound through the user's speakers. Measure rig levels before the master
   volume (`rig.levels().sound`) with the master gain at 0, and keep the limiter at the end of the chain.

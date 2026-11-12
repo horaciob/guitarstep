@@ -9,7 +9,7 @@ export function openInput({ device = null, channel = null, onReading, onSource, 
   const qs = new URLSearchParams();
   if (device !== null && device !== "") qs.set("device", device);
   if (channel) qs.set("channel", channel);
-  const ws = new WebSocket(`ws://${location.host}/ws/tuner${qs.toString() ? "?" + qs : ""}`);
+  const ws = new WebSocket(`${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/ws/tuner${qs.toString() ? "?" + qs : ""}`);
   let closed = false;
   ws.onmessage = ev => {
     const r = JSON.parse(ev.data);

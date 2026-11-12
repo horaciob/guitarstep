@@ -2,6 +2,7 @@
    Dependency-free ES module: vanilla JS + canvas + SVG. The router (main.js) calls
    showListenerView / hideListenerViews. All user-facing text goes through i18n. */
 import { issueText, msgIsError, msgText, t, tc } from "./lib/i18n.js";
+import { startLive } from "./lib/browser-input.js";
 import { $, $$, api, esc, instrument, loadInstrument, noteName, NOTE_NAMES, progressChanged, stringRow, toast } from "./lib/ui.js";
 import { levelVerdict, meterHtml, openInput, setGate, setMeter } from "./lib/input.js";
 import { bindTakePlayers, grooveHtml, takePlayer, timingVerdictHtml } from "./lib/take.js";
@@ -280,7 +281,7 @@ $("#pSavePreset").addEventListener("click", async () => {
 let ws;
 function connectLive() {
   if (ws && ws.readyState <= 1) return;
-  ws = new WebSocket(`ws://${location.host}/ws/live`);
+  ws = new WebSocket(`${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/ws/live`);
   ws.onmessage = ev => {
     const m = JSON.parse(ev.data);
     if (m.type === "state") onState(m.state);
@@ -316,7 +317,7 @@ $("#pStartBtn").addEventListener("click", async () => {
     $("#liveReport").hidden = true;
     $("#log").innerHTML = "";
     connectLive();
-    await api("/api/live/start", { json: body });
+    await startLive(body);
     setLive(true);
   } catch (e) { toast(e.message); setLive(false); }
 });
@@ -788,7 +789,7 @@ function initTuner() {
 $("#tStart").addEventListener("click", () => (tws ? stopTuner() : startTuner()));
 function startTuner() {
   if (App.live) return toast(t("tuner.stop_practice"));
-  tws = new WebSocket(`ws://${location.host}/ws/tuner`);
+  tws = new WebSocket(`${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/ws/tuner`);
   $("#tStart").textContent = t("tuner.stop");
   tws.onmessage = ev => {
     const r = JSON.parse(ev.data);
@@ -1125,6 +1126,7 @@ async function refreshDevicePill() {
     const [dv, cfg] = await Promise.all([api("/api/devices"), api("/api/config")]);
     const a = cfg.audio;
     const d = dv.inputs.find(x => x.index === a.device || x.name === a.device);
+    if (dv.browser) { $("#deviceName").textContent = t("account.browser_input"); return; }
     $("#deviceName").textContent = d ? t("settings.device_pill", { name: d.name, ch: a.channel || 1 }) : t("settings.default_input");
   } catch { $("#deviceName").textContent = t("settings.no_audio"); }
 }

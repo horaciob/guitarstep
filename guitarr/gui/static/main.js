@@ -105,6 +105,17 @@ const palette = import("./lib/palette.js");          // loaded up front, so the 
 $("#searchAll").onclick = () => palette.then(m => m.openPalette());
 window.addEventListener("hashchange", () => palette.then(m => m.stalePalette()));
 
+// The web service: who is signed in, and a way out.
+api("/api/auth/me").then(me => {
+  if (!me.service || !me.user) return;
+  $("#accountEmail").textContent = me.user.email;
+  $("#railAccount").hidden = false;
+  $("#signOut").onclick = async () => {
+    try { await api("/api/auth/signout", { method: "POST" }); } catch { /* signed out anyway below */ }
+    location.href = "/";
+  };
+}).catch(() => {});
+
 async function refreshProgress() {
   try {
     const p = await api("/api/progress");

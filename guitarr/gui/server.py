@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import os
 import re
 import shutil
 import threading
@@ -17,12 +18,13 @@ import time
 import webbrowser
 from pathlib import Path
 
-from fastapi import FastAPI, File, Form, HTTPException, UploadFile, WebSocket, WebSocketDisconnect
+import numpy as np
+from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile, WebSocket, WebSocketDisconnect
 from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 
 from ..errors import CodedError
-from .. import __version__, backup, catalog, config, history, latency, plan, progress, reminder, rig, routine, signalcheck
+from .. import __version__, accounts, backup, catalog, config, db, history, latency, plan, progress, reminder, rig, routine, signalcheck
 from ..audio_io import AudioError, FileSource, MicSource, StreamSource, devices
 from ..reference import AUDIO_EXT, REFERENCE_EXT, RefOptions, ReferenceError, list_tracks, load_reference
 
@@ -88,7 +90,6 @@ class SameOriginOnly:
         await self.app(scope, receive, send)
 
 
-app.add_middleware(SameOriginOnly)
 
 
 @app.middleware("http")
@@ -121,7 +122,95 @@ class State:
         return sum(max(0.0, min(end, e if e is not None else now) - max(start, s)) for s, e in self.listened)
 
 
-S = State()
+class _PerUser:
+    """`S` is the listening state of whoever is asking: one per signed-in user as a web service,
+    a single one for the local app. Threads see the right one through config.in_this_context."""
+
+    def __init__(self):
+        object.__setattr__(self, "_states", {})
+        object.__setattr__(self, "_guard", threading.Lock())
+
+    def current(self) -> State:
+        key = _user.get()
+        with self._guard:
+            st = self._states.get(key)
+            if st is None:
+                st = self._states[key] = State()
+            return st
+
+    def __getattr__(self, name):
+        return getattr(self.current(), name)
+
+    def __setattr__(self, name, value):
+        setattr(self.current(), name, value)
+
+
+S = _PerUser()
+
+
+# ---------------------------------------------------------------- web service: accounts
+# With GUITARR_DATABASE_URL set, every request needs a signed-in user, and that user's data
+# folder is the one config.HOME points to while the request runs.
+import contextvars
+
+_user: contextvars.ContextVar[str | None] = contextvars.ContextVar("guitarr_user", default=None)
+PUBLIC_PATHS = ("/static/", "/api/auth/", "/auth/")
+
+
+def service() -> bool:
+    return db.enabled()
+
+
+def _cookie(scope: dict) -> str | None:
+    from http.cookies import SimpleCookie
+    for k, v in scope.get("headers") or []:
+        if k == b"cookie":
+            c = SimpleCookie()
+            try:
+                c.load(v.decode("latin-1"))
+            except Exception:
+                return None
+            m = c.get(accounts.COOKIE)
+            return m.value if m else None
+    return None
+
+
+class SignedInOnly:
+    def __init__(self, app_):
+        self.app = app_
+
+    async def __call__(self, scope, receive, send):
+        if scope["type"] not in ("http", "websocket") or not service():
+            await self.app(scope, receive, send)
+            return
+        path = scope.get("path", "")
+        user = await asyncio.to_thread(accounts.user_for, _cookie(scope))
+        if user is None and not (path == "/" or path == "/api/status" or path.startswith(PUBLIC_PATHS)):
+            if scope["type"] == "websocket":
+                await send({"type": "websocket.close", "code": 1008})
+                return
+            body = json.dumps(dict(detail=dict(code="not_signed_in", message="Sign in first"))).encode()
+            await send({"type": "http.response.start", "status": 401,
+                        "headers": [(b"content-type", b"application/json"), (b"content-length", str(len(body)).encode())]})
+            await send({"type": "http.response.body", "body": body})
+            return
+        scope.setdefault("state", {})["user"] = user
+        tok = _user.set(user and user["id"])
+        try:
+            with config.use_home(config.user_home(user["id"]) if user else None):
+                await self.app(scope, receive, send)
+        finally:
+            _user.reset(tok)
+
+
+app.add_middleware(SignedInOnly)
+app.add_middleware(SameOriginOnly)    # added last, runs first: other sites are refused before anything else
+
+
+def no_server_audio() -> None:
+    """As a web service the guitar is in the user's browser: the server's own audio devices are off limits."""
+    if service():
+        fail(400, "browser_audio", "Here the audio comes from your browser")
 
 
 # ---------------------------------------------------------------- helpers
@@ -303,8 +392,54 @@ def _catalog(fn, *a):
 
 # ---------------------------------------------------------------- pages
 @app.get("/")
-def index():
+def index(request: Request):
+    if service() and not request.scope.get("state", {}).get("user"):
+        return FileResponse(STATIC / "signin.html")
     return FileResponse(STATIC / "index.html")
+
+
+# ---------------------------------------------------------------- sign in (web service)
+def _need_service():
+    if not service():
+        fail(404, "not_a_service", "Accounts exist only in the web service")
+
+
+@app.post("/api/auth/link")
+def auth_link(body: dict, request: Request):
+    """Emails a sign-in link (printed to the server log without SMTP settings)."""
+    _need_service()
+    accounts.request_link(body.get("email"), str(request.base_url))
+    return dict(ok=True)
+
+
+@app.get("/auth/verify")
+def auth_verify(token: str = ""):
+    from fastapi.responses import RedirectResponse
+    _need_service()
+    try:
+        session, _ = accounts.redeem_link(token)
+    except CodedError:
+        return RedirectResponse("/?signin=expired", status_code=303)
+    r = RedirectResponse("/", status_code=303)
+    r.set_cookie(accounts.COOKIE, session, max_age=accounts.SESSION_DAYS * 86400, httponly=True, samesite="lax",
+                 secure=(os.environ.get("GUITARR_PUBLIC_URL") or "").startswith("https://"))
+    return r
+
+
+@app.get("/api/auth/me")
+def auth_me(request: Request):
+    user = request.scope.get("state", {}).get("user")
+    return dict(service=service(), user=user and dict(email=user["email"]))
+
+
+@app.post("/api/auth/signout")
+def auth_signout(request: Request):
+    from fastapi.responses import JSONResponse
+    _need_service()
+    accounts.sign_out(_cookie(request.scope))
+    r = JSONResponse(dict(ok=True))
+    r.delete_cookie(accounts.COOKIE)
+    return r
 
 
 app.mount("/static", StaticFiles(directory=STATIC), name="static")
@@ -903,7 +1038,8 @@ def settings_sources():
     audio, inst = saved.get("audio", {}), saved.get("instrument", {})
     src = lambda d, k, auto=False: "saved" if d.get(k) is not None else ("auto" if auto else "default")
     return dict(
-        home=dict(value=str(config.HOME), source="env" if os.environ.get("GUITARR_HOME") else "default", env="GUITARR_HOME"),
+        home=dict(value=None if service() else str(config.HOME),        # a service doesn't show its folders
+                  source="env" if os.environ.get("GUITARR_HOME") else "default", env="GUITARR_HOME"),
         device=dict(value=audio_settings().get("device"), source=src(audio, "device", auto=True)),
         channel=dict(value=audio_settings().get("channel"), source=src(audio, "channel")),
         output_device=dict(value=audio.get("output_device"), source=src(audio, "output_device", auto=True)),
@@ -916,12 +1052,14 @@ def settings_sources():
 
 @app.get("/api/status")
 def status():
-    return dict(version=__version__, home=str(config.HOME),
+    return dict(version=__version__, home=None if service() else str(config.HOME), service=service(),
                 live=bool(S.session and S.session.running), tuner=S.tuner is not None)
 
 
 @app.get("/api/devices")
 def api_devices():
+    if service():
+        return dict(inputs=[], outputs=[], suggested=None, browser=True)
     try:
         return devices()
     except AudioError as e:
@@ -1546,6 +1684,11 @@ def live_start(body: dict):
             fail(400, "reference", str(e))
         a = audio_settings()
         sim = take_path(body["simulate"]) if body.get("simulate") else None
+        # the guitar is in the browser: it streams the audio to /ws/stream (attach) once this returns
+        browser = sim is None and (service() or body.get("input") == "browser")
+        sr = _int(body.get("sr"))
+        if browser and not (sr and 8000 <= sr <= 192000):
+            fail(400, "bad_sample_rate", "Send the browser's sample rate (sr)")
         mode = ctx.get("mode") or body.get("mode", "wait")
         speed = ctx.get("speed") or _float(body.get("speed")) or 1.0
         chart = ropts.chart is not None
@@ -1553,7 +1696,8 @@ def live_start(body: dict):
             mode=mode, speed=speed,
             device=a.get("device"), channel=a.get("channel") or 1, output_device=a.get("output_device"),
             samplerate=a.get("samplerate"), click=body.get("click", True),
-            count_in=_int(body.get("count_in")), latency_ms=a.get("latency_ms") or 0.0,
+            count_in=_int(body.get("count_in")),
+            latency_ms=(_float(body.get("latency_ms")) or 0.0) if browser else (a.get("latency_ms") or 0.0),
             gate_db=a["gate_db"] if a.get("gate_db") is not None else -50.0,
             sensitivity=a.get("sensitivity") or 1.0, loop=bool(body.get("loop")) and ctx["type"] == "practice",
             trainer=bool(body.get("trainer")) and mode == "tempo" and ctx["type"] == "practice",
@@ -1569,7 +1713,7 @@ def live_start(body: dict):
             timing_tol=0.09 if chart and (ropts.chart or {}).get("swing") else 0.06,
         )
         try:
-            sess = LiveSession(ref, opts)
+            sess = LiveSession(ref, opts, src=StreamSource(sr) if browser else None)
         except AudioError as e:
             fail(400, "audio", str(e))
         if not body.get("simulate"):
@@ -1594,11 +1738,11 @@ def live_start(body: dict):
             finally:
                 span[1] = time.time()
 
-        S.thread = threading.Thread(target=run, daemon=True)
+        S.thread = threading.Thread(target=config.in_this_context(run), daemon=True)
         S.thread.start()
         if ctx["type"] in ("drill", "neck"):  # the chord-change minute and the neck game stop by themselves
             threading.Timer(ctx["seconds"] + 1.5, sess.stop).start()
-    return dict(ok=True, events=len(sess.events), context=ctx,
+    return dict(ok=True, events=len(sess.events), context=ctx, stream=sess.remote,
                 grid_bpm=round(60 / ref.grid.beat_len(ref.notes[0].start), 1))
 
 
@@ -1654,7 +1798,7 @@ async def ws_live(ws: WebSocket):
         pass
 
 
-# ---------------------------------------------------------------- audio from the browser (web service, phase 0)
+# ---------------------------------------------------------------- audio from the browser
 STREAM_HEADER = 8      # each binary frame: uint64 LE index of its first sample, then float32 LE samples
 
 
@@ -1662,25 +1806,48 @@ STREAM_HEADER = 8      # each binary frame: uint64 LE index of its first sample,
 async def ws_stream(ws: WebSocket):
     """The guitar captured in the browser, graded here with the same listener.
 
-    Client → server: {"type": "start", "sr", "song" | "chart", "mode", "speed", "latency_ms"},
-    then binary frames, then {"type": "stop"}; {"type": "ping", "t"} is answered with a pong.
-    Server → client: "ready", "state" (~20 per second, with how many seconds were heard), "pong",
-    and at the end "report" with the measurements (CPU per second of audio). A probe: it records
-    no progress, history or practice time."""
-    import numpy as np
+    The first message is either
+    - {"type": "attach"}: feed the session /api/live/start just opened with input "browser"
+      (state and report come as usual through /ws/live and /api/live/stop), or
+    - {"type": "start", "sr", "song" | "chart", "mode", "speed", "latency_ms", "click"}: a probe
+      session of its own, with "state" (~20 per second) and a final "report" with the measurements
+      (CPU per second of audio). A probe records no progress, history or practice time.
+    Then binary frames (see STREAM_HEADER), and {"type": "stop"} to finish; {"type": "ping", "t"} is
+    answered with a pong. The clicks to play come as {"type": "clicks", "clicks": [[t, accent]...]},
+    in seconds of the stream (sample index / sr), appended as the session schedules them."""
     from ..session import LiveOptions, LiveSession
 
     await ws.accept()
+    probe = False
     try:
-        start = await ws.receive_json()
-        sr = _int(start.get("sr"))
-        if start.get("type") != "start" or not sr or not 8000 <= sr <= 192000:
+        first = await ws.receive_json()
+        if first.get("type") == "attach":
+            sess = S.session
+            if not (sess and sess.running and sess.remote) or sess.src.n:
+                raise CodedError("no_session", "No session is waiting for audio from the browser")
+        elif first.get("type") == "start":
+            probe = True
+            sr = _int(first.get("sr"))
+            if not sr or not 8000 <= sr <= 192000:
+                raise CodedError("bad_start", "Send a start message with the sample rate first")
+            ropts, ctx = ref_options(first)
+            try:
+                ref = load_reference(ropts, log=lambda m: None)
+            except ReferenceError as e:
+                raise CodedError("reference", str(e))
+            a = audio_settings()
+            chart = ropts.chart is not None
+            opts = LiveOptions(
+                mode=ctx.get("mode") or first.get("mode", "wait"),
+                speed=ctx.get("speed") or _float(first.get("speed")) or 1.0,
+                latency_ms=_float(first.get("latency_ms")) or 0.0, click=bool(first.get("click")),
+                gate_db=a["gate_db"] if a.get("gate_db") is not None else -50.0, sensitivity=a.get("sensitivity") or 1.0,
+                legato=not chart, count_extras=not chart, transpose=_int(first.get("transpose")) or 0,
+                timing_tol=0.09 if chart and (ropts.chart or {}).get("swing") else 0.06,
+            )
+            sess = LiveSession(ref, opts, src=StreamSource(sr))
+        else:
             raise CodedError("bad_start", "Send a start message with the sample rate first")
-        ropts, ctx = ref_options(start)
-        try:
-            ref = load_reference(ropts, log=lambda m: None)
-        except ReferenceError as e:
-            raise CodedError("reference", str(e))
     except CodedError as e:
         await ws.send_json(dict(type="error", detail=dict(code=e.code, message=str(e))))
         await ws.close()
@@ -1691,29 +1858,22 @@ async def ws_stream(ws: WebSocket):
         return
     except (WebSocketDisconnect, RuntimeError, ValueError):
         return
-    a = audio_settings()
-    chart = ropts.chart is not None
-    opts = LiveOptions(
-        mode=ctx.get("mode") or start.get("mode", "wait"), speed=ctx.get("speed") or _float(start.get("speed")) or 1.0,
-        latency_ms=_float(start.get("latency_ms")) or 0.0,
-        gate_db=a["gate_db"] if a.get("gate_db") is not None else -50.0, sensitivity=a.get("sensitivity") or 1.0,
-        legato=not chart, count_extras=not chart, transpose=_int(start.get("transpose")) or 0,
-        timing_tol=0.09 if chart and (ropts.chart or {}).get("swing") else 0.06,
-    )
-    src = StreamSource(sr)
-    sess = LiveSession(ref, opts, src=src)
+    src, sr = sess.src, sess.src.sr
     out: dict = {}
-
-    def run():
-        t0 = time.thread_time()
-        try:
-            out["report"] = sess.run()
-        except Exception as e:  # sent to the browser below
-            sess.error = sess.error or str(e)
-        out["cpu_s"] = time.thread_time() - t0
-
-    th = threading.Thread(target=run, daemon=True)
-    th.start()
+    if probe:
+        def run():
+            t0 = time.thread_time()
+            try:
+                out["report"] = sess.run()
+            except Exception as e:  # sent to the browser below
+                sess.error = sess.error or str(e)
+            out["cpu_s"] = time.thread_time() - t0
+        th = threading.Thread(target=config.in_this_context(run), daemon=True)
+        th.start()
+        alive = th.is_alive
+    else:
+        th = None
+        alive = lambda: sess.running or sess.report is None and sess.error is None
 
     def metrics() -> dict:
         heard = sess.rec.n / sr
@@ -1721,16 +1881,30 @@ async def ws_stream(ws: WebSocket):
                     cpu_s=round(out.get("cpu_s", 0.0), 3),
                     cpu_per_audio_s=round(out["cpu_s"] / heard, 4) if "cpu_s" in out and heard else None)
 
-    async def send_states():
-        while th.is_alive():
-            await ws.send_json(dict(type="state", state=sess.snapshot(), metrics=metrics()))
+    async def send_updates():
+        sent = 0
+        while alive():
+            clicks = list(getattr(sess.follower, "clicks", None) or [])
+            if len(clicks) > sent:
+                await ws.send_json(dict(type="clicks", clicks=[[round(t, 4), bool(a)] for t, a in clicks[sent:]]))
+                sent = len(clicks)
+            if probe:
+                await ws.send_json(dict(type="state", state=sess.snapshot(), metrics=metrics()))
             await asyncio.sleep(0.05)
+        if not probe:
+            await ws.send_json(dict(type="ended"))
 
-    sender = asyncio.create_task(send_states())
+    sender = asyncio.create_task(send_updates())
+    recv = None
     try:
         await ws.send_json(dict(type="ready", events=len(sess.events), source=src.name, sr=sr))
-        while th.is_alive():
-            msg = await ws.receive()
+        while alive() and not sender.done():
+            if recv is None:
+                recv = asyncio.ensure_future(ws.receive())     # kept across turns: cancelling it could lose a frame
+            done, _ = await asyncio.wait({recv}, timeout=0.5)
+            if not done:
+                continue
+            msg, recv = recv.result(), None
             if msg["type"] == "websocket.disconnect":
                 break
             if msg.get("bytes") is not None:
@@ -1741,24 +1915,29 @@ async def ws_stream(ws: WebSocket):
                 continue
             m = json.loads(msg.get("text") or "{}")
             if m.get("type") == "stop":
-                src.end()
                 break
             if m.get("type") == "ping":
                 await ws.send_json(dict(type="pong", t=m.get("t")))
-        src.end()
-        await asyncio.to_thread(th.join, 30)
-        sender.cancel()
-        if sess.error:
-            await ws.send_json(dict(type="error", detail=dict(code="audio", message=sess.error)))
+        src.end()           # what was heard is graded; the session ends with it
+        if probe:
+            await asyncio.to_thread(th.join, 30)
+            sender.cancel()
+            if sess.error:
+                await ws.send_json(dict(type="error", detail=dict(code="audio", message=sess.error)))
+            else:
+                await ws.send_json(dict(type="report", report=out.get("report"), metrics=metrics()))
         else:
-            await ws.send_json(dict(type="report", report=out.get("report"), metrics=metrics()))
+            await asyncio.wait_for(sender, timeout=30)
         await ws.close()
-    except (WebSocketDisconnect, RuntimeError, ValueError):
+    except (WebSocketDisconnect, RuntimeError, ValueError, asyncio.TimeoutError):
         pass
     finally:
         sender.cancel()
-        sess.stop()
+        if recv is not None:
+            recv.cancel()
         src.end()
+        if probe:
+            sess.stop()
 
 
 # ---------------------------------------------------------------- tuner
@@ -1779,6 +1958,8 @@ async def ws_tuner(ws: WebSocket):
         device = (int(dev) if dev.lstrip("-").isdigit() else dev) if dev else a.get("device")
         channel = _int(ws.query_params.get("channel")) or a.get("channel") or 1
         samplerate = a.get("samplerate") if dev is None else None
+        if not sim:
+            no_server_audio()
         src = FileSource(take_path(sim)) if sim else MicSource(device, channel, samplerate)
     except HTTPException as e:
         await ws.send_json(dict(error=e.detail))
@@ -1807,6 +1988,7 @@ async def ws_tuner(ws: WebSocket):
 
 # ---------------------------------------------------------------- signal check
 def _input_source(ws_params) -> MicSource:
+    no_server_audio()
     a = audio_settings()
     dev = ws_params.get("device")
     device = (int(dev) if dev.lstrip("-").isdigit() else dev) if dev else a.get("device")
@@ -1906,6 +2088,7 @@ def api_signal_apply(body: dict):
 def calibrate_start(body: dict | None = None):
     from ..tuner import calibrate
 
+    no_server_audio()
     if S.calib.get("running"):
         fail(409, "busy", "Calibration already running")
     if S.session and S.session.running:
@@ -2009,8 +2192,14 @@ def serve(host: str = "127.0.0.1", port: int = 8765, open_browser: bool = True) 
     else:
         ALLOWED_HOSTS = LOOPBACK_HOSTS | {_host_name(host)}
     url = f"http://{host}:{port}/"
+    if service():
+        from ..db import migrate
+        waiting = migrate.pending(db.url())
+        if waiting:
+            raise SystemExit(f"The database needs {len(waiting)} migration(s): run guitarr db migrate")
     print(f"guitarr {__version__} — open {url}  (Ctrl+C to quit)")
     if open_browser:
         threading.Timer(1.0, lambda: webbrowser.open(url)).start()
-    reminder.start_loop()
+    if not service():                         # desktop notifications: for the single-user app
+        reminder.start_loop()
     uvicorn.run(app, host=host, port=port, log_level="warning")

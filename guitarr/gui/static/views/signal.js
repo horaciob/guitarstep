@@ -41,7 +41,7 @@ export function unmount() {
 
 // ------------------------------------------------------------------ live input
 function connect() {
-  ws = new WebSocket(`ws://${location.host}/ws/signal${simulate ? "?simulate=" + encodeURIComponent(simulate) : ""}`);
+  ws = new WebSocket(`${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/ws/signal${simulate ? "?simulate=" + encodeURIComponent(simulate) : ""}`);
   ws.onmessage = ev => {
     const r = JSON.parse(ev.data);
     if (r.error) {

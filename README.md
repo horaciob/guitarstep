@@ -21,7 +21,7 @@ guitarr gui          # opens http://127.0.0.1:8765
 - [Features](#features)
 - [Requirements](#requirements)
 - [Installation](#installation)
-  - [With Docker Compose](#with-docker-compose)
+  - [With Docker Compose (web service, several users)](#with-docker-compose-web-service-several-users)
 - [Quick start](#quick-start)
 - [The web UI](#the-web-ui)
 - [Command line](#command-line)
@@ -112,18 +112,39 @@ pip install -e ".[separate]"     # optional: Demucs, to isolate the guitar from 
 
 Dependency versions are pinned in `pyproject.toml` and `requirements.txt`: basic-pitch, librosa and NumPy often break between releases.
 
-### With Docker Compose
+### With Docker Compose (web service, several users)
 
 ```bash
 docker compose up --build        # → http://localhost:8765
 ```
 
-Your data (config, songs, takes, history, progress) lives in the `guitarr-data` volume.
+This runs guitarr as a web service: Postgres (`db`), the schema migrations (`migrate`, which runs once
+and exits) and the app (`guitarr`, which starts only after the migrations succeed).
 
-**Audio input:** containers can't reach CoreAudio, so on **macOS and Windows** the container has no guitar input. Take analysis, charts, the course content, the demo and simulated practice ("Simulate with a recorded take") work; live listening needs the native install above. On a **Linux** host, pass your ALSA devices through:
+- **Sign in** with your email. Without SMTP settings the one-time link is printed to the log:
+  `docker compose logs guitarr`. To send real emails, set `GUITARR_SMTP_HOST`, `GUITARR_SMTP_USER`,
+  `GUITARR_SMTP_PASSWORD`, `GUITARR_MAIL_FROM` and `GUITARR_PUBLIC_URL` (in a `.env` file beside `compose.yaml`).
+- **Audio:** your browser captures the guitar (the clean input, without the tone rig) and streams it to the
+  server, which grades it. The metronome clicks play in the browser. This works on macOS and Windows too.
+  Browsers open the microphone only on `https://` or on `localhost`.
+- **Data:** accounts live in Postgres (`guitarr-db` volume). Each user's songs, takes, history and progress
+  live in their own folder in the `guitarr-data` volume (`/data/users/<id>`).
+
+**Database changes** are numbered SQL files in `guitarr/db/migrations/`, applied in order and only once:
 
 ```bash
-docker compose -f compose.yaml -f compose.linux-audio.yaml up --build
+.venv/bin/python -m guitarr db new add_something      # creates the next NNNN_add_something.sql
+docker compose run --rm migrate guitarr db status     # what's applied and what's pending
+docker compose up --build                             # applies the pending ones before the app starts
+```
+
+Never edit a migration that already ran somewhere: write a new one (an edited file is refused).
+
+**Single user with the server's own audio input (Linux hosts):** pass your ALSA devices through. This
+runs the app without accounts or the database:
+
+```bash
+docker compose -f compose.yaml -f compose.linux-audio.yaml up --build guitarr
 ```
 
 The image runs basic-pitch's bundled ONNX model with onnxruntime, because its TensorFlow dependency on Linux conflicts with the pinned NumPy 2.x.

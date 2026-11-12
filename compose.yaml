@@ -1,23 +1,68 @@
-# guitarr with Docker Compose.
+# guitarr as a web service, on your machine, with Docker Compose.
 #
 #   docker compose up --build          → http://localhost:8765
 #
-# Audio input: containers can't reach CoreAudio, so on macOS and Windows live listening
-# (practice, tuner, lessons, chord checks) has no guitar input. Analyzing uploaded takes,
-# charts, the course, the demo ("Simulate with a recorded take") and history all work.
-# On a Linux host, add the ALSA override to hear your interface:
+# Sign in with your email: without SMTP settings the one-time link is printed to the log
+# (docker compose logs guitarr). The guitar is captured by your browser and streamed to the
+# server, so live listening works on macOS and Windows too. The browser only opens the
+# microphone on https:// or on localhost.
 #
-#   docker compose -f compose.yaml -f compose.linux-audio.yaml up --build
+# Services, in order: db (Postgres) → migrate (applies the pending schema migrations, then
+# exits) → guitarr (starts only if the migrations succeeded). Schema changes:
+#
+#   docker compose run --rm migrate guitarr db status
+#   .venv/bin/python -m guitarr db new add_something     (then edit guitarr/db/migrations/NNNN_add_something.sql)
+#
+# Settings come from the environment or a .env file beside this one (POSTGRES_PASSWORD,
+# GUITARR_SMTP_HOST, GUITARR_SMTP_USER, GUITARR_SMTP_PASSWORD, GUITARR_MAIL_FROM, GUITARR_PUBLIC_URL).
+x-guitarr: &guitarr
+  build: .
+  image: guitarr:0.2.0
+  environment:
+    GUITARR_DATABASE_URL: postgresql://guitarr:${POSTGRES_PASSWORD:-guitarr}@db:5432/guitarr
+    GUITARR_PUBLIC_URL: ${GUITARR_PUBLIC_URL:-http://localhost:8765}
+    GUITARR_SMTP_HOST: ${GUITARR_SMTP_HOST:-}
+    GUITARR_SMTP_PORT: ${GUITARR_SMTP_PORT:-587}
+    GUITARR_SMTP_USER: ${GUITARR_SMTP_USER:-}
+    GUITARR_SMTP_PASSWORD: ${GUITARR_SMTP_PASSWORD:-}
+    GUITARR_MAIL_FROM: ${GUITARR_MAIL_FROM:-guitarr <no-reply@localhost>}
+
 services:
+  db:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_USER: guitarr
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-guitarr}
+      POSTGRES_DB: guitarr
+    volumes:
+      - guitarr-db:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U guitarr -d guitarr"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+    restart: unless-stopped
+
+  migrate:
+    <<: *guitarr
+    command: ["guitarr", "db", "migrate"]
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: "no"
+
   guitarr:
-    build: .
-    image: guitarr:0.2.0
+    <<: *guitarr
     container_name: guitarr
     ports:
-      - "127.0.0.1:8765:8765"   # local only: the UI has no authentication
+      - "127.0.0.1:8765:8765"   # this machine only
     volumes:
-      - guitarr-data:/data      # config, songs, takes, history and progress
+      - guitarr-data:/data      # each user's songs, takes, history and progress (/data/users/<id>), and the shared cache
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
     restart: unless-stopped
 
 volumes:
+  guitarr-db:
   guitarr-data:

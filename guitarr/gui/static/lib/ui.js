@@ -33,6 +33,7 @@ export async function api(path, opts = {}) {
   try { data = await r.json(); } catch { /* no body */ }
   if (!r.ok) {
     const detail = data && (data.detail || data.error);
+    if (r.status === 401 && detail && detail.code === "not_signed_in") location.href = "/";   // the session expired
     const err = new Error(errorText(detail) || `Error ${r.status}`);
     err.code = detail && detail.code;          // lets a form show the error under the right field
     throw err;

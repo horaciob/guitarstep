@@ -3,6 +3,7 @@
 // response time, lost audio and server CPU per second of playing. Nothing is recorded as progress.
 import { msgText, t } from "../lib/i18n.js";
 import { $, api, esc } from "../lib/ui.js";
+import { frame, openInput } from "../lib/browser-input.js";
 
 let run = null;
 
@@ -41,43 +42,27 @@ export function unmount() {
 }
 
 async function start(el, body, showErr) {
-  const stream = await navigator.mediaDevices.getUserMedia({ audio: {
-    echoCancellation: false, noiseSuppression: false, autoGainControl: false, channelCount: 1 } });
-  const ctx = new AudioContext({ latencyHint: "interactive" });
-  await ctx.audioWorklet.addModule("/static/lib/stream-worklet.js");
-  const src = ctx.createMediaStreamSource(stream);
-  const node = new AudioWorkletNode(ctx, "stream-capture", { numberOfOutputs: 0 });   // never to the speakers
-  const settings = stream.getAudioTracks()[0].getSettings();
-  const latency_ms = 1000 * ((settings.latency || 0) + (ctx.baseLatency || 0));
+  const input = await openInput();
   const ws = new WebSocket(`${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/ws/stream`);
   ws.binaryType = "arraybuffer";
-  const m = { rtt: [], sent: 0, t0: 0 };
+  const m = { rtt: [], sent: 0 };
   let ping = 0;
   const close = () => {
     clearInterval(ping);
-    node.port.onmessage = null;
-    src.disconnect();
-    stream.getTracks().forEach(tr => tr.stop());
-    ctx.close();
+    input.close();
     if (ws.readyState <= 1) ws.close();
     $("#streamGo", el).hidden = false;
     $("#streamStop", el).hidden = true;
   };
-  ws.onopen = () => ws.send(JSON.stringify({ type: "start", sr: ctx.sampleRate, latency_ms, ...body }));
+  ws.onopen = () => ws.send(JSON.stringify({ type: "start", sr: input.sr, latency_ms: input.latency_ms, ...body }));
   ws.onerror = () => { showErr(t("stream.err_connection")); close(); };
   ws.onmessage = ev => {
     const msg = JSON.parse(ev.data);
     if (msg.type === "ready") {
-      m.t0 = performance.now();
-      node.port.onmessage = e => {
-        const { start: i, samples } = e.data;
-        const buf = new ArrayBuffer(8 + samples.byteLength), dv = new DataView(buf);
-        dv.setBigUint64(0, BigInt(i), true);
-        new Float32Array(buf, 8).set(samples);
-        if (ws.readyState === 1) ws.send(buf);
-        m.sent = (i + samples.length) / ctx.sampleRate;
-      };
-      src.connect(node);
+      input.onBlock(b => {
+        if (ws.readyState === 1) ws.send(frame(b));
+        m.sent = (b.start + b.samples.length) / input.sr;
+      });
       ping = setInterval(() => ws.send(JSON.stringify({ type: "ping", t: performance.now() })), 1000);
       $("#streamGo", el).hidden = true;
       $("#streamStop", el).hidden = false;
@@ -88,8 +73,7 @@ async function start(el, body, showErr) {
       $("#streamMsg", el).textContent = s.last ? msgText(s.last) : t("stream.listening");
       show(el, m, msg.metrics, s.stats);
     } else if (msg.type === "report") {
-      const sum = msg.report.summary;
-      $("#streamMsg", el).textContent = t("stream.done", { judged: sum.judged });
+      $("#streamMsg", el).textContent = t("stream.done", { judged: msg.report.summary.judged });
       show(el, m, msg.metrics, null);
       close();
     } else if (msg.type === "error") {

@@ -1175,7 +1175,7 @@ body.is-stage #main { max-width: none; padding: 12px 18px; }
 .gl table.sources th, .gl table.sources td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--border); }
 .gl .src-env { border-color: var(--gl-warn); color: var(--gl-warn); } .gl .src-saved { border-color: var(--gl-ok); color: var(--gl-ok); }
 .keys-dialog p { line-height: 2; }
-.dock-toggle { align-self: flex-start; background: var(--gl-panel-2); color: var(--text); border: 1px solid var(--border); border-radius: var(--r-md); padding: 6px 10px; font-size: 12px; cursor: pointer; }
+.dock-toggle, .rail-account button { align-self: flex-start; background: var(--gl-panel-2); color: var(--text); border: 1px solid var(--border); border-radius: var(--r-md); padding: 6px 10px; font-size: 12px; cursor: pointer; }
 .dock-toggle[aria-pressed="true"] { border-color: var(--gl-accent); }
 /* bottom dock on desktop: the rail becomes a floating bar of icons */
 @media (min-width: 901px) {
@@ -1372,3 +1372,11 @@ dialog.palette li.on small { color: inherit; }
 .stream-metrics { display: grid; grid-template-columns: max-content 1fr; gap: 4px 16px; margin: 8px 0 0; }
 .stream-metrics dt { color: var(--muted); }
 .stream-metrics dd { margin: 0; font-variant-numeric: tabular-nums; }
+
+/* web service sign-in page */
+.gl.signin { min-height: 100vh; display: grid; place-items: center; padding: 16px; }
+.gl.signin form { width: 100%; max-width: 380px; }
+.gl.signin input { width: 100%; }
+.rail-account { align-items: center; justify-content: space-between; }
+.rail-account #accountEmail { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.rail-account[hidden] { display: none; }

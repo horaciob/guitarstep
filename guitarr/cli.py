@@ -130,6 +130,9 @@ def build_parser() -> argparse.ArgumentParser:
     jc = sub.add_parser("judge-check", help="measure the chord judge on your own recordings (see guitarr/judgecheck.py)")
     jc.add_argument("folder", type=Path, help="a folder with one subfolder per chord asked (G/ok-1.wav, G/Em-1.wav…)")
     jc.add_argument("--json", action="store_true", help="print the result as JSON")
+    db = sub.add_parser("db", help="web service database: schema migrations (needs GUITARR_DATABASE_URL)")
+    db.add_argument("action", choices=["migrate", "status", "new"])
+    db.add_argument("name", nargs="?", help="for new: what the migration does, e.g. add_setlists")
     sub.add_parser("devices", help="list audio devices")
     tr = sub.add_parser("tracks", help="list the tracks of a MIDI / Guitar Pro file")
     tr.add_argument("file", type=Path)
@@ -352,6 +355,26 @@ def cmd_tracks(args) -> None:
         print(f"{r['index']:2d}  {r['name']:30s} {r['kind']:28s} {r['notes']} notes")
 
 
+def cmd_db(args) -> None:
+    from . import db
+    from .db import migrate
+    if args.action == "new":
+        print(f"Created {migrate.new(args.name or '')}")
+        return
+    if not db.enabled():
+        raise ValueError("Set GUITARR_DATABASE_URL, e.g. postgresql://guitarr:guitarr@localhost:5432/guitarr")
+    import psycopg
+    try:
+        if args.action == "migrate":
+            done = migrate.migrate(db.url())
+            print(f"{len(done)} migration(s) applied" if done else "Up to date")
+        else:
+            for m in migrate.status(db.url()):
+                print(f"{m['version']:04d}  {m['name']:<32} {m['applied_at'] or 'pending'}")
+    except psycopg.Error as e:
+        raise ValueError(f"Database: {e}") from e
+
+
 def main(argv=None) -> None:
     _quiet()
     args = build_parser().parse_args(argv)
@@ -401,6 +424,8 @@ def main(argv=None) -> None:
                 raise ValueError(f"{args.folder} is not a folder")
             r = run(args.folder, log=print)
             print(json.dumps(r, indent=1)) if args.json else print_report(r)
+        elif args.cmd == "db":
+            cmd_db(args)
         elif args.cmd == "gui":
             from .gui.server import serve
             serve(args.host, args.port, open_browser=not args.no_browser)

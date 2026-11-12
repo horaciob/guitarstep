@@ -11,18 +11,51 @@
 """
 from __future__ import annotations
 
+import contextlib
+import contextvars
 import json
 import os
 import threading
 import tomllib
 from pathlib import Path
 
-HOME = Path(os.environ.get("GUITARR_HOME", "~/.guitarr")).expanduser()
-CONFIG_PATH = HOME / "config.toml"
-CACHE_DIR = HOME / "cache"
-SONGS_DIR = HOME / "songs"
-TAKES_DIR = HOME / "takes"
-HISTORY_DIR = HOME / "history"
+# The data folder. Alone, the app keeps everything in it. As a web service each signed-in user
+# gets a folder of their own (BASE/users/<id>, chosen per request by use_home), and the
+# transcription cache (keyed by file hash) stays shared in BASE/cache.
+BASE = Path(os.environ.get("GUITARR_HOME", "~/.guitarr")).expanduser()
+CACHE_DIR = BASE / "cache"
+_home: contextvars.ContextVar[Path | None] = contextvars.ContextVar("guitarr_home", default=None)
+_UNDER_HOME = dict(CONFIG_PATH="config.toml", SONGS_DIR="songs", TAKES_DIR="takes", HISTORY_DIR="history")
+
+
+def __getattr__(name: str) -> Path:
+    """config.HOME, CONFIG_PATH, SONGS_DIR, TAKES_DIR and HISTORY_DIR: the current user's."""
+    if name == "HOME":
+        return _home.get() or BASE
+    if name in _UNDER_HOME:
+        return (_home.get() or BASE) / _UNDER_HOME[name]
+    raise AttributeError(name)
+
+
+def user_home(user_id: str) -> Path:
+    return BASE / "users" / user_id
+
+
+@contextlib.contextmanager
+def use_home(path: Path | None):
+    """Inside the block, config.HOME (and what's under it) is `path`. Threads started inside it
+    keep it only through in_this_context()."""
+    tok = _home.set(path)
+    try:
+        yield
+    finally:
+        _home.reset(tok)
+
+
+def in_this_context(fn):
+    """`fn` wrapped to run with the current user's folder, for a thread or a timer."""
+    ctx = contextvars.copy_context()
+    return lambda *a, **k: ctx.run(fn, *a, **k)
 
 def write_text_atomic(path: Path, text: str) -> None:
     """Writes the whole file or nothing: a temp file beside it (one per writer), then a rename."""
@@ -48,7 +81,7 @@ SONG_KEYS = ("track", "transpose", "start_bar", "end_bar", "mode", "speed", "bpm
 
 def load() -> dict:
     try:
-        with open(CONFIG_PATH, "rb") as f:
+        with open(__getattr__("CONFIG_PATH"), "rb") as f:
             data = tomllib.load(f)
     except (FileNotFoundError, tomllib.TOMLDecodeError):
         data = {}
@@ -73,7 +106,7 @@ def _table(name: str, d: dict) -> list[str]:
 
 
 def save(data: dict) -> None:
-    HOME.mkdir(parents=True, exist_ok=True)
+    __getattr__("HOME").mkdir(parents=True, exist_ok=True)
     lines = _table("audio", data.get("audio", {}))
     if data.get("instrument"):
         lines += _table("instrument", data["instrument"])
@@ -83,7 +116,7 @@ def save(data: dict) -> None:
         lines += _table("reminder", data["reminder"])
     for song, opts in sorted(data.get("songs", {}).items()):
         lines += _table(f"songs.{_val(song)}", opts)
-    write_text_atomic(CONFIG_PATH, "\n".join(lines))
+    write_text_atomic(__getattr__("CONFIG_PATH"), "\n".join(lines))
 
 
 def update_audio(**kw) -> dict:

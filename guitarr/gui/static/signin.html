@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>guitarr</title>
+<link rel="icon" href="/static/icons/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/static/tokens.css">
+<link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+<main class="gl signin">
+  <form class="panel" id="signinForm" novalidate>
+    <h1>guitarr</h1>
+    <p class="muted" data-i18n="signin.intro"></p>
+    <p class="field-err" id="signinExpired" hidden data-i18n="signin.expired"></p>
+    <label class="field"><span data-i18n="signin.email"></span>
+      <input type="email" id="signinEmail" autocomplete="email" required aria-describedby="signinErr"></label>
+    <p class="field-err" id="signinErr" hidden></p>
+    <button class="btn primary" type="submit" data-i18n="signin.send"></button>
+    <p class="muted" id="signinSent" hidden aria-live="polite"></p>
+  </form>
+</main>
+<script type="module" src="/static/signin.js"></script>
+</body>
+</html>

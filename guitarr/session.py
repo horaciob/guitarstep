@@ -81,8 +81,8 @@ class LiveSession:
         self.det = Detector(self.rec, opts.gate_db, opts.sensitivity,
                             min_gap=float(np.clip(0.6 * gap, 0.035, MIN_GAP)), legato=opts.legato)
         self.repeat_gap = float(np.clip(0.6 * gap, 0.04, 0.1))
-        # the metronome plays on this machine's speakers: not for audio from a browser (yet)
-        self.use_click = opts.mode in TIMED and opts.click and not opts.simulate and not self.remote
+        # with audio from a browser the clicks are scheduled here and played there (see self.follower.clicks)
+        self.use_click = opts.mode in TIMED and opts.click and not opts.simulate
         self.pitch_pos = 0
         if opts.mode == "wait":
             self.follower = WaitFollower(self.events, self.judge, opts.loop)
@@ -141,8 +141,10 @@ class LiveSession:
         try:
             if self.use_click:
                 f.schedule(1.0)  # 1 s for the audio to start, then the count-in
+            if self.use_click and not self.remote:
                 metro = Metronome(self.opts.output_device, src, f.clicks,
                                   backing=getattr(f, "backing", None) if self.opts.backing else None)
+            if metro:
                 metro.start()
             last_ui = 0.0
             ended = False

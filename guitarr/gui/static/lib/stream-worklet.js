@@ -17,8 +17,9 @@ class StreamCapture extends AudioWorkletProcessor {
       this.block.set(ch.subarray(i, i + n), this.fill);
       this.fill += n;
       i += n;
+      if (this.t0 === undefined) this.t0 = currentTime;   // when sample 0 came in, on the context's clock
       if (this.fill === this.block.length) {
-        this.port.postMessage({ start: this.index, samples: this.block }, [this.block.buffer]);
+        this.port.postMessage({ start: this.index, samples: this.block, t0: this.t0 }, [this.block.buffer]);
         this.index += this.fill;
         this.block = new Float32Array(2048);
         this.fill = 0;

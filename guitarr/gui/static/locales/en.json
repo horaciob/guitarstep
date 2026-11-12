@@ -162,7 +162,14 @@
    "not_assignment": "That file isn't a guitarr assignment.",
    "no_beat": "Couldn't find a steady beat in the recording.",
    "not_audio": "That song isn't a recording.",
-   "bad_start": "Send a start message with the sample rate first"
+   "bad_start": "Send a start message with the sample rate first",
+   "not_signed_in": "Sign in first",
+   "bad_email": "That doesn't look like an email address",
+   "too_many_links": "Too many sign-in links for this address; try again in an hour",
+   "bad_link": "This sign-in link is used or expired; ask for a new one",
+   "browser_audio": "Here the audio comes from your browser",
+   "bad_sample_rate": "The browser didn't say its sample rate",
+   "not_a_service": "Accounts exist only in the web service"
   },
   "practice": {
    "title": "🎧 Practice with listening",
@@ -3167,6 +3174,17 @@
    "s": "{{n}} s",
    "pct": "{{n}}% of {{judged}}",
    "cpu": "{{pct}}% of one core (about {{n}} players at once)"
+  },
+  "signin": {
+   "intro": "Sign in with your email: we'll send you a link that works once.",
+   "expired": "That link was used or expired. Ask for a new one.",
+   "email": "Email",
+   "send": "Send me a link",
+   "sent": "Check {{email}}: the link works for 15 minutes."
+  },
+  "account": {
+   "sign_out": "Sign out",
+   "browser_input": "This browser's input"
   }
  },
  "content": {}

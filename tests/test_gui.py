@@ -2,6 +2,8 @@
 import json
 import time
 
+import pytest
+
 from fastapi.testclient import TestClient
 
 from guitarr.gui.server import app
@@ -151,10 +153,11 @@ def test_browser_audio_is_graded_like_the_local_input():
                         LiveOptions(mode="tempo", speed=0.9, simulate=take_path(d["take"]), fast=True)).run()
     assert m["report"]["summary"] == local["summary"]
     met = m["metrics"]
-    assert met["gaps"] == 0 and met["cpu_per_audio_s"] > 0 and met["heard_s"] >= met["received_s"]
+    assert met["gaps"] == 0 and met["cpu_per_audio_s"] > 0 and met["heard_s"] > 10   # it ends with the song
     # a lost chunk becomes silence: the clock (and the timing of everything after it) stays right
     lost = _stream(c, dict(song=d["song"], mode="tempo", speed=0.9), take_path(d["take"]), drop=40)
-    assert lost["metrics"]["gaps"] == 1 and lost["metrics"]["received_s"] == met["received_s"]
+    assert lost["metrics"]["gaps"] == 1 and lost["report"]["summary"]["judged"] == 33
+    assert lost["report"]["summary"]["timing_mean_ms"] == pytest.approx(local["summary"]["timing_mean_ms"], abs=3)
     assert progress_untouched(c)
 
 

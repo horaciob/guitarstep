@@ -162,7 +162,14 @@
    "not_assignment": "Ese archivo no es una tarea de guitarr.",
    "no_beat": "No encontré un pulso estable en la grabación.",
    "not_audio": "Esa canción no es una grabación.",
-   "bad_start": "Primero mandá un mensaje de inicio con la frecuencia de muestreo"
+   "bad_start": "Primero mandá un mensaje de inicio con la frecuencia de muestreo",
+   "not_signed_in": "Primero iniciá sesión",
+   "bad_email": "Eso no parece una dirección de email",
+   "too_many_links": "Demasiados links para esta dirección; probá de nuevo en una hora",
+   "bad_link": "Este link ya se usó o venció; pedí uno nuevo",
+   "browser_audio": "Acá el audio viene de tu navegador",
+   "bad_sample_rate": "El navegador no informó su frecuencia de muestreo",
+   "not_a_service": "Las cuentas existen solo en el servicio web"
   },
   "practice": {
    "title": "🎧 Practicar con escucha",
@@ -3167,6 +3174,17 @@
    "s": "{{n}} s",
    "pct": "{{n}}% de {{judged}}",
    "cpu": "{{pct}}% de un núcleo (unos {{n}} jugadores a la vez)"
+  },
+  "signin": {
+   "intro": "Iniciá sesión con tu email: te mandamos un link que sirve una vez.",
+   "expired": "Ese link ya se usó o venció. Pedí uno nuevo.",
+   "email": "Email",
+   "send": "Mandame un link",
+   "sent": "Revisá {{email}}: el link sirve durante 15 minutos."
+  },
+  "account": {
+   "sign_out": "Cerrar sesión",
+   "browser_input": "Entrada de este navegador"
   }
  },
  "content": {
