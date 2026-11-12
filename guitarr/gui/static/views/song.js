@@ -4,6 +4,10 @@ import { t } from "../lib/i18n.js";
 import { $, api, esc, toast, youtubeSearch } from "../lib/ui.js";
 import { renderSections } from "../lib/sections.js";
 import { chipsHtml, readinessRing } from "../lib/chips.js";
+import { slowPlayer } from "../lib/slowplayer.js";
+
+const AUDIO = /\.(wav|mp3|flac|ogg|m4a|aiff?)$/i;
+let slow = null;
 
 export async function mount(el, { segs }) {
   const name = decodeURIComponent(segs[0] || "");
@@ -26,6 +30,8 @@ export async function mount(el, { segs }) {
         : `<a class="btn ghost" href="#/setlists">${esc(t("setlists.create_first"))}</a>`}
     </div>
     <section class="panel sec-progress" id="secProgress" aria-labelledby="secTitle"></section>
+    <section class="panel" aria-labelledby="slowTitle"><h2 id="slowTitle">${esc(t("slow.title"))}</h2>
+      ${AUDIO.test(name) ? `<p class="muted small">${esc(t("song.slow_hint"))}</p>` : ""}<div id="slowBox"></div></section>
     <section class="panel song-theory" id="songTheory" aria-labelledby="thTitle"><h2 id="thTitle">${esc(t("songtheory.title"))}</h2>
       <p class="muted">${esc(t("songtheory.loading"))}</p></section>
     <section class="panel" aria-labelledby="vidTitle">
@@ -38,6 +44,8 @@ export async function mount(el, { segs }) {
       <p class="field-error" id="vidErr" hidden></p>
       ${f.video ? `<p><a href="${esc(f.video)}" target="_blank" rel="noopener">${esc(t("lesson.pinned_link"))} ↗</a></p>` : ""}
     </section>`;
+  if (slow) slow.stop();
+  slow = slowPlayer($("#slowBox", el), AUDIO.test(name) ? { src: `/api/songs/${encodeURIComponent(name)}/audio` } : {});
   api(`/api/songs/${encodeURIComponent(name)}/theory`).then(a => theoryPanel($("#songTheory", el), a))
     .catch(e => { $("#songTheory", el).innerHTML = `<h2 id="thTitle">${esc(t("songtheory.title"))}</h2><p class="muted">${esc(e.message)}</p>`; });
   renderSections($("#secProgress", el), { base: `/api/songs/${encodeURIComponent(name)}`, practice, queue: `song:${name}`,
@@ -88,4 +96,9 @@ function theoryPanel(box, a) {
         : `<tr><td>${b.bar}</td><td colspan="5" class="muted">${esc(t("songtheory.no_chord"))}</td></tr>`).join("")}</tbody></table></div>
     </details>
     <p class="muted small">${esc(t("songtheory.caveat"))}</p>`;
+}
+
+export function unmount() {
+  if (slow) slow.stop();
+  slow = null;
 }

@@ -23,7 +23,7 @@ from fastapi.staticfiles import StaticFiles
 from ..errors import CodedError
 from .. import __version__, backup, catalog, config, history, latency, plan, progress, reminder, rig, routine, signalcheck
 from ..audio_io import AudioError, FileSource, MicSource, devices
-from ..reference import REFERENCE_EXT, RefOptions, ReferenceError, list_tracks, load_reference
+from ..reference import AUDIO_EXT, REFERENCE_EXT, RefOptions, ReferenceError, list_tracks, load_reference
 
 STATIC = Path(__file__).parent / "static"
 app = FastAPI(title="guitarr", docs_url=None, redoc_url=None)
@@ -1070,6 +1070,15 @@ def _song_sections(name: str) -> list[dict]:
 
     f = songfacts.facts(song_path(name))
     return f["sections"] or [{"name": "Whole song", "key": "Whole song", "from": 1, "to": None}]
+
+
+@app.get("/api/songs/{name}/audio")
+def song_audio(name: str):
+    """The song's recording itself (audio references only), to listen to it slower."""
+    p = song_path(name)
+    if p.suffix.lower() not in AUDIO_EXT:
+        fail(404, "not_audio", f"'{name}' is not a recording")
+    return FileResponse(p)
 
 
 @app.get("/api/songs/{name}/facts")

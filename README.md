@@ -65,6 +65,7 @@ retakes them in both themes.
 - **Tutorials**: each lesson suggests video searches, and you can pin your favorite video (YouTube links play inline).
 - **Chord dictionary**: 39 chords with clickable diagrams. **Check** listens to you strum and tells you what was missing ("missing C# (major 3rd), extra C").
 - **Camera**: hand tracking (MediaPipe, fully local) checks that each finger is on the right string and fret.
+- **Listen slower**: a song's recording (or any audio file you open) at 50–100% speed without changing its pitch, with an A–B loop. On each song's page and in Tools.
 - **Tools**: metronome with tap tempo; a **chord-change minute** that counts only the clean changes it heard and keeps your record per chord pair; a fretboard explorer with scales and arpeggios.
 
 **Plan**

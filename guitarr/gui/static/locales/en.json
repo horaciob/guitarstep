@@ -675,7 +675,8 @@
    "over_none": "—",
    "over_legend": "Filled = chord tones (1 3 5 7), outlined = the scale's other notes, named as tensions (9, 11, 13).",
    "over_notes": "Chord tones: {{tones}} · tensions: {{tensions}}",
-   "warmup_tab": "Daily warm-up"
+   "warmup_tab": "Daily warm-up",
+   "slow_tab": "Slow down"
   },
   "camera": {
    "title": "Camera",
@@ -2605,7 +2606,8 @@
    "role_backing": "backing track",
    "role_guitar": "guitar only",
    "pin_label": "Pin a video for this song",
-   "bad_url": "A link starts with http:// or https://."
+   "bad_url": "A link starts with http:// or https://.",
+   "slow_hint": "The song's own recording, slower and in a loop."
   },
   "setlists": {
    "title": "Setlists",
@@ -2887,6 +2889,18 @@
    "dyn_uneven": "Uneven attack: your single notes vary {{spread}}% in level. Aim for the same volume on every note.",
    "dyn_off_softer": "The notes off the beat are {{db}} dB softer than the ones on it: your upstrokes are probably weaker.",
    "dyn_off_louder": "The notes off the beat are {{db}} dB louder than the ones on it: you're accenting the upstrokes."
+  },
+  "slow": {
+   "title": "Listen slower",
+   "open": "Open a recording from your computer",
+   "local": "It plays here in the browser; nothing is uploaded.",
+   "speed": "Speed",
+   "set_a": "Set A (start)",
+   "set_b": "Set B (end) and loop",
+   "loop": "Loop A–B",
+   "clear": "Clear A–B",
+   "ab": "A {{a}} · B {{b}}",
+   "hint": "Slowing down keeps the pitch, so you can play along in tune. Set A where the passage starts, B where it ends."
   }
  },
  "content": {}

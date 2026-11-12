@@ -1279,3 +1279,6 @@ body.is-stage #main { max-width: none; padding: 12px 18px; }
 .groove-table td { padding: 3px 10px 3px 0; }
 .groove-table .g-early td:nth-child(3), .groove-table .g-late td:nth-child(3) { color: var(--gl-warn); font-weight: 600; }
 .groove-table .g-on_time td:nth-child(3) { color: var(--gl-ok); }
+
+/* slow-down player */
+#slowAudio { width: 100%; margin: 8px 0; }

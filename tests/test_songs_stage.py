@@ -72,3 +72,17 @@ def test_chart_readiness_and_tuning_header():
     import pytest
     with pytest.raises(catalog.CatalogError):
         catalog.parse_chart("tuning: banjo\nD | G\n")
+
+
+def test_song_audio_is_served_only_for_recordings():
+    import numpy as np
+    import soundfile as sf
+
+    config.SONGS_DIR.mkdir(parents=True, exist_ok=True)
+    sf.write(config.SONGS_DIR / "rec.wav", np.zeros(8000, np.float32), 8000)
+    make_gp(config.SONGS_DIR / "tab.gp5")
+    c = TestClient(app)
+    r = c.get("/api/songs/rec.wav/audio")
+    assert r.status_code == 200 and r.content[:4] == b"RIFF"
+    assert c.get("/api/songs/tab.gp5/audio").json()["detail"]["code"] == "not_audio"
+    assert c.get("/api/songs/none.wav/audio").status_code == 404

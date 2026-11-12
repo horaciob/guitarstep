@@ -675,7 +675,8 @@
    "over_none": "—",
    "over_legend": "Relleno = notas del acorde (1 3 5 7), contorno = las otras notas de la escala, nombradas como tensiones (9, 11, 13).",
    "over_notes": "Notas del acorde: {{tones}} · tensiones: {{tensions}}",
-   "warmup_tab": "Calentamiento diario"
+   "warmup_tab": "Calentamiento diario",
+   "slow_tab": "Más lento"
   },
   "camera": {
    "title": "Cámara",
@@ -2605,7 +2606,8 @@
    "role_backing": "pista de acompañamiento",
    "role_guitar": "solo guitarra",
    "pin_label": "Fijá un video para este tema",
-   "bad_url": "Un enlace empieza con http:// o https://."
+   "bad_url": "Un enlace empieza con http:// o https://.",
+   "slow_hint": "La grabación de la canción, más lenta y en loop."
   },
   "setlists": {
    "title": "Setlists",
@@ -2887,6 +2889,18 @@
    "dyn_uneven": "Ataque desparejo: tus notas sueltas varían un {{spread}}% de volumen. Buscá el mismo volumen en cada nota.",
    "dyn_off_softer": "Las notas fuera del tiempo suenan {{db}} dB más suaves que las del tiempo: probablemente tus púas hacia arriba son más débiles.",
    "dyn_off_louder": "Las notas fuera del tiempo suenan {{db}} dB más fuertes que las del tiempo: estás acentuando las púas hacia arriba."
+  },
+  "slow": {
+   "title": "Escuchar más lento",
+   "open": "Abrí una grabación de tu computadora",
+   "local": "Suena acá en el navegador; no se sube nada.",
+   "speed": "Velocidad",
+   "set_a": "Marcar A (inicio)",
+   "set_b": "Marcar B (fin) y repetir",
+   "loop": "Repetir A–B",
+   "clear": "Borrar A–B",
+   "ab": "A {{a}} · B {{b}}",
+   "hint": "Al bajar la velocidad no cambia la afinación, así que podés tocar encima afinado. Marcá A donde empieza el pasaje y B donde termina."
   }
  },
  "content": {

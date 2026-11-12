@@ -1206,3 +1206,26 @@ def test_looper_can_wait_for_the_first_note(app_page):
     }""")
     assert r["armed"] and r["recorded"] and r["last"] == "playing"
     assert 0.85 < r["len"] < 1.0          # from the note (0.5 s, plus 50 ms kept before it) to 1.4 s, not the hiss
+
+
+def test_slow_down_player_sets_a_loop(app_page, tmp_path):
+    import numpy as np
+    import soundfile as sf
+
+    wav = tmp_path / "song.wav"
+    sf.write(wav, (0.1 * np.sin(np.arange(8000 * 6) / 8000 * 2 * np.pi * 220)).astype(np.float32), 8000)
+    onboarded(app_page)
+    go(app_page, "tools?tab=slow")
+    app_page.locator("#slowFile").set_input_files(str(wav))
+    app_page.wait_for_function("document.querySelector('#slowAudio').duration > 5")
+    expect(app_page.locator("#slowLoop")).to_be_disabled()
+    app_page.select_option("#slowSpeed", "0.75")
+    app_page.evaluate("document.querySelector('#slowAudio').currentTime = 1")
+    app_page.locator("#slowA").click()
+    app_page.evaluate("document.querySelector('#slowAudio').currentTime = 3")
+    app_page.locator("#slowB").click()
+    expect(app_page.locator("#slowAB")).to_have_text("A 0:01.0 · B 0:03.0")
+    expect(app_page.locator("#slowLoop")).to_be_checked()
+    assert app_page.evaluate("document.querySelector('#slowAudio').currentTime") == 1
+    app_page.locator("#slowClear").click()
+    expect(app_page.locator("#slowLoop")).to_be_disabled()
