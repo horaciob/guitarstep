@@ -4,6 +4,7 @@ swing: hard
 voicing: shell
 strum: D.DUD.DU
 note: Hard swing: the upstrokes land late, on the last third of the beat (long–short).
+tone: jazz_box
 
 [Loop]
 Cmaj7 | Am7 | Dm7 | G7

@@ -3,6 +3,7 @@ bpm: 88
 time: 4/4
 strum: D.DUD.DU
 note: Eight bars, not twelve: the V arrives in bar 2. Don't count it as a short 12-bar.
+tone: blues_crunch
 
 [Eight bars]
 A7 | E7 | D7 | D7

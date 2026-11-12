@@ -3,6 +3,7 @@ bpm: 120
 time: 4/4
 strum: D.DUD.DU
 note: Verse palm-muted, chorus ringing, solo section over the riff. Everything in A.
+tone: classic_rock
 
 [Intro]
 A5 | G5 D5 | A5 | G5 D5

@@ -1159,7 +1159,7 @@ def test_lesson_suggests_a_rig_sound(app_page):
     go(app_page, "lesson/metal-chug")
     tone = app_page.locator("#lessonTone")
     expect(tone).to_contain_text("Modern metal")
-    tone.locator("#toneLoad").click()                         # loads it; the rig stays off (no sound)
+    tone.locator("[data-tone-load]").click()                  # loads it; the rig stays off (no sound)
     expect(tone).to_contain_text("in use")
     cur = app_page.evaluate("async () => { const { rig } = await import('/static/lib/rig/engine.js'); return [rig.preset.id, rig.running]; }")
     assert cur == ["modern_metal", False]
@@ -1303,3 +1303,14 @@ def test_rig_compare_a_and_b(app_page):
     expect(app_page.locator('#rigQuick .quick[data-id="jazz_box"]')).to_contain_text("active")
     app_page.locator("#abClear").click()
     expect(app_page.locator("#abSwap")).to_be_disabled()
+
+
+def test_a_chart_offers_its_rig_sound(app_page):
+    onboarded(app_page)
+    go(app_page, "practice?chart=42-tango-am")
+    tone = app_page.locator("#pTone")
+    expect(tone).to_contain_text("Load it")
+    tone.get_by_role("button").click()
+    expect(tone).to_contain_text("in use")
+    go(app_page, "practice?chart=01-em-am")
+    expect(tone).to_be_hidden()

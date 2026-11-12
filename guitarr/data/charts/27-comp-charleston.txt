@@ -4,6 +4,7 @@ swing: light
 voicing: drop2
 strum: D..D....
 note: Two hits per bar: on beat 1 and on the “and” of 2. Leave the rest of the bar empty.
+tone: jazz_box
 
 [Loop]
 Dm7 | G7 | Cmaj7 | A7

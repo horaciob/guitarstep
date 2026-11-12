@@ -5,6 +5,7 @@ import { issueText, msgIsError, msgText, t, tc } from "./lib/i18n.js";
 import { $, $$, api, esc, instrument, loadInstrument, noteName, NOTE_NAMES, progressChanged, stringRow, toast } from "./lib/ui.js";
 import { levelVerdict, meterHtml, openInput, setGate, setMeter } from "./lib/input.js";
 import { bindTakePlayers, grooveHtml, takePlayer, timingVerdictHtml } from "./lib/take.js";
+import { toneSuggestion } from "./lib/tone.js";
 
 // Reads a color token and normalizes it to #rrggbb (accepts hsl/rgb) so a hex alpha can be appended.
 const _cc = document.createElement("canvas").getContext("2d");
@@ -151,7 +152,11 @@ function applyPreset(prefix) {
 async function onSongChange(prefix) {
   await loadTracks(prefix);
   applyPreset(prefix);
-  if (prefix === "p") loadPreview();
+  if (prefix === "p") {
+    const s = App.songs.find(x => x.name === $("#pSong").value);
+    toneSuggestion($("#pTone"), s && s.preset && s.preset.tone);
+    loadPreview();
+  }
 }
 
 // ------------------------------------------------------------------ charts
@@ -175,6 +180,7 @@ async function useChart(id) {
     $("#pTranspose").value = 0;
     const note = info.note ? tc(`charts.${info.id}.note`, info.note) : t("practice.chart_hint");
     $("#log").innerHTML = `<li class="muted">${esc(note)}</li>`;
+    toneSuggestion($("#pTone"), info.tone);
     loadPreview();
   } catch (e) { toast(e.message); }
 }

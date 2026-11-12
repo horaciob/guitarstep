@@ -4,6 +4,7 @@ swing: light
 voicing: shell
 strum: D.D.D.D.
 note: Twelve bars: the blues form with ii–V moves added. Bar 6 passes through a diminished chord, bar 8 sets up the ii–V back home.
+tone: wes_octaves
 
 [Twelve bars]
 F7 | Bb7 | F7 | Cm7 F7

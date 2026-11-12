@@ -86,3 +86,23 @@ def test_song_audio_is_served_only_for_recordings():
     assert r.status_code == 200 and r.content[:4] == b"RIFF"
     assert c.get("/api/songs/tab.gp5/audio").json()["detail"]["code"] == "not_audio"
     assert c.get("/api/songs/none.wav/audio").status_code == 404
+
+
+def test_song_tone_survives_practice_settings():
+    config.SONGS_DIR.mkdir(parents=True, exist_ok=True)
+    make_gp(config.SONGS_DIR / "toned.gp5")
+    c = TestClient(app)
+    assert c.post("/api/songs/toned.gp5/tone", json=dict(tone="blues_crunch")).json() == {"tone": "blues_crunch"}
+    assert c.get("/api/songs/toned.gp5/facts").json()["tone"] == "blues_crunch"
+    c.post("/api/presets", json=dict(song="toned.gp5", speed=0.8))               # the practice page saves its settings
+    song = next(x for x in c.get("/api/songs").json() if x["name"] == "toned.gp5")
+    assert song["preset"] == {"speed": 0.8, "tone": "blues_crunch"}
+    assert c.post("/api/songs/toned.gp5/tone", json=dict(tone="Bad Tone!")).json()["detail"]["code"] == "bad_tone"
+    assert c.post("/api/songs/toned.gp5/tone", json=dict(tone="")).json() == {"tone": None}
+    assert "tone" not in next(x for x in c.get("/api/songs").json() if x["name"] == "toned.gp5")["preset"]
+
+
+def test_chart_tone_header():
+    from guitarr import catalog
+    assert catalog.parse_chart("tone: blues_crunch\nA7 | D7\n")["tone"] == "blues_crunch"
+    assert catalog.parse_chart("A7 | D7\n")["tone"] is None

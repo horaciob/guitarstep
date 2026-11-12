@@ -3,6 +3,7 @@ bpm: 92
 time: 4/4
 strum: D.DUD.DU
 note: Three times around the 12 bars. The last bar of the third chorus is the ending: stop on A7.
+tone: blues_crunch
 
 [Chorus 1]
 A7 | D7 | A7 | A7

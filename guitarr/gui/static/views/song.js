@@ -5,6 +5,7 @@ import { $, api, esc, toast, youtubeSearch } from "../lib/ui.js";
 import { renderSections } from "../lib/sections.js";
 import { chipsHtml, readinessRing } from "../lib/chips.js";
 import { slowPlayer } from "../lib/slowplayer.js";
+import { toneOptions } from "../lib/tone.js";
 
 const AUDIO = /\.(wav|mp3|flac|ogg|m4a|aiff?)$/i;
 let slow = null;
@@ -29,6 +30,7 @@ export async function mount(el, { segs }) {
         <select id="addTo"><option value="">—</option>${lists.map(s => `<option value="${esc(s.id)}">${esc(s.name)}</option>`).join("")}</select></label>`
         : `<a class="btn ghost" href="#/setlists">${esc(t("setlists.create_first"))}</a>`}
     </div>
+    <label class="field-inline small song-tone">${esc(t("song.tone"))} <select id="songTone">${await toneOptions(f.tone || "")}</select></label>
     <section class="panel sec-progress" id="secProgress" aria-labelledby="secTitle"></section>
     <section class="panel" aria-labelledby="slowTitle"><h2 id="slowTitle">${esc(t("slow.title"))}</h2>
       ${AUDIO.test(name) ? `<p class="muted small">${esc(t("song.slow_hint"))}</p>` : ""}<div id="slowBox"></div></section>
@@ -56,6 +58,10 @@ export async function mount(el, { segs }) {
     if (url && !/^https?:\/\//.test(url)) { err.textContent = t("song.bad_url"); err.hidden = false; return; }
     try { await api(`/api/songs/${encodeURIComponent(name)}/video`, { json: { url: $("#vidUrl", el).value } }); err.hidden = true; mount(el, { segs }); }
     catch (e) { err.textContent = e.code === "bad_url" ? t("song.bad_url") : e.message; err.hidden = false; }
+  };
+  $("#songTone", el).onchange = async e => {
+    try { await api(`/api/songs/${encodeURIComponent(name)}/tone`, { json: { tone: e.target.value } }); toast(t("song.tone_saved"), true); }
+    catch (err) { toast(err.message); }
   };
   const add = $("#addTo", el);
   if (add) add.onchange = async () => {

@@ -3,6 +3,7 @@ bpm: 90
 time: 3/4
 strum: D.D.DU
 note: Four bars of three are the 12 beats of soleá. Change chords on the accents.
+tone: sabicas
 
 [Compás]
 E | E | F | E

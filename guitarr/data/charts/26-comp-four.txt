@@ -4,6 +4,7 @@ swing: light
 voicing: drop2
 strum: D.D.D.D.
 note: One short, even strum on every beat. Lift the pressure right after each one so the chords don't ring into each other.
+tone: jazz_box
 
 [Loop]
 Dm7 | G7 | Cmaj7 | A7

@@ -3,6 +3,7 @@ bpm: 66
 time: 4/4
 strum: D.D.D.D.
 note: Marcato: four short chords per bar. A7 leads into Dm; E7 stretches the tension.
+tone: roberto_grela
 
 [A]
 Am | Am | E7 | E7

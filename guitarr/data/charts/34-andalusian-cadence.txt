@@ -3,6 +3,7 @@ bpm: 80
 time: 4/4
 strum: D.D.DUDU
 note: Let the bass walk down A, G, F, E. Pause on the E: it's home, not a question.
+tone: paco_flamenco
 
 [Cadence]
 Am | G | F | E

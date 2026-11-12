@@ -3,6 +3,7 @@ bpm: 100
 time: 4/4
 strum: D.DUD.DU
 note: 8-beat cycles: the A chord takes every second bar. Golpe and mute on 2 and 4.
+tone: paco_flamenco
 
 [Tangos]
 Bb | A | Gm | A

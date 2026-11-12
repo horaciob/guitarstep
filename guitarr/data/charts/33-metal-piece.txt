@@ -3,6 +3,7 @@ bpm: 132
 time: 4/4
 strum: DDDDDDDD
 note: Intro and verse down-picked and palm-muted; the chorus lets the chords ring; the breakdown is half time.
+tone: modern_metal
 
 [Intro]
 E5 | E5 | F5 | E5

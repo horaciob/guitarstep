@@ -4,6 +4,7 @@ swing: light
 voicing: drop2
 strum: D.D.D..^
 note: The last strum of each bar (↓») plays the next chord early, on the “and” of 4.
+tone: jazz_box
 
 [Loop]
 Dm7 | G7 | Cmaj7 | A7

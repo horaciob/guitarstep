@@ -3,6 +3,7 @@ bpm: 116
 time: 4/4
 strum: DDDDDDDD
 note: Even down-picked eighths with the strumming hand lightly muting the strings (palm mute).
+tone: classic_rock
 
 [Riff]
 E5 | G5 | A5 | A5

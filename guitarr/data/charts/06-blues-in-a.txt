@@ -3,6 +3,7 @@ bpm: 92
 time: 4/4
 strum: D.DUD.DU
 note: The most-played blues form: 4 bars of I, 2 of IV, 2 of I, then V-IV-I-V.
+tone: blues_crunch
 
 [Twelve bars]
 A7 | A7 | A7 | A7

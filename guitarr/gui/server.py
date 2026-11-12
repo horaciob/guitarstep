@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import re
 import shutil
 import threading
 import time
@@ -1182,6 +1183,7 @@ def song_facts(name: str):
     f = songfacts.facts(p)
     q = " ".join(x for x in [f.get("title"), f.get("artist")] if x)
     return dict(f, name=name, video=progress.get()["tutorials"].get(f"song:{name}"),
+                tone=config.load()["songs"].get(_safe_name(name), {}).get("tone"),
                 searches=dict(lesson=f"{q} guitar lesson", backing=f"{q} backing track", guitar=f"{q} guitar only"))
 
 
@@ -1370,9 +1372,27 @@ def save_preset(body: dict):
         kw[k] = _float(kw[k])
     kw["track"] = kw["track"] or None
     data = config.load()
-    data["songs"][song] = {k: v for k, v in kw.items() if v is not None}
+    tone = data["songs"].get(song, {}).get("tone")           # set on the song's page: practice settings don't touch it
+    data["songs"][song] = {k: v for k, v in kw.items() if v is not None} | ({"tone": tone} if tone else {})
     config.save(data)
     return data["songs"][song]
+
+
+@app.post("/api/songs/{name}/tone")
+def song_tone(name: str, body: dict):
+    """The rig sound for a song (a factory preset id), offered when you practice it; empty clears it."""
+    song_path(name)
+    tone = str(body.get("tone") or "").strip()
+    if tone and not re.fullmatch(r"[a-z0-9_]{1,40}", tone):
+        fail(400, "bad_tone", "Unknown sound")
+    data = config.load()
+    entry = data["songs"].setdefault(_safe_name(name), {})
+    if tone:
+        entry["tone"] = tone
+    else:
+        entry.pop("tone", None)
+    config.save(data)
+    return dict(tone=tone or None)
 
 
 # ---------------------------------------------------------------- takes / analysis

@@ -3,6 +3,7 @@ bpm: 100
 time: 4/4
 strum: D..D..DU
 note: 3 + 3 + 2: down on 1, down on the "and" of 2, down-up on 4. Mute each chord short.
+tone: tomatito
 
 [Rumba]
 Am | G | F | E

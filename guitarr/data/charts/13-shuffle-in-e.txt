@@ -3,6 +3,7 @@ bpm: 84
 time: 4/4
 strum: D.DUD.DU
 note: Quick change: bar 2 already goes to the IV (A7) and comes back. Swing it: long-short, long-short.
+tone: srv_texas
 
 [Twelve bars]
 E7 | A7 | E7 | E7

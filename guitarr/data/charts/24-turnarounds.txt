@@ -4,6 +4,7 @@ swing: light
 voicing: drop2
 strum: D.D.D.D.
 note: Two bars each: I–vi–ii–V, then iii–VI–ii–V, then the same idea with tritone substitutes.
+tone: jazz_box
 
 [I–vi–ii–V]
 Cmaj7 Am7 | Dm7 G7 | Cmaj7 Am7 | Dm7 G7

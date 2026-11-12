@@ -4,6 +4,7 @@ swing: light
 voicing: shell
 strum: D.D.D.D.
 note: The last four keys: with the other two charts you've played ii–V–I in all twelve.
+tone: jazz_box
 
 [Key of E]
 F#m7 | B7 | Emaj7 | Emaj7

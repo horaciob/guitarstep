@@ -3,6 +3,7 @@ bpm: 66
 time: 4/4
 strum: D.D.D.D.
 note: A part in A minor with marcato, B part in C major more legato, then A again and the chan-chan.
+tone: cacho_tirao
 
 [A]
 Am | Am | E7 | E7

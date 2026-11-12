@@ -4,6 +4,7 @@ swing: light
 voicing: shell
 strum: D.D.D.D.
 note: The same shapes in the flat keys and B. Say the numeral of each chord as you play it.
+tone: jazz_box
 
 [Key of Ab]
 Bbm7 | Eb7 | Abmaj7 | Abmaj7

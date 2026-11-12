@@ -3,6 +3,7 @@ bpm: 80
 time: 4/4
 strum: D..D..D.
 note: 3 + 3 + 2 in the strum. Short and bouncy.
+tone: roberto_grela
 
 [A]
 G | G | D7 | D7

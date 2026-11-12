@@ -3,6 +3,7 @@ bpm: 60
 time: 4/4
 strum: D...D.DU
 note: Feel three pulses inside every beat (12/8). Let each chord ring: the space is part of the song.
+tone: bb_king
 
 [Twelve bars]
 Am | Am | Am | Am

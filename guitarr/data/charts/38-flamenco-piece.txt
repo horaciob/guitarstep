@@ -3,6 +3,7 @@ bpm: 104
 time: 4/4
 strum: D..D..DU
 note: Rasgueo sections ring hard; the falseta is soft. Every section ends on E.
+tone: paco_flamenco
 
 [Intro]
 E | F | E | E

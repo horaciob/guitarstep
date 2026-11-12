@@ -3,6 +3,7 @@ bpm: 120
 time: 4/4
 strum: DDDDDDDD
 note: All downstrokes, palm-muted. Let the last chord of each line ring.
+tone: modern_metal
 
 [Riff]
 E5 | E5 | C5 | D5

@@ -3,6 +3,7 @@ bpm: 112
 time: 4/4
 strum: D.DUD.DU
 note: Am–G–F–E walking down: the flamenco sound. F with a barre, or Fmaj7 if it still hurts.
+tone: paco_flamenco
 
 [Loop]
 Am | G | F | E

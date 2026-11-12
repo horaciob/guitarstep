@@ -40,7 +40,7 @@ from . import config
 
 DATA_DIR = Path(__file__).parent / "data"
 OPEN_STRINGS = [40, 45, 50, 55, 59, 64]  # 6th ... 1st
-HEADER_KEYS = {"title", "artist", "level", "bpm", "time", "capo", "strum", "note", "voicing", "swing", "tuning"}
+HEADER_KEYS = {"title", "artist", "level", "bpm", "time", "capo", "strum", "note", "voicing", "swing", "tuning", "tone"}
 
 
 class CatalogError(Exception):
@@ -187,7 +187,8 @@ def parse_chart(text: str, cid: str = "chart") -> dict:
     return dict(id=cid, title=meta.get("title") or cid, artist=meta.get("artist"), bpm=bpm,
                 beats_per_bar=_beats_per_bar(meta.get("time", "4/4"), 0), capo=capo, level=level,
                 strum=meta.get("strum", ""), note=meta.get("note", ""), bars=bars, missing=unknown,
-                swing=_swing(meta.get("swing", "")), voicing=voicing or None, tuning=_tuning(meta.get("tuning", "")))
+                swing=_swing(meta.get("swing", "")), voicing=voicing or None, tuning=_tuning(meta.get("tuning", "")),
+                tone=meta.get("tone") or None)
 
 
 SWING = {"": 0.0, "straight": 0.0, "off": 0.0, "light": 0.6, "medium": 0.64, "hard": 0.67}

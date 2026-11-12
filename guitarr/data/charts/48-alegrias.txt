@@ -3,6 +3,7 @@ bpm: 120
 time: 3/4
 strum: D.D.DU
 note: Four bars of three are one 12-beat cycle. B7 asks, E answers.
+tone: tomatito
 
 [Compás]
 E | E | E | B7

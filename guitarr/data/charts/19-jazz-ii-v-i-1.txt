@@ -4,6 +4,7 @@ swing: light
 voicing: shell
 strum: D.D.D.D.
 note: Shell voicings, four to the bar. Each key is two bars of ii–V and two of I; the next key starts a 4th up.
+tone: jazz_box
 
 [Key of C]
 Dm7 | G7 | Cmaj7 | Cmaj7

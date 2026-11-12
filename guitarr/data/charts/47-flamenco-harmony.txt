@@ -3,6 +3,7 @@ bpm: 80
 time: 4/4
 strum: D.D.DUDU
 note: Each line ends on E. Hear what each substitute changes in the colour.
+tone: paco_flamenco
 
 [Characteristic]
 Am | G | F | E

@@ -4,6 +4,7 @@ swing: light
 voicing: drop2
 strum: D.D.D.D.
 note: Four sections of eight bars: A, A again, a contrasting B (the bridge) and A to finish. Feel where each section starts.
+tone: jazz_box
 
 [A]
 Cmaj7 Am7 | Dm7 G7 | Em7 A7 | Dm7 G7

@@ -156,7 +156,8 @@
    "bad_strings": "Elegí al menos una cuerda.",
    "bad_answers": "Respondé sí o no a cada habilidad.",
    "no_chords": "No encontré acordes: escribí los acordes en su propia línea arriba de la letra, o en línea como [G].",
-   "too_long": "Es demasiado largo."
+   "too_long": "Es demasiado largo.",
+   "bad_tone": "Ese sonido no existe."
   },
   "practice": {
    "title": "🎧 Practicar con escucha",
@@ -597,7 +598,7 @@
    "deleted": "Cifrado borrado",
    "saved": "Guardado: {{title}}",
    "headers": "Encabezados posibles",
-   "headers_html": "<code>title</code>, <code>bpm</code>, <code>time</code> (4/4, 3/4, 6/8), <code>capo</code>, <code>strum</code> (D abajo, U arriba, . nada, _ sostener, ^ el acorde siguiente antes de tiempo; una casilla por corchea), <code>swing</code> (light, medium, hard), <code>voicing</code> (shell, drop2, drop3, triad: arma cualquier acorde, como <code>C#m7b5</code>), <code>level</code>, <code>note</code>. Las secciones van entre corchetes: <code>[Estribillo]</code>. Un <code>#</code> después de un espacio empieza un comentario. (Los encabezados del formato van en inglés.) La letra va en una línea que empieza con <code>&gt;</code> justo debajo de los acordes, un pedazo por compás: <code>&gt; Aquí estoy | en el camino</code>.",
+   "headers_html": "<code>title</code>, <code>bpm</code>, <code>time</code> (4/4, 3/4, 6/8), <code>capo</code>, <code>strum</code> (D abajo, U arriba, . nada, _ sostener, ^ el acorde siguiente antes de tiempo; una casilla por corchea), <code>swing</code> (light, medium, hard), <code>voicing</code> (shell, drop2, drop3, triad: arma cualquier acorde, como <code>C#m7b5</code>), <code>level</code>, <code>note</code>. Las secciones van entre corchetes: <code>[Estribillo]</code>. Un <code>#</code> después de un espacio empieza un comentario. (Los encabezados del formato van en inglés.) La letra va en una línea que empieza con <code>&gt;</code> justo debajo de los acordes, un pedazo por compás: <code>&gt; Aquí estoy | en el camino</code>. <code>tone</code> nombra un sonido del rig para ofrecerlo al tocarlo (por ejemplo <code>tone: blues_crunch</code>).",
    "unknown_html": "No conozco: {{chords}} — mirá los nombres en <a href=\"#/chords\">Acordes</a>.",
    "paste_title": "Pegar una canción con acordes (acordes arriba de la letra)",
    "paste_hint": "Pegá una canción como se comparte siempre: los acordes en su propia línea arriba de la letra, o en línea como [G]Aquí [D]estoy. Cada acorde es un compás con su letra; revisá el tempo y los compases después de convertir. Reemplaza el texto de abajo.",
@@ -2636,7 +2637,10 @@
    "role_guitar": "solo guitarra",
    "pin_label": "Fijá un video para este tema",
    "bad_url": "Un enlace empieza con http:// o https://.",
-   "slow_hint": "La grabación de la canción, más lenta y en loop."
+   "slow_hint": "La grabación de la canción, más lenta y en loop.",
+   "tone": "Sonido para esta canción",
+   "tone_none": "— ninguno —",
+   "tone_saved": "Guardado: se ofrece cuando practicás esta canción."
   },
   "setlists": {
    "title": "Setlists",

@@ -3,6 +3,7 @@ bpm: 110
 time: 4/4
 strum: D.DUD.DU
 note: Power chords from the A minor pentatonic. Change on beat 3 where a bar has two chords.
+tone: classic_rock
 
 [Riff]
 A5 | G5 D5 | A5 | G5 D5

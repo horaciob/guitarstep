@@ -4,6 +4,7 @@ bpm: 64
 time: 4/4
 strum: D...D.DU
 note: Simplified chord sheet in standard tuning. The verse sits in B minor and the chorus lifts to D major. The solos are lead guitar and are not part of this chart.
+tone: gilmour_lead
 
 [Verse]
 Bm | Bm | A | A

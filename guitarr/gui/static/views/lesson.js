@@ -11,9 +11,9 @@ import { hearBar, rhythmSvg } from "../lib/notation.js";
 import { staffSvg } from "../lib/staff.js";
 import { stepGroups, tabText } from "../lib/tab.js";
 import { readable, speakButton, stopSpeaking, toggleSpeak } from "../lib/speak.js";
-import { rig } from "../lib/rig/engine.js";
 import { factory } from "../lib/rig/presets.js";
 import { chartGuide, playChart } from "./charts.js";
+import { toneSuggestion } from "../lib/tone.js";
 
 const ANSWER_KINDS = ["quiz", "pick", "tap"], DRAWN_KINDS = ["find_note", "play_interval", "tone_row", "echo", "rhythm", "read_play"];
 const hearable = ex => !ANSWER_KINDS.includes(ex.kind) && !DRAWN_KINDS.includes(ex.kind);
@@ -200,7 +200,7 @@ export async function mount(el, { segs, params = {} }) {
     const loop = $(`.exercise[data-id="${CSS.escape(ex.id)}"] [data-act=loop]`, el);
     if (loop) loop.href = `#/practice?chart=${encodeURIComponent(ex.chart)}&from=1&to=${bars}`;
   }));
-  showTone($("#lessonTone", el), ls.tone);
+  toneSuggestion($("#lessonTone", el), ls.tone);
   const idea = $("[data-speak-idea]", el);
   if (idea) idea.onclick = () => toggleSpeak(idea, [readable($("#ideaText", el)), $("#tipsText", el) ? `${t("lesson.tips")}. ${readable($("#tipsText", el))}` : ""].join(" "));
   $$(".exercise", el).forEach(box => {
@@ -385,22 +385,6 @@ async function openFocus(el, segs, ls, ex, chordData, exTitle, start = false, mo
   if (!dlg.open) dlg.showModal();
   $(".focus-inner", dlg).focus();   // so Space and Enter reach the shortcuts, not the Back button
   if (start) run(el, segs, ls, ex, chordData, exTitle);
-}
-
-/** The rig sound that suits this lesson, one click away (it loads the sound; the rig stays off until you turn it on). */
-async function showTone(box, id) {
-  if (!box) return;
-  await rig.load();
-  const name = t(`rig.preset.${id}`), using = rig.preset && rig.preset.kind === "factory" && rig.preset.id === id && !rig.preset.edited;
-  box.innerHTML = `🎛 ${esc(t("lesson.tone", { name }))} ${using
-    ? `<span class="pill ok">✓ ${esc(t("lesson.tone_using"))}</span>`
-    : `<button class="btn small" id="toneLoad">${esc(t("lesson.tone_load"))}</button>`} <a class="small" href="#/rig">${esc(t("lesson.tone_rig"))}</a>`;
-  const b = $("#toneLoad", box);
-  if (b) b.onclick = () => {
-    rig.loadState(factory(id), { kind: "factory", id });
-    toast(t(rig.running ? "lesson.tone_loaded_on" : "lesson.tone_loaded_off", { name }), true);
-    showTone(box, id);
-  };
 }
 
 /** The latency correction applied to your timing, so a "late" verdict can be trusted (or fixed). */
