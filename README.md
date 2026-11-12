@@ -129,6 +129,8 @@ and exits) and the app (`guitarr`, which starts only after the migrations succee
   another browser (someone could send you a link to their own account).
 - **Audio:** your browser captures the guitar (the clean input, without the tone rig) and streams it to the
   server, which grades it. The metronome clicks play in the browser. This works on macOS and Windows too.
+  The tuner, the signal check and the latency calibration use the browser's input as well; a calibration is
+  kept for that input and used whenever you practice with it (else the browser's own latency estimate).
   Browsers open the microphone only on `https://` or on `localhost`.
 - **Data:** accounts live in Postgres (`guitarr-db` volume). Each user's songs, takes, history and progress
   live in their own folder in the `guitarr-data` volume (`/data/users/<id>`).

@@ -201,6 +201,45 @@ def test_the_tuner_and_the_signal_check_listen_to_the_browser():
         assert ws.receive_json()["error"]["code"] == "bad_start"
 
 
+def test_latency_calibration_with_the_browsers_input():
+    """The browser plays the clicks it's given; a cable brings them back 35 ms later. The result is kept for
+    that input, and practicing with it uses it instead of the browser's own estimate."""
+    import numpy as np
+    from guitarr import takeclick
+    from guitarr.gui import server
+    sr, delay = 48000, 0.035
+    c = client()
+    r = c.post("/api/calibrate", json=dict(mode="loopback", input="browser", sr=sr, input_name="USB guitar cable")).json()
+    assert r["stream"] and r["running"] and len(r["tones"]) == 4
+    waves = takeclick.tone_waves(sr, dict(enumerate(r["tones"])), 0.3)
+    y = np.zeros(int((r["clicks"][-1][0] + 1.0) * sr), np.float32)
+    for t, key in r["clicks"]:
+        a = int((t + delay) * sr)
+        y[a:a + len(waves[key])] += waves[key]
+    with c.websocket_connect("/ws/stream") as ws:
+        ws.send_json(dict(type="attach", to="calibrate"))
+        assert ws.receive_json()["type"] == "ready"
+        for f in _frames(y):
+            ws.send_bytes(f)
+        while ws.receive_json()["type"] != "ended":
+            pass
+    res = c.get("/api/calibrate").json()["result"]
+    assert res["ok"] and res["method"] == "loopback" and res["spread_ms"] < 2
+    assert 25 <= res["latency_ms"] <= 45          # the cable plus the detector's own bias (as test_latency)
+    assert res["status"]["input"] == "USB guitar cable"
+    d = c.post("/api/demo").json()
+    for name, expected in (("USB guitar cable", res["latency_ms"]), ("Another mic", 12.5)):
+        assert c.post("/api/live/start", json=dict(song=d["song"], input="browser", sr=sr, input_name=name,
+                                                   latency_ms=12.5)).status_code == 200
+        assert server.S.session.opts.latency_ms == expected
+        c.post("/api/live/stop")
+        server.S.thread.join(10)
+    # a browser that never sends its input: it ends by itself
+    with c.websocket_connect("/ws/stream") as ws:
+        ws.send_json(dict(type="attach", to="calibrate"))
+        assert ws.receive_json()["detail"]["code"] == "no_session"
+
+
 def test_browser_audio_needs_a_start_message():
     c = client()
     with c.websocket_connect("/ws/stream") as ws:

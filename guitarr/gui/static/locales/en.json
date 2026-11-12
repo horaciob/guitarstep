@@ -2896,6 +2896,7 @@
    "applied": "Correction applied: {{ms}} ms",
    "how_loopback": "measured with a cable ({{input}} ← {{output}}): it's the system alone",
    "how_play": "measured playing along ({{input}} ← {{output}}): it includes your own habit",
+   "browser_output": "this browser's output",
    "how_manual": "typed by hand",
    "tendency_early": "Your habit: you land {{ms}} ms ahead of the click.",
    "tendency_late": "Your habit: you land {{ms}} ms behind the click.",

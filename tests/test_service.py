@@ -92,7 +92,8 @@ def test_each_user_has_their_own_data(links):
 
 def test_the_servers_own_audio_is_off_limits(links):
     c = signed_in(links, "ana@example.com")
-    assert c.post("/api/calibrate", json={}).json()["detail"]["code"] == "browser_audio"
+    assert c.post("/api/calibrate", json={}).json()["detail"]["code"] == "bad_sample_rate"    # the browser's input instead
+    assert c.get("/api/config").json()["path"] is None
     assert c.get("/api/devices").json()["browser"] is True
     d = c.post("/api/demo").json()
     r = c.post("/api/live/start", json=dict(song=d["song"], mode="wait"))

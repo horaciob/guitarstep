@@ -122,12 +122,13 @@ def run_tuner_cli(src) -> None:
 
 # ---------------------------------------------------------------- latency calibration
 def _save_cable_test(x: np.ndarray, sr: int) -> None:
-    """Keeps the last cable test's recording (cache/cable-test.wav), to check what came back."""
+    """Keeps the last cable test's recording (cache/cable-test.wav in your folder), to check what came back."""
     import soundfile as sf
     from . import config
+    folder = config.HOME / "cache"
     try:
-        config.CACHE_DIR.mkdir(parents=True, exist_ok=True)
-        sf.write(config.CACHE_DIR / "cable-test.wav", x, sr)
+        folder.mkdir(parents=True, exist_ok=True)
+        sf.write(folder / "cable-test.wav", x, sr)
     except OSError:
         pass
 
@@ -144,9 +145,22 @@ def _tone_index(x: np.ndarray, sr: int, t: float, tones) -> int | None:
     return i if abs(f / tones[i] - 1) < 0.08 else None
 
 
+def calibration_clicks(bpm: float = 90, beats: int = 12, warmup: int = 4, loopback: bool = False):
+    """The clicks of a calibration: ([(time, accent | tone index)], tones {index: Hz} or None, warmup, beat)."""
+    from .takeclick import LOOP_TONES
+    if loopback:
+        warmup, bpm = 1, max(bpm, 120)
+    beat = 60 / bpm
+    clicks = [(CAL_FIRST + i * beat, i % len(LOOP_TONES) if loopback else i % 4 == 0) for i in range(warmup + beats)]
+    return clicks, dict(enumerate(LOOP_TONES)) if loopback else None, warmup, beat
+
+
+CAL_FIRST = 1.0       # s: the first click of a calibration
+
+
 def calibrate(device, channel: int, output_device=None, bpm: float = 90, beats: int = 12,
               warmup: int = 4, on_progress=None, stop_event: threading.Event | None = None,
-              loopback: bool = False) -> dict:
+              loopback: bool = False, src=None) -> dict:
     """A click plays; you hit muted strings together with every click. The median of the
     offset (detected onset − click) is the total round-trip latency plus the detector's
     bias. The first `warmup` clicks are for catching the pulse.
@@ -155,24 +169,24 @@ def calibrate(device, channel: int, output_device=None, bpm: float = 90, beats: 
     offset is the system alone, and it's very regular. Each click has its own tone (cycling
     takeclick.LOOP_TONES), and a returning click only counts if it has the tone of the one that left,
     so it's never paired with its neighbour. It can be slightly negative: the clicks are placed using
-    the latencies the driver reports, so what's left is the driver's error."""
+    the latencies the driver reports, so what's left is the driver's error.
+
+    `src`: the input comes from elsewhere (a browser), which plays the clicks itself (calibration_clicks)."""
     from .audio_io import Metronome, MicSource
     from .dsp import Detector, Recorder
 
-    src = MicSource(device, channel)
+    from .takeclick import LOOP_TONES
+    remote = src is not None
+    src = src if remote else MicSource(device, channel)
     rec = Recorder(src.sr)
     det = Detector(rec, gate_db=-60 if loopback else -55, legato=False)
-    if loopback:
-        warmup, bpm = 1, max(bpm, 120)
-    beat = 60 / bpm
-    t_first = 1.0
-    from .takeclick import LOOP_TONES
-    tones = dict(enumerate(LOOP_TONES)) if loopback else None
-    clicks = [(t_first + i * beat, i % len(LOOP_TONES) if loopback else i % 4 == 0) for i in range(warmup + beats)]
-    metro = Metronome(output_device, src, clicks, tones=tones)
+    clicks, tones, warmup, beat = calibration_clicks(bpm, beats, warmup, loopback)
+    t_first = CAL_FIRST
+    metro = None if remote else Metronome(output_device, src, clicks, tones=tones)
     onsets: list[float] = []
     src.start()
-    metro.start()
+    if metro:
+        metro.start()
     end_t = clicks[-1][0] + 0.8
     try:
         while rec.n / src.sr < end_t and not (stop_event and stop_event.is_set()):
@@ -180,6 +194,8 @@ def calibrate(device, channel: int, output_device=None, bpm: float = 90, beats: 
                 blk = src.q.get(timeout=0.1)
             except queue.Empty:
                 continue
+            if blk is None:           # the browser left
+                break
             rec.append(blk)
             for d in det.process():
                 onsets.append(d.t)
@@ -188,7 +204,8 @@ def calibrate(device, channel: int, output_device=None, bpm: float = 90, beats: 
                 k = int((now - t_first) / beat)
                 on_progress(dict(beat=k + 1, total=warmup + beats, warmup=k < warmup))
     finally:
-        metro.stop()
+        if metro:
+            metro.stop()
         src.stop()
     offs = []
     if loopback:

@@ -12,7 +12,14 @@ export function isService() {
   return service;
 }
 
-/** Opens the input: { ctx, sr, latency_ms, onBlock(fn), close() }. Blocks are { start, samples, t0 }. */
+const NAME_KEY = "guitarr.inputName";
+
+/** The name of the input last opened in this browser (its latency calibration is kept by that name). */
+export function lastInputName() {
+  try { return localStorage.getItem(NAME_KEY) || ""; } catch { return ""; }
+}
+
+/** Opens the input: { ctx, sr, name, latency_ms, onBlock(fn), close() }. Blocks are { start, samples, t0 }. */
 export async function openInput() {
   let stream;
   try {
@@ -27,12 +34,13 @@ export async function openInput() {
   } catch (e) { stream.getTracks().forEach(tr => tr.stop()); ctx.close(); throw e; }
   const src = ctx.createMediaStreamSource(stream);
   const node = new AudioWorkletNode(ctx, "stream-capture", { numberOfOutputs: 0 });
-  const settings = stream.getAudioTracks()[0].getSettings();
+  const track = stream.getAudioTracks()[0], settings = track.getSettings();
+  try { localStorage.setItem(NAME_KEY, track.label || ""); } catch { /* private mode */ }
   // what the listener subtracts: input latency plus output latency (you play along with the clicks)
   const latency_ms = 1000 * ((settings.latency || 0) + (ctx.baseLatency || 0) + (ctx.outputLatency || 0));
   let closed = false;
   return {
-    ctx, sr: ctx.sampleRate, latency_ms,
+    ctx, sr: ctx.sampleRate, name: track.label || "", latency_ms,
     onBlock(fn) { node.port.onmessage = e => fn(e.data); src.connect(node); },
     close() {
       if (closed) return;
@@ -79,8 +87,9 @@ export function inputSocket(path, params = {}) {
   return ws;
 }
 
-/** Plays clicks given in seconds of the stream once t0 (the context time of sample 0) is known. */
-export function clickPlayer(ctx) {
+/** Plays clicks given in seconds of the stream once t0 (the context time of sample 0) is known. A click is
+ *  [time, accent], or [time, i] with `tones` (Hz): the cable test gives each click its own tone. */
+export function clickPlayer(ctx, tones = null) {
   const queue = [];
   let t0 = null;
   const timer = setInterval(() => {
@@ -90,7 +99,7 @@ export function clickPlayer(ctx) {
       const [ct, accent] = queue.shift(), at = t0 + ct;
       if (at < ctx.currentTime) continue;            // too late to play: skip it
       const osc = ctx.createOscillator(), g = ctx.createGain();
-      osc.frequency.value = accent ? 1600 : 1000;
+      osc.frequency.value = tones ? tones[accent] : accent ? 1600 : 1000;
       g.gain.setValueAtTime(0.5, at);
       g.gain.exponentialRampToValueAtTime(0.001, at + 0.04);
       osc.connect(g).connect(ctx.destination);
@@ -112,13 +121,34 @@ export async function startLive(payload) {
   const input = await openInput();
   let r;
   try {
-    r = await api("/api/live/start", { json: { ...payload, input: "browser", sr: input.sr, latency_ms: input.latency_ms } });
+    r = await api("/api/live/start", { json: { ...payload, input: "browser", sr: input.sr, input_name: input.name,
+      latency_ms: input.latency_ms } });
   } catch (e) { input.close(); throw e; }
+  attach(input, { type: "attach" });
+  return r;
+}
+
+/** /api/calibrate: as a web service this browser plays the clicks and sends what its input hears. */
+export async function startCalibration(body) {
+  stopInput();
+  if (!(await isService())) return api("/api/calibrate", { json: body });
+  const input = await openInput();
+  let r;
+  try {
+    r = await api("/api/calibrate", { json: { ...body, input: "browser", sr: input.sr, input_name: input.name } });
+  } catch (e) { input.close(); throw e; }
+  attach(input, { type: "attach", to: "calibrate" }, r.clicks, r.tones);
+  return r;
+}
+
+/** Streams the input to what the server opened for it (over /ws/stream) and plays its clicks. */
+function attach(input, hello, clicksNow = [], tones = null) {
   const ws = new WebSocket(`${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/ws/stream`);
   ws.binaryType = "arraybuffer";
-  const clicks = clickPlayer(input.ctx);
+  const clicks = clickPlayer(input.ctx, tones);
+  clicks.add(clicksNow);
   const me = current = { close() { clicks.stop(); input.close(); if (ws.readyState <= 1) ws.close(); if (current === me) current = null; } };
-  ws.onopen = () => ws.send(JSON.stringify({ type: "attach" }));
+  ws.onopen = () => ws.send(JSON.stringify(hello));
   ws.onmessage = ev => {
     const m = JSON.parse(ev.data);
     if (m.type === "ready") {
@@ -127,7 +157,6 @@ export async function startLive(payload) {
     else if (m.type === "ended" || m.type === "error") me.close();
   };
   ws.onclose = () => me.close();
-  return r;
 }
 
 export function stopInput() {

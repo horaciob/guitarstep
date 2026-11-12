@@ -55,6 +55,15 @@ def record(method: str, measured_ms: float, spread_ms: float, input_name: str | 
     return status(input_name, output_name)
 
 
+def for_browser(input_name: str | None, estimate_ms: float) -> float:
+    """The correction for a browser's input: what was measured with that same input (calibrated in the
+    browser), else the latency the browser itself reports."""
+    applied = config.load()["audio"].get("latency_ms")
+    if input_name and applied is not None and info().get("input") == str(input_name)[:200]:
+        return applied
+    return estimate_ms
+
+
 def status(input_name: str | None, output_name: str | None) -> dict:
     """What's applied, how it was measured, your tendency, and warnings about the current setup."""
     lat = info()

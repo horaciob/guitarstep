@@ -2896,6 +2896,7 @@
    "applied": "Corrección aplicada: {{ms}} ms",
    "how_loopback": "medida con cable ({{input}} ← {{output}}): es solo el sistema",
    "how_play": "medida tocando ({{input}} ← {{output}}): incluye tu propia costumbre",
+   "browser_output": "la salida de este navegador",
    "how_manual": "escrita a mano",
    "tendency_early": "Tu costumbre: caés {{ms}} ms antes del clic.",
    "tendency_late": "Tu costumbre: caés {{ms}} ms después del clic.",

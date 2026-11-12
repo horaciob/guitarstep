@@ -2,7 +2,7 @@
    Dependency-free ES module: vanilla JS + canvas + SVG. The router (main.js) calls
    showListenerView / hideListenerViews. All user-facing text goes through i18n. */
 import { issueText, msgIsError, msgText, t, tc } from "./lib/i18n.js";
-import { inputSocket, sourceName, startLive } from "./lib/browser-input.js";
+import { inputSocket, isService, lastInputName, sourceName, startCalibration, startLive } from "./lib/browser-input.js";
 import { $, $$, api, esc, instrument, loadInstrument, noteName, NOTE_NAMES, progressChanged, stringRow, toast } from "./lib/ui.js";
 import { levelVerdict, meterHtml, openInput, setGate, setMeter } from "./lib/input.js";
 import { bindTakePlayers, grooveHtml, takePlayer, timingVerdictHtml } from "./lib/take.js";
@@ -1072,12 +1072,14 @@ async function loadLatency() {
   const box = $("#latStatus");
   if (!box) return;
   let st;
-  try { st = await api("/api/latency"); } catch { box.innerHTML = ""; return; }
+  const name = lastInputName();       // the browser's input, as a web service
+  try { st = await api(`/api/latency${name ? "?input=" + encodeURIComponent(name) : ""}`); } catch { box.innerHTML = ""; return; }
   const now = $("#cableNow");
   if (now) now.textContent = st.current_output ? t(st.current_output === st.current_input ? "cable.now_same" : "cable.now_other",
     { output: st.current_output, input: st.current_input || "?" }) : "";
   const lines = [];
-  if (st.applied_ms != null) lines.push(`<b>${esc(t("latency.applied", { ms: Math.round(st.applied_ms) }))}</b> · ${esc(st.method ? t(`latency.how_${st.method}`, { input: st.input || "?", output: st.output || "?" }) : t("latency.how_manual"))}`);
+  const output = st.output || (await isService() ? t("latency.browser_output") : "?");
+  if (st.applied_ms != null) lines.push(`<b>${esc(t("latency.applied", { ms: Math.round(st.applied_ms) }))}</b> · ${esc(st.method ? t(`latency.how_${st.method}`, { input: st.input || "?", output }) : t("latency.how_manual"))}`);
   if (st.tendency_ms != null) lines.push(esc(t(Math.abs(st.tendency_ms) < 15 ? "latency.tendency_none" : st.tendency_ms < 0 ? "latency.tendency_early" : "latency.tendency_late", { ms: Math.round(Math.abs(st.tendency_ms)) })));
   const warn = (st.warnings || []).map(w => `<li>${esc(t(`latency.warn_${w.code}`, w.params))}</li>`).join("");
   box.innerHTML = `<p class="small">${lines.join("<br>")}</p>${warn ? `<ul class="callout warn small lat-warn">${warn}</ul>` : ""}`;
@@ -1087,7 +1089,7 @@ function runCalibration(body, status) {
   return async () => {
     stopTest();
     try {
-      await api("/api/calibrate", { json: body });
+      await startCalibration(body);
       $("#cStart").disabled = $("#cLoop").disabled = true;
       const poll = setInterval(async () => {
         const s = await api("/api/calibrate");

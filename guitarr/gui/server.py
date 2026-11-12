@@ -113,6 +113,7 @@ class State:
         self.probe = None            # signal check: live input
         self.signal: dict = {}       # signal check: results and clips per step
         self.calib: dict = dict(running=False)
+        self.calib_src = None        # a calibration's input when it comes from the browser
         self.listened: list[list] = []   # recent [start, end or None] of listening sessions (wall clock)
 
     def listening_overlap(self, start: float, end: float) -> float:
@@ -1089,7 +1090,7 @@ def api_devices():
 
 @app.get("/api/config")
 def get_config():
-    return dict(audio=audio_settings(), saved=config.load()["audio"], path=str(config.CONFIG_PATH))
+    return dict(audio=audio_settings(), saved=config.load()["audio"], path=None if service() else str(config.CONFIG_PATH))
 
 
 @app.post("/api/config")
@@ -1718,7 +1719,8 @@ def live_start(body: dict):
             device=a.get("device"), channel=a.get("channel") or 1, output_device=a.get("output_device"),
             samplerate=a.get("samplerate"), click=body.get("click", True),
             count_in=_int(body.get("count_in")),
-            latency_ms=(_float(body.get("latency_ms")) or 0.0) if browser else (a.get("latency_ms") or 0.0),
+            latency_ms=latency.for_browser(body.get("input_name"), _float(body.get("latency_ms")) or 0.0) if browser
+            else (a.get("latency_ms") or 0.0),
             gate_db=a["gate_db"] if a.get("gate_db") is not None else -50.0,
             sensitivity=a.get("sensitivity") or 1.0, loop=bool(body.get("loop")) and ctx["type"] == "practice",
             trainer=bool(body.get("trainer")) and mode == "tempo" and ctx["type"] == "practice",
@@ -1888,10 +1890,16 @@ async def ws_stream(ws: WebSocket):
     probe = False
     try:
         first = await ws.receive_json()
-        if first.get("type") == "attach":
+        if first.get("type") == "attach" and first.get("to") == "calibrate":
+            sess = None
+            src = S.calib_src
+            if not (src and S.calib.get("running")) or src.n:
+                raise CodedError("no_session", "No calibration is waiting for audio from the browser")
+        elif first.get("type") == "attach":
             sess = S.session
             if not (sess and sess.running and sess.remote) or sess.src.n:
                 raise CodedError("no_session", "No session is waiting for audio from the browser")
+            src = sess.src
         elif first.get("type") == "start":
             probe = True
             sr = _int(first.get("sr"))
@@ -1913,6 +1921,7 @@ async def ws_stream(ws: WebSocket):
                 timing_tol=0.09 if chart and (ropts.chart or {}).get("swing") else 0.06,
             )
             sess = LiveSession(ref, opts, src=StreamSource(sr))
+            src = sess.src
         else:
             raise CodedError("bad_start", "Send a start message with the sample rate first")
     except CodedError as e:
@@ -1925,7 +1934,7 @@ async def ws_stream(ws: WebSocket):
         return
     except (WebSocketDisconnect, RuntimeError, ValueError):
         return
-    src, sr = sess.src, sess.src.sr
+    sr = src.sr
     out: dict = {}
     if probe:
         def run():
@@ -1938,6 +1947,10 @@ async def ws_stream(ws: WebSocket):
         th = threading.Thread(target=config.in_this_context(run), daemon=True)
         th.start()
         alive = th.is_alive
+    elif sess is None:          # a calibration: it plays its own clicks (POST /api/calibrate gave them)
+        th = None
+        calib = S.calib
+        alive = lambda: calib.get("running")
     else:
         th = None
         alive = lambda: sess.running or sess.report is None and sess.error is None
@@ -1951,7 +1964,7 @@ async def ws_stream(ws: WebSocket):
     async def send_updates():
         sent = 0
         while alive():
-            clicks = list(getattr(sess.follower, "clicks", None) or [])
+            clicks = list(getattr(sess.follower, "clicks", None) or []) if sess else []
             if len(clicks) > sent:
                 await ws.send_json(dict(type="clicks", clicks=[[round(t, 4), bool(a)] for t, a in clicks[sent:]]))
                 sent = len(clicks)
@@ -1964,7 +1977,7 @@ async def ws_stream(ws: WebSocket):
     sender = asyncio.create_task(send_updates())
     recv = None
     try:
-        await ws.send_json(dict(type="ready", events=len(sess.events), source=src.name, sr=sr))
+        await ws.send_json(dict(type="ready", events=len(sess.events) if sess else 0, source=src.name, sr=sr))
         while alive() and not sender.done():
             if recv is None:
                 recv = asyncio.ensure_future(ws.receive())     # kept across turns: cancelling it could lose a frame
@@ -2164,35 +2177,49 @@ def api_signal_apply(body: dict):
 # ---------------------------------------------------------------- calibration
 @app.post("/api/calibrate")
 def calibrate_start(body: dict | None = None):
-    from ..tuner import calibrate
+    """Starts a latency calibration. With the browser's input (always, as a web service) the browser plays the
+    clicks returned here ("clicks", and "tones" in Hz for the cable test) and streams the input to /ws/stream
+    ({"type": "attach", "to": "calibrate"}); the result is recorded for that input ("input_name")."""
+    from ..tuner import calibrate, calibration_clicks
 
-    no_server_audio()
+    body = body or {}
+    browser = service() or body.get("input") == "browser"
+    if not browser:
+        no_server_audio()
     if S.calib.get("running"):
         fail(409, "busy", "Calibration already running")
     if S.session and S.session.running:
         fail(409, "busy", "Stop practicing first")
     a = audio_settings()
-    body = body or {}
     bpm = _float(body.get("bpm")) or 90
     loop = body.get("mode") == "loopback"
     channel = (_int(body.get("channel")) or a.get("channel") or 1) if loop else (a.get("channel") or 1)
-    S.calib = dict(running=True, beat=0, total=13 if loop else 16, warmup=not loop, result=None, mode="loopback" if loop else "play")
-
-    def prog(p):
-        S.calib.update(p)
+    calib = dict(running=True, beat=0, total=13 if loop else 16, warmup=not loop, result=None, mode="loopback" if loop else "play")
+    src = None
+    if browser:
+        sr = _int(body.get("sr"))
+        if not (sr and 8000 <= sr <= 192000):
+            fail(400, "bad_sample_rate", "Send the browser's sample rate (sr)")
+        src = StreamSource(sr)
+        clicks, tones, _, _ = calibration_clicks(bpm, loopback=loop)
+        calib.update(stream=True, clicks=[[round(t, 4), k] for t, k in clicks], tones=tones and list(tones.values()))
+    S.calib, S.calib_src = calib, src
+    names = (str(body.get("input_name") or "")[:200] or None, None) if browser else _device_names(a)
 
     def run():
         try:
-            r = calibrate(a.get("device"), channel, a.get("output_device"), bpm=bpm, on_progress=prog, loopback=loop)
+            r = calibrate(a.get("device"), channel, a.get("output_device"), bpm=bpm, on_progress=calib.update,
+                          loopback=loop, src=src)
             if r["ok"]:
-                inp, out = _device_names(a)
-                r["status"] = latency.record(r["method"], r["latency_ms"], r["spread_ms"], inp, out)
+                r["status"] = latency.record(r["method"], r["latency_ms"], r["spread_ms"], *names)
         except Exception as e:
             r = dict(ok=False, code="error", message=str(e))
-        S.calib.update(running=False, result=r)
+        calib.update(running=False, result=r)
 
-    threading.Thread(target=run, daemon=True).start()
-    return S.calib
+    threading.Thread(target=config.in_this_context(run), daemon=True).start()
+    if src:      # a browser that never sends its input ends it
+        threading.Timer(15, lambda: src.n or src.end()).start()
+    return calib
 
 
 @app.get("/api/calibrate")
@@ -2213,8 +2240,11 @@ def _device_names(a: dict) -> tuple[str | None, str | None]:
 
 
 @app.get("/api/latency")
-def latency_status():
-    """How the latency correction was measured, your own tendency, and warnings about the current devices."""
+def latency_status(input: str = ""):
+    """How the latency correction was measured, your own tendency, and warnings about the current devices
+    (as a web service, `input` is the name of the browser's input)."""
+    if service():
+        return latency.status(input[:200] or None, None)
     return latency.status(*_device_names(audio_settings()))
 
 

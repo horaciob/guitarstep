@@ -119,7 +119,7 @@ def test_loopback_with_nothing_coming_back(monkeypatch):
     _fakes(monkeypatch, 30.0)                              # clicks never arrive while it listens
     r = tuner.calibrate(0, 2, loopback=True)
     assert not r["ok"] and r["code"] == "no_loop" and r["heard"] == 0 and r["peak_db"] < -100
-    assert (config.CACHE_DIR / "cable-test.wav").exists()  # kept, to check what came back
+    assert (config.HOME / "cache" / "cable-test.wav").exists()  # kept (in your folder), to check what came back
 
 
 def test_metronome_plays_on_both_outputs(monkeypatch):
