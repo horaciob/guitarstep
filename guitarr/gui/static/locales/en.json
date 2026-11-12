@@ -1673,7 +1673,22 @@
    "ab_same": "Both are equally loud.",
    "ab_louder": "{{s}} was {{db}} dB louder: turned down to match.",
    "midi_program": "A program change on your MIDI controller loads your favorites in order (or the factory sounds).",
-   "midi_loaded": "MIDI program {{n}}: {{name}}"
+   "midi_loaded": "MIDI program {{n}}: {{name}}",
+   "match_title": "Match a recording's tone",
+   "match_hint": "Open a recording, play for a few seconds, and the EQ moves your lows, mids and highs toward it. It matches the balance, not the distortion or the effects: use a part where the guitar plays alone.",
+   "match_file": "A recording to match",
+   "match_from": "from",
+   "match_measure": "Measure my sound",
+   "match_apply": "Apply to the EQ",
+   "match_reading": "Reading the recording…",
+   "match_playing": "Play now… {{pct}}%",
+   "match_have_ref": "recording: {{name}}",
+   "match_have_mine": "your sound measured",
+   "match_needs_on": "turn the rig on to measure your sound",
+   "match_ref": "recording",
+   "match_mine": "you",
+   "match_bad_file": "Couldn't read that audio file.",
+   "match_applied": "EQ set. Measure again to refine it."
   },
   "plan": {
    "title": "Practice plan",

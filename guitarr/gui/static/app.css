@@ -1364,3 +1364,6 @@ dialog.palette li.on { background: var(--gl-accent); color: var(--gl-accent-ink)
 dialog.palette li.on small { color: inherit; }
 .palette-keys { padding: 6px 14px 10px; margin: 0; }
 @media (max-width: 760px), (pointer: coarse) { .search-all kbd, .palette-keys { display: none; } .search-all { width: auto; margin: 0; } }
+.gl .match-table { border-collapse: collapse; font-size: 12px; margin-top: 6px; }
+.gl .match-table th, .gl .match-table td { padding: 2px 6px; text-align: right; }
+.gl .match-table th:first-child { text-align: left; }

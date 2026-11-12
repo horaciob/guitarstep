@@ -1376,3 +1376,22 @@ def test_chart_from_a_recording_in_the_editor(app_page, tmp_path):
     app_page.locator("#recFile").set_input_files(str(wav))
     expect(app_page.locator("#recMsg")).to_contain_text("A draft with", timeout=20000)
     expect(app_page.locator("#txt")).to_have_value(re.compile(r"G \| D \| Em \| C"))
+
+
+def test_rig_tone_match_reads_a_recording(app_page, tmp_path):
+    import numpy as np
+    import soundfile as sf
+
+    wav = tmp_path / "ref.wav"
+    t = np.arange(44100 * 2) / 44100
+    sf.write(wav, (0.2 * np.sin(2 * np.pi * 110 * t)).astype(np.float32), 44100)     # all lows
+    onboarded(app_page)
+    go(app_page, "rig")                            # the rig stays off: nothing is played
+    app_page.locator("#mFile").set_input_files(str(wav))
+    expect(app_page.locator("#mMsg")).to_contain_text("ref.wav", timeout=15000)
+    cells = app_page.locator(".match-table tr").nth(1).locator("td")
+    assert float(cells.first.inner_text()) > float(cells.last.inner_text()) + 20             # 100 Hz far above 6.4 kHz
+    expect(app_page.locator("#mMine")).to_be_disabled()
+    gains = app_page.evaluate("""import('/static/lib/rig/tonematch.js').then(m =>
+        m.eqFor([0, 0, 0, 0, 0, 6, 12], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]))""")
+    assert gains[-1] > gains[0] and all(-12 <= g <= 12 for g in gains)

@@ -8,6 +8,7 @@ import { AMP_KNOBS, AMPS, CABS, EFFECT_GROUPS, EFFECTS, GUITARS, MICS } from "..
 import { ARTIST_INFO, ARTIST_STYLE, ARTIST_STYLES, ARTISTS, FACTORY, factory, makeEffect } from "../lib/rig/presets.js";
 import { fold, matcher, rank, startsWord, suggest } from "../lib/search.js";
 import { knob } from "../lib/rig/knob.js";
+import { BANDS, eqFor, fileBands, liveBands } from "../lib/rig/tonematch.js";
 import { RIFFS, VOICES } from "../lib/rig/synth.js";
 import { clipPlot, comparePlots, isDrive, stackCurve } from "../lib/rig/visuals.js";
 
@@ -522,8 +523,10 @@ function renderTools() {
         : `<div class="row left wrap"><button class="btn small" id="midiConnect">${esc(t("rig.midi_connect"))}</button><span class="muted small">${esc(t("rig.midi_hint"))}</span></div>`}
       ${rig.midiAccess ? `<p class="muted small">${esc(t("rig.midi_program"))}</p>` : ""}
     </div>
-    <div class="tool-col" id="abCol"></div>`;
+    <div class="tool-col" id="abCol"></div>
+    <div class="tool-col" id="matchCol"></div>`;
   renderAB();
+  renderMatch();
   const tb = $("#tuneBtn", box);
   if (tb) tb.onclick = () => { rig.setTuning(!rig.tuning); renderTools(); };
   const mc = $("#midiConnect", box);
@@ -535,6 +538,54 @@ function renderTools() {
   if (ml) ml.onclick = () => { rig.learnMidi(!rig.midiLearning); renderTools(); };
   const mt = $("#midiTarget", box);
   if (mt) mt.onchange = e => rig.setMidiTarget(e.target.value || null);
+}
+
+// ------------------------------------------------------------------ tone match: your sound's EQ toward a recording's
+const match = { target: null, name: "", mine: null, busy: "", progress: 0 };
+
+function renderMatch() {
+  const col = root && $("#matchCol", root);
+  if (!col) return;
+  const row = (label, xs) => xs ? `<tr><th>${esc(label)}</th>${xs.map(v => `<td>${v.toFixed(0)}</td>`).join("")}</tr>` : "";
+  const norm = xs => xs && (m => xs.map(x => x - m))(xs.reduce((a, b) => a + b, 0) / xs.length);
+  col.innerHTML = `<h2>${esc(t("rig.match_title"))}</h2>
+    <p class="muted small">${esc(t("rig.match_hint"))}</p>
+    <div class="row left wrap">
+      <input type="file" id="mFile" accept="audio/*" aria-label="${esc(t("rig.match_file"))}">
+      <label class="field-inline small">${esc(t("rig.match_from"))} <input type="number" id="mStart" min="0" step="1" value="0" style="width:5em"> s</label>
+    </div>
+    <div class="row left wrap">
+      <button class="btn small" id="mMine" ${rig.running && !match.busy ? "" : "disabled"}>${esc(t("rig.match_measure"))}</button>
+      <button class="btn small primary" id="mApply" ${match.target && match.mine ? "" : "disabled"}>${esc(t("rig.match_apply"))}</button>
+    </div>
+    <p class="small" id="mMsg" aria-live="polite">${esc(match.busy === "file" ? t("rig.match_reading") : match.busy === "mine" ? t("rig.match_playing", { pct: Math.round(match.progress * 100) })
+      : [match.target ? t("rig.match_have_ref", { name: match.name }) : "", match.mine ? t("rig.match_have_mine") : "", rig.running ? "" : t("rig.match_needs_on")].filter(Boolean).join(" · "))}</p>
+    ${match.target || match.mine ? `<table class="match-table"><tr><th></th>${BANDS.map(f => `<th>${f >= 1000 ? f / 1000 + "k" : f}</th>`).join("")}</tr>
+      ${row(t("rig.match_ref"), norm(match.target))}${row(t("rig.match_mine"), norm(match.mine))}</table>` : ""}`;
+  $("#mFile", col).onchange = async e => {
+    const f = e.target.files[0];
+    if (!f) return;
+    match.busy = "file"; renderMatch();
+    try { match.target = (await fileBands(f, +$("#mStart", root).value || 0)).bands; match.name = f.name; }
+    catch { toast(t("rig.match_bad_file")); }
+    match.busy = ""; renderMatch();
+  };
+  $("#mMine", col).onclick = async () => {
+    match.busy = "mine"; match.progress = 0; renderMatch();
+    match.mine = await liveBands(rig, 6, p => { match.progress = p; const m = $("#mMsg", root); if (m) m.textContent = t("rig.match_playing", { pct: Math.round(p * 100) }); });
+    match.busy = ""; renderMatch();
+  };
+  $("#mApply", col).onclick = () => {
+    let eq = [...rig.state.post].reverse().find(e => e.type === "eq");
+    if (!eq) { eq = makeEffect("eq"); rig.addEffect("post", eq); }
+    const now = BANDS.map(f => eq.params[`b${f}`] || 0);
+    const gains = eqFor(match.target, match.mine, now);
+    if (!eq.on) rig.toggleEffect(eq.uid);
+    BANDS.forEach((f, i) => rig.setEffectParam(eq.uid, `b${f}`, gains[i]));
+    match.mine = null;                                          // your sound changed: measure again to refine
+    renderBoard("post"); renderMatch();
+    toast(t("rig.match_applied"), true);
+  };
 }
 
 // ------------------------------------------------------------------ A/B: two sounds, switched instantly, at the same loudness

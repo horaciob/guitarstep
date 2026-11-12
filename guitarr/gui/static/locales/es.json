@@ -1673,7 +1673,22 @@
    "ab_same": "Los dos suenan igual de fuerte.",
    "ab_louder": "{{s}} sonaba {{db}} dB más fuerte: se bajó para igualar.",
    "midi_program": "Un cambio de programa en tu controlador MIDI carga tus favoritos en orden (o los sonidos de fábrica).",
-   "midi_loaded": "Programa MIDI {{n}}: {{name}}"
+   "midi_loaded": "Programa MIDI {{n}}: {{name}}",
+   "match_title": "Igualar el tono de una grabación",
+   "match_hint": "Abrí una grabación, tocá unos segundos y el EQ acerca tus graves, medios y agudos a los de ella. Iguala el balance, no la distorsión ni los efectos: usá una parte donde la guitarra suena sola.",
+   "match_file": "Una grabación para igualar",
+   "match_from": "desde",
+   "match_measure": "Medir mi sonido",
+   "match_apply": "Aplicar al EQ",
+   "match_reading": "Leyendo la grabación…",
+   "match_playing": "Tocá ahora… {{pct}}%",
+   "match_have_ref": "grabación: {{name}}",
+   "match_have_mine": "tu sonido medido",
+   "match_needs_on": "prendé el rig para medir tu sonido",
+   "match_ref": "grabación",
+   "match_mine": "vos",
+   "match_bad_file": "No pude leer ese archivo de audio.",
+   "match_applied": "EQ ajustado. Medí de nuevo para afinarlo."
   },
   "plan": {
    "title": "Plan de práctica",
