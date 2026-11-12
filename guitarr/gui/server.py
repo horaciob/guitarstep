@@ -211,6 +211,28 @@ def ref_options(body: dict) -> tuple[RefOptions, dict]:
                          capo=0, strum=pat["strum"], bars=[dict(chord=c, beats=bpb, frets=catalog.get_chord(c)["frets"])
                                                             for _ in range(2) for c in chords])
             return RefOptions(chart=chart), dict(type="practice", chart=True)
+        if body.get("neck"):                          # the neck game: name + string → play it, against the clock
+            import random
+
+            r = body["neck"]
+            tuning = config.instrument_tuning()            # 1st (highest) string first
+            open_of = lambda st: tuning[st - 1]
+            strings = sorted({int(x) for x in (r.get("strings") or [6, 5]) if str(x).isdigit() and 1 <= int(x) <= len(tuning)})
+            if not strings:
+                fail(400, "bad_strings", "Pick at least one string")
+            sharps = bool(r.get("accidentals"))
+            pcs = list(range(12)) if sharps else [0, 2, 4, 5, 7, 9, 11]
+            seconds = 30 if _int(r.get("seconds")) == 30 else 60
+            rng, steps, last = random.Random(), [], None
+            while len(steps) < 150:                   # more than anyone plays in a minute
+                st, p = rng.choice(strings), rng.choice(pcs)
+                if (st, p) == last:
+                    continue
+                last = (st, p)
+                fret = next(f for f in range(12) if (open_of(st) + f) % 12 == p)
+                steps.append(dict(string=st, fret=fret, pitch=open_of(st) + fret))
+            key = f"{''.join(map(str, strings))}{'#' if sharps else ''}-{seconds}"
+            return RefOptions(tab=steps), dict(type="neck", mode="wait", seconds=seconds, key=key)
         if body.get("improv"):                        # improvising over a backing; every note heard against the chord
             from .. import improv, theory
             r = body["improv"]
@@ -1435,7 +1457,7 @@ def live_start(body: dict):
 
         S.thread = threading.Thread(target=run, daemon=True)
         S.thread.start()
-        if ctx["type"] == "drill":  # the chord-change minute stops by itself
+        if ctx["type"] in ("drill", "neck"):  # the chord-change minute and the neck game stop by themselves
             threading.Timer(ctx["seconds"] + 1.5, sess.stop).start()
     return dict(ok=True, events=len(sess.events), context=ctx,
                 grid_bpm=round(60 / ref.grid.beat_len(ref.notes[0].start), 1))

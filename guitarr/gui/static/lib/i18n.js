@@ -148,6 +148,7 @@ export function eventText(e) {
     case "drill": return t("event.drill", { chords: String(p.chords).replace("-", " ↔ "), n: p.changes });
     case "take_analysis": return t("event.take_analysis", { score: Math.round(p.score) });
     case "warmup": return t("event.warmup", { drill: t(`warmup.${p.drill}`), bpm: p.bpm, score: Math.round(p.score) });
+    case "neck": return t("event.neck", { found: p.found, seconds: p.seconds });
     case "improv": return t("event.improv", { backing: t(`improv.backing_${p.backing}`), score: Math.round(p.score) });
     case "practice": return t("event.practice", { name: p.name || "", score: Math.round(p.score), ...raw });
     default: return e.code;

@@ -1242,3 +1242,12 @@ def test_improvise_tab_suggests_a_scale_per_backing(app_page):
     expect(app_page.locator("#iBpm")).to_have_value("100")
     app_page.select_option("#iScale", "follow")
     expect(app_page.locator("#iNeck")).to_contain_text("Each chord brings its own scale")
+
+
+def test_neck_game_tab(app_page):
+    onboarded(app_page)
+    go(app_page, "tools?tab=neck")
+    expect(app_page.locator("#nBest")).to_have_text("No record here yet.")
+    app_page.locator('#nSet button[data-set="all"]').click()
+    expect(app_page.locator('#nSet button[data-set="all"]')).to_have_attribute("aria-pressed", "true")
+    expect(app_page.locator('#nSet button[data-set="low"]')).to_have_attribute("aria-pressed", "false")

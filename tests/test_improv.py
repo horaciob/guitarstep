@@ -88,3 +88,29 @@ def test_live_improv_session_over_the_blues(tmp_path):
     assert heard.count(58) >= 1 and all(n["cls"] == "outside" for n in r["notes"] if n["midi"] == 58)
     assert all(n["chord"] == "A7" for n in r["notes"][:8])                    # the first bars are A7
     assert s["fits_pct"] >= 85 and s["score"] is not None
+
+
+def test_neck_game_targets_follow_the_strings_and_the_tuning():
+    from guitarr import config
+    from guitarr.gui.server import ref_options
+
+    opts, ctx = ref_options(dict(neck=dict(strings=[6, 5], seconds=30)))
+    steps = opts.tab
+    assert ctx == dict(type="neck", mode="wait", seconds=30, key="56-30")
+    assert len(steps) == 150 and {s["string"] for s in steps} == {5, 6}
+    assert all(s["pitch"] % 12 in (0, 2, 4, 5, 7, 9, 11) and 0 <= s["fret"] < 12 for s in steps)
+    assert all((a["string"], a["pitch"]) != (b["string"], b["pitch"]) for a, b in zip(steps, steps[1:]))
+    config.save_instrument(tuning="drop_d")
+    opts, ctx = ref_options(dict(neck=dict(strings=[6], accidentals=True)))
+    assert ctx["key"] == "6#-60"
+    assert all(s["pitch"] == 38 + s["fret"] for s in opts.tab)               # the low string is a D
+
+
+def test_neck_game_keeps_the_best():
+    from guitarr import progress
+
+    rep = dict(summary=dict(first_try=12, fixed=2))
+    a = progress.on_session(dict(type="neck", seconds=60, key="56-60"), rep)
+    assert a["found"] == 14 and a["xp"] == 5 and a["record"] is False
+    a = progress.on_session(dict(type="neck", seconds=60, key="56-60"), dict(summary=dict(first_try=5, fixed=0)))
+    assert a["best"] == 14 and progress.get()["neck"]["56-60"]["last"] == 5

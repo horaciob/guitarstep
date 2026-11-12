@@ -112,7 +112,8 @@
    "rhythm": "Rhythm test at {{bpm}} BPM: {{within}}% on time",
    "ear": "Ear training ({{kind}}): {{score}}%",
    "warmup": "Warm-up: {{drill}} at {{bpm}} BPM, {{score}}%",
-   "improv": "Improvised over {{backing}}: {{score}}"
+   "improv": "Improvised over {{backing}}: {{score}}",
+   "neck": "Neck game: {{found}} notes in {{seconds}} s"
   },
   "errors": {
    "generic": "Something went wrong",
@@ -151,7 +152,8 @@
    "bad_favorites": "Favorites must be a list of sound ids",
    "bad_backing": "Unknown backing.",
    "bad_scale": "Unknown scale.",
-   "bad_key": "Unknown key."
+   "bad_key": "Unknown key.",
+   "bad_strings": "Pick at least one string."
   },
   "practice": {
    "title": "🎧 Practice with listening",
@@ -681,7 +683,8 @@
    "over_notes": "Chord tones: {{tones}} · tensions: {{tensions}}",
    "warmup_tab": "Daily warm-up",
    "slow_tab": "Slow down",
-   "improv_tab": "Improvise"
+   "improv_tab": "Improvise",
+   "neck_tab": "Neck game"
   },
   "camera": {
    "title": "Camera",
@@ -2955,6 +2958,22 @@
    "tip_range": "You stayed on a few notes. Move up the neck or to other strings for the next phrase.",
    "tip_none": "Nice: in the scale, landing on the chords and leaving space. Try a faster tempo or another backing.",
    "record": "new best!"
+  },
+  "neck": {
+   "intro": "A note and a string appear: play it, and the next one comes right away. How many can you find before time runs out? Any octave on that string counts.",
+   "strings": "Strings",
+   "set_low": "6th and 5th",
+   "set_mid": "4th and 3rd",
+   "set_high": "2nd and 1st",
+   "set_all": "All six",
+   "accidentals": "Sharps too",
+   "time": "Time",
+   "start": "Start",
+   "on_string": "on string {{s}}",
+   "best": "Your best here: {{n}} notes.",
+   "no_best": "No record here yet.",
+   "found_so_far": "✓ {{n}} of {{all}}",
+   "result": "{{n}} notes in {{seconds}} s ({{first}} on the first try)"
   }
  },
  "content": {}

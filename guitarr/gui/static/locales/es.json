@@ -112,7 +112,8 @@
    "rhythm": "Test de ritmo a {{bpm}} BPM: {{within}}% a tiempo",
    "ear": "Oído ({{kind}}): {{score}}%",
    "warmup": "Calentamiento: {{drill}} a {{bpm}} BPM, {{score}}%",
-   "improv": "Improvisaste sobre {{backing}}: {{score}}"
+   "improv": "Improvisaste sobre {{backing}}: {{score}}",
+   "neck": "Juego del diapasón: {{found}} notas en {{seconds}} s"
   },
   "errors": {
    "generic": "Algo salió mal",
@@ -151,7 +152,8 @@
    "bad_favorites": "Los favoritos tienen que ser una lista de sonidos",
    "bad_backing": "Esa base no existe.",
    "bad_scale": "Esa escala no existe.",
-   "bad_key": "Esa tonalidad no existe."
+   "bad_key": "Esa tonalidad no existe.",
+   "bad_strings": "Elegí al menos una cuerda."
   },
   "practice": {
    "title": "🎧 Practicar con escucha",
@@ -681,7 +683,8 @@
    "over_notes": "Notas del acorde: {{tones}} · tensiones: {{tensions}}",
    "warmup_tab": "Calentamiento diario",
    "slow_tab": "Más lento",
-   "improv_tab": "Improvisar"
+   "improv_tab": "Improvisar",
+   "neck_tab": "Juego del diapasón"
   },
   "camera": {
    "title": "Cámara",
@@ -2955,6 +2958,22 @@
    "tip_range": "Te quedaste en pocas notas. Subí por el diapasón o pasá a otras cuerdas en la próxima frase.",
    "tip_none": "Muy bien: en la escala, cayendo en los acordes y dejando aire. Probá más rápido u otra base.",
    "record": "¡nuevo récord!"
+  },
+  "neck": {
+   "intro": "Aparece una nota y una cuerda: tocala y enseguida viene la siguiente. ¿Cuántas encontrás antes de que se acabe el tiempo? Vale cualquier octava en esa cuerda.",
+   "strings": "Cuerdas",
+   "set_low": "6ª y 5ª",
+   "set_mid": "4ª y 3ª",
+   "set_high": "2ª y 1ª",
+   "set_all": "Las seis",
+   "accidentals": "Con sostenidos",
+   "time": "Tiempo",
+   "start": "Empezar",
+   "on_string": "en la cuerda {{s}}",
+   "best": "Tu récord acá: {{n}} notas.",
+   "no_best": "Todavía no hay récord acá.",
+   "found_so_far": "✓ {{n}} de {{all}}",
+   "result": "{{n}} notas en {{seconds}} s ({{first}} al primer intento)"
   }
  },
  "content": {

@@ -1292,3 +1292,7 @@ body.is-stage #main { max-width: none; padding: 12px 18px; }
 .improv-neck { margin: 8px 0; }
 .improv-tips li { margin: 4px 0; }
 #iBpm { width: 5em; }
+
+/* neck game */
+.neck-target { display: flex; flex-direction: column; align-items: center; margin: 14px 0; }
+.neck-target b { font-size: 3.5rem; line-height: 1; }

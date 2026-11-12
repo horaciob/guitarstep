@@ -31,6 +31,7 @@ EVENT_TEXT = {
     "variation_passed": "Variation passed: {lesson}/{exercise}",
     "warmup": "Warm-up {drill} at {bpm} BPM: {score:.0f}%",
     "improv": "Improvised over {backing}: {score:.0f}",
+    "neck": "Neck game: {found} notes in {seconds} s",
 }
 
 
@@ -47,6 +48,7 @@ def _empty() -> dict:
                 ear={},           # ear trainer → best score per kind
                 warmup={},        # daily warm-up → {drill: {bpm (the goal), best, day}}
                 improv={},        # improvising → {backing: {best, last, day}}
+                neck={},          # neck game → {strings+accidentals-seconds: {best, last, day}}
                 facts={},         # weak spots: facts you missed → {label, lesson, exercise, misses, step, due}
                 budget=None,      # minutes you chose for today's plan (15, 30, 60, 120)
                 queue=[])         # song or chart sections you pinned to today's plan
@@ -465,6 +467,16 @@ def on_session(ctx: dict | None, report: dict) -> dict:
                     out["record"] = best is not None
                 _award(d, 5, "rhythm", bpm=ctx.get("bpm"), within=st["within"])
                 out["xp"] = 5
+        elif kind == "neck":
+            found = s.get("first_try", 0) + s.get("fixed", 0)
+            prev = d["neck"].get(ctx["key"], {}).get("best")
+            if found:
+                d["neck"][ctx["key"]] = dict(best=max(found, prev or 0), last=found, day=date.today().isoformat())
+                xp = 5 if found >= 10 else 2
+                _award(d, xp, "neck", found=found, seconds=ctx["seconds"])
+                out["xp"] = xp
+            out.update(found=found, first_try=s.get("first_try", 0), best=max(found, prev or 0),
+                       record=prev is not None and found > prev)
         elif kind == "improv":
             if score is not None:
                 prev = d["improv"].get(ctx["backing"], {}).get("best")
