@@ -1,0 +1,37 @@
+# guitarr on the internet: https in front (Caddy), and as many app replicas as you need.
+#
+#   GUITARR_DOMAIN=guitarr.example docker compose -f compose.yaml -f compose.https.yaml up --build -d
+#   docker compose -f compose.yaml -f compose.https.yaml up -d --scale guitarr=3 --scale worker=2
+#
+# The domain's DNS must point at this machine, with ports 80 and 443 open: Caddy gets the
+# certificate from Let's Encrypt on its own. Browsers need https to open the microphone.
+# Only Caddy is published; the app containers are reached through it (deploy/Caddyfile).
+# Try it on this machine with GUITARR_DOMAIN=localhost (Caddy's own certificate: the browser warns once).
+services:
+  guitarr:
+    container_name: !reset null       # several replicas
+    ports: !reset []                   # reached through the proxy only
+    environment:
+      GUITARR_PUBLIC_URL: ${GUITARR_PUBLIC_URL:-https://${GUITARR_DOMAIN:-localhost}}
+      FORWARDED_ALLOW_IPS: "*"         # trust the proxy's X-Forwarded-* (nothing else can reach the app)
+
+  proxy:
+    image: caddy:2.10.2-alpine
+    ports:
+      - "${GUITARR_HTTP_PORT:-80}:80"
+      - "${GUITARR_HTTPS_PORT:-443}:443"
+      - "${GUITARR_HTTPS_PORT:-443}:443/udp"
+    environment:
+      GUITARR_DOMAIN: ${GUITARR_DOMAIN:-localhost}
+      GUITARR_LB_SECRET: ${GUITARR_LB_SECRET:-guitarr}
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data               # certificates
+      - caddy-config:/config
+    depends_on:
+      - guitarr
+    restart: unless-stopped
+
+volumes:
+  caddy-data:
+  caddy-config:

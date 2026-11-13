@@ -5,6 +5,7 @@ used to sign in. Without SMTP settings (local Docker Compose) the link is printe
 log instead of being emailed: `docker compose logs guitarr`.
 
     GUITARR_SMTP_HOST, GUITARR_SMTP_PORT (587), GUITARR_SMTP_USER, GUITARR_SMTP_PASSWORD,
+    GUITARR_SMTP_TLS (starttls; ssl on port 465; off for a local mail catcher),
     GUITARR_MAIL_FROM, GUITARR_PUBLIC_URL (the address in the link, e.g. https://guitarr.example)
 """
 from __future__ import annotations
@@ -14,6 +15,7 @@ import os
 import re
 import secrets
 import smtplib
+import ssl
 from email.message import EmailMessage
 
 from . import db
@@ -66,11 +68,30 @@ def send_link(email: str, url: str) -> None:
     msg["To"] = email
     msg.set_content(f"Open this link to sign in to guitarr (it works once, for {LINK_MINUTES} minutes):\n\n{url}\n\n"
                     "If you didn't ask for it, ignore this email.")
-    with smtplib.SMTP(host, int(os.environ.get("GUITARR_SMTP_PORT", "587")), timeout=15) as s:
-        s.starttls()
-        if os.environ.get("GUITARR_SMTP_USER"):
-            s.login(os.environ["GUITARR_SMTP_USER"], os.environ.get("GUITARR_SMTP_PASSWORD", ""))
-        s.send_message(msg)
+    try:
+        with _smtp(host) as s:
+            if os.environ.get("GUITARR_SMTP_USER"):
+                s.login(os.environ["GUITARR_SMTP_USER"], os.environ.get("GUITARR_SMTP_PASSWORD", ""))
+            s.send_message(msg)
+    except (smtplib.SMTPException, OSError) as e:
+        print(f"[guitarr] couldn't send the sign-in email: {type(e).__name__}: {e}", flush=True)
+        raise CodedError("mail_failed", "Couldn't send the email; try again in a few minutes") from None
+
+
+def _smtp(host: str) -> smtplib.SMTP:
+    """A connection to the mail server: TLS from the start on port 465, else STARTTLS (GUITARR_SMTP_TLS)."""
+    port = int(os.environ.get("GUITARR_SMTP_PORT", "587"))
+    tls = (os.environ.get("GUITARR_SMTP_TLS") or ("ssl" if port == 465 else "starttls")).lower()
+    if tls == "ssl":
+        return smtplib.SMTP_SSL(host, port, timeout=15, context=ssl.create_default_context())
+    s = smtplib.SMTP(host, port, timeout=15)
+    if tls == "starttls":
+        try:
+            s.starttls(context=ssl.create_default_context())
+        except BaseException:
+            s.close()
+            raise
+    return s
 
 
 def peek_link(token: str, browser: str | None = None) -> dict:

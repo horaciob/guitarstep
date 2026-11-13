@@ -1,0 +1,15 @@
+# The https front of the web service (compose.https.yaml): certificates from Let's Encrypt for
+# GUITARR_DOMAIN (its own local ones for localhost), WebSockets included.
+#
+# Every app replica (`--scale guitarr=N`) is found through Docker's DNS. A browser stays on the
+# replica it first reached (the guitarr_app cookie): a live practice session lives in that process.
+{$GUITARR_DOMAIN:localhost} {
+	reverse_proxy {
+		dynamic a guitarr 8765 {
+			refresh 5s
+		}
+		lb_policy cookie guitarr_app {$GUITARR_LB_SECRET:guitarr}
+		lb_try_duration 10s
+		fail_duration 30s
+	}
+}

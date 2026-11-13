@@ -6,7 +6,8 @@ and a local web UI teaches, tracks and shapes your sound.
 ## Run and test
 - `.venv/bin/python -m guitarr gui --no-browser` → http://127.0.0.1:8765
 - `.venv/bin/python -m pytest -q` (no audio hardware needed; every test gets its own `~/.guitarr` via `tests/conftest.py`)
-- Docker: `docker compose up --build` runs the web service (Postgres + migrations + app; sign-in links go to the log)
+- Docker: `docker compose up --build` runs the web service (Postgres + migrations + app; sign-in links go to the log);
+  add `-f compose.https.yaml` for https (Caddy, `deploy/Caddyfile`) and several app replicas
 - Database tests need Postgres: a throwaway cluster from the local `initdb`, or `GUITARR_TEST_DATABASE_URL`; else they skip
 
 ## Layout
@@ -33,7 +34,8 @@ and a local web UI teaches, tracks and shapes your sound.
   request has a signed-in user (`config.use_user`: their folder is `config.HOME`), `S` is that user's state,
   and audio comes from the browser (`/ws/stream`; the tuner and the signal check take it over their own socket,
   `lib/browser-input.js` `inputSocket`), never from the server's devices. Threads started for a request
-  must be wrapped with `config.in_this_context`.
+  must be wrapped with `config.in_this_context`. Process memory (`S`) is per app replica: the proxy keeps a
+  browser on one; anything shared between requests of different browsers goes in Postgres.
 - **Read-modify-write of a document holds its `store.Lock`** (each module's `_lock`): as a web service the app and
   the workers are separate processes, so the lock is also taken in Postgres.
 - **Slow work is a job in the web service** (`jobs.py`): raise `jobs.JobPending(jobs.enqueue(kind, args))`

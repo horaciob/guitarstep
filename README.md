@@ -163,11 +163,28 @@ has `GUITARR_QUOTA_MB` (1000) of space for songs and takes and up to `GUITARR_JO
 
 - *Backups of the database:* `docker compose exec db pg_dump -U guitarr guitarr > guitarr.sql` (restore with
   `psql`). Users' files are in the `guitarr-data` volume; each user can also download their own backup.
-- *Scaling:* add workers freely (`--scale worker=N`): they take jobs without stepping on each other. Keep one
-  `guitarr` app container: a live practice session (the WebSocket and its state) lives in that process.
+- *Scaling:* add workers freely (`--scale worker=N`): they take jobs without stepping on each other. With
+  `compose.yaml` alone keep one `guitarr` app container; behind the https proxy (below) you can run several.
 - *Health:* `/api/health` answers 503 when the app can't reach the database (the container's health check
   uses it). Workers stop cleanly on `docker compose stop`, after the job at hand. Expired sign-in links,
   sessions and invitations are deleted by the workers.
+
+**On the internet** (https, several app containers): `compose.https.yaml` adds Caddy in front, which gets the
+certificate from Let's Encrypt for your domain (its DNS must point at the machine, ports 80 and 443 open).
+Browsers open the microphone only on `https://`.
+
+```bash
+# .env: GUITARR_DOMAIN=guitarr.example, POSTGRES_PASSWORD, GUITARR_SMTP_*, GUITARR_MAIL_FROM, GUITARR_ADMINS
+docker compose -f compose.yaml -f compose.https.yaml up --build -d --scale guitarr=2 --scale worker=2
+```
+
+Only Caddy is published. A browser stays on the app container it first reached (the `guitarr_app` cookie),
+because a live practice session lives in that process; if that container stops, the next request goes to
+another one and you stay signed in (a live session in progress is lost). Sign-in links are emailed with
+`GUITARR_SMTP_HOST`, `GUITARR_SMTP_PORT` (587), `GUITARR_SMTP_USER`, `GUITARR_SMTP_PASSWORD` and
+`GUITARR_SMTP_TLS` (`starttls`; `ssl` on port 465; `off` for a local mail catcher); when the mail server
+fails, the page says so. To try it on this machine: `GUITARR_DOMAIN=localhost` (Caddy's own certificate:
+the browser warns once).
 
 **Single user with the server's own audio input (Linux hosts):** pass your ALSA devices through. This
 runs the app without accounts or the database:
