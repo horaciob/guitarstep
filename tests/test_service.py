@@ -69,6 +69,21 @@ def test_opening_a_link_only_shows_whose_it_is(links):
     assert mine.get("/api/progress").status_code == 200
 
 
+def test_a_link_made_on_the_console(links, monkeypatch, capsys):
+    """`guitarr user link EMAIL` (make login): no mail server needed; the account exists before the first sign-in."""
+    from guitarr import admin, cli
+    monkeypatch.setenv("GUITARR_PUBLIC_URL", "http://localhost:9999")
+    cli.main(["user", "link", "dev@example.com"])
+    link = capsys.readouterr().out.strip().splitlines()[-1]
+    assert link.startswith("http://localhost:9999/auth/verify?token=") and links == {}
+    assert "dev@example.com" in [u["email"] for u in admin.overview()["users"]]
+    c = TestClient(app)
+    tok = token_of(link)
+    assert c.get(f"/api/auth/link?token={tok}").json() == dict(email="dev@example.com", same_browser=True)
+    assert c.post("/api/auth/verify", json=dict(token=tok)).status_code == 200
+    assert c.get("/api/auth/me").json()["user"]["email"] == "dev@example.com"
+
+
 def test_too_many_links_are_refused(links):
     c = TestClient(app)
     for _ in range(accounts.LINKS_PER_HOUR):

@@ -1,7 +1,7 @@
 # guitarr: the local app (.venv) and the web service (Docker Compose). `make` lists the commands.
 #
 # Local app:   make install · make run · make stop · make test
-# Web service: make up · make down · make logs · make migrate         (HTTPS=1: behind Caddy, compose.https.yaml)
+# Web service: make up · make login EMAIL=… · make down · make logs · make migrate         (HTTPS=1: behind Caddy, compose.https.yaml)
 # Web service outside Docker (Postgres from Compose): make db-start · make db-migrate · make run-service
 
 VENV   := .venv
@@ -29,7 +29,7 @@ SERVICE_ENV  = GUITARR_DATABASE_URL='$(DATABASE_URL)' GUITARR_HOME='$(SERVICE_HO
 .DEFAULT_GOAL := help
 .PHONY: help install run stop test test-fast \
         db-start db-stop db-migrate db-status db-new run-service worker \
-        up down restart logs ps migrate db-status-docker psql backup
+        up down restart logs ps migrate db-status-docker psql backup login login-local
 
 help:
 	@echo "Local app"
@@ -46,6 +46,7 @@ help:
 	@echo "  make migrate           apply pending migrations (make db-status-docker: what's pending)"
 	@echo "  make psql              a SQL prompt in the database"
 	@echo "  make backup            dump the database to FILE ($(FILE))"
+	@echo "  make login EMAIL=you@example.com   a sign-in link printed here (the account is made if new)"
 	@echo ""
 	@echo "Web service outside Docker (Postgres from Compose on 127.0.0.1:$(or $(GUITARR_DB_PORT),5442))"
 	@echo "  make db-start          start only Postgres (make db-stop)"
@@ -53,6 +54,7 @@ help:
 	@echo "  make db-new NAME=x     a new migration file, guitarr/db/migrations/NNNN_x.sql"
 	@echo "  make run-service       the app as a web service on PORT, jobs included (foreground)"
 	@echo "  make worker            an extra job worker (foreground)"
+	@echo "  make login-local EMAIL=you@example.com   a sign-in link for it"
 	@echo "  DATABASE_URL=... to use another Postgres"
 
 # ---------------------------------------------------------------- local app
@@ -121,6 +123,10 @@ run-service:
 worker:
 	$(SERVICE_ENV) $(PY) -m guitarr worker
 
+login-local:
+	@test -n "$(EMAIL)" || { echo "Usage: make login-local EMAIL=you@example.com"; exit 1; }
+	@$(SERVICE_ENV) GUITARR_PUBLIC_URL=http://localhost:$(PORT) $(PY) -m guitarr user link '$(EMAIL)'
+
 # ---------------------------------------------------------------- web service in Docker
 
 up:
@@ -150,3 +156,7 @@ psql:
 backup:
 	$(COMPOSE) exec -T db pg_dump -U guitarr guitarr > $(FILE)
 	@echo "Saved $(FILE) (restore: $(COMPOSE) exec -T db psql -U guitarr guitarr < $(FILE))"
+
+login:
+	@test -n "$(EMAIL)" || { echo "Usage: make login EMAIL=you@example.com"; exit 1; }
+	@$(COMPOSE) exec guitarr guitarr user link '$(EMAIL)'

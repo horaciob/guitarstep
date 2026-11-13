@@ -50,11 +50,29 @@ def request_link(email, base_url: str, send=None, browser: str | None = None) ->
                          "AND created_at > now() - interval '1 hour'", (email,)).fetchone()["n"]
         if n >= LINKS_PER_HOUR:
             raise CodedError("too_many_links", "Too many sign-in links for this address; try again in an hour")
-        conn.execute("INSERT INTO login_tokens (token_hash, email, expires_at, browser_hash) "
-                     "VALUES (%s, %s, now() + make_interval(mins => %s), %s)",
-                     (_hash(token), email, LINK_MINUTES, browser and _hash(browser)))
-    url = f"{(os.environ.get('GUITARR_PUBLIC_URL') or base_url).rstrip('/')}/auth/verify?token={token}"
-    (send or send_link)(email, url)
+        _insert_link(conn, token, email, browser)
+    (send or send_link)(email, _link_url(base_url, token))
+
+
+def _insert_link(conn, token: str, email: str, browser: str | None) -> None:
+    conn.execute("INSERT INTO login_tokens (token_hash, email, expires_at, browser_hash) "
+                 "VALUES (%s, %s, now() + make_interval(mins => %s), %s)",
+                 (_hash(token), email, LINK_MINUTES, browser and _hash(browser)))
+
+
+def _link_url(base_url: str, token: str) -> str:
+    return f"{(os.environ.get('GUITARR_PUBLIC_URL') or base_url).rstrip('/')}/auth/verify?token={token}"
+
+
+def console_link(email, base_url: str = "http://localhost:8765") -> str:
+    """A sign-in link made on the server's console (`guitarr user link`), for when there's no mail server:
+    the account is created now if it's new. Only someone with access to the server can make one."""
+    email = normalize_email(email)
+    token = secrets.token_urlsafe(32)
+    with db.pool().connection() as conn:
+        conn.execute("INSERT INTO users (email) VALUES (%s) ON CONFLICT ((lower(email))) DO NOTHING", (email,))
+        _insert_link(conn, token, email, None)
+    return _link_url(base_url, token)
 
 
 def send_link(email: str, url: str) -> None:
@@ -102,7 +120,9 @@ def peek_link(token: str, browser: str | None = None) -> dict:
                            "AND expires_at > now()", (_hash(token or ""),)).fetchone()
     if row is None:
         raise CodedError("bad_link", "This sign-in link is used or expired; ask for a new one")
-    return dict(email=row["email"], same_browser=bool(browser and row["browser_hash"] == _hash(browser)))
+    # a link made on the console wasn't asked for in any browser: no warning
+    same = row["browser_hash"] is None or bool(browser and row["browser_hash"] == _hash(browser))
+    return dict(email=row["email"], same_browser=same)
 
 
 def redeem_link(token: str) -> tuple[str, dict]:

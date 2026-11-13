@@ -133,6 +133,9 @@ def build_parser() -> argparse.ArgumentParser:
     db = sub.add_parser("db", help="web service database: schema migrations (needs GUITARR_DATABASE_URL)")
     db.add_argument("action", choices=["migrate", "status", "new"])
     db.add_argument("name", nargs="?", help="for new: what the migration does, e.g. add_setlists")
+    us = sub.add_parser("user", help="web service: a sign-in link printed here (no mail server needed); new accounts are created")
+    us.add_argument("action", choices=["link"])
+    us.add_argument("email")
     sub.add_parser("worker", help="web service: run the slow jobs (transcriptions, take analysis); any number of them")
     sub.add_parser("devices", help="list audio devices")
     tr = sub.add_parser("tracks", help="list the tracks of a MIDI / Guitar Pro file")
@@ -376,6 +379,23 @@ def cmd_db(args) -> None:
         raise ValueError(f"Database: {e}") from e
 
 
+def cmd_user(args) -> None:
+    from . import accounts, db
+    from .db import migrate
+    email = accounts.normalize_email(args.email)
+    if not db.enabled():
+        raise ValueError("Set GUITARR_DATABASE_URL: accounts live in the web service's database")
+    import psycopg
+    try:
+        if migrate.pending(db.url()):
+            raise ValueError("The database needs migrations first: run guitarr db migrate")
+        link = accounts.console_link(email)
+    except psycopg.Error as e:
+        raise ValueError(f"Database: {e}") from e
+    print(f"Sign-in link for {email} (open it within {accounts.LINK_MINUTES} minutes; it works once):")
+    print(link)
+
+
 def cmd_worker() -> None:
     from . import db, jobs
     from .db import migrate
@@ -445,6 +465,8 @@ def main(argv=None) -> None:
             print(json.dumps(r, indent=1)) if args.json else print_report(r)
         elif args.cmd == "db":
             cmd_db(args)
+        elif args.cmd == "user":
+            cmd_user(args)
         elif args.cmd == "worker":
             cmd_worker()
         elif args.cmd == "gui":

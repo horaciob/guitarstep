@@ -124,6 +124,7 @@ Dependency versions are pinned in `pyproject.toml` and `requirements.txt`: basic
 | Set up | `make install` | `cp .env.example .env` | `make install`, `make db-start` (only Postgres, on 127.0.0.1:5442) |
 | Run | `make run` / `make stop` | `make up` / `make down` / `make restart` | `make run-service` (jobs included); `make worker` for more |
 | Migrations | — | `make migrate`, `make db-status-docker` | `make db-migrate`, `make db-status`, `make db-new NAME=x` |
+| Sign in | — | `make login EMAIL=you@example.com` | `make login-local EMAIL=you@example.com` |
 | Look inside | `make test`, `make test-fast` | `make logs` (`S=worker`), `make ps`, `make psql`, `make backup` | `DATABASE_URL=...` for another Postgres |
 
 `make up` takes `HTTPS=1` (https in front), `APPS=n` (app containers, with `HTTPS=1`) and `WORKERS=n`.
@@ -133,7 +134,7 @@ Dependency versions are pinned in `pyproject.toml` and `requirements.txt`: basic
 ```bash
 cp .env.example .env             # settings (all optional on this machine)
 make up                          # → http://localhost:8765   (docker compose up --build -d)
-make logs S=guitarr              # the sign-in links, while there's no mail server
+make login EMAIL=you@example.com # a sign-in link printed here: no mail server needed (new accounts are made)
 make down                        # stop it; the data stays in the volumes
 ```
 
@@ -141,7 +142,8 @@ Docker Compose runs Postgres (`db`), the schema migrations (`migrate`, which run
 (`guitarr`) and a worker for the slow jobs (`worker`); the app and the worker start only after the migrations
 succeed. `GUITARR_PORT=8766` in `.env` moves it to another port (e.g. while the local app uses 8765).
 
-- **Sign in** with your email: a one-time link, emailed (or printed to the log without a mail server). Opening
+- **Sign in** with your email: a one-time link, emailed (or printed to the log without a mail server; or made
+  on the server with `make login EMAIL=...`, `make login-local` outside Docker). Opening
   the link shows whose account it is, and a button signs in; it warns when the link was asked for in another
   browser (someone could send you a link to their own account).
 - **Audio:** your browser captures the guitar (the clean input, without the tone rig) and streams it to the
@@ -299,6 +301,7 @@ WebSocket ~20 times per second. In the web service, the browser also captures th
 | `guitarr judge-check DIR` | Measure chord judging on your own recordings (see *Accuracy and limitations*) |
 | `guitarr db migrate\|status\|new` | Web service: schema migrations (needs `GUITARR_DATABASE_URL`) |
 | `guitarr worker` | Web service: run the slow jobs |
+| `guitarr user link EMAIL` | Web service: a sign-in link printed on the console (the account is made if new) |
 
 Run `guitarr <command> --help` for every option. `python listener.py …` still works as an alias.
 
