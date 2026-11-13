@@ -159,6 +159,16 @@ the guitar) and analyzing a take take from seconds to minutes, so the request on
 waits for it. The `worker` service runs them; add more with `docker compose up --scale worker=3`. Each user
 has `GUITARR_QUOTA_MB` (1000) of space for songs and takes and up to `GUITARR_JOBS_PER_USER` (3) jobs waiting.
 
+**Running it:**
+
+- *Backups of the database:* `docker compose exec db pg_dump -U guitarr guitarr > guitarr.sql` (restore with
+  `psql`). Users' files are in the `guitarr-data` volume; each user can also download their own backup.
+- *Scaling:* add workers freely (`--scale worker=N`): they take jobs without stepping on each other. Keep one
+  `guitarr` app container: a live practice session (the WebSocket and its state) lives in that process.
+- *Health:* `/api/health` answers 503 when the app can't reach the database (the container's health check
+  uses it). Workers stop cleanly on `docker compose stop`, after the job at hand. Expired sign-in links,
+  sessions and invitations are deleted by the workers.
+
 **Single user with the server's own audio input (Linux hosts):** pass your ALSA devices through. This
 runs the app without accounts or the database:
 

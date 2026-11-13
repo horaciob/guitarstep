@@ -19,7 +19,6 @@ from __future__ import annotations
 import json
 import math
 import re
-import threading
 import time
 import unicodedata
 import uuid
@@ -28,7 +27,7 @@ from datetime import date, datetime, timedelta
 from . import config, store
 from .errors import CodedError
 
-_lock = threading.Lock()
+_lock = store.Lock("plan")       # one read-modify-write at a time (across processes as a web service)
 
 BUILTIN = ("technique", "repertoire", "theory", "free")
 DEFAULT_MINUTES = dict(technique=10, repertoire=15, theory=5, free=0)

@@ -29,7 +29,8 @@ def pool():
             from psycopg.rows import dict_row
             from psycopg_pool import ConnectionPool
             _pool = ConnectionPool(url(), min_size=1, max_size=int(os.environ.get("GUITARR_DB_POOL", "10")),
-                                   kwargs=dict(row_factory=dict_row), open=True)
+                                   kwargs=dict(row_factory=dict_row), open=True,
+                                   check=ConnectionPool.check_connection)   # after a database restart: fresh ones
         return _pool
 
 

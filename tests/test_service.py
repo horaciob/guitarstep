@@ -162,6 +162,46 @@ def test_a_backup_moves_between_accounts(links, pg_url):
     assert "two-chords" in [c["id"] for c in bob.get("/api/charts").json() if c.get("mine")]
 
 
+def _add_xp(url, home, uid, n):
+    """In another process (like a worker): n practices of 20 XP for one user."""
+    import os
+    os.environ["GUITARR_DATABASE_URL"] = url
+    from pathlib import Path
+
+    from guitarr import config, progress
+    config.BASE = Path(home)
+    with config.use_user(uid):
+        for _ in range(n):
+            progress.add_practice(100)
+
+
+def test_processes_writing_the_same_progress_lose_nothing(links, pg_url):
+    """The app and the workers are different processes: each read-modify-write holds the document's lock."""
+    import multiprocessing as mp
+    signed_in(links, "ana@example.com")
+    (uid,), = _db(pg_url, "SELECT id::text FROM users WHERE email = 'ana@example.com'")
+    ctx = mp.get_context("spawn")
+    procs = [ctx.Process(target=_add_xp, args=(pg_url, str(config.BASE), uid, 15)) for _ in range(3)]
+    for p in procs:
+        p.start()
+    for p in procs:
+        p.join(60)
+        assert p.exitcode == 0
+    (data,), = _db(pg_url, "SELECT data FROM user_documents WHERE user_id = %s AND name = 'progress'", uid)
+    assert data["xp"] >= 3 * 15 * 20             # weekly challenges can add bonus XP on top, never less
+
+
+def test_health_and_tidying_up(links, pg_url):
+    from guitarr import db, jobs
+    c = TestClient(app)
+    assert c.get("/api/health").json() == dict(ok=True)              # no sign-in needed
+    c.post("/api/auth/link", json=dict(email="old@example.com"))
+    _db(pg_url, "UPDATE login_tokens SET expires_at = now() - interval '2 days' RETURNING 1")
+    with db.pool().connection() as conn:
+        jobs.tidy(conn)
+    assert not _db(pg_url, "SELECT 1 FROM login_tokens")
+
+
 def test_the_servers_own_audio_is_off_limits(links):
     c = signed_in(links, "ana@example.com")
     assert c.post("/api/calibrate", json={}).json()["detail"]["code"] == "bad_sample_rate"    # the browser's input instead

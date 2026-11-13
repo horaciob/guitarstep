@@ -24,6 +24,8 @@ _running: contextvars.ContextVar[bool] = contextvars.ContextVar("guitarr_job", d
 STALE_MINUTES = 30        # a running job older than this lost its worker: it's tried again
 MAX_ATTEMPTS = 2
 KEEP_DAYS = 7             # finished jobs are deleted after this
+TIDY_EVERY_S = 600
+_tidied = [0.0]
 
 
 def per_user() -> int:
@@ -98,7 +100,9 @@ def run_next() -> bool:
     with db.pool().connection() as conn:
         row = _claim(conn)
         if row is None:
-            conn.execute("DELETE FROM jobs WHERE finished_at < now() - make_interval(days => %s)", (KEEP_DAYS,))
+            if time.monotonic() - _tidied[0] > TIDY_EVERY_S:
+                _tidied[0] = time.monotonic()
+                tidy(conn)
             return False
     result = error = None
     try:
@@ -121,6 +125,14 @@ def run_next() -> bool:
                      ("failed" if error else "done", None if result is None else Jsonb(result),
                       error and Jsonb(error), row["id"]))
     return True
+
+
+def tidy(conn) -> None:
+    """Deletes what expired: finished jobs, sign-in links (kept a day for the rate limit), sessions, invitations."""
+    conn.execute("DELETE FROM jobs WHERE finished_at < now() - make_interval(days => %s)", (KEEP_DAYS,))
+    conn.execute("DELETE FROM login_tokens WHERE expires_at < now() - interval '1 day'")
+    conn.execute("DELETE FROM sessions WHERE expires_at < now()")
+    conn.execute("DELETE FROM class_invites WHERE expires_at < now()")
 
 
 def work(stop: threading.Event | None = None, idle_s: float = 1.0) -> None:

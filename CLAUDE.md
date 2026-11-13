@@ -34,6 +34,8 @@ and a local web UI teaches, tracks and shapes your sound.
   and audio comes from the browser (`/ws/stream`; the tuner and the signal check take it over their own socket,
   `lib/browser-input.js` `inputSocket`), never from the server's devices. Threads started for a request
   must be wrapped with `config.in_this_context`.
+- **Read-modify-write of a document holds its `store.Lock`** (each module's `_lock`): as a web service the app and
+  the workers are separate processes, so the lock is also taken in Postgres.
 - **Slow work is a job in the web service** (`jobs.py`): raise `jobs.JobPending(jobs.enqueue(kind, args))`
   and register the work with `@jobs.handler(kind)`; the page's `api()` waits for it. Uploads go through
   `quota.check`.

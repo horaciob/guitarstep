@@ -383,12 +383,15 @@ def cmd_worker() -> None:
         raise ValueError("Set GUITARR_DATABASE_URL: the worker takes its jobs from the web service's database")
     if migrate.pending(db.url()):
         raise ValueError("The database needs migrations first: run guitarr db migrate")
+    import signal
+    import threading
     from .gui import server  # noqa: F401 - registers the job handlers
+    stop = threading.Event()
+    for sig in (signal.SIGTERM, signal.SIGINT):        # docker stop: finish the job at hand, then quit
+        signal.signal(sig, lambda *_: stop.set())
     print("[guitarr] worker ready", flush=True)
-    try:
-        jobs.work()
-    except KeyboardInterrupt:
-        pass
+    jobs.work(stop)
+    print("[guitarr] worker stopped", flush=True)
 
 
 def main(argv=None) -> None:

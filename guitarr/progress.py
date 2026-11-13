@@ -7,12 +7,11 @@ as `code` + `params` so the UI can show them in any language.
 """
 from __future__ import annotations
 
-import threading
 from datetime import date, datetime, timedelta
 
 from . import store
 
-_lock = threading.Lock()
+_lock = store.Lock("progress")   # one read-modify-write at a time (across processes as a web service)
 
 LEVELS = [(0, "First strings"), (150, "Accompanist"), (400, "Strummer"), (800, "Blues player"),
           (1500, "Guitarist")]

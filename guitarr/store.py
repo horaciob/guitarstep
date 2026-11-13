@@ -6,13 +6,69 @@ user still has as a file (written before the database kept them) is moved in the
 """
 from __future__ import annotations
 
+import contextvars
 import json
+import threading
 import tomllib
 
 from . import config, db
 
 FILES = dict(config="config.toml", progress="progress.json", plan="plan.json", rig="rig.json",
              setlists="setlists.json")
+
+
+# the connection holding a document's lock (Lock), by document name: reads and writes inside go through it
+_held: contextvars.ContextVar[dict | None] = contextvars.ContextVar("guitarr_store_held", default=None)
+
+
+class Lock:
+    """Around a read-modify-write of one document (`with _lock: d = _read(); …; _write(d)`): a thread lock, and
+    as a web service also a lock on that user's document in Postgres, held by one transaction, because the app
+    and the workers are different processes writing the same documents."""
+
+    def __init__(self, name: str):
+        self.name = name
+        self._thread = threading.Lock()
+        self._local = threading.local()
+
+    def __enter__(self):
+        self._thread.acquire()
+        entry = None
+        try:
+            if in_db():
+                cm = db.pool().connection()
+                conn = cm.__enter__()
+                try:
+                    conn.execute("SELECT pg_advisory_xact_lock(hashtext(%s))", (f"{config.user_id()}:{self.name}",))
+                except BaseException:
+                    cm.__exit__(None, None, None)
+                    raise
+                entry = (cm, _held.set({**(_held.get() or {}), self.name: conn}))
+        except BaseException:
+            self._thread.release()
+            raise
+        self._local.entry = entry
+        return self
+
+    def __exit__(self, *exc):
+        entry, self._local.entry = self._local.entry, None
+        try:
+            if entry:
+                cm, tok = entry
+                _held.reset(tok)
+                cm.__exit__(*exc)            # commits, or rolls back on an error
+        finally:
+            self._thread.release()
+        return False
+
+
+def _connection(name: str):
+    """The connection holding `name`'s lock, else a new one from the pool (as a context manager)."""
+    conn = (_held.get() or {}).get(name)
+    if conn is None:
+        return db.pool().connection()
+    from contextlib import nullcontext
+    return nullcontext(conn)
 
 
 def in_db() -> bool:
@@ -39,7 +95,7 @@ def read(name: str):
     """The document, or None when there's none yet (or it can't be read)."""
     if not in_db():
         return _from_file(name)
-    with db.pool().connection() as conn:
+    with _connection(name) as conn:
         row = conn.execute("SELECT data FROM user_documents WHERE user_id = %s AND name = %s",
                            (config.user_id(), name)).fetchone()
     if row is not None:
@@ -62,7 +118,7 @@ def write(name: str, data) -> None:
         config.write_json(path(name), data)
         return
     from psycopg.types.json import Jsonb
-    with db.pool().connection() as conn:
+    with _connection(name) as conn:
         conn.execute("INSERT INTO user_documents (user_id, name, data) VALUES (%s, %s, %s) "
                      "ON CONFLICT (user_id, name) DO UPDATE SET data = EXCLUDED.data, updated_at = now()",
                      (config.user_id(), name, Jsonb(data)))

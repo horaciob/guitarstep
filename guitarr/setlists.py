@@ -5,12 +5,11 @@ tunings, the setlist says so, so you can reorder or plan a retune.
 """
 from __future__ import annotations
 
-import threading
 import uuid
 
 from . import catalog, config, store
 
-_lock = threading.Lock()
+_lock = store.Lock("setlists")   # one read-modify-write at a time (across processes as a web service)
 MAX_ITEMS = 60
 
 

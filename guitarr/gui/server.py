@@ -193,7 +193,7 @@ class SignedInOnly:
             return
         path = scope.get("path", "")
         user = await asyncio.to_thread(accounts.user_for, _cookie(scope))
-        if user is None and not (path == "/" or path == "/api/status" or path.startswith(PUBLIC_PATHS)):
+        if user is None and not (path in ("/", "/api/status", "/api/health") or path.startswith(PUBLIC_PATHS)):
             if scope["type"] == "websocket":
                 await send({"type": "websocket.close", "code": 1008})
                 return
@@ -1216,6 +1216,19 @@ def settings_sources():
 def status():
     return dict(version=__version__, home=None if service() else str(config.HOME), service=service(),
                 live=bool(S.session and S.session.running), tuner=S.tuner is not None)
+
+
+@app.get("/api/health")
+def health():
+    """For a container's health check: the app answers and, as a web service, reaches its database."""
+    if service():
+        try:
+            with db.pool().connection(timeout=3) as conn:
+                conn.execute("SELECT 1")
+        except Exception:  # noqa: BLE001 - any failure means "not healthy"
+            from fastapi.responses import JSONResponse
+            return JSONResponse(status_code=503, content=dict(ok=False, database=False))
+    return dict(ok=True)
 
 
 @app.get("/api/devices")

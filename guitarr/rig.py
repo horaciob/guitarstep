@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import json
 import re
-import threading
 import uuid
 from pathlib import Path
 
@@ -18,7 +17,7 @@ from .errors import CodedError
 MAX_BYTES = 64_000       # one rig as JSON
 MAX_PRESETS = 200
 MAX_NAME = 60
-_lock = threading.Lock()     # requests run in threads: one read-modify-write of rig.json at a time
+_lock = store.Lock("rig")        # one read-modify-write at a time (across processes as a web service)
 
 
 class RigError(CodedError):
