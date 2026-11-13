@@ -1165,7 +1165,8 @@ const mb = bytes => (bytes / 1e6).toFixed(bytes < 1e7 ? 1 : 0);
 let takesRoom = null;
 async function loadTakesUsage() {
   try { takesRoom = await api("/api/takes/usage"); } catch { return; }
-  $("#tkUsage").textContent = t("data.takes_usage", { count: takesRoom.count, mb: mb(takesRoom.bytes) });
+  $("#tkUsage").textContent = t("data.takes_usage", { count: takesRoom.count, mb: mb(takesRoom.bytes) })
+    + (takesRoom.space ? " · " + t("account.usage", { used: takesRoom.space.used_mb, quota: takesRoom.space.quota_mb }) : "");
   $("#tkDel").disabled = !takesRoom.count;
 }
 $("#tkDays").addEventListener("change", () => { $("#tkConfirm").hidden = true; });

@@ -24,7 +24,7 @@ from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 
 from ..errors import CodedError
-from .. import __version__, accounts, backup, catalog, config, db, history, latency, plan, progress, reminder, rig, routine, signalcheck
+from .. import __version__, accounts, backup, catalog, config, db, history, jobs, latency, plan, progress, quota, reminder, rig, routine, signalcheck
 from ..audio_io import AudioError, FileSource, MicSource, StreamSource, devices
 from ..reference import AUDIO_EXT, REFERENCE_EXT, RefOptions, ReferenceError, list_tracks, load_reference
 
@@ -41,6 +41,13 @@ async def coded_error(request, e: CodedError):
     """Errors the user can fix (a bad name, too many presets…): 400 with their code."""
     from fastapi.responses import JSONResponse
     return JSONResponse(status_code=400, content=dict(detail=dict(code=e.code, message=str(e))))
+
+
+@app.exception_handler(jobs.JobPending)
+async def job_pending(request, e: jobs.JobPending):
+    """The request waits for a job (web service): 202 with it; the page polls /api/jobs/<id>."""
+    from fastapi.responses import JSONResponse
+    return JSONResponse(status_code=202, content=dict(job=e.job, retry=e.retry))
 
 
 # The server only answers its own page. Any website open in the browser can send requests to
@@ -363,10 +370,33 @@ def ref_options(body: dict) -> tuple[RefOptions, dict]:
     ), dict(type="practice")
 
 
+def _load(opts: RefOptions):
+    """load_reference, but as a web service a recording that still has to be transcribed is a job: the
+    request answers 202 and is sent again when the job is done (see jobs.py)."""
+    from ..reference import audio_ready
+    if service() and not jobs.in_job() and not audio_ready(opts):
+        raise jobs.JobPending(jobs.enqueue("prepare", dict(
+            song=Path(opts.path).name, separate=opts.separate,
+            onset_threshold=opts.onset_threshold, frame_threshold=opts.frame_threshold)), retry=True)
+    return load_reference(opts, log=lambda m: None)
+
+
+@jobs.handler("prepare")
+def _prepare_job(args: dict) -> dict:
+    """Transcribes a recording (and separates its guitar) once; then it loads from the cache."""
+    try:
+        load_reference(RefOptions(path=song_path(args["song"]), separate=bool(args.get("separate")),
+                                  onset_threshold=args.get("onset_threshold", 0.5),
+                                  frame_threshold=args.get("frame_threshold", 0.3)), log=lambda m: None)
+    except ReferenceError as e:
+        raise CodedError("reference", str(e))
+    return dict(song=args["song"])
+
+
 def ref_from(body: dict):
     opts, _ = ref_options(body)
     try:
-        return load_reference(opts, log=lambda m: None)
+        return _load(opts)
     except ReferenceError as e:
         fail(400, "reference", str(e))
 
@@ -451,7 +481,17 @@ def auth_redeem(body: dict):
 @app.get("/api/auth/me")
 def auth_me(request: Request):
     user = request.scope.get("state", {}).get("user")
-    return dict(service=service(), user=user and dict(email=user["email"]))
+    return dict(service=service(), user=user and dict(email=user["email"]), usage=quota.usage())
+
+
+@app.get("/api/jobs/{job_id}")
+def job_state(job_id: int):
+    """A job of yours: {id, kind, status: queued | running | done | failed, result, error}."""
+    _need_service()
+    j = jobs.get(job_id)
+    if j is None:
+        fail(404, "no_job", "No such job")
+    return j
 
 
 @app.post("/api/auth/signout")
@@ -1221,6 +1261,7 @@ async def api_restore(file: UploadFile = File(...)):
     data = await file.read(MAX_UPLOAD + 1)
     if len(data) > MAX_UPLOAD:
         fail(400, "backup_too_big", "The backup is too big")
+    quota.check(len(data))
     with S.lock:
         if S.session and S.session.running:
             fail(409, "busy", "Stop practicing first")
@@ -1305,6 +1346,7 @@ def api_rig_irs():
 @app.post("/api/rig/irs")
 async def api_rig_ir_upload(file: UploadFile = File(...)):
     data = await file.read(rig.IR_MAX_BYTES + 1)
+    quota.check(len(data))
     return rig.save_ir(file.filename, data)
 
 
@@ -1400,7 +1442,7 @@ def song_theory(name: str, track: str | None = None):
     from .. import songtheory
 
     try:
-        ref = load_reference(RefOptions(path=song_path(name), track=track or None), log=lambda m: None)
+        ref = _load(RefOptions(path=song_path(name), track=track or None))
     except ReferenceError as e:
         fail(400, "reference", str(e))
     return songtheory.analyze(ref)
@@ -1550,12 +1592,12 @@ async def upload_song(file: UploadFile = File(...)):
         if not looks_like_tab(text):
             fail(400, "bad_format", "That text file doesn't look like a tablature")
         name = Path(name).stem + ".tab"
+        quota.check(len(text.encode()))
         (config.SONGS_DIR / name).write_text(text, encoding="utf-8")
         return dict(name=name)
     if Path(name).suffix.lower() not in REFERENCE_EXT:
         fail(400, "bad_format", "Unsupported format: upload MIDI, Guitar Pro, MusicXML, a text tab or audio")
-    with open(config.SONGS_DIR / name, "wb") as f:
-        shutil.copyfileobj(file.file, f)
+    _save_upload(file, config.SONGS_DIR / name)
     return dict(name=name)
 
 
@@ -1641,7 +1683,7 @@ def takes():
 @app.get("/api/takes/usage")
 def takes_usage():
     from .. import takes as takes_
-    return takes_.usage()
+    return dict(takes_.usage(), space=quota.usage())      # space: your quota as a web service
 
 
 @app.post("/api/takes/cleanup")
@@ -1653,11 +1695,22 @@ def takes_cleanup(body: dict):
         return takes_.cleanup(body.get("days"))
 
 
+def _save_upload(file: UploadFile, path: Path) -> None:
+    """Keeps an uploaded file, within the user's quota (web service)."""
+    quota.check(file.size or 0)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with open(path, "wb") as f:
+        shutil.copyfileobj(file.file, f)
+    try:
+        quota.check()
+    except CodedError:
+        path.unlink(missing_ok=True)
+        raise
+
+
 def _store_take(file: UploadFile) -> str:
     name = _safe_name(file.filename)
-    config.TAKES_DIR.mkdir(parents=True, exist_ok=True)
-    with open(config.TAKES_DIR / name, "wb") as f:
-        shutil.copyfileobj(file.file, f)
+    _save_upload(file, config.TAKES_DIR / name)
     return name
 
 
@@ -1668,10 +1721,22 @@ async def upload_take(file: UploadFile = File(...)):
 
 @app.post("/api/analyze")
 def analyze(options: str = Form(...), take: UploadFile | None = File(None)):
+    body = json.loads(options)
+    tname = _store_take(take) if take is not None and take.filename else take_path(body.get("take") or "").name
+    if service():           # transcribing the take takes a while: a job (the page waits for its result)
+        raise jobs.JobPending(jobs.enqueue("analyze", dict(body=body, take=tname)))
+    return _analyze(body, tname)
+
+
+@jobs.handler("analyze")
+def _analyze_job(args: dict) -> dict:
+    return _analyze(args["body"], args["take"])
+
+
+def _analyze(body: dict, tname: str) -> dict:
     from ..analysis import FileOptions, analyze_take
 
-    body = json.loads(options)
-    tpath = take_path(_store_take(take)) if take is not None and take.filename else take_path(body["take"])
+    tpath = take_path(tname)
     ref = ref_from(body)
     msgs: list[str] = []
     try:
@@ -1701,7 +1766,7 @@ def live_start(body: dict):
             S.tuner.stop()
         ropts, ctx = ref_options(body)
         try:
-            ref = load_reference(ropts, log=lambda m: None)
+            ref = _load(ropts)
         except ReferenceError as e:
             fail(400, "reference", str(e))
         a = audio_settings()
@@ -1908,9 +1973,11 @@ async def ws_stream(ws: WebSocket):
                 raise CodedError("bad_start", "Send a start message with the sample rate first")
             ropts, ctx = ref_options(first)
             try:
-                ref = load_reference(ropts, log=lambda m: None)
+                ref = _load(ropts)
             except ReferenceError as e:
                 raise CodedError("reference", str(e))
+            except jobs.JobPending:
+                raise CodedError("preparing", "This recording is still being transcribed; try again in a while")
             a = audio_settings()
             chart = ropts.chart is not None
             opts = LiveOptions(
@@ -2317,4 +2384,6 @@ def serve(host: str = "127.0.0.1", port: int = 8765, open_browser: bool = True) 
         threading.Timer(1.0, lambda: webbrowser.open(url)).start()
     if not service():                         # desktop notifications: for the single-user app
         reminder.start_loop()
+    else:
+        jobs.start_threads()                  # GUITARR_WORKERS (1); 0 when `guitarr worker` runs apart
     uvicorn.run(app, host=host, port=port, log_level="warning")

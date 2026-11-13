@@ -9,13 +9,16 @@
 # microphone on https:// or on localhost.
 #
 # Services, in order: db (Postgres) → migrate (applies the pending schema migrations, then
-# exits) → guitarr (starts only if the migrations succeeded). Schema changes:
+# exits) → guitarr (the app) and worker (the slow jobs: transcribing recordings, analyzing takes;
+# run more with `docker compose up --scale worker=3`), which start only if the migrations succeeded.
+# Schema changes:
 #
 #   docker compose run --rm migrate guitarr db status
 #   .venv/bin/python -m guitarr db new add_something     (then edit guitarr/db/migrations/NNNN_add_something.sql)
 #
 # Settings come from the environment or a .env file beside this one (POSTGRES_PASSWORD,
-# GUITARR_SMTP_HOST, GUITARR_SMTP_USER, GUITARR_SMTP_PASSWORD, GUITARR_MAIL_FROM, GUITARR_PUBLIC_URL).
+# GUITARR_SMTP_HOST, GUITARR_SMTP_USER, GUITARR_SMTP_PASSWORD, GUITARR_MAIL_FROM, GUITARR_PUBLIC_URL,
+# GUITARR_QUOTA_MB: each user's space for songs and takes, GUITARR_JOBS_PER_USER: jobs waiting at once).
 x-guitarr: &guitarr
   image: guitarr:web
   environment:
@@ -26,6 +29,9 @@ x-guitarr: &guitarr
     GUITARR_SMTP_USER: ${GUITARR_SMTP_USER:-}
     GUITARR_SMTP_PASSWORD: ${GUITARR_SMTP_PASSWORD:-}
     GUITARR_MAIL_FROM: ${GUITARR_MAIL_FROM:-guitarr <no-reply@localhost>}
+    GUITARR_QUOTA_MB: ${GUITARR_QUOTA_MB:-1000}
+    GUITARR_JOBS_PER_USER: ${GUITARR_JOBS_PER_USER:-3}
+    GUITARR_WORKERS: "0"        # the app runs no jobs itself: the worker service does
 
 services:
   db:
@@ -60,7 +66,20 @@ services:
     ports:
       - "127.0.0.1:${GUITARR_PORT:-8765}:8765"   # this machine only (GUITARR_PORT=8766 if the local app uses 8765)
     volumes:
-      - guitarr-data:/data      # each user's songs, takes, history and progress (/data/users/<id>), and the shared cache
+      - guitarr-data:/data      # each user's files (/data/users/<id>: songs, takes, IRs) and the shared cache
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+  worker:
+    <<: *guitarr
+    command: ["guitarr", "worker"]
+    pull_policy: never          # the image the guitarr service builds
+    healthcheck:
+      disable: true             # the image's check asks the web app, which isn't in this container
+    volumes:
+      - guitarr-data:/data      # the songs to transcribe and the cache it fills
     depends_on:
       migrate:
         condition: service_completed_successfully

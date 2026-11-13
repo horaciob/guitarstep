@@ -114,8 +114,7 @@ def _quiet_import_basic_pitch():
 def transcribe(path: Path, onset_threshold: float = 0.5, frame_threshold: float = 0.3,
                min_amp: float = 0.2, use_cache: bool = True) -> list[Note]:
     path = Path(path)
-    key = file_hash(path, "tx-v1", onset_threshold, frame_threshold)
-    cache = config.CACHE_DIR / "transcriptions" / f"{key}.json"
+    cache = _tx_cache(path, onset_threshold, frame_threshold)
     raw = None
     if use_cache and cache.exists():
         try:
@@ -142,10 +141,33 @@ def transcribe(path: Path, onset_threshold: float = 0.5, frame_threshold: float 
     return clean_notes(notes)
 
 
+def _tx_cache(path: Path, onset_threshold: float, frame_threshold: float) -> Path:
+    return config.CACHE_DIR / "transcriptions" / f"{file_hash(path, 'tx-v1', onset_threshold, frame_threshold)}.json"
+
+
+def _separated(path: Path) -> tuple[Path, Path]:
+    outdir = config.CACHE_DIR / "separated" / file_hash(path)
+    return outdir, outdir / "htdemucs_6s" / path.stem / "guitar.wav"
+
+
+def _beats_cache(path: Path) -> Path:
+    return config.CACHE_DIR / "beats" / f"{file_hash(path, 'beats-v1')}.json"
+
+
+def audio_ready(opts: RefOptions) -> bool:
+    """False when loading this reference would first have to transcribe a recording (minutes of work:
+    the web service does it as a job, see jobs.py)."""
+    path = Path(opts.path) if opts.path else None
+    if path is None or path.suffix.lower() not in AUDIO_EXT or not path.exists():
+        return True
+    src = _separated(path)[1] if opts.separate else path
+    return src.exists() and _tx_cache(src, opts.onset_threshold, opts.frame_threshold).exists() \
+        and _beats_cache(src).exists()
+
+
 def separate_guitar(path: Path, log: Log = print) -> Path:
     """Isolates the guitar with Demucs (6-stem model), cached by file content."""
-    outdir = config.CACHE_DIR / "separated" / file_hash(path)
-    out = outdir / "htdemucs_6s" / path.stem / "guitar.wav"
+    outdir, out = _separated(path)
     if out.exists():
         log(f"[demucs] using cached separation: {out}")
         return out
@@ -160,8 +182,7 @@ def separate_guitar(path: Path, log: Log = print) -> Path:
 
 
 def audio_grid(path: Path) -> Grid:
-    key = file_hash(path, "beats-v1")
-    cache = config.CACHE_DIR / "beats" / f"{key}.json"
+    cache = _beats_cache(path)
     if cache.exists():
         beats = json.loads(cache.read_text())
     else:

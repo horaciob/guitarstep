@@ -133,6 +133,7 @@ def build_parser() -> argparse.ArgumentParser:
     db = sub.add_parser("db", help="web service database: schema migrations (needs GUITARR_DATABASE_URL)")
     db.add_argument("action", choices=["migrate", "status", "new"])
     db.add_argument("name", nargs="?", help="for new: what the migration does, e.g. add_setlists")
+    sub.add_parser("worker", help="web service: run the slow jobs (transcriptions, take analysis); any number of them")
     sub.add_parser("devices", help="list audio devices")
     tr = sub.add_parser("tracks", help="list the tracks of a MIDI / Guitar Pro file")
     tr.add_argument("file", type=Path)
@@ -375,6 +376,21 @@ def cmd_db(args) -> None:
         raise ValueError(f"Database: {e}") from e
 
 
+def cmd_worker() -> None:
+    from . import db, jobs
+    from .db import migrate
+    if not db.enabled():
+        raise ValueError("Set GUITARR_DATABASE_URL: the worker takes its jobs from the web service's database")
+    if migrate.pending(db.url()):
+        raise ValueError("The database needs migrations first: run guitarr db migrate")
+    from .gui import server  # noqa: F401 - registers the job handlers
+    print("[guitarr] worker ready", flush=True)
+    try:
+        jobs.work()
+    except KeyboardInterrupt:
+        pass
+
+
 def main(argv=None) -> None:
     _quiet()
     args = build_parser().parse_args(argv)
@@ -426,6 +442,8 @@ def main(argv=None) -> None:
             print(json.dumps(r, indent=1)) if args.json else print_report(r)
         elif args.cmd == "db":
             cmd_db(args)
+        elif args.cmd == "worker":
+            cmd_worker()
         elif args.cmd == "gui":
             from .gui.server import serve
             serve(args.host, args.port, open_browser=not args.no_browser)

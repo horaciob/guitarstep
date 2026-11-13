@@ -117,6 +117,11 @@
    "challenge": "Weekly challenge done: {{what}}"
   },
   "errors": {
+   "too_many_jobs": "Wait for what's being prepared to finish first.",
+   "quota_exceeded": "Your space is full: delete takes or songs you don't need.",
+   "preparing": "This recording is still being transcribed; try again in a while.",
+   "job_failed": "That didn't work out; try again.",
+   "no_job": "That job doesn't exist anymore.",
    "no_microphone": "The browser blocked the audio input. Allow it in the address bar and try again.",
    "generic": "Something went wrong",
    "bad_filename": "Invalid file name",
@@ -3187,7 +3192,13 @@
    "continue": "Sign in",
    "elsewhere": "This link was asked for in another browser or device. Continue only if you asked for it yourself: someone could have sent you a link to their own account."
   },
+  "jobs": {
+   "prepare": "Transcribing this recording: the first time takes a few minutes.",
+   "analyze": "Analyzing your take…",
+   "working": "Working on it…"
+  },
   "account": {
+   "usage": "{{used}} of {{quota}} MB used",
    "sign_out": "Sign out",
    "browser_input": "This browser's input"
   }

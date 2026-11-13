@@ -117,6 +117,11 @@
    "challenge": "Desafío de la semana cumplido: {{what}}"
   },
   "errors": {
+   "too_many_jobs": "Esperá a que termine lo que se está preparando.",
+   "quota_exceeded": "Tu espacio está lleno: borrá tomas o canciones que no necesites.",
+   "preparing": "Esta grabación todavía se está transcribiendo; probá en un rato.",
+   "job_failed": "Eso no salió; probá de nuevo.",
+   "no_job": "Ese trabajo ya no existe.",
    "no_microphone": "El navegador bloqueó la entrada de audio. Permitila en la barra de direcciones y probá de nuevo.",
    "generic": "Algo salió mal",
    "bad_filename": "Nombre de archivo inválido",
@@ -3187,7 +3192,13 @@
    "continue": "Entrar",
    "elsewhere": "Este link se pidió desde otro navegador o dispositivo. Seguí solo si lo pediste vos: alguien podría haberte mandado un link de su propia cuenta."
   },
+  "jobs": {
+   "prepare": "Transcribiendo esta grabación: la primera vez tarda unos minutos.",
+   "analyze": "Analizando tu toma…",
+   "working": "Trabajando en eso…"
+  },
   "account": {
+   "usage": "{{used}} de {{quota}} MB usados",
    "sign_out": "Cerrar sesión",
    "browser_input": "Entrada de este navegador"
   }

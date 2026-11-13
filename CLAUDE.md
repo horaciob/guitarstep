@@ -34,6 +34,9 @@ and a local web UI teaches, tracks and shapes your sound.
   and audio comes from the browser (`/ws/stream`; the tuner and the signal check take it over their own socket,
   `lib/browser-input.js` `inputSocket`), never from the server's devices. Threads started for a request
   must be wrapped with `config.in_this_context`.
+- **Slow work is a job in the web service** (`jobs.py`): raise `jobs.JobPending(jobs.enqueue(kind, args))`
+  and register the work with `@jobs.handler(kind)`; the page's `api()` waits for it. Uploads go through
+  `quota.check`.
 - **Schema changes are migrations:** a new `guitarr/db/migrations/NNNN_name.sql` (`guitarr db new name`); never edit
   one that was applied.
 - **Gear names are generic** (no brands) in the tone rig.

@@ -31,6 +31,12 @@ export async function api(path, opts = {}) {
   const r = await fetch(path, o);
   let data = null;
   try { data = await r.json(); } catch { /* no body */ }
+  if (r.status === 202 && data && data.job) {        // slow work in a job (web service): wait for it
+    const job = await waitJob(data.job);
+    if (!data.retry) return job.result;
+    if ((opts.retries || 0) >= 3) throw new Error(t("errors.generic"));
+    return api(path, { ...opts, retries: (opts.retries || 0) + 1 });      // what it needed is ready now
+  }
   if (!r.ok) {
     const detail = data && (data.detail || data.error);
     if (r.status === 401 && detail && detail.code === "not_signed_in") location.href = "/";   // the session expired
@@ -39,6 +45,20 @@ export async function api(path, opts = {}) {
     throw err;
   }
   return data;
+}
+
+async function waitJob(job) {
+  toast(t(`jobs.${job.kind}`, { defaultValue: t("jobs.working") }));
+  for (let delay = 400; ; delay = Math.min(delay * 1.5, 3000)) {
+    if (job.status === "done") return job;
+    if (job.status === "failed") {
+      const err = new Error(errorText(job.error) || t("errors.generic"));
+      err.code = job.error && job.error.code;
+      throw err;
+    }
+    await new Promise(res => setTimeout(res, delay));
+    job = await api(`/api/jobs/${job.id}`);
+  }
 }
 
 // Toasts are queued, so two messages in a row (e.g. "+15 XP" and "20 min left today") both show.

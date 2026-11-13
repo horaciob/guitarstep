@@ -120,7 +120,8 @@ GUITARR_PORT=8766 docker compose up --build    # another port, e.g. while the lo
 ```
 
 This runs guitarr as a web service: Postgres (`db`), the schema migrations (`migrate`, which runs once
-and exits) and the app (`guitarr`, which starts only after the migrations succeed).
+and exits), the app (`guitarr`) and a worker for the slow jobs (`worker`), which start only after the
+migrations succeed.
 
 - **Sign in** with your email. Without SMTP settings the one-time link is printed to the log:
   `docker compose logs guitarr`. To send real emails, set `GUITARR_SMTP_HOST`, `GUITARR_SMTP_USER`,
@@ -147,6 +148,11 @@ docker compose up --build                             # applies the pending ones
 ```
 
 Never edit a migration that already ran somewhere: write a new one (an edited file is refused).
+
+**Slow work runs as jobs.** Transcribing a recording you uploaded (basic-pitch, and Demucs when separating
+the guitar) and analyzing a take take from seconds to minutes, so the request only queues a job and the page
+waits for it. The `worker` service runs them; add more with `docker compose up --scale worker=3`. Each user
+has `GUITARR_QUOTA_MB` (1000) of space for songs and takes and up to `GUITARR_JOBS_PER_USER` (3) jobs waiting.
 
 **Single user with the server's own audio input (Linux hosts):** pass your ALSA devices through. This
 runs the app without accounts or the database:
