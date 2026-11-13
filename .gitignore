@@ -24,6 +24,7 @@ separated/
 # Secrets and local settings
 .env
 .env.*
+!.env.example
 
 # Editors and OS
 .vscode/
