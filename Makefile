@@ -1,7 +1,8 @@
-# Sets up the development environment in .venv (Python 3.10 or 3.11: basic-pitch supports up to 3.11).
-# Usage: make install            (or: make install PYTHON=/path/to/python3.11)
-#        make run                (web UI in the background; make run PORT=9000 ARGS=--no-browser)
-#        make stop
+# guitarr: the local app (.venv) and the web service (Docker Compose). `make` lists the commands.
+#
+# Local app:   make install · make run · make stop · make test
+# Web service: make up · make down · make logs · make migrate         (HTTPS=1: behind Caddy, compose.https.yaml)
+# Web service outside Docker (Postgres from Compose): make db-start · make db-migrate · make run-service
 
 VENV   := .venv
 PY     := $(VENV)/bin/python
@@ -11,7 +12,50 @@ ARGS   ?=
 PID    := $(VENV)/guitarr.pid
 LOG    := $(VENV)/guitarr.log
 
-.PHONY: install run stop
+# POSTGRES_PASSWORD, GUITARR_DB_PORT, ... as Compose reads them
+-include .env
+
+COMPOSE := docker compose -f compose.yaml $(if $(HTTPS),-f compose.https.yaml)
+# app containers (more than 1 needs HTTPS=1), job workers, one service for make logs
+APPS    ?= 1
+WORKERS ?= 1
+S       ?=
+FILE    ?= guitarr-$(shell date +%Y%m%d-%H%M).sql
+DATABASE_URL ?= postgresql://guitarr:$(or $(POSTGRES_PASSWORD),guitarr)@127.0.0.1:$(or $(GUITARR_DB_PORT),5442)/guitarr
+# users' files for the web service outside Docker (apart from the local app's ~/.guitarr)
+SERVICE_HOME ?= $(HOME)/.guitarr-service
+SERVICE_ENV  = GUITARR_DATABASE_URL='$(DATABASE_URL)' GUITARR_HOME='$(SERVICE_HOME)'
+
+.DEFAULT_GOAL := help
+.PHONY: help install run stop test test-fast \
+        db-start db-stop db-migrate db-status db-new run-service worker \
+        up down restart logs ps migrate db-status-docker psql backup
+
+help:
+	@echo "Local app"
+	@echo "  make install           .venv with everything (PYTHON=/path/to/python3.11 to choose)"
+	@echo "  make run / make stop   the app in the background on PORT ($(PORT)); ARGS=--no-browser"
+	@echo "  make test              all the tests (make test-fast: without the browser ones)"
+	@echo ""
+	@echo "Web service in Docker (HTTPS=1: https in front, compose.https.yaml)"
+	@echo "  make up                build and start (APPS=n app containers with HTTPS=1, WORKERS=n)"
+	@echo "  make down              stop it (your data stays in the volumes)"
+	@echo "  make restart           down + up"
+	@echo "  make logs              follow the logs (S=guitarr|worker|db|migrate|proxy for one)"
+	@echo "  make ps                what's running"
+	@echo "  make migrate           apply pending migrations (make db-status-docker: what's pending)"
+	@echo "  make psql              a SQL prompt in the database"
+	@echo "  make backup            dump the database to FILE ($(FILE))"
+	@echo ""
+	@echo "Web service outside Docker (Postgres from Compose on 127.0.0.1:$(or $(GUITARR_DB_PORT),5442))"
+	@echo "  make db-start          start only Postgres (make db-stop)"
+	@echo "  make db-migrate        apply pending migrations (make db-status: what's pending)"
+	@echo "  make db-new NAME=x     a new migration file, guitarr/db/migrations/NNNN_x.sql"
+	@echo "  make run-service       the app as a web service on PORT, jobs included (foreground)"
+	@echo "  make worker            an extra job worker (foreground)"
+	@echo "  DATABASE_URL=... to use another Postgres"
+
+# ---------------------------------------------------------------- local app
 
 run:
 	@test -x $(PY) || { echo "Run make install first"; exit 1; }
@@ -39,8 +83,70 @@ else
 	$(PY) -m pip install -e ".[dev]"
 endif
 	$(PY) -m playwright install chromium
-	@echo "Done. Run: $(PY) -m guitarr gui"
+	@echo "Done. Run: make run"
 
 $(PY):
 	@test -n "$(PYTHON)" || { echo "Python 3.10 or 3.11 not found (try: brew install python@3.11)"; exit 1; }
 	$(PYTHON) -m venv $(VENV)
+
+test:
+	$(PY) -m pytest -q
+
+test-fast:
+	$(PY) -m pytest -q --ignore=tests/e2e
+
+# ---------------------------------------------------------------- web service outside Docker
+
+db-start:
+	docker compose up -d --wait db
+	@echo "Postgres → $(DATABASE_URL)"
+
+db-stop:
+	docker compose stop db
+
+db-migrate:
+	GUITARR_DATABASE_URL='$(DATABASE_URL)' $(PY) -m guitarr db migrate
+
+db-status:
+	GUITARR_DATABASE_URL='$(DATABASE_URL)' $(PY) -m guitarr db status
+
+db-new:
+	@test -n "$(NAME)" || { echo "Usage: make db-new NAME=add_something"; exit 1; }
+	$(PY) -m guitarr db new $(NAME)
+
+run-service:
+	$(SERVICE_ENV) GUITARR_PUBLIC_URL=http://localhost:$(PORT) \
+		$(PY) -m guitarr gui --no-browser --port $(PORT) $(ARGS)
+
+worker:
+	$(SERVICE_ENV) $(PY) -m guitarr worker
+
+# ---------------------------------------------------------------- web service in Docker
+
+up:
+	$(COMPOSE) up --build -d --scale guitarr=$(APPS) --scale worker=$(WORKERS)
+	@$(if $(HTTPS),echo "→ https://$(or $(GUITARR_DOMAIN),localhost)",echo "→ http://localhost:$(or $(GUITARR_PORT),8765)  (sign-in links: make logs S=guitarr)")
+
+down:
+	$(COMPOSE) down
+
+restart: down up
+
+logs:
+	$(COMPOSE) logs -f --tail=100 $(S)
+
+ps:
+	$(COMPOSE) ps
+
+migrate:
+	$(COMPOSE) run --rm migrate
+
+db-status-docker:
+	$(COMPOSE) run --rm migrate guitarr db status
+
+psql:
+	$(COMPOSE) exec db psql -U guitarr guitarr
+
+backup:
+	$(COMPOSE) exec -T db pg_dump -U guitarr guitarr > $(FILE)
+	@echo "Saved $(FILE) (restore: $(COMPOSE) exec -T db psql -U guitarr guitarr < $(FILE))"

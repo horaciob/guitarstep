@@ -45,6 +45,8 @@ services:
       POSTGRES_USER: guitarr
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-guitarr}
       POSTGRES_DB: guitarr
+    ports:
+      - "127.0.0.1:${GUITARR_DB_PORT:-5442}:5432"   # this machine only: for `make db-migrate`, `make run-service`
     volumes:
       - guitarr-db:/var/lib/postgresql
     healthcheck:

@@ -5,6 +5,7 @@ and a local web UI teaches, tracks and shapes your sound.
 
 ## Run and test
 - `.venv/bin/python -m guitarr gui --no-browser` → http://127.0.0.1:8765
+- `make` lists the commands (local app, the web service in Docker and outside it)
 - `.venv/bin/python -m pytest -q` (no audio hardware needed; every test gets its own `~/.guitarr` via `tests/conftest.py`)
 - Docker: `docker compose up --build` runs the web service (Postgres + migrations + app; sign-in links go to the log);
   add `-f compose.https.yaml` for https (Caddy, `deploy/Caddyfile`) and several app replicas

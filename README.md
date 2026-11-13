@@ -115,9 +115,18 @@ Dependency versions are pinned in `pyproject.toml` and `requirements.txt`: basic
 ### With Docker Compose (web service, several users)
 
 ```bash
-docker compose up --build        # → http://localhost:8765
+docker compose up --build        # → http://localhost:8765   (or: make up, make down, make logs)
 GUITARR_PORT=8766 docker compose up --build    # another port, e.g. while the local app uses 8765
 ```
+
+`make` lists every command. In short:
+
+| | Local app | Web service in Docker | Web service outside Docker |
+|---|---|---|---|
+| Set up | `make install` | `cp .env.example .env` | `make install`, `make db-start` (Postgres only, on 127.0.0.1:5442) |
+| Run | `make run` / `make stop` | `make up` / `make down` (`HTTPS=1 APPS=2 WORKERS=2`) | `make run-service` (jobs included), `make worker` for more |
+| Migrations | — | `make migrate`, `make db-status-docker` | `make db-migrate`, `make db-status`, `make db-new NAME=x` |
+| Look inside | `make test` | `make logs` (`S=worker`), `make ps`, `make psql`, `make backup` | `DATABASE_URL=...` for another Postgres |
 
 This runs guitarr as a web service: Postgres (`db`), the schema migrations (`migrate`, which runs once
 and exits), the app (`guitarr`) and a worker for the slow jobs (`worker`), which start only after the
