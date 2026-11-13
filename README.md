@@ -149,6 +149,11 @@ docker compose up --build                             # applies the pending ones
 
 Never edit a migration that already ran somewhere: write a new one (an edited file is refused).
 
+**Classes:** a teacher invites students with a link (Class → Invite students). A student who joins shares
+their weekly report with that teacher and gets the setlists the teacher sends, with a note and the teacher's
+own charts; either side can end it. **Admin:** the emails in `GUITARR_ADMINS` see accounts, space, practice
+this week and the jobs, and can block an account.
+
 **Slow work runs as jobs.** Transcribing a recording you uploaded (basic-pitch, and Demucs when separating
 the guitar) and analyzing a take take from seconds to minutes, so the request only queues a job and the page
 waits for it. The `worker` service runs them; add more with `docker compose up --scale worker=3`. Each user

@@ -11,6 +11,14 @@ const errorText = async r => {
   return t(`errors.${d.code}`, { defaultValue: d.message || t("errors.generic") });
 };
 const token = location.pathname === "/auth/verify" && new URLSearchParams(location.search).get("token");
+// where to go once signed in (an invitation link opened before signing in: #/class?join=…)
+const AFTER = "guitarr.afterSignin";
+try { if (!token && location.hash.length > 2) localStorage.setItem(AFTER, location.hash); } catch { /* private mode */ }
+const afterSignin = () => {
+  let h = "";
+  try { h = localStorage.getItem(AFTER) || ""; localStorage.removeItem(AFTER); } catch { /* private mode */ }
+  return "/" + (h.startsWith("#/") ? h : "");
+};
 
 if (token) {
   $("#signinForm").hidden = true;
@@ -34,7 +42,7 @@ $("#confirmForm").onsubmit = async ev => {
   err.hidden = true;
   let r;
   try { r = await post("/api/auth/verify", { token }); } catch { err.textContent = t("errors.generic"); err.hidden = false; return; }
-  if (r.ok) { location.replace("/"); return; }
+  if (r.ok) { location.replace(afterSignin()); return; }
   err.textContent = await errorText(r);
   err.hidden = false;
 };

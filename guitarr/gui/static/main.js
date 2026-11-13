@@ -28,6 +28,8 @@ const VIEWS = {
   setlists: () => import("./views/setlists.js"),
   report: () => import("./views/report.js"),
   stream: () => import("./views/stream.js"),
+  class: () => import("./views/class.js"),
+  admin: () => import("./views/admin.js"),
 };
 const NAV_OF = { lesson: "course", chart: "charts", camera: "chords", setup: "settings", signal: "settings", song: "practice", stage: "setlists", report: "plan" };
 const view = $("#view");
@@ -110,6 +112,8 @@ api("/api/auth/me").then(me => {
   if (!me.service || !me.user) return;
   $("#accountEmail").textContent = me.user.email;
   $("#railAccount").hidden = false;
+  $("#navClass").hidden = false;
+  $("#navAdmin").hidden = !me.user.admin;
   $("#signOut").onclick = async () => {
     try { await api("/api/auth/signout", { method: "POST" }); } catch { /* signed out anyway below */ }
     location.href = "/";

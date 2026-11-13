@@ -18,7 +18,8 @@
 #
 # Settings come from the environment or a .env file beside this one (POSTGRES_PASSWORD,
 # GUITARR_SMTP_HOST, GUITARR_SMTP_USER, GUITARR_SMTP_PASSWORD, GUITARR_MAIL_FROM, GUITARR_PUBLIC_URL,
-# GUITARR_QUOTA_MB: each user's space for songs and takes, GUITARR_JOBS_PER_USER: jobs waiting at once).
+# GUITARR_QUOTA_MB: each user's space for songs and takes, GUITARR_JOBS_PER_USER: jobs waiting at once,
+# GUITARR_ADMINS: the emails that see the admin page).
 x-guitarr: &guitarr
   image: guitarr:web
   environment:
@@ -32,6 +33,7 @@ x-guitarr: &guitarr
     GUITARR_QUOTA_MB: ${GUITARR_QUOTA_MB:-1000}
     GUITARR_JOBS_PER_USER: ${GUITARR_JOBS_PER_USER:-3}
     GUITARR_WORKERS: "0"        # the app runs no jobs itself: the worker service does
+    GUITARR_ADMINS: ${GUITARR_ADMINS:-}     # emails that see the admin page (comma separated)
 
 services:
   db:

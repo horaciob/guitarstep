@@ -4,17 +4,20 @@ import { eventText, lang, t, tc } from "../lib/i18n.js";
 import { $, api, esc } from "../lib/ui.js";
 import { catName, fmtHM } from "../lib/plan.js";
 
-export async function mount(el) {
-  const r = await api("/api/report/week");
+export async function mount(el, { params = {} } = {}) {
+  // a teacher reads a student's week (web service): the same page, with whose it is
+  const student = params.student;
+  const r = await api(student ? `/api/class/students/${encodeURIComponent(student)}/report` : "/api/report/week");
   const day = iso => new Intl.DateTimeFormat(lang(), { weekday: "short", day: "numeric", month: "short" }).format(new Date(`${iso}T12:00`));
   const cats = new Map(r.categories.map(c => [c.id, c]));
   const pct = v => v == null ? "—" : `${Math.round(v)}%`;
   const max = Math.max(1, ...r.days.map(d => d.minutes));
   el.innerHTML = `
     <div class="report-page">
-      <div class="row-between no-print"><a class="btn small" href="#/plan">← ${esc(t("nav.plan"))}</a>
+      <div class="row-between no-print">${student ? `<a class="btn small" href="#/class">← ${esc(t("nav.class"))}</a>`
+        : `<a class="btn small" href="#/plan">← ${esc(t("nav.plan"))}</a>`}
         <button class="btn primary" id="printBtn">${esc(t("report_week.print"))}</button></div>
-      <header class="gl-head"><h1>${esc(t("report_week.title"))}</h1>
+      <header class="gl-head"><h1>${esc(t("report_week.title"))}${r.student ? ` · ${esc(r.student)}` : ""}</h1>
         <p class="muted">${esc(t("report_week.range", { from: day(r.start), to: day(r.end) }))}</p></header>
       <div class="summary">
         <div class="stat"><div class="v">${esc(fmtHM(r.minutes))}</div><div class="l">${esc(t("report_week.total"))}</div></div>

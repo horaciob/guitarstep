@@ -481,7 +481,107 @@ def auth_redeem(body: dict):
 @app.get("/api/auth/me")
 def auth_me(request: Request):
     user = request.scope.get("state", {}).get("user")
-    return dict(service=service(), user=user and dict(email=user["email"]), usage=quota.usage())
+    from .. import admin
+    return dict(service=service(), user=user and dict(email=user["email"], admin=admin.is_admin(user)),
+                usage=quota.usage())
+
+
+# ---------------------------------------------------------------- classes (web service)
+@app.get("/api/class")
+def class_overview():
+    """Your students (with their week), your teachers, and the assignments waiting for you."""
+    from .. import classes
+    _need_service()
+    return classes.overview()
+
+
+@app.post("/api/class/invite")
+def class_invite(request: Request):
+    from .. import classes
+    _need_service()
+    return classes.invite(str(request.base_url))
+
+
+@app.get("/api/class/invite/{code}")
+def class_invite_info(code: str):
+    from .. import classes
+    _need_service()
+    return classes.peek_invite(code)
+
+
+@app.post("/api/class/join")
+def class_join(body: dict):
+    from .. import classes
+    _need_service()
+    return classes.join(str(body.get("code") or ""))
+
+
+@app.delete("/api/class/teachers/{teacher_id}")
+def class_leave(teacher_id: str):
+    from .. import classes
+    _need_service()
+    classes.leave(_uuid(teacher_id))
+    return dict(ok=True)
+
+
+@app.delete("/api/class/students/{student_id}")
+def class_remove(student_id: str):
+    from .. import classes
+    _need_service()
+    classes.remove(_uuid(student_id))
+    return dict(ok=True)
+
+
+@app.get("/api/class/students/{student_id}/report")
+def class_student_report(student_id: str):
+    from .. import classes
+    _need_service()
+    return classes.student_report(_uuid(student_id))
+
+
+@app.post("/api/class/students/{student_id}/assignments")
+def class_send(student_id: str, body: dict):
+    from .. import classes
+    _need_service()
+    return classes.send(_uuid(student_id), str(body.get("setlist") or ""), body.get("note") or "")
+
+
+@app.post("/api/class/assignments/{assignment_id}")
+def class_answer(assignment_id: int, body: dict):
+    from .. import classes
+    _need_service()
+    return classes.answer(assignment_id, bool(body.get("accept")))
+
+
+def _uuid(v: str) -> str:
+    import uuid
+    try:
+        return str(uuid.UUID(v))
+    except ValueError:
+        fail(404, "no_user", "No such account")
+
+
+# ---------------------------------------------------------------- admin (web service)
+def _need_admin(request: Request):
+    from .. import admin
+    _need_service()
+    if not admin.is_admin(request.scope.get("state", {}).get("user")):
+        fail(403, "not_admin", "Only admins can do that")
+
+
+@app.get("/api/admin")
+def admin_overview(request: Request):
+    from .. import admin
+    _need_admin(request)
+    return admin.overview()
+
+
+@app.post("/api/admin/users/{user_id}")
+def admin_user(user_id: str, body: dict, request: Request):
+    from .. import admin
+    _need_admin(request)
+    admin.block(_uuid(user_id), bool(body.get("blocked")))
+    return dict(ok=True)
 
 
 @app.get("/api/jobs/{job_id}")

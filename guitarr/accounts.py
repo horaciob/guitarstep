@@ -93,8 +93,10 @@ def redeem_link(token: str) -> tuple[str, dict]:
             raise CodedError("bad_link", "This sign-in link is used or expired; ask for a new one")
         user = conn.execute(
             "INSERT INTO users (email, last_login) VALUES (%s, now()) "
-            "ON CONFLICT ((lower(email))) DO UPDATE SET last_login = now() RETURNING id::text AS id, email",
+            "ON CONFLICT ((lower(email))) DO UPDATE SET last_login = now() RETURNING id::text AS id, email, blocked_at",
             (row["email"],)).fetchone()
+        if user.pop("blocked_at") is not None:
+            raise CodedError("blocked", "This account is blocked")
         session = secrets.token_urlsafe(32)
         conn.execute("INSERT INTO sessions (token_hash, user_id, expires_at) "
                      "VALUES (%s, %s, now() + make_interval(days => %s))", (_hash(session), user["id"], SESSION_DAYS))
@@ -108,7 +110,7 @@ def user_for(session: str | None) -> dict | None:
     with db.pool().connection() as conn:
         return conn.execute(
             "UPDATE sessions s SET last_seen = now() FROM users u WHERE s.token_hash = %s AND s.expires_at > now() "
-            "AND u.id = s.user_id RETURNING u.id::text AS id, u.email", (_hash(session),)).fetchone()
+            "AND u.id = s.user_id AND u.blocked_at IS NULL RETURNING u.id::text AS id, u.email", (_hash(session),)).fetchone()
 
 
 def sign_out(session: str | None) -> None:

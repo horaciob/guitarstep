@@ -561,6 +561,7 @@ body.is-setup #main { margin: 0 auto; max-width: 760px; padding-top: 48px; }
 :root { --pl-met: var(--gl-ok); --pl-half: var(--gl-warn); --pl-low: var(--gl-err); }
 .rail-today { display: block; text-decoration: none; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--border); font-size: 12px; color: var(--muted); }
 .rail-today[hidden] { display: none; }
+#nav a[hidden] { display: none; }      /* Class and Admin: only in the web service */
 .rail-today b { color: var(--text); }
 .rail-today .bar { height: 4px; border-radius: 99px; background: var(--border); margin-top: 5px; overflow: hidden; }
 .rail-today .bar i { display: block; height: 100%; background: var(--pl-low); }
@@ -1380,3 +1381,12 @@ dialog.palette li.on small { color: inherit; }
 .rail-account { align-items: center; justify-content: space-between; }
 .rail-account #accountEmail { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
 .rail-account[hidden] { display: none; }
+
+/* Class (web service): students, teachers and assignments */
+.class-list { list-style: none; margin: 0; padding: 0; }
+.class-list > li { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; justify-content: space-between;
+  padding: 10px 0; border-top: 1px solid var(--border); }
+.class-list > li:first-child { border-top: 0; }
+.class-list > li > div { min-width: 0; flex: 1 1 240px; overflow-wrap: anywhere; }
+.class-list small { display: block; }
+.class-list .send-form, .class-list .field-error { flex-basis: 100%; }
