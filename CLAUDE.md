@@ -19,8 +19,10 @@ and a local web UI teaches, tracks and shapes your sound.
 - **Language:** code, comments, data files and docs in English. Spanish (and any other language) only through
   i18next: every UI string is a key in `locales/en.json` **and** `locales/es.json` (keep the key sets identical).
 - **The listener grades the clean signal.** The tone rig is for monitoring only; never route effects into grading.
-- **Decisions live on the server.** Scores, XP, streaks and plan numbers are computed in Python and stored in
-  `config.HOME` (`~/.guitarr`); the UI only displays them. Use `config.HOME` paths so tests stay isolated.
+- **Decisions live on the server.** Scores, XP, streaks and plan numbers are computed in Python and stored per
+  user; the UI only displays them. Documents (settings, progress, plan, rig, setlists) go through `store.py`,
+  history through `history.py` and your charts through `catalog.py`: files in `config.HOME` (`~/.guitarr`) for the
+  local app, Postgres rows for the web service. Files (songs, takes, IRs) are always `config.HOME` paths.
 - **API errors** are `{"detail": {"code", "message"}}`; the UI translates `errors.<code>` (or a view's own keys)
   and falls back to the English message. Forms show errors under the field that caused them and keep what the
   user typed.
@@ -28,7 +30,7 @@ and a local web UI teaches, tracks and shapes your sound.
 - **Color never stands alone:** every status color comes with a number or a word.
 - **Rounding:** practice time is rounded to the minute before computing colors, goals and streaks.
 - **Two modes.** Without `GUITARR_DATABASE_URL`: the single-user local app. With it: the web service, where every
-  request has a signed-in user, `config.HOME` is that user's folder (`config.use_home`), `S` is that user's state,
+  request has a signed-in user (`config.use_user`: their folder is `config.HOME`), `S` is that user's state,
   and audio comes from the browser (`/ws/stream`; the tuner and the signal check take it over their own socket,
   `lib/browser-input.js` `inputSocket`), never from the server's devices. Threads started for a request
   must be wrapped with `config.in_this_context`.

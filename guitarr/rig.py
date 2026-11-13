@@ -12,7 +12,7 @@ import threading
 import uuid
 from pathlib import Path
 
-from . import config
+from . import config, store
 from .errors import CodedError
 
 MAX_BYTES = 64_000       # one rig as JSON
@@ -26,14 +26,11 @@ class RigError(CodedError):
 
 
 def path():
-    return config.HOME / "rig.json"
+    return store.path("rig")
 
 
 def _read() -> dict:
-    try:
-        d = json.loads(path().read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError):
-        d = {}
+    d = store.read("rig")
     if not isinstance(d, dict):
         d = {}
     d.setdefault("current", None)
@@ -46,7 +43,7 @@ def _read() -> dict:
 
 
 def _write(d: dict) -> None:
-    config.write_json(path(), d)
+    store.write("rig", d)
 
 
 def _check_rig(rig) -> dict:

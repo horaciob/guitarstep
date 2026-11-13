@@ -5,11 +5,10 @@ tunings, the setlist says so, so you can reorder or plan a retune.
 """
 from __future__ import annotations
 
-import json
 import threading
 import uuid
 
-from . import catalog, config
+from . import catalog, config, store
 
 _lock = threading.Lock()
 MAX_ITEMS = 60
@@ -20,18 +19,16 @@ class SetlistError(ValueError):
 
 
 def path():
-    return config.HOME / "setlists.json"
+    return store.path("setlists")
 
 
 def _read() -> list[dict]:
-    try:
-        return json.loads(path().read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError):
-        return []
+    d = store.read("setlists")
+    return d if isinstance(d, list) else []
 
 
 def _write(data: list[dict]) -> None:
-    config.write_json(path(), data)
+    store.write("setlists", data)
 
 
 def all_lists() -> list[dict]:

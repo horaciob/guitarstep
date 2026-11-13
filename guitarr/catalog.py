@@ -36,7 +36,7 @@ import re
 from functools import lru_cache
 from pathlib import Path
 
-from . import config
+from . import config, db, store
 
 DATA_DIR = Path(__file__).parent / "data"
 OPEN_STRINGS = [40, 45, 50, 55, 59, 64]  # 6th ... 1st
@@ -253,18 +253,38 @@ def _beats_per_bar(sig: str, ln: int) -> int:
     return int(m.group(1))
 
 
-def _chart_files() -> dict[str, tuple[Path, bool]]:
-    out = {p.stem: (p, False) for p in sorted((DATA_DIR / "charts").glob("*.txt"))}
-    if user_dir().exists():
-        out.update({p.stem: (p, True) for p in sorted(user_dir().glob("*.txt"))})
+def _user_charts() -> dict[str, str]:
+    """Your charts: {id: text}. Files in user_dir(), or rows of `user_charts` as a web service (where
+    the files kept before the database are moved in on first use)."""
+    if not store.in_db():
+        return {p.stem: p.read_text(encoding="utf-8") for p in sorted(user_dir().glob("*.txt"))} if user_dir().exists() else {}
+    with db.pool().connection() as conn:
+        if user_dir().is_dir():
+            for p in sorted(user_dir().glob("*.txt")):
+                _put_chart(conn, p.stem, p.read_text(encoding="utf-8"))
+            user_dir().rename(user_dir().with_name(user_dir().name + ".imported"))
+        rows = conn.execute("SELECT id, text FROM user_charts WHERE user_id = %s ORDER BY id", (config.user_id(),)).fetchall()
+    return {r["id"]: r["text"] for r in rows}
+
+
+def _put_chart(conn, cid: str, text: str) -> None:
+    conn.execute("INSERT INTO user_charts (user_id, id, text) VALUES (%s, %s, %s) "
+                 "ON CONFLICT (user_id, id) DO UPDATE SET text = EXCLUDED.text, updated_at = now()",
+                 (config.user_id(), cid, text))
+
+
+def _chart_texts() -> dict[str, tuple[str, bool]]:
+    """{id: (text, yours)}: the built-in charts, then yours."""
+    out = {p.stem: (p.read_text(encoding="utf-8"), False) for p in sorted((DATA_DIR / "charts").glob("*.txt"))}
+    out.update({cid: (text, True) for cid, text in _user_charts().items()})
     return out
 
 
 def charts() -> list[dict]:
     rows = []
-    for cid, (p, mine) in _chart_files().items():
+    for cid, (text, mine) in _chart_texts().items():
         try:
-            c = parse_chart(p.read_text(encoding="utf-8"), cid)
+            c = parse_chart(text, cid)
         except CatalogError as e:
             rows.append(dict(id=cid, title=cid, mine=mine, error=str(e)))
             continue
@@ -278,10 +298,13 @@ def charts() -> list[dict]:
 
 
 def chart_text(cid: str) -> tuple[str, bool]:
-    f = _chart_files().get(cid)
-    if f is None:
+    mine = _user_charts().get(cid)
+    if mine is not None:
+        return mine, True
+    p = DATA_DIR / "charts" / f"{cid}.txt"
+    if "/" in cid or "\\" in cid or not p.is_file():
         raise CatalogError(f"Chart '{cid}' not found (see: guitarr charts)")
-    return f[0].read_text(encoding="utf-8"), f[1]
+    return p.read_text(encoding="utf-8"), False
 
 
 def get_chart(cid: str) -> dict:
@@ -297,15 +320,37 @@ def save_chart(text: str, cid: str | None = None) -> dict:
     builtin = (DATA_DIR / "charts" / f"{cid}.txt").exists()
     if builtin:
         cid = f"{cid}-mine"
-    config.write_text_atomic(user_dir() / f"{cid}.txt", text.strip() + "\n")
+    if store.in_db():
+        _user_charts()            # moves files kept before the database in first
+        with db.pool().connection() as conn:
+            _put_chart(conn, cid, text.strip() + "\n")
+    else:
+        config.write_text_atomic(user_dir() / f"{cid}.txt", text.strip() + "\n")
     return dict(id=cid, title=c["title"])
 
 
+def user_charts() -> dict[str, str]:
+    """Your charts as {id: text} (for a backup)."""
+    return _user_charts()
+
+
+def restore_chart(cid: str, text: str) -> None:
+    if store.in_db():
+        _user_charts()
+        with db.pool().connection() as conn:
+            _put_chart(conn, cid, text)
+    else:
+        config.write_text_atomic(user_dir() / f"{cid}.txt", text)
+
+
 def delete_chart(cid: str) -> None:
-    f = _chart_files().get(cid)
-    if f is None or not f[1]:
+    if cid not in _user_charts():
         raise CatalogError("Only your own charts can be deleted.")
-    f[0].unlink()
+    if store.in_db():
+        with db.pool().connection() as conn:
+            conn.execute("DELETE FROM user_charts WHERE user_id = %s AND id = %s", (config.user_id(), cid))
+    else:
+        (user_dir() / f"{cid}.txt").unlink()
 
 
 def chart_from_chord(cid: str, times: int = 1) -> dict:

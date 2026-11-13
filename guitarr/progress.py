@@ -7,11 +7,10 @@ as `code` + `params` so the UI can show them in any language.
 """
 from __future__ import annotations
 
-import json
 import threading
 from datetime import date, datetime, timedelta
 
-from . import config
+from . import store
 
 _lock = threading.Lock()
 
@@ -208,19 +207,16 @@ def due_reviews(d: dict, today: date | None = None) -> list[tuple[str, dict]]:
 
 
 def path():
-    return config.HOME / "progress.json"
+    return store.path("progress")
 
 
 def _read() -> dict:
-    try:
-        d = json.loads(path().read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError):
-        d = {}
-    return {**_empty(), **d}
+    d = store.read("progress")
+    return {**_empty(), **(d if isinstance(d, dict) else {})}
 
 
 def _write(d: dict) -> None:
-    config.write_json(path(), d)
+    store.write("progress", d)
 
 
 def streak(days: list[str], today: date | None = None) -> int:

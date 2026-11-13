@@ -1,4 +1,7 @@
-"""Session history (one JSON per session) and problem bars."""
+"""Session history (one JSON per session) and problem bars.
+
+The local app keeps a folder per song in config.HISTORY_DIR; the web service keeps rows of
+`practice_sessions` (a user's folders from before the database are moved in on first use)."""
 from __future__ import annotations
 
 import json
@@ -6,7 +9,7 @@ import re
 from datetime import datetime
 from pathlib import Path
 
-from . import config
+from . import config, db, store
 
 
 def song_id(ref_path: str, track: str | None = None) -> str:
@@ -14,24 +17,87 @@ def song_id(ref_path: str, track: str | None = None) -> str:
     return re.sub(r"[^\w\-]+", "_", base).strip("_").lower() or "song"
 
 
-def save(result: dict, section: dict | None = None) -> Path:
+def save(result: dict, section: dict | None = None) -> Path | int:
     ref = result.get("reference", {})
     sid = song_id(ref.get("path", "song"), ref.get("track"))
-    folder = config.HISTORY_DIR / sid
-    folder.mkdir(parents=True, exist_ok=True)
     data = dict(result)
     data.pop("roll", None)  # the piano roll is heavy and can be regenerated
     data.setdefault("date", datetime.now().isoformat(timespec="seconds"))
     data["song_id"] = sid
     if section:
         data["section"] = section
+    if store.in_db():
+        _import_folders()
+        with db.pool().connection() as conn:
+            return _insert(conn, sid, data)
+    folder = config.HISTORY_DIR / sid
+    folder.mkdir(parents=True, exist_ok=True)
     stamp = datetime.now().strftime("%Y%m%d-%H%M%S-%f")
     path = folder / f"{stamp}-{data.get('kind', 'live')}.json"
     config.write_json(path, data)
     return path
 
 
+def _insert(conn, sid: str, data: dict) -> int:
+    from psycopg.types.json import Jsonb
+    return conn.execute("INSERT INTO practice_sessions (user_id, song_id, kind, played_at, data) "
+                        "VALUES (%s, %s, %s, %s, %s) RETURNING id",
+                        (config.user_id(), sid, data.get("kind") or "live", data["date"], Jsonb(data))).fetchone()["id"]
+
+
+def _import_folders() -> None:
+    """Moves the user's history folders (kept as files before the database) into the database, once."""
+    root = config.HISTORY_DIR
+    if not root.is_dir():
+        return
+    with db.pool().connection() as conn:
+        for p in sorted(root.glob("*/*.json")):
+            try:
+                d = json.loads(p.read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError):
+                continue
+            d.setdefault("date", datetime.fromtimestamp(p.stat().st_mtime).isoformat(timespec="seconds"))
+            _insert(conn, p.parent.name, d)
+    root.rename(root.with_name(root.name + ".imported"))
+
+
+def export():
+    """Every session, for a backup: (song id, file name, data)."""
+    if store.in_db():
+        _import_folders()
+        with db.pool().connection() as conn:
+            rows = conn.execute("SELECT id, song_id, kind, data FROM practice_sessions WHERE user_id = %s ORDER BY id",
+                                (config.user_id(),)).fetchall()
+        for r in rows:
+            yield r["song_id"], f"{r['id']:010d}-{r['kind']}.json", r["data"]
+        return
+    if config.HISTORY_DIR.is_dir():
+        for p in sorted(config.HISTORY_DIR.glob("*/*.json")):
+            try:
+                yield p.parent.name, p.name, json.loads(p.read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError):
+                continue
+
+
+def restore_session(sid: str, name: str, data: dict) -> None:
+    """A session from a backup; one that's already there (same song, time and kind) is skipped."""
+    if not store.in_db():
+        config.write_json(config.HISTORY_DIR / sid / name, data)
+        return
+    data.setdefault("date", datetime.now().isoformat(timespec="seconds"))
+    with db.pool().connection() as conn:
+        if not conn.execute("SELECT 1 FROM practice_sessions WHERE user_id = %s AND song_id = %s AND played_at = %s "
+                            "AND kind = %s", (config.user_id(), sid, data["date"], data.get("kind") or "live")).fetchone():
+            _insert(conn, sid, data)
+
+
 def load_sessions(sid: str) -> list[dict]:
+    if store.in_db():
+        _import_folders()
+        with db.pool().connection() as conn:
+            rows = conn.execute("SELECT id, data FROM practice_sessions WHERE user_id = %s AND song_id = %s "
+                                "ORDER BY played_at, id", (config.user_id(), sid)).fetchall()
+        return [dict(r["data"], file=str(r["id"])) for r in rows]
     folder = config.HISTORY_DIR / sid
     out = []
     for p in sorted(folder.glob("*.json")):
@@ -46,20 +112,32 @@ def load_sessions(sid: str) -> list[dict]:
 
 def songs() -> list[dict]:
     out = []
-    if not config.HISTORY_DIR.exists():
-        return out
-    for folder in sorted(config.HISTORY_DIR.iterdir()):
-        if not folder.is_dir():
-            continue
-        sessions = load_sessions(folder.name)
-        if not sessions:
-            continue
-        last = sessions[-1]
-        out.append(dict(id=folder.name, name=last.get("reference", {}).get("name", folder.name),
+    for sid, n, last in _last_sessions():
+        out.append(dict(id=sid, name=last.get("reference", {}).get("name", sid),
                         path=last.get("reference", {}).get("path"), track=last.get("reference", {}).get("track"),
-                        sessions=len(sessions), last_date=last.get("date"),
+                        sessions=n, last_date=last.get("date"),
                         last_score=session_score(last)))
     out.sort(key=lambda s: s["last_date"] or "", reverse=True)
+    return out
+
+
+def _last_sessions():
+    """(song id, number of sessions, the last one) for every song played."""
+    if store.in_db():
+        _import_folders()
+        with db.pool().connection() as conn:
+            rows = conn.execute(
+                "SELECT DISTINCT ON (song_id) song_id, count(*) OVER (PARTITION BY song_id) AS n, data "
+                "FROM practice_sessions WHERE user_id = %s ORDER BY song_id, played_at DESC, id DESC",
+                (config.user_id(),)).fetchall()
+        return [(r["song_id"], r["n"], r["data"]) for r in rows]
+    if not config.HISTORY_DIR.exists():
+        return []
+    out = []
+    for folder in sorted(config.HISTORY_DIR.iterdir()):
+        sessions = load_sessions(folder.name) if folder.is_dir() else []
+        if sessions:
+            out.append((folder.name, len(sessions), sessions[-1]))
     return out
 
 

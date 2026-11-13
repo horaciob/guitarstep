@@ -16,7 +16,6 @@ import contextvars
 import json
 import os
 import threading
-import tomllib
 from pathlib import Path
 
 # The data folder. Alone, the app keeps everything in it. As a web service each signed-in user
@@ -25,6 +24,7 @@ from pathlib import Path
 BASE = Path(os.environ.get("GUITARR_HOME", "~/.guitarr")).expanduser()
 CACHE_DIR = BASE / "cache"
 _home: contextvars.ContextVar[Path | None] = contextvars.ContextVar("guitarr_home", default=None)
+_user: contextvars.ContextVar[str | None] = contextvars.ContextVar("guitarr_user", default=None)
 _UNDER_HOME = dict(CONFIG_PATH="config.toml", SONGS_DIR="songs", TAKES_DIR="takes", HISTORY_DIR="history")
 
 
@@ -50,6 +50,23 @@ def use_home(path: Path | None):
         yield
     finally:
         _home.reset(tok)
+
+
+@contextlib.contextmanager
+def use_user(user_id: str | None):
+    """Inside the block the signed-in user is `user_id` (web service): their folder is config.HOME and
+    their documents are in the database (see store.py)."""
+    tok = _user.set(user_id)
+    try:
+        with use_home(user_home(user_id) if user_id else None):
+            yield
+    finally:
+        _user.reset(tok)
+
+
+def user_id() -> str | None:
+    """The signed-in user of the web service (None for the local app)."""
+    return _user.get()
 
 
 def in_this_context(fn):
@@ -80,11 +97,8 @@ SONG_KEYS = ("track", "transpose", "start_bar", "end_bar", "mode", "speed", "bpm
 
 
 def load() -> dict:
-    try:
-        with open(__getattr__("CONFIG_PATH"), "rb") as f:
-            data = tomllib.load(f)
-    except (FileNotFoundError, tomllib.TOMLDecodeError):
-        data = {}
+    from . import store
+    data = store.read("config") or {}
     data.setdefault("audio", {})
     data.setdefault("songs", {})
     return data
@@ -106,7 +120,12 @@ def _table(name: str, d: dict) -> list[str]:
 
 
 def save(data: dict) -> None:
-    __getattr__("HOME").mkdir(parents=True, exist_ok=True)
+    from . import store
+    store.write("config", data)
+
+
+def to_toml(data: dict) -> str:
+    """The settings as config.toml."""
     lines = _table("audio", data.get("audio", {}))
     if data.get("instrument"):
         lines += _table("instrument", data["instrument"])
@@ -116,7 +135,7 @@ def save(data: dict) -> None:
         lines += _table("reminder", data["reminder"])
     for song, opts in sorted(data.get("songs", {}).items()):
         lines += _table(f"songs.{_val(song)}", opts)
-    write_text_atomic(__getattr__("CONFIG_PATH"), "\n".join(lines))
+    return "\n".join(lines)
 
 
 def update_audio(**kw) -> dict:

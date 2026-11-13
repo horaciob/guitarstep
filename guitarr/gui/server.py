@@ -198,7 +198,7 @@ class SignedInOnly:
         scope.setdefault("state", {})["user"] = user
         tok = _user.set(user and user["id"])
         try:
-            with config.use_home(config.user_home(user["id"]) if user else None):
+            with config.use_user(user["id"] if user else None):
                 await self.app(scope, receive, send)
         finally:
             _user.reset(tok)

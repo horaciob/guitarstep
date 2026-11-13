@@ -84,10 +84,82 @@ def test_each_user_has_their_own_data(links):
     assert bob.get("/api/setlists").json() == []
     assert ana.get("/api/status").json()["home"] is None        # no server paths for the users
     assert ana.get("/api/settings/sources").json()["home"]["value"] is None
-    homes = sorted(p.name for p in (config.BASE / "users").iterdir())
-    assert len(homes) == 1 and (config.BASE / "users" / homes[0] / "setlists.json").exists()
+    assert not (config.BASE / "users").exists() or not list((config.BASE / "users").glob("*/setlists.json"))
     # signing in again with another capitalization is the same account
     assert [s["name"] for s in signed_in(links, "ANA@example.com").get("/api/setlists").json()] == ["Ana's gig"]
+
+
+def _db(pg_url, sql, *args):
+    import psycopg
+    with psycopg.connect(pg_url) as conn:
+        return conn.execute(sql, args).fetchall()
+
+
+CHART = "title: Two chords\nbpm: 90\n\n| Em | Am |\n"
+
+
+def test_user_data_lives_in_the_database(links, pg_url):
+    from guitarr import history
+    ana = signed_in(links, "ana@example.com")
+    assert ana.post("/api/setlists", json=dict(name="Gig")).status_code == 200
+    assert ana.post("/api/config", json=dict(gate_db=-61)).status_code == 200
+    assert ana.post("/api/charts", json=dict(text=CHART)).json()["id"] == "two-chords"
+    (uid,), = _db(pg_url, "SELECT id::text FROM users WHERE email = 'ana@example.com'")
+    with config.use_user(uid):
+        history.save(dict(kind="live", reference=dict(path="song.mid", name="Song"), summary=dict(score=80)))
+    docs = {n for n, in _db(pg_url, "SELECT name FROM user_documents WHERE user_id = %s", uid)}
+    assert {"setlists", "config"} <= docs
+    assert ana.get("/api/config").json()["audio"]["gate_db"] == -61
+    assert [c["id"] for c in ana.get("/api/charts").json() if c.get("mine")] == ["two-chords"]
+    assert [(h["id"], h["sessions"], h["last_score"]) for h in ana.get("/api/history").json()] == [("song", 1, 80)]
+    assert ana.get("/api/history/song").json()["sessions"][0]["score"] == 80
+    home = config.user_home(uid)
+    assert not any((home / f).exists() for f in ("setlists.json", "config.toml", "history", "charts"))
+    # nobody else sees it
+    bob = signed_in(links, "bob@example.com")
+    assert bob.get("/api/history").json() == [] and not [c for c in bob.get("/api/charts").json() if c.get("mine")]
+    assert bob.delete("/api/charts/two-chords").status_code != 200
+    assert ana.delete("/api/charts/two-chords").status_code == 200
+    assert not _db(pg_url, "SELECT 1 FROM user_charts")
+
+
+def test_files_from_before_the_database_are_moved_in(links, pg_url):
+    """A user's data kept as files (phase 1) is moved into the database the first time it's read."""
+    import json
+    c = signed_in(links, "old@example.com")
+    (uid,), = _db(pg_url, "SELECT id::text FROM users WHERE email = 'old@example.com'")
+    home = config.user_home(uid)
+    (home / "history" / "song").mkdir(parents=True)
+    (home / "history" / "song" / "20250101-120000-000000-live.json").write_text(json.dumps(
+        dict(kind="live", date="2025-01-01T12:00:00", reference=dict(name="Song"), summary=dict(score=70))))
+    (home / "charts").mkdir()
+    (home / "charts" / "old-one.txt").write_text(CHART)
+    (home / "setlists.json").write_text(json.dumps([dict(id="x", name="Old gig", items=[])]))
+    (home / "config.toml").write_text("[audio]\ngate_db = -55.0\n")
+    assert [s["name"] for s in c.get("/api/setlists").json()] == ["Old gig"]
+    assert c.get("/api/config").json()["audio"]["gate_db"] == -55
+    assert [h["sessions"] for h in c.get("/api/history").json()] == [1]
+    assert "old-one" in [x["id"] for x in c.get("/api/charts").json() if x.get("mine")]
+    assert (home / "setlists.json.imported").exists() and (home / "history.imported").is_dir()
+    assert [h["sessions"] for h in c.get("/api/history").json()] == [1]      # moved once
+
+
+def test_a_backup_moves_between_accounts(links, pg_url):
+    from guitarr import history
+    ana = signed_in(links, "ana@example.com")
+    ana.post("/api/setlists", json=dict(name="Gig"))
+    ana.post("/api/charts", json=dict(text=CHART))
+    (uid,), = _db(pg_url, "SELECT id::text FROM users WHERE email = 'ana@example.com'")
+    with config.use_user(uid):
+        history.save(dict(kind="live", reference=dict(path="song.mid", name="Song"), summary=dict(score=80)))
+    zipped = ana.get("/api/backup").content
+    bob = signed_in(links, "bob@example.com")
+    for _ in range(2):                                   # restoring twice doesn't double the history
+        r = bob.post("/api/backup", files=dict(file=("b.zip", zipped, "application/zip")))
+        assert r.status_code == 200, r.text
+    assert [s["name"] for s in bob.get("/api/setlists").json()] == ["Gig"]
+    assert [h["sessions"] for h in bob.get("/api/history").json()] == [1]
+    assert "two-chords" in [c["id"] for c in bob.get("/api/charts").json() if c.get("mine")]
 
 
 def test_the_servers_own_audio_is_off_limits(links):

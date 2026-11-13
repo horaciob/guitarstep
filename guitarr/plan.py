@@ -25,7 +25,7 @@ import unicodedata
 import uuid
 from datetime import date, datetime, timedelta
 
-from . import config
+from . import config, store
 from .errors import CodedError
 
 _lock = threading.Lock()
@@ -49,7 +49,7 @@ class PlanError(CodedError):
 
 # ---------------------------------------------------------------- storage
 def path():
-    return config.HOME / "plan.json"
+    return store.path("plan")
 
 
 def _empty() -> dict:
@@ -58,10 +58,7 @@ def _empty() -> dict:
 
 
 def _read() -> dict:
-    try:
-        d = json.loads(path().read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError):
-        d = {}
+    d = store.read("plan")
     base = _empty()
     d = {**base, **(d if isinstance(d, dict) else {})}
     if not any(c["id"] == "free" for c in d["categories"]):     # added after the first version
@@ -73,7 +70,7 @@ def _read() -> dict:
 
 
 def _write(d: dict) -> None:
-    config.write_json(path(), d)
+    store.write("plan", d)
 
 
 # ---------------------------------------------------------------- helpers

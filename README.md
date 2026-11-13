@@ -133,8 +133,10 @@ and exits) and the app (`guitarr`, which starts only after the migrations succee
   The tuner, the signal check and the latency calibration use the browser's input as well; a calibration is
   kept for that input and used whenever you practice with it (else the browser's own latency estimate).
   Browsers open the microphone only on `https://` or on `localhost`.
-- **Data:** accounts live in Postgres (`guitarr-db` volume). Each user's songs, takes, history and progress
-  live in their own folder in the `guitarr-data` volume (`/data/users/<id>`).
+- **Data:** accounts, settings, progress, practice plan, setlists, history and your charts live in Postgres
+  (`guitarr-db` volume). Each user's files (songs, takes, impulse responses) live in their own folder in the
+  `guitarr-data` volume (`/data/users/<id>`). A backup (Settings → Your data) is the same zip as the local
+  app's, so you can move your data between them.
 
 **Database changes** are numbered SQL files in `guitarr/db/migrations/`, applied in order and only once:
 
